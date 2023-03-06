@@ -127,6 +127,7 @@ $yellow:  #ffbf53;
 $green:   #2ab57d;
 $teal:    #050505;
 $cyan:    #4ba6ef;
+$turu:    #FC6C00;
 // scss-docs-end color-variables
 
 // scss-docs-start colors-map
@@ -144,7 +145,8 @@ $colors: (
     "black":      $black,
     "white":      $white,
     "gray":       $gray-600,
-    "gray-dark":  $gray-800
+    "gray-dark":  $gray-800,
+    "turu":       $turu
 );
 // scss-docs-end colors-map
 
@@ -169,7 +171,8 @@ $theme-colors: (
     "danger":     $danger,
     "pink":       $pink,
     "light":      $light,
-    "dark":       $dark
+    "dark":       $dark,
+    "turu":       $turu
 );
 // scss-docs-end theme-colors-map
 
