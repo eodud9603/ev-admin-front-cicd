@@ -26,6 +26,7 @@ import {
 } from "src/helpers/store/layout/actions";
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "src/components/VerticalLayout/Footer";
+import { Link } from "react-router-dom";
 
 type Theme = "light" | "dark";
 
@@ -209,20 +210,7 @@ export const Playground = (props: any) => {
               marginTop: "16px",
             }}
           />
-          {/*<SideBarHeaderWrapper*/}
-          {/*  toggleMenuCallback={toggleMenuCallback}*/}
-          {/*  onChangeLayoutMode={onChangeLayoutMode}*/}
-          {/*/>*/}
           <div style={{ flex: 1, marginBottom: "100px" }}>
-            {/*<div style={{ padding: "0 24px", marginBottom: "8px" }}>*/}
-            {/*  <Typography*/}
-            {/*    variant="body2"*/}
-            {/*    fontWeight={600}*/}
-            {/*    style={{ opacity: collapsed ? 0 : 0.7, letterSpacing: "0.5px" }}*/}
-            {/*  >*/}
-            {/*    General*/}
-            {/*  </Typography>*/}
-            {/*</div>*/}
             <Menu menuItemStyles={menuItemStyles}>
               <SubMenu
                 label="충전 모니터링"
@@ -233,8 +221,12 @@ export const Playground = (props: any) => {
                   </Badge>
                 }
               >
-                <MenuItem>충전 모니터링</MenuItem>
-                <MenuItem> Line charts</MenuItem>
+                <MenuItem component={<Link to={"/main/dashboard"} />}>
+                  충전 모니터링
+                </MenuItem>
+                <MenuItem component={<Link to={"/main/1"}>충전 모니터링</Link>}>
+                  Line charts
+                </MenuItem>
                 <MenuItem> Bar charts</MenuItem>
               </SubMenu>
               <SubMenu label="Maps" icon={<Global />}>

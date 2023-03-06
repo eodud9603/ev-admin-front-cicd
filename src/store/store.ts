@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
-interface BearState {
+interface IBearState {
   bears: number;
   increase: () => void;
 }
 
-const useBearStore = create<BearState>()(
+const useBearStore = create<IBearState>()(
   devtools(
     persist(
       (set) => ({
