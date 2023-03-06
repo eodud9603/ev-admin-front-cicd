@@ -3,23 +3,21 @@ import { Button } from "reactstrap";
 
 interface IButtonBase {
   label: string;
-  labelColor?: "turu" | "secondary" | "dark";
-  bgColor?: "turu" | "secondary" | "dark";
+  color?: "turu" | "secondary" | "dark";
   icon?: HTMLElement;
   className?: string;
   outline?: boolean;
   onClick?: () => void;
 }
 export const ButtonBase = (props: IButtonBase) => {
-  const { label, labelColor, bgColor, className, icon, outline, onClick } =
-    props;
+  const { label, color, className, icon, outline, onClick } = props;
 
   return (
     <Button
       className={className}
+      color={color}
       outline={outline}
       onClick={onClick}
-      style={{ backgroundColor: bgColor, color: labelColor }}
     >
       <>
         {icon}

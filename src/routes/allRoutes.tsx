@@ -4,10 +4,12 @@ import { Navigate } from "react-router-dom";
 import { RouteProps } from "react-router/dist/lib/components";
 import { MainDashboard } from "src/pages/Main/main";
 import { mainLoader } from "src/pages/Main/loader/mainLoader";
+import Example from "src/pages/example";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
   { path: "/main/dashboard", element: <MainDashboard />, loader: mainLoader },
+  { path: "/example", element: <Example /> },
 ];
 
 const authRoutes: Array<RouteProps> = [

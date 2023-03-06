@@ -4,9 +4,19 @@ import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioBase from "src/components/Common/Radio/RadioBase";
+import { ButtonBase } from "src/components/Common/Button/ButtonBase";
+import Colors from "src/assets/colors";
+import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 
 const Example = () => {
   const [text, setText] = useState("");
+  const dropdownData = [
+    { label: "전체", value: "1" },
+    { label: "C:휴맥스2", value: "2" },
+    { label: "H:휴맥스3", value: "3" },
+    { label: "H:휴맥스4", value: "4" },
+    { label: "H:휴맥스5", value: "5" },
+  ];
 
   return (
     <div style={{ width: "100%" }}>
@@ -35,6 +45,14 @@ const Example = () => {
           onChange={(e) => setText(e.target.value)}
         />
       </FormGroup>
+      <ButtonBase label={"버튼1"} />
+      <ButtonBase
+        label={"버튼2"}
+        className={"width-120"}
+        outline={true}
+        color={"turu"}
+      />
+      <DropdownBase menuItems={dropdownData} />
     </div>
   );
 };
