@@ -1,14 +1,13 @@
 import React from "react";
-import { Button } from "reactstrap";
 import styled from "styled-components";
 
-interface HeaderBaseProps {
+interface IHeaderBaseProps {
   children?: string | JSX.Element | JSX.Element[];
 
   headerStyle?: React.CSSProperties;
 }
 
-const HeaderBase = (props: HeaderBaseProps) => {
+const HeaderBase = (props: IHeaderBaseProps) => {
   const {
     /* optional */
     children,
@@ -29,6 +28,6 @@ const HeaderBase = (props: HeaderBaseProps) => {
 
 export default HeaderBase;
 
-const Header = styled.header<Pick<HeaderBaseProps, "headerStyle">>`
+const Header = styled.header<Pick<IHeaderBaseProps, "headerStyle">>`
   ${({ headerStyle }) => ({ ...headerStyle })};
 `;
