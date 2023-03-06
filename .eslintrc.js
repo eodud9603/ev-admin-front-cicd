@@ -10,6 +10,7 @@ module.exports = {
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "prettier",
   ],
   overrides: [],
   parser: "@typescript-eslint/parser",
@@ -21,9 +22,9 @@ module.exports = {
   plugins: ["react", "react-hooks", "@typescript-eslint", "prettier"],
   rules: {
     indent: [
-      "error",
-      2,
-      { SwitchCase: 1, ignoredNodes: ["ConditionalExpression"] },
+      "off",
+      // 2,
+      // { SwitchCase: 1, ignoredNodes: ["ConditionalExpression"] },
     ],
     "linebreak-style": ["error", "unix"],
     "react-hooks/rules-of-hooks": "error",
