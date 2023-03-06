@@ -25,7 +25,7 @@ import {
   changeSidebarType,
 } from "src/helpers/store/layout/actions";
 import { useDispatch, useSelector } from "react-redux";
-import Footer from "src/components/VerticalLayout/Footer";
+import Footer from "src/components/Common/Footer/Footer";
 import { Link } from "react-router-dom";
 
 type Theme = "light" | "dark";
