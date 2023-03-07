@@ -6,6 +6,7 @@ import { MainDashboard } from "src/pages/Main/main";
 import { mainLoader } from "src/pages/Main/loader/mainLoader";
 import Example from "src/pages/example";
 import ChargingStation from "src/pages/Charger/ChargerStation";
+import { ChargerTrouble } from "src/pages/ChargerTrouble";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -16,6 +17,7 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargingStation />,
   },
   { path: "/charger/trouble", element: <Example /> },
+  { path: "/charger/trouble", element: <ChargerTrouble /> },
   { path: "/charger/manufacturer", element: <Example /> },
   { path: "/charger/operator", element: <Example /> },
 ];

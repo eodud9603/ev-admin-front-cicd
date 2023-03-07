@@ -201,19 +201,22 @@ export const Playground = (props: any) => {
                 <MenuItem component={<Link to={"/main/dashboard"} />}>
                   충전소 관리
                 </MenuItem>
-                <MenuItem component={<Link to={"/example"} />}>
+                <MenuItem component={<Link to={"/main/example"} />}>
                   충전기 관리
                 </MenuItem>
                 <MenuItem component={<Link to={"/main/1"} />}>
                   충전소 계약 관리
                 </MenuItem>
-                <MenuItem component={<Link to={"/main/1"} />}>
+                <MenuItem
+                  className={"font-size-18"}
+                  component={<Link to={"/charger/trouble"} />}
+                >
                   충전기 고장/파손 관리
                 </MenuItem>
-                <MenuItem component={<Link to={"/main/1"} />}>
+                <MenuItem component={<Link to={"/charger/manufacturer"} />}>
                   충전기 제조사 관리
                 </MenuItem>
-                <MenuItem component={<Link to={"/main/1"} />}>
+                <MenuItem component={<Link to={"/charger/operator"} />}>
                   서비스 운영사 관리
                 </MenuItem>
               </SubMenu>
