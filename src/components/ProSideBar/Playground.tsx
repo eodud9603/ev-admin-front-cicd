@@ -199,9 +199,9 @@ export const Playground = (props: any) => {
             <Menu menuItemStyles={menuItemStyles}>
               <SubMenu label="충전 모니터링" icon={<BarChart />} open={allOpen}>
                 <MenuItem component={<Link to={"/main/dashboard"} />}>
-                  충전 모니터링
+                  충전소 관리
                 </MenuItem>
-                <MenuItem component={<Link to={"/main/1"} />}>
+                <MenuItem component={<Link to={"/example"} />}>
                   충전기 관리
                 </MenuItem>
                 <MenuItem component={<Link to={"/main/1"} />}>

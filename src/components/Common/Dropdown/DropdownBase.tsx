@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   Dropdown,
   DropdownItem,
@@ -9,10 +9,16 @@ import {
 interface IDropdownBaseProps {
   disabled?: boolean;
   onClickDropdownItem?: (label: string, value: string) => void;
-  menuItems: Array<{ label: string; value: string }>;
+  menuItems: Array<{
+    label: string;
+    value: string;
+    setData?: Dispatch<SetStateAction<{ label: string; value: string }>>;
+  }>;
+  className?: string;
 }
 export const DropdownBase = (props: IDropdownBaseProps) => {
-  const { disabled, onClickDropdownItem, menuItems, ...extraProps } = props;
+  const { disabled, onClickDropdownItem, menuItems, className, ...extraProps } =
+    props;
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<{
     label: string;
@@ -34,6 +40,7 @@ export const DropdownBase = (props: IDropdownBaseProps) => {
         isOpen={isOpen}
         toggle={onToggleDropdown}
         disabled={disabled}
+        className={className}
         {...extraProps}
       >
         <DropdownToggle tag="button" className="btn btn-outline-light w-xs">

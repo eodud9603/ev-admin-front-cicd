@@ -10,6 +10,8 @@ import TabBase from "src/components/Common/Tab/TabBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
+import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
+import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 
 const Example = () => {
   const [text, setText] = useState("");
@@ -90,6 +92,15 @@ const Example = () => {
           color={"turu"}
         />
         <DropdownBase menuItems={dropdownData} />
+        <DropboxGroup
+          label={"xptmxm"}
+          className={"me-2"}
+          dropdownItems={[
+            { menuItems: [{ label: "테스트1", value: "test1" }] },
+            { menuItems: [{ label: "테스트2", value: "test2" }] },
+          ]}
+        />
+        <DateGroup label={"접수일"} />
       </BodyBase>
     </ContainerBase>
   );
