@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Sidebar,
   Menu,
@@ -18,7 +18,6 @@ import { Calendar } from "./icons/Calendar";
 import { ShoppingCart } from "./icons/ShoppingCart";
 import { Service } from "./icons/Service";
 import { SidebarFooter } from "./components/SidebarFooter";
-import { Badge } from "./components/Badge";
 import {
   changelayoutMode,
   changeSidebarTheme,
@@ -27,6 +26,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "src/components/Common/Footer/Footer";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 type Theme = "light" | "dark";
 
@@ -78,6 +78,7 @@ const hexToRgba = (hex: string, alpha: number) => {
 
 export const Playground = (props: any) => {
   const { toggleSidebar, collapseSidebar, broken, collapsed } = useProSidebar();
+  const [allOpen, setAllOpen] = useState<boolean | undefined>(undefined);
 
   const dispatch = useDispatch();
 
@@ -85,19 +86,13 @@ export const Playground = (props: any) => {
   const [hasImage, setHasImage] = React.useState<boolean>(false);
   const [theme, setTheme] = React.useState<Theme>("light");
 
-  // handle on RTL change event
-  const handleRTLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsRTL(e.target.checked);
-  };
-
   // handle on theme change event
   const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTheme(e.target.checked ? "dark" : "light");
   };
 
-  // handle on image change event
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHasImage(e.target.checked);
+  const handleCollapsed = () => {
+    collapseSidebar();
   };
 
   const menuItemStyles: MenuItemStyles = {
@@ -176,17 +171,6 @@ export const Playground = (props: any) => {
       }}
     >
       <Sidebar
-        style={
-          {
-            // bottom: 0,
-            // float: "none",
-            // height: "100vh",
-            // left: 0,
-            // position: "fixed",
-            // top: 0,
-            // zIndex: 1038,
-          }
-        }
         breakPoint="lg"
         backgroundColor={hexToRgba(
           themes[theme].sidebar.backgroundColor,
@@ -209,25 +193,29 @@ export const Playground = (props: any) => {
               marginBottom: "24px",
               marginTop: "16px",
             }}
+            setAllOpen={setAllOpen}
           />
           <div style={{ flex: 1, marginBottom: "100px" }}>
             <Menu menuItemStyles={menuItemStyles}>
-              <SubMenu
-                label="충전 모니터링"
-                icon={<BarChart />}
-                suffix={
-                  <Badge variant="danger" shape="circle">
-                    6
-                  </Badge>
-                }
-              >
+              <SubMenu label="충전 모니터링" icon={<BarChart />} open={allOpen}>
                 <MenuItem component={<Link to={"/main/dashboard"} />}>
                   충전 모니터링
                 </MenuItem>
-                <MenuItem component={<Link to={"/main/1"}>충전 모니터링</Link>}>
-                  Line charts
+                <MenuItem component={<Link to={"/main/1"} />}>
+                  충전기 관리
                 </MenuItem>
-                <MenuItem> Bar charts</MenuItem>
+                <MenuItem component={<Link to={"/main/1"} />}>
+                  충전소 계약 관리
+                </MenuItem>
+                <MenuItem component={<Link to={"/main/1"} />}>
+                  충전기 고장/파손 관리
+                </MenuItem>
+                <MenuItem component={<Link to={"/main/1"} />}>
+                  충전기 제조사 관리
+                </MenuItem>
+                <MenuItem component={<Link to={"/main/1"} />}>
+                  서비스 운영사 관리
+                </MenuItem>
               </SubMenu>
               <SubMenu label="Maps" icon={<Global />}>
                 <MenuItem> Google maps</MenuItem>
@@ -257,12 +245,7 @@ export const Playground = (props: any) => {
             </Menu>
 
             <Menu menuItemStyles={menuItemStyles}>
-              <MenuItem
-                icon={<Calendar />}
-                suffix={<Badge variant="success">New</Badge>}
-              >
-                Calendar
-              </MenuItem>
+              <MenuItem icon={<Calendar />}>Calendar</MenuItem>
               <MenuItem icon={<Book />}>Documentation</MenuItem>
               <MenuItem disabled icon={<Service />}>
                 Examples
@@ -272,9 +255,26 @@ export const Playground = (props: any) => {
           <SidebarFooter collapsed={collapsed} />
         </div>
       </Sidebar>
-      <header id="page-topbar">ㅁㄴㅇ</header>
+      <div style={{ position: "relative" }}>
+        <CollapsedButton onClick={handleCollapsed}>
+          <i
+            className={`bx bx-caret-left font-size-18 mt-1 ${
+              collapsed ? "rotate-caret" : ""
+            }`}
+          />
+        </CollapsedButton>
+      </div>
       {props.children}
       <Footer />
     </div>
   );
 };
+
+const CollapsedButton = styled.div`
+  background-color: white;
+  position: absolute;
+  top: 20px;
+  left: 0px;
+  width: 20px;
+  padding-block: 5px;
+`;

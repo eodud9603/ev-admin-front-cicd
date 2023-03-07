@@ -1,18 +1,19 @@
 import styled from "@emotion/styled";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { useProSidebar } from "react-pro-sidebar";
-import { Typography } from "./Typography";
-import { useDispatch, useSelector } from "react-redux";
-import { layoutTheme } from "src/constants/layout";
+import { useSelector } from "react-redux";
+import Logo from "src/assets/images/sidebar_logo.png";
+import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 
-interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ISidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
+  setAllOpen: Dispatch<SetStateAction<boolean | undefined>>;
   onChangeLayoutMode: (mode: string) => void;
 }
 
 const StyledSidebarHeader = styled.div`
-  height: 64px;
-  min-height: 64px;
+  height: 100px;
+  min-height: 100px;
   display: flex;
   align-items: center;
   padding: 0 20px;
@@ -23,45 +24,23 @@ const StyledSidebarHeader = styled.div`
   }
 `;
 
-const StyledLogo = styled.div<{ rtl?: boolean }>`
-  width: 35px;
-  min-width: 35px;
-  height: 35px;
-  min-height: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  color: white;
-  font-size: 24px;
-  font-weight: 700;
-  background-color: #009fdb;
-  background: linear-gradient(45deg, rgb(21 87 205) 0%, rgb(90 225 255) 100%);
-  ${({ rtl }) =>
-    rtl
-      ? `
-      margin-left: 10px;
-      margin-right: 4px;
-      `
-      : `
-      margin-right: 10px;
-      margin-left: 4px;
-      `}
-`;
-
-export const SidebarHeader: React.FC<SidebarHeaderProps> = ({
+export const SidebarHeader: React.FC<ISidebarHeaderProps> = ({
   children,
+  setAllOpen,
   onChangeLayoutMode,
   ...rest
 }) => {
-  const { rtl, collapseSidebar, collapsed } = useProSidebar();
-  const { layoutMode } = useSelector((state: any) => ({
-    layoutMode: state.Layout.layoutMode,
-  }));
+  const { collapsed } = useProSidebar();
+  const onClickAllOpen = () => {
+    setAllOpen(true);
+  };
+  const onClickAllClose = () => {
+    setAllOpen(undefined);
+  };
+
   return (
     <StyledSidebarHeader {...rest}>
       <div
-        style={{ display: "flex", alignItems: "center" }}
         onClick={() => {
           // onChangeLayoutMode(
           //   layoutMode === layoutTheme["DARKMODE"]
@@ -70,13 +49,28 @@ export const SidebarHeader: React.FC<SidebarHeaderProps> = ({
           // );
           // document.body.classList.add("vertical-slidein");
           console.log(collapsed);
-          collapseSidebar();
         }}
       >
-        <StyledLogo rtl={rtl}>T</StyledLogo>
-        <Typography variant="subtitle1" fontWeight={700} color="#0098e5">
-          Turu CHARGER
-        </Typography>
+        <img src={Logo} style={{ width: 200, marginBottom: 20 }} alt={"logo"} />
+        {!collapsed && (
+          <div className={"d-flex justify-content-between"}>
+            <ButtonBase
+              outline={true}
+              color={"dark"}
+              label={"전체 보기"}
+              onClick={onClickAllOpen}
+              className={"form-control border-light"}
+            />
+            <div className={"mx-1"} />
+            <ButtonBase
+              label={"전체 닫기"}
+              outline={true}
+              color={"dark"}
+              onClick={onClickAllClose}
+              className={"form-control border-light"}
+            />
+          </div>
+        )}
       </div>
     </StyledSidebarHeader>
   );

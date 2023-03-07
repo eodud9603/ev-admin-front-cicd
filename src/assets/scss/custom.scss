@@ -34,3 +34,18 @@
 .width-170 {
   width: 170px;
 }
+
+.rotate-caret {
+  animation-name: rotate-caret;
+  animation-fill-mode: forwards;
+  animation-duration: 0.7s;
+}
+
+@keyframes rotate-caret {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(0.5turn);
+  }
+}

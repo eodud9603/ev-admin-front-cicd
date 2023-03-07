@@ -1,5 +1,6 @@
-import React from 'react';
-import { IconProps } from './types';
+import React from "react";
+import { IconProps } from "./types";
+import Colors from "src/assets/colors";
 
 export const BarChart: React.FC<IconProps> = ({ size = 18, ...rest }) => {
   return (
@@ -8,7 +9,7 @@ export const BarChart: React.FC<IconProps> = ({ size = 18, ...rest }) => {
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="currentColor"
+      fill={Colors.DARK}
       {...rest}
     >
       <path d="M2 13h6v8H2v-8zM9 3h6v18H9V3zm7 5h6v13h-6V8z"></path>
