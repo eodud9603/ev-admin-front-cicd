@@ -2,7 +2,7 @@ import React from "react";
 import { Input } from "reactstrap";
 import styled from "styled-components";
 
-interface ITextInputBaseProps {
+export interface ITextInputBaseProps {
   name: string;
   value: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
@@ -11,6 +11,7 @@ interface ITextInputBaseProps {
   disabled?: boolean;
   bsSize?: "sm" | "lg";
   inputstyle?: React.CSSProperties;
+  className?: string;
 }
 
 const TextInputBase = (props: ITextInputBaseProps) => {
@@ -24,14 +25,16 @@ const TextInputBase = (props: ITextInputBaseProps) => {
     bsSize = "sm",
     disabled = false,
     inputstyle,
+    className = "",
     /* rest */
     ...rest
   } = props;
 
   return (
     <InputBase
-      className={"font-size-14"}
+      className={`font-size-14 ${className}`}
       inputstyle={inputstyle}
+      id={name}
       type={"text"}
       valid={false}
       invalid={false}

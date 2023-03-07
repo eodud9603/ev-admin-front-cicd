@@ -1,10 +1,11 @@
 import React from "react";
 import { Button } from "reactstrap";
 
-interface ITabBaseProps {
+export interface ITabBaseProps {
   text: string;
   selected: boolean;
 
+  index?: number;
   className?: string;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   onClose?: React.MouseEventHandler<HTMLButtonElement>;
@@ -16,6 +17,7 @@ const TabBase = (props: ITabBaseProps) => {
     text = "",
     selected = false,
     /* optional */
+    index,
     className = "",
     onClick,
     onClose,
@@ -34,6 +36,7 @@ const TabBase = (props: ITabBaseProps) => {
         type={"button"}
         className={`border-0 px-3 ps-3 bg-transparent ${tabClass}`}
         outline
+        value={index}
         onClick={onClick}
         {...rest}
       >
@@ -45,6 +48,7 @@ const TabBase = (props: ITabBaseProps) => {
         aria-label={"Close"}
         outline
         size={"sm"}
+        value={index}
         onClick={onClose}
       />
     </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 
 interface IBodyProps {
   children?: React.ReactElement | React.ReactElement[];
@@ -16,13 +17,15 @@ const BodyBase = (props: IBodyProps) => {
   } = props;
 
   return (
-    <body
+    <Body
       className={`d-flex-block flex-grow-1 p-0 px-4 py-4 m-0 bg-white ${className}`}
       {...rest}
     >
       {children}
-    </body>
+    </Body>
   );
 };
 
 export default BodyBase;
+
+const Body = styled.section``;
