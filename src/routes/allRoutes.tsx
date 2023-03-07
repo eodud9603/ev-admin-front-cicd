@@ -5,12 +5,13 @@ import { RouteProps } from "react-router/dist/lib/components";
 import { MainDashboard } from "src/pages/Main/main";
 import { mainLoader } from "src/pages/Main/loader/mainLoader";
 import Example from "src/pages/example";
+import { ChargerTrouble } from "src/pages/ChargerTrouble";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
   { path: "/main/dashboard", element: <MainDashboard />, loader: mainLoader },
   { path: "/example", element: <Example /> },
-  { path: "/charger/trouble", element: <Example /> },
+  { path: "/charger/trouble", element: <ChargerTrouble /> },
   { path: "/charger/manufacturer", element: <Example /> },
   { path: "/charger/operator", element: <Example /> },
 ];
