@@ -9,6 +9,7 @@ import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import TabBase from "src/components/Common/Tab/TabBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
+import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 
 const Example = () => {
   const [text, setText] = useState("");
@@ -41,6 +42,14 @@ const Example = () => {
         />
       </div>
       <BodyBase>
+        <BreadcrumbBase
+          list={[
+            { label: "dep 1", href: "#1" },
+            { label: "dep 2", href: "#2" },
+            { label: "dep 3", href: "#3" },
+          ]}
+        />
+
         <CheckBoxBase
           name="checkboxGroup"
           id={"checkBox1"}
