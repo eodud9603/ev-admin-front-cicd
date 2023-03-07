@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 interface IHeaderBaseProps {
@@ -13,6 +13,13 @@ const HeaderBase = (props: IHeaderBaseProps) => {
     headerStyle,
   } = props;
 
+  /* TODO: 임시 */
+  const [darkMode, setDarkMode] = useState(false);
+  /* light/dark mode handler */
+  const onChangeThemeHandler: React.MouseEventHandler<HTMLElement> = () => {
+    setDarkMode((prev) => !prev);
+  };
+
   return (
     <Header
       className={
@@ -20,6 +27,10 @@ const HeaderBase = (props: IHeaderBaseProps) => {
       }
       headerStyle={headerStyle}
     >
+      <IconButton
+        className={`bx bx-${darkMode ? "moon" : "sun"} font-size-18`}
+        onClick={onChangeThemeHandler}
+      />
       {children}
     </Header>
   );
@@ -29,4 +40,10 @@ export default HeaderBase;
 
 const Header = styled.header<Pick<IHeaderBaseProps, "headerStyle">>`
   ${({ headerStyle }) => ({ ...headerStyle })};
+`;
+
+const IconButton = styled.i`
+  :hover {
+    cursor: pointer;
+  }
 `;
