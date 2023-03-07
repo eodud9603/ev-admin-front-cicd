@@ -11,6 +11,7 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
+import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
 
 const Example = () => {
   const [text, setText] = useState("");
@@ -96,6 +97,14 @@ const Example = () => {
           title={"라디오 그룹 이름"}
           name={"radioGroup"}
           list={[{ label: "라디오 1" }, { label: "라디오 2" }]}
+        />
+        <SearchTextInput
+          title={"검색어"}
+          menuItems={dropdownData}
+          placeholder={"충전소를 입력해주세요"}
+          name={"searchText"}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
         />
       </BodyBase>
     </ContainerBase>
