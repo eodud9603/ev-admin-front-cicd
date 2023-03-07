@@ -3,7 +3,6 @@ import styled from "styled-components";
 
 interface IHeaderBaseProps {
   children?: string | JSX.Element | JSX.Element[];
-
   headerStyle?: React.CSSProperties;
 }
 
@@ -17,7 +16,7 @@ const HeaderBase = (props: IHeaderBaseProps) => {
   return (
     <Header
       className={
-        "d-sm-flex justify-content-end align-items-center p-3 border-bottom gap-3"
+        "d-sm-flex justify-content-end align-items-center p-3 border-bottom gap-3 bg-white"
       }
       headerStyle={headerStyle}
     >
