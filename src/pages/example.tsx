@@ -5,8 +5,8 @@ import TextInputBase from "src/components/Common/Input/TextInputBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioBase from "src/components/Common/Radio/RadioBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
-import Colors from "src/assets/colors";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
+import TabBase from "src/components/Common/Tab/TabBase";
 
 const Example = () => {
   const [text, setText] = useState("");
@@ -17,6 +17,7 @@ const Example = () => {
     { label: "H:휴맥스4", value: "4" },
     { label: "H:휴맥스5", value: "5" },
   ];
+  const [selected, setSelected] = useState(0);
 
   return (
     <div style={{ width: "100%" }}>
@@ -53,6 +54,20 @@ const Example = () => {
         color={"turu"}
       />
       <DropdownBase menuItems={dropdownData} />
+      <TabBase
+        text={"공지사항"}
+        selected={selected === 0}
+        onClick={() => {
+          setSelected(0);
+        }}
+      />
+      <TabBase
+        text={"충전소 관리"}
+        selected={selected === 1}
+        onClick={() => {
+          setSelected(1);
+        }}
+      />
     </div>
   );
 };
