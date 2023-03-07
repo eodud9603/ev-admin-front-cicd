@@ -95,7 +95,7 @@ const Example = () => {
 
         <RadioGroup
           title={"라디오 그룹 이름"}
-          name={"radioGroup"}
+          name={"radioGroup2"}
           list={[{ label: "라디오 1" }, { label: "라디오 2" }]}
         />
         <SearchTextInput
