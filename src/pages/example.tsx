@@ -10,6 +10,7 @@ import TabBase from "src/components/Common/Tab/TabBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
+import RadioGroup from "src/components/Common/Radio/RadioGroup";
 
 const Example = () => {
   const [text, setText] = useState("");
@@ -90,6 +91,12 @@ const Example = () => {
           color={"turu"}
         />
         <DropdownBase menuItems={dropdownData} />
+
+        <RadioGroup
+          title={"라디오 그룹 이름"}
+          name={"radioGroup"}
+          list={[{ label: "라디오 1" }, { label: "라디오 2" }]}
+        />
       </BodyBase>
     </ContainerBase>
   );
