@@ -26,7 +26,7 @@ const BreadcrumbBase = (props: IBreadcrumbProps) => {
     <Breadcrumb
       tag={"nav"}
       listTag={"div"}
-      listClassName={"m-0 mt-4 ms-4 mb-2 p-0"}
+      listClassName={"m-0 mb-2 p-0"}
       className={"relay-breadcrumb"}
     >
       {list.map(({ label, href }, index) => (

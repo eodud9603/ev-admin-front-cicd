@@ -16,12 +16,12 @@ const BodyBase = (props: IBodyProps) => {
   } = props;
 
   return (
-    <section
-      className={`d-flex-block flex-grow-1 p-0 m-0 bg-white ${className}`}
+    <body
+      className={`d-flex-block flex-grow-1 p-0 px-4 py-4 m-0 bg-white ${className}`}
       {...rest}
     >
       {children}
-    </section>
+    </body>
   );
 };
 
