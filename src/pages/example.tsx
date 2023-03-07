@@ -6,12 +6,12 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioBase from "src/components/Common/Radio/RadioBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
-import TabBase from "src/components/Common/Tab/TabBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
+import TabGroup from "src/components/Common/Tab/TabGroup";
 
 const Example = () => {
   const [text, setText] = useState("");
@@ -22,25 +22,16 @@ const Example = () => {
     { label: "H:휴맥스4", value: "4" },
     { label: "H:휴맥스5", value: "5" },
   ];
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState("0");
 
   return (
     <ContainerBase>
       <HeaderBase>children</HeaderBase>
       <div className={"mt-4 mx-5"}>
-        <TabBase
-          text={"공지사항"}
-          selected={selected === 0}
-          onClick={() => {
-            setSelected(0);
-          }}
-        />
-        <TabBase
-          text={"충전소 관리"}
-          selected={selected === 1}
-          onClick={() => {
-            setSelected(1);
-          }}
+        <TabGroup
+          list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
+          selectedIndex={selected}
+          onClick={(e) => setSelected(e.currentTarget.value)}
         />
       </div>
       <BodyBase>
