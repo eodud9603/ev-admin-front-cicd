@@ -16,14 +16,13 @@ import { Checkbox } from "src/components/Common/Checkbox";
 import { AreaCheckbox } from "src/components/Common/Filter/component/AreaCheckbox";
 import styled, { keyframes } from "styled-components";
 import { LabelDropDown } from "src/components/Common/LabelDropDown";
-import { DateInput } from "src/components/Common/Filter/component/DateInput";
 
-interface Props {
+interface IProps {
   setData: Dispatch<SetStateAction<any>>;
 }
 export type AreaCheckType = { [key: string]: boolean };
 
-export const SearchFilter = (props: Props) => {
+export const SearchFilter = (props: IProps) => {
   const [keyword, setKeyword] = useState<string>("");
   const [checkbox, setCheckbox] = useState({});
 
@@ -57,7 +56,6 @@ export const SearchFilter = (props: Props) => {
         <h4 className="card-title m-0">검색 필터</h4>
       </CardHeader>
       <CardBody>
-        <DateInput />
         <Row className={"my-3"}>
           <Col className={"d-flex align-items-center"}>
             <Label className={"fw-bold m-0 w-xs"}>운영상태</Label>

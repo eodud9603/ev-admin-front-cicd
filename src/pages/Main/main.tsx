@@ -9,7 +9,6 @@ import {
   Row,
   Table,
 } from "reactstrap";
-import { SearchFilter } from "../../components/Common/Filter/SearchFilter";
 
 export const MainDashboard = () => {
   const [filter, setFilter] = useState<any>({});
@@ -24,7 +23,7 @@ export const MainDashboard = () => {
           {/* Render Breadcrumbs */}
           <Breadcrumbs title="메인화면" breadcrumbItem="대시보드" />
 
-          <SearchFilter setData={setFilter} />
+          {/*<SearchFilter setData={setFilter} />*/}
           <Row>
             <Col>
               <Card>

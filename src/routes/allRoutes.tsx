@@ -10,6 +10,9 @@ const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
   { path: "/main/dashboard", element: <MainDashboard />, loader: mainLoader },
   { path: "/example", element: <Example /> },
+  { path: "/charger/trouble", element: <Example /> },
+  { path: "/charger/manufacturer", element: <Example /> },
+  { path: "/charger/operator", element: <Example /> },
 ];
 
 const authRoutes: Array<RouteProps> = [
