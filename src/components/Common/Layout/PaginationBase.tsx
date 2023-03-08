@@ -4,18 +4,18 @@ import { Row, Pagination, PaginationItem, PaginationLink } from "reactstrap";
 interface IPaginationBase {
   setPage: Dispatch<SetStateAction<number>>;
   data: {
-    navigatePageNums: Array<number>;
-    pageNum: number;
-    hasPreviousPage: number;
-    hasNextPage: number;
-    prePage: number;
-    nextPage: number;
+    navigatePageNums?: Array<number>;
+    pageNum?: number;
+    hasPreviousPage?: number;
+    hasNextPage?: number;
+    prePage?: number;
+    nextPage?: number;
   };
 }
 const PaginationBase = (props: IPaginationBase) => {
   const {
-    navigatePageNums,
-    pageNum,
+    navigatePageNums = [1],
+    pageNum = 1,
     hasPreviousPage,
     hasNextPage,
     prePage,
@@ -32,7 +32,7 @@ const PaginationBase = (props: IPaginationBase) => {
         className="d-flex justify-content-center"
       >
         <PaginationItem className={`${!hasPreviousPage ? "disabled" : ""}`}>
-          <PaginationLink onClick={() => props.setPage(prePage)}>
+          <PaginationLink onClick={() => props.setPage(prePage ?? 1)}>
             <i className="mdi mdi-chevron-left" />
           </PaginationLink>
         </PaginationItem>
@@ -48,7 +48,7 @@ const PaginationBase = (props: IPaginationBase) => {
             </PaginationItem>
           ))}
         <PaginationItem className={`${!hasNextPage ? "disabled" : ""}`}>
-          <PaginationLink href="#" onClick={() => props.setPage(nextPage)}>
+          <PaginationLink href="#" onClick={() => props.setPage(nextPage ?? 1)}>
             <i className="mdi mdi-chevron-right" />
           </PaginationLink>
         </PaginationItem>

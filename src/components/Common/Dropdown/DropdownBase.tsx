@@ -40,7 +40,7 @@ export const DropdownBase = (props: IDropdownBaseProps) => {
         isOpen={isOpen}
         toggle={onToggleDropdown}
         disabled={disabled}
-        className={className}
+        className={`text-nowrap ${className ?? ""}`}
         {...extraProps}
       >
         <DropdownToggle tag="button" className="btn btn-outline-light w-xs">

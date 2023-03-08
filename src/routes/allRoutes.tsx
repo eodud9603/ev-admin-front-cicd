@@ -16,7 +16,6 @@ const userRoutes: Array<RouteProps> = [
     path: "/charger/chargerStation",
     element: <ChargingStation />,
   },
-  { path: "/charger/trouble", element: <Example /> },
   { path: "/charger/trouble", element: <ChargerTrouble /> },
   { path: "/charger/manufacturer", element: <Example /> },
   { path: "/charger/operator", element: <Example /> },
