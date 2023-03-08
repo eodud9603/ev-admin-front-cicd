@@ -34,7 +34,7 @@ const SearchTextInput = (props: ITextInputFilterProps) => {
 
   return (
     <div className={"input-group d-flex align-items-center"}>
-      <Label htmlFor={rest.name} className={"fw-bold m-0 w-xs me-3"}>
+      <Label htmlFor={rest.name} className={"fw-bold m-0 w-xs"}>
         {title}
       </Label>
       <DropdownBase

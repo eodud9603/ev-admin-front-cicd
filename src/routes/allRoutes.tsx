@@ -6,7 +6,9 @@ import { MainDashboard } from "src/pages/Main/main";
 import { mainLoader } from "src/pages/Main/loader/mainLoader";
 import Example from "src/pages/example";
 import ChargingStation from "src/pages/Charger/ChargerStation";
-import { ChargerTrouble } from "src/pages/ChargerTrouble";
+import { ChargerTrouble } from "src/pages/Charger/ChargerTrouble";
+import { ChargerManufacturer } from "src/pages/Charger/ChargerManufacturer";
+import { ChargerOperator } from "src/pages/Charger/ChargerOperator";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -17,8 +19,8 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargingStation />,
   },
   { path: "/charger/trouble", element: <ChargerTrouble /> },
-  { path: "/charger/manufacturer", element: <Example /> },
-  { path: "/charger/operator", element: <Example /> },
+  { path: "/charger/manufacturer", element: <ChargerManufacturer /> },
+  { path: "/charger/operator", element: <ChargerOperator /> },
 ];
 
 const authRoutes: Array<RouteProps> = [
