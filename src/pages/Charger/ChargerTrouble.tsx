@@ -13,6 +13,7 @@ import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGrou
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
+import { TableBase } from "src/components/Common/Table/TableBase";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -168,16 +169,7 @@ export const ChargerTrouble = () => {
               </div>
             </Col>
           </Row>
-          <Table>
-            <thead className={"table-light"}>
-              <tr>
-                {tableHeader.map((item, index) => (
-                  <th key={index}>{item.label}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </Table>
+          <TableBase tableHeader={tableHeader}></TableBase>
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>

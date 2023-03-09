@@ -11,6 +11,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
+import { TableBase } from "src/components/Common/Table/TableBase";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -118,16 +119,7 @@ export const ChargerManufacturer = () => {
               </div>
             </Col>
           </Row>
-          <Table>
-            <thead className={"table-light"}>
-              <tr>
-                {tableHeader.map((item, index) => (
-                  <th key={index}>{item.label}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </Table>
+          <TableBase tableHeader={tableHeader}></TableBase>
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>

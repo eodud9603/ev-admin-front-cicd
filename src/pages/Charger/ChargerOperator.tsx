@@ -136,16 +136,6 @@ export const ChargerOperator = () => {
               </div>
             </Col>
           </Row>
-          {/*<Table>*/}
-          {/*  <thead className={"table-light"}>*/}
-          {/*    <tr>*/}
-          {/*      {tableHeader.map((item, index) => (*/}
-          {/*        <th key={index}>{item.label}</th>*/}
-          {/*      ))}*/}
-          {/*    </tr>*/}
-          {/*  </thead>*/}
-          {/*  <tbody></tbody>*/}
-          {/*</Table>*/}
           <TableBase tableHeader={tableHeader}></TableBase>
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
