@@ -1,5 +1,6 @@
 import React from "react";
 import { Container } from "reactstrap";
+import styled from "styled-components";
 
 interface IContainerProps {
   children?: React.ReactElement | React.ReactElement[];
@@ -16,13 +17,17 @@ const ContainerBase = (props: IContainerProps) => {
   } = props;
 
   return (
-    <Container
+    <CustomContainer
       className={`d-flex flex-column p-0 bg-light bg-opacity-75 ${className}`}
       fluid
     >
       {children}
-    </Container>
+    </CustomContainer>
   );
 };
 
 export default ContainerBase;
+
+const CustomContainer = styled(Container)`
+  overflow-x: hidden;
+`;

@@ -223,76 +223,78 @@ const ChargingStationManagement = () => {
             </div>
           </div>
 
-          <Table>
-            <thead className={"table-light"}>
-              <tr>
-                <th>번호</th>
-                <th>지역</th>
-                <th>구분</th>
-                <th>충전소명</th>
-                <th>충전소ID</th>
-                <th>주소</th>
-                <th>급/완속(기)</th>
-                <th>개방여부</th>
-                <th>철거여부</th>
-                <th>등록일</th>
-              </tr>
-            </thead>
-            <tbody>
-              {chargingStationList.length > 0 ? (
-                chargingStationList.map(
-                  (
-                    {
-                      region,
-                      division,
-                      chargerName,
-                      chargerId,
-                      address,
-                      addressDetail,
-                      fast,
-                      slow,
-                      isOpen,
-                      isClosure,
-                      date,
-                    },
-                    index
-                  ) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{region}</td>
-                      <td>{division}</td>
-                      <td>
-                        <HoverSpan
-                          className={"text-turu"}
-                          onClick={() => {
-                            // TODO: 충전소 상세페이지
-                          }}
-                        >
-                          <u>{chargerName}</u>
-                        </HoverSpan>
-                      </td>
-                      <td>{chargerId}</td>
-                      <td>
-                        {address}, {addressDetail}
-                      </td>
-                      <td>
-                        {fast} / {slow}
-                      </td>
-                      <td>{isOpen ? "완전" : "X"}</td>
-                      <td>{isClosure}</td>
-                      <td>{date}</td>
-                    </tr>
-                  )
-                )
-              ) : (
-                <tr className={"m-10"}>
-                  <td colSpan={10} className={"text-center text"}>
-                    등록된 충전소 정보가 없습니다.
-                  </td>
+          <div className={"table-responsive"}>
+            <Table>
+              <thead className={"table-light"}>
+                <tr>
+                  <th>번호</th>
+                  <th>지역</th>
+                  <th>구분</th>
+                  <th>충전소명</th>
+                  <th>충전소ID</th>
+                  <th>주소</th>
+                  <th>급/완속(기)</th>
+                  <th>개방여부</th>
+                  <th>철거여부</th>
+                  <th>등록일</th>
                 </tr>
-              )}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {chargingStationList.length > 0 ? (
+                  chargingStationList.map(
+                    (
+                      {
+                        region,
+                        division,
+                        chargerName,
+                        chargerId,
+                        address,
+                        addressDetail,
+                        fast,
+                        slow,
+                        isOpen,
+                        isClosure,
+                        date,
+                      },
+                      index
+                    ) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{region}</td>
+                        <td>{division}</td>
+                        <td>
+                          <HoverSpan
+                            className={"text-turu"}
+                            onClick={() => {
+                              // TODO: 충전소 상세페이지
+                            }}
+                          >
+                            <u>{chargerName}</u>
+                          </HoverSpan>
+                        </td>
+                        <td>{chargerId}</td>
+                        <td>
+                          {address}, {addressDetail}
+                        </td>
+                        <td>
+                          {fast} / {slow}
+                        </td>
+                        <td>{isOpen ? "완전" : "X"}</td>
+                        <td>{isClosure}</td>
+                        <td>{date}</td>
+                      </tr>
+                    )
+                  )
+                ) : (
+                  <tr className={"m-10"}>
+                    <td colSpan={10} className={"text-center text"}>
+                      등록된 충전소 정보가 없습니다.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </div>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
