@@ -8,7 +8,7 @@ import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 
 interface ITextInputFilterProps extends ITextInputBaseProps {
   title: string;
-  menuItems: Array<{ label: string; value: string }>;
+  menuItems?: Array<{ label: string; value: string }>;
 
   disabled?: boolean;
   onClickDropdownItem?: (label: string, value: string) => void;
@@ -37,17 +37,17 @@ const SearchTextInput = (props: ITextInputFilterProps) => {
       <Label htmlFor={rest.name} className={"fw-bold m-0 w-xs"}>
         {title}
       </Label>
-      <DropdownBase
-        disabled={disabled}
-        menuItems={menuItems}
-        onClickDropdownItem={onClickDropdownItem}
-      />
-      <div className={"d-flex flex-grow-1"}>
-        <TextInputBase
-          bsSize={"lg"}
-          className={`mx-3 ${className}`}
-          {...rest}
+      {menuItems.length > 0 && (
+        <DropdownBase
+          className={"me-3"}
+          disabled={disabled}
+          menuItems={menuItems}
+          onClickDropdownItem={onClickDropdownItem}
         />
+      )}
+
+      <div className={"d-flex flex-grow-1"}>
+        <TextInputBase bsSize={"lg"} className={`${className}`} {...rest} />
       </div>
       <div>
         <ButtonBase

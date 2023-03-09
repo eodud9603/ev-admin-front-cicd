@@ -14,6 +14,14 @@ import ChargerContract from "src/pages/Charger/ChargerContract";
 import OperatorAccount from "src/pages/Operator/OperatorAccount";
 import OperatorCounselor from "src/pages/Operator/OperatorCounselor";
 import OperatorRole from "src/pages/Operator/OperatorRole";
+import { MemberNormal } from "src/pages/Member/MemberNormal";
+import { MemberWithdraw } from "src/pages/Member/MemberWithdraw";
+import { MemberNormalCard } from "src/pages/Member/MemberNormalCard";
+import { MemberRoamingCard } from "src/pages/Member/MemberRoamingCard";
+import { MemberAuthReject } from "src/pages/Member/MemberAuthReject";
+import { MemberGroup } from "src/pages/Member/MemberGroup";
+import { MemberCorporation } from "src/pages/Member/MemberCorporation";
+import { MemberContract } from "src/pages/Member/MemberContract";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -35,10 +43,14 @@ const userRoutes: Array<RouteProps> = [
   { path: "/charger/manufacturer", element: <ChargerManufacturer /> },
   { path: "/charger/operator", element: <ChargerOperator /> },
 
-  { path: "/member/management", element: <ChargerOperator /> },
-  { path: "/member/withdraw", element: <ChargerOperator /> },
-  { path: "/member/card", element: <ChargerOperator /> },
-  { path: "/member/group", element: <ChargerOperator /> },
+  { path: "/member/normal", element: <MemberNormal /> },
+  { path: "/member/withdraw", element: <MemberWithdraw /> },
+  { path: "/member/card/normal", element: <MemberNormalCard /> },
+  { path: "/member/card/roaming", element: <MemberRoamingCard /> },
+  { path: "/member/reject", element: <MemberAuthReject /> },
+  { path: "/member/group", element: <MemberGroup /> },
+  { path: "/member/corporation", element: <MemberCorporation /> },
+  { path: "/member/contract", element: <MemberContract /> },
 
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },

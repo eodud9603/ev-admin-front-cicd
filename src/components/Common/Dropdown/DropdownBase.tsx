@@ -4,10 +4,12 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
+  Label,
 } from "reactstrap";
 
 interface IDropdownBaseProps {
   disabled?: boolean;
+  label?: string;
   onClickDropdownItem?: (label: string, value: string) => void;
   menuItems: Array<{
     label: string;
@@ -17,8 +19,14 @@ interface IDropdownBaseProps {
   className?: string;
 }
 export const DropdownBase = (props: IDropdownBaseProps) => {
-  const { disabled, onClickDropdownItem, menuItems, className, ...extraProps } =
-    props;
+  const {
+    label,
+    disabled,
+    onClickDropdownItem,
+    menuItems,
+    className,
+    ...extraProps
+  } = props;
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<{
     label: string;
@@ -35,7 +43,8 @@ export const DropdownBase = (props: IDropdownBaseProps) => {
   };
 
   return (
-    <div className="btn-group">
+    <div className="btn-group d-flex align-items-center">
+      {label && <Label className={"fw-bold m-0 w-xs"}>{label}</Label>}
       <Dropdown
         isOpen={isOpen}
         toggle={onToggleDropdown}
