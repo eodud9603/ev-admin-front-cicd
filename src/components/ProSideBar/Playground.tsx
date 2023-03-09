@@ -204,9 +204,7 @@ export const Playground = (props: any) => {
                 <MenuItem component={<Link to={"/charger/charger"} />}>
                   충전기 관리
                 </MenuItem>
-                <MenuItem
-                  component={<Link to={"/charger/chargerStationContract"} />}
-                >
+                <MenuItem component={<Link to={"/charger/contract"} />}>
                   충전소 계약 관리
                 </MenuItem>
                 <MenuItem

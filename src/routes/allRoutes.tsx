@@ -10,7 +10,7 @@ import { ChargerTrouble } from "src/pages/Charger/ChargerTrouble";
 import { ChargerManufacturer } from "src/pages/Charger/ChargerManufacturer";
 import { ChargerOperator } from "src/pages/Charger/ChargerOperator";
 import Charger from "src/pages/Charger/Charger";
-import ChargerStationContract from "src/pages/Charger/ChargerStationContract";
+import ChargerContract from "src/pages/Charger/ChargerContract";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -25,8 +25,8 @@ const userRoutes: Array<RouteProps> = [
     element: <Charger />,
   },
   {
-    path: "/charger/chargerStationContract",
-    element: <ChargerStationContract />,
+    path: "/charger/contract",
+    element: <ChargerContract />,
   },
   { path: "/charger/trouble", element: <ChargerTrouble /> },
   { path: "/charger/manufacturer", element: <ChargerManufacturer /> },

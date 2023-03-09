@@ -33,37 +33,40 @@ const addressList = [
   },
 ];
 
-/* 운영사 필터 */
-const operatorList = [
+/* 계약여부 필터 */
+const contractFilterList = [
   {
     label: "전체",
   },
   {
-    label: "HEV",
+    label: "계약",
   },
   {
-    label: "JEV",
+    label: "해지대기",
+  },
+  {
+    label: "해지",
   },
 ];
 
-/* 철거여부 필터 */
-const demolitionList = [
+/* 사용여부 필터 */
+const useList = [
   {
     label: "전체",
   },
   {
-    label: "철거",
+    label: "사용",
   },
   {
-    label: "철거예정",
+    label: "미사용",
   },
 ];
 
 /* 검색어 필터 */
 const searchList = [
-  { label: "충전소명", value: "1" },
+  { label: "계약장소명", value: "1" },
   { label: "충전소 ID", value: "2" },
-  { label: "주소", value: "3" },
+  { label: "영업업체", value: "3" },
 ];
 
 /* 정렬기준 */
@@ -71,48 +74,51 @@ const sortList = [
   {
     menuItems: [
       { label: "기본", value: "1" },
-      { label: "충전소명", value: "2" },
-      { label: "충전소 ID", value: "3" },
-      { label: "급/완속(기)", value: "4" },
-      { label: "등록일", value: "5" },
+      { label: "계약 체결일", value: "2" },
     ],
   },
 ];
 
 /* 임시 목록 데이터 */
-const chargingStationList = [
+const contractList = [
   {
-    region: "서울",
-    division: "HEV",
-    chargerName: "휴맥스 카플랫 전용 A",
-    chargerId: "KEP0000000020",
-    address: "경기도 성남시 분당구 황새울로 216",
-    addressDetail: " 902호 (수내동, 휴맥스빌리지)",
-    fast: "3",
-    slow: "2",
-    isOpen: "완전",
-    isClosure: "N",
+    contractNum: "######",
+    isUse: "Y",
+    isContract: "계약",
+    contractAddress: "계약장소명",
+    contractAddressDetail: "계약장소 상세",
+    MinistryId: "환경부 충전소ID 노출",
+    AdministrativeAddress: "행정동 주소",
+    AdministrativeAddressDetail: "행정동 주소 상세",
+    salesCompany: "영업업체 정보 노출",
+    managerName: "홍길동",
+    managerTel: "000-0000-0000",
+    term: "YYYY.MM.DD ~ YYYY.MM.DD",
+    contractDate: "YYYY.MM.DD",
     date: "YYYY.MM.DD",
   },
   {
-    region: "서울",
-    division: "HEV",
-    chargerName: "휴맥스 카플랫 전용 A",
-    chargerId: "KEP0000000020",
-    address: "경기도 성남시 분당구 황새울로 216",
-    addressDetail: " 902호 (수내동, 휴맥스빌리지)",
-    fast: "3",
-    slow: "2",
-    isOpen: "완전",
-    isClosure: "N",
+    contractNum: "######",
+    isUse: "N",
+    isContract: "계약",
+    contractAddress: "계약장소명",
+    contractAddressDetail: "계약장소 상세",
+    MinistryId: "환경부 충전소ID 노출",
+    AdministrativeAddress: "행정동 주소",
+    AdministrativeAddressDetail: "행정동 주소 상세",
+    salesCompany: "영업업체 정보 노출",
+    managerName: "홍길동",
+    managerTel: "000-0000-0000",
+    term: "YYYY.MM.DD ~ YYYY.MM.DD",
+    contractDate: "YYYY.MM.DD",
     date: "YYYY.MM.DD",
   },
 ];
 
-const ChargingStationManagement = () => {
+const ChargerContract = () => {
   const [tabList, setTabList] = useState([
     { label: "공지사항" },
-    { label: "충전소 관리" },
+    { label: "충전소 계약 관리" },
   ]);
   const [text, setText] = useState("");
   const [selectedIndex, setSelectedIndex] = useState("0");
@@ -154,10 +160,10 @@ const ChargingStationManagement = () => {
         <BreadcrumbBase
           list={[
             { label: "홈", href: "" },
-            { label: "충전소 및 충전기 관리", href: "" },
-            { label: "충전소 관리", href: "" },
+            { label: "충전소 및 충전 관리", href: "" },
+            { label: "충전소 계약 관리", href: "" },
           ]}
-          title={"충전소 관리"}
+          title={"충전소 계약 관리"}
         />
 
         <SearchSection className={"py-4 border-top border-bottom"}>
@@ -171,9 +177,9 @@ const ChargingStationManagement = () => {
             </Col>
             <Col md={5}>
               <RadioGroup
-                title={"운영사"}
-                name={"operatorGroup"}
-                list={operatorList}
+                title={"계약여부"}
+                name={"contractGroup"}
+                list={contractFilterList}
               />
             </Col>
           </Row>
@@ -182,17 +188,14 @@ const ChargingStationManagement = () => {
               <SearchTextInput
                 title={"검색어"}
                 name={"searchText"}
+                placeholder={"계약장소명을 입력해주세요."}
                 menuItems={searchList}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
               />
             </Col>
             <Col md={5}>
-              <RadioGroup
-                title={"철거여부"}
-                name={"demolitionGroup"}
-                list={demolitionList}
-              />
+              <RadioGroup title={"사용여부"} name={"useGroup"} list={useList} />
             </Col>
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
@@ -211,11 +214,8 @@ const ChargingStationManagement = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총{" "}
-              <span className={"text-turu"}>
-                {chargingStationList.length}개
-              </span>
-              의 충전소 정보가 있습니다.
+              총 <span className={"text-turu"}>{contractList.length}개</span>의
+              충전소 정보가 있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
@@ -233,40 +233,47 @@ const ChargingStationManagement = () => {
               <thead className={"table-light align-middle"}>
                 <tr>
                   <th>번호</th>
-                  <th>지역</th>
-                  <th>구분</th>
-                  <th>충전소명</th>
-                  <th>충전소ID</th>
-                  <th>주소</th>
-                  <th>급/완속(기)</th>
-                  <th>개방여부</th>
-                  <th>철거여부</th>
+                  <th>계약번호</th>
+                  <th>사용여부</th>
+                  <th>계약여부</th>
+                  <th>계약장소명</th>
+                  <th>환경부 충전소ID</th>
+                  <th>행정동 주소</th>
+                  <th>영업업체</th>
+                  <th>장소 담당자명</th>
+                  <th>장소 담당자연락처</th>
+                  <th>계약기간</th>
+                  <th>계약체결일</th>
                   <th>등록일</th>
                 </tr>
               </thead>
               <tbody>
-                {chargingStationList.length > 0 ? (
-                  chargingStationList.map(
+                {contractList.length > 0 ? (
+                  contractList.map(
                     (
                       {
-                        region,
-                        division,
-                        chargerName,
-                        chargerId,
-                        address,
-                        addressDetail,
-                        fast,
-                        slow,
-                        isOpen,
-                        isClosure,
+                        contractNum,
+                        isUse,
+                        isContract,
+                        contractAddress,
+                        contractAddressDetail,
+                        MinistryId,
+                        AdministrativeAddress,
+                        AdministrativeAddressDetail,
+                        salesCompany,
+                        managerName,
+                        managerTel,
+                        term,
+                        contractDate,
                         date,
                       },
                       index
                     ) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>{region}</td>
-                        <td>{division}</td>
+                        <td>{contractNum}</td>
+                        <td>{isUse === "Y" ? "사용" : "미사용"}</td>
+                        <td>{isContract}</td>
                         <td>
                           <HoverSpan
                             className={"text-turu"}
@@ -274,26 +281,30 @@ const ChargingStationManagement = () => {
                               // TODO: 충전소 상세페이지
                             }}
                           >
-                            <u>{chargerName}</u>
+                            <u>
+                              {contractAddress}, {contractAddressDetail}
+                            </u>
                           </HoverSpan>
                         </td>
-                        <td>{chargerId}</td>
+                        <td>{MinistryId}</td>
                         <td>
-                          {address}, {addressDetail}
+                          {AdministrativeAddress}, {AdministrativeAddressDetail}
                         </td>
+                        <td>{salesCompany}</td>
+                        <td>{managerName}</td>
                         <td>
-                          {fast} / {slow}
+                          <p>{managerTel}</p>
                         </td>
-                        <td>{isOpen ? "완전" : "X"}</td>
-                        <td>{isClosure}</td>
+                        <td>{term}</td>
+                        <td>{contractDate}</td>
                         <td>{date}</td>
                       </tr>
                     )
                   )
                 ) : (
                   <tr className={"m-10"}>
-                    <td colSpan={10} className={"text-center text"}>
-                      등록된 충전소 정보가 없습니다.
+                    <td colSpan={16} className={"text-center text"}>
+                      등록된 충전소 계약 정보가 없습니다.
                     </td>
                   </tr>
                 )}
@@ -308,7 +319,7 @@ const ChargingStationManagement = () => {
   );
 };
 
-export default ChargingStationManagement;
+export default ChargerContract;
 
 const SearchSection = styled.section``;
 

@@ -122,6 +122,11 @@ const Charger = () => {
     const deleteIndex = Number(e.currentTarget.value);
     tempList.splice(deleteIndex, 1);
 
+    const isExistTab = tempList[Number(selectedIndex)];
+    if (!isExistTab) {
+      setSelectedIndex(`${tempList.length - 1}`);
+    }
+
     setTabList(tempList);
   };
 
@@ -214,8 +219,8 @@ const Charger = () => {
           </div>
 
           <div className={"table-responsive"}>
-            <Table>
-              <thead className={"table-light"}>
+            <Table className={"align-middle"}>
+              <thead className={"table-light align-middle"}>
                 <tr>
                   <th>번호</th>
                   <th>지역</th>
