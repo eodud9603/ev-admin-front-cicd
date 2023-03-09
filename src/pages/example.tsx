@@ -14,6 +14,7 @@ import SearchTextInput from "src/components/Common/Filter/component/SearchTextIn
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
+import ModalBase from "src/components/Common/Modal/ModalBase";
 
 const Example = () => {
   const [text, setText] = useState("");
@@ -25,6 +26,7 @@ const Example = () => {
     { label: "H:휴맥스5", value: "5" },
   ];
   const [selected, setSelected] = useState("0");
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <ContainerBase>
@@ -108,7 +110,20 @@ const Example = () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
+        <ButtonBase
+          label={"modal open"}
+          className={"width-120"}
+          outline={true}
+          color={"turu"}
+          onClick={() => setModalVisible(true)}
+        />
       </BodyBase>
+
+      <ModalBase
+        isOpen={modalVisible}
+        onClose={() => setModalVisible((prev) => !prev)}
+        title={"권한 등록"}
+      />
     </ContainerBase>
   );
 };
