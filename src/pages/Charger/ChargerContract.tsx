@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col, Row, Table } from "reactstrap";
+import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
@@ -11,6 +11,7 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
+import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 
 /* 목록 표시 개수 */
@@ -77,6 +78,24 @@ const sortList = [
       { label: "계약 체결일", value: "2" },
     ],
   },
+];
+
+/* 목록 헤더 */
+const tableHeader = [
+  { label: "번호" },
+  { label: "계약번호" },
+  { label: "사용여부" },
+  { label: "계약여부" },
+  { label: "계약장소명" },
+  { label: "환경부 충전소ID" },
+  { label: "행정동 주소" },
+  { label: "영업업체" },
+  { label: "장소 담당자명" },
+  { label: "장소 담당자연락처" },
+  { label: "계약기간" },
+  { label: "최종 연결" },
+  { label: "계약체결일" },
+  { label: "등록일" },
 ];
 
 /* 임시 목록 데이터 */
@@ -166,7 +185,7 @@ const ChargerContract = () => {
           title={"충전소 계약 관리"}
         />
 
-        <SearchSection className={"py-4 border-top border-bottom"}>
+        <section className={"py-4 border-top border-bottom"}>
           <Row className={"d-flex align-items-center"}>
             <Col md={7}>
               <DropboxGroup
@@ -207,9 +226,9 @@ const ChargerContract = () => {
               />
             </Col>
           </Row>
-        </SearchSection>
+        </section>
 
-        <ListSection className={"py-4"}>
+        <section className={"py-4"}>
           <div
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
@@ -229,25 +248,8 @@ const ChargerContract = () => {
           </div>
 
           <div className={"table-responsive"}>
-            <Table className={"align-middle"}>
-              <thead className={"table-light align-middle"}>
-                <tr>
-                  <th>번호</th>
-                  <th>계약번호</th>
-                  <th>사용여부</th>
-                  <th>계약여부</th>
-                  <th>계약장소명</th>
-                  <th>환경부 충전소ID</th>
-                  <th>행정동 주소</th>
-                  <th>영업업체</th>
-                  <th>장소 담당자명</th>
-                  <th>장소 담당자연락처</th>
-                  <th>계약기간</th>
-                  <th>계약체결일</th>
-                  <th>등록일</th>
-                </tr>
-              </thead>
-              <tbody>
+            <TableBase tableHeader={tableHeader}>
+              <>
                 {contractList.length > 0 ? (
                   contractList.map(
                     (
@@ -308,22 +310,18 @@ const ChargerContract = () => {
                     </td>
                   </tr>
                 )}
-              </tbody>
-            </Table>
+              </>
+            </TableBase>
           </div>
 
           <PaginationBase setPage={setPage} data={{}} />
-        </ListSection>
+        </section>
       </BodyBase>
     </ContainerBase>
   );
 };
 
 export default ChargerContract;
-
-const SearchSection = styled.section``;
-
-const ListSection = styled.section``;
 
 const HoverSpan = styled.span`
   :hover {
