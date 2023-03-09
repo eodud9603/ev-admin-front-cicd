@@ -34,7 +34,7 @@ const ModalBase = (props: IModalBaseProps) => {
     children,
     /* Optional */
     size = "md",
-    title = "title",
+    title = "",
     headerClassName = "",
     body,
     footer,
