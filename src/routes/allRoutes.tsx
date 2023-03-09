@@ -9,7 +9,7 @@ import ChargingStation from "src/pages/Charger/ChargerStation";
 import { ChargerTrouble } from "src/pages/Charger/ChargerTrouble";
 import { ChargerManufacturer } from "src/pages/Charger/ChargerManufacturer";
 import { ChargerOperator } from "src/pages/Charger/ChargerOperator";
-import Charger from "src/pages/Charger/\bCharger";
+import Charger from "src/pages/Charger/Charger";
 import ChargerStationContract from "src/pages/Charger/ChargerStationContract";
 
 const userRoutes: Array<RouteProps> = [
