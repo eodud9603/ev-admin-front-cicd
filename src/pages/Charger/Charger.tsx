@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col, Row, Table } from "reactstrap";
+import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
@@ -11,6 +11,7 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
+import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 
 /* 목록 표시 개수 */
@@ -77,6 +78,26 @@ const sortList = [
       { label: "등록일", value: "5" },
     ],
   },
+];
+
+/* 목록 헤더 */
+const tableHeader = [
+  { label: "번호" },
+  { label: "지역" },
+  { label: "구분" },
+  { label: "충전소명" },
+  { label: "충전소ID" },
+  { label: "충전기 번호" },
+  { label: "급/완속" },
+  { label: "커넥터" },
+  { label: "충전상태" },
+  { label: "통신" },
+  { label: "충전시작" },
+  { label: "최종 연결" },
+  { label: "최종 충전 종료" },
+  { label: "철거여부" },
+  { label: "자산번호" },
+  { label: "등록일" },
 ];
 
 /* 임시 목록 데이터 */
@@ -219,28 +240,8 @@ const Charger = () => {
           </div>
 
           <div className={"table-responsive"}>
-            <Table className={"align-middle"}>
-              <thead className={"table-light align-middle"}>
-                <tr>
-                  <th>번호</th>
-                  <th>지역</th>
-                  <th>구분</th>
-                  <th>충전소명</th>
-                  <th>충전소ID</th>
-                  <th>충전기 번호</th>
-                  <th>급/완속</th>
-                  <th>커넥터</th>
-                  <th>충전상태</th>
-                  <th>통신</th>
-                  <th>충전시작</th>
-                  <th>최종 연결</th>
-                  <th>최종 충전 종료</th>
-                  <th>철거여부</th>
-                  <th>자산번호</th>
-                  <th>등록일</th>
-                </tr>
-              </thead>
-              <tbody>
+            <TableBase tableHeader={tableHeader}>
+              <>
                 {chargerList.length > 0 ? (
                   chargerList.map(
                     (
@@ -307,8 +308,8 @@ const Charger = () => {
                     </td>
                   </tr>
                 )}
-              </tbody>
-            </Table>
+              </>
+            </TableBase>
           </div>
 
           <PaginationBase setPage={setPage} data={{}} />

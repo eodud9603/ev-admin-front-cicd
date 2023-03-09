@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col, Row, Table } from "reactstrap";
+import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
@@ -11,6 +11,7 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
+import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 
 /* 목록 표시 개수 */
@@ -77,6 +78,20 @@ const sortList = [
       { label: "등록일", value: "5" },
     ],
   },
+];
+
+/* 목록 헤더 */
+const tableHeader = [
+  { label: "번호" },
+  { label: "지역" },
+  { label: "구분" },
+  { label: "충전소명" },
+  { label: "충전소ID" },
+  { label: "주소" },
+  { label: "급/완속(기)" },
+  { label: "개방여부" },
+  { label: "철거여부" },
+  { label: "등록일" },
 ];
 
 /* 임시 목록 데이터 */
@@ -229,22 +244,8 @@ const ChargingStationManagement = () => {
           </div>
 
           <div className={"table-responsive"}>
-            <Table className={"align-middle"}>
-              <thead className={"table-light align-middle"}>
-                <tr>
-                  <th>번호</th>
-                  <th>지역</th>
-                  <th>구분</th>
-                  <th>충전소명</th>
-                  <th>충전소ID</th>
-                  <th>주소</th>
-                  <th>급/완속(기)</th>
-                  <th>개방여부</th>
-                  <th>철거여부</th>
-                  <th>등록일</th>
-                </tr>
-              </thead>
-              <tbody>
+            <TableBase tableHeader={tableHeader}>
+              <>
                 {chargingStationList.length > 0 ? (
                   chargingStationList.map(
                     (
@@ -297,8 +298,8 @@ const ChargingStationManagement = () => {
                     </td>
                   </tr>
                 )}
-              </tbody>
-            </Table>
+              </>
+            </TableBase>
           </div>
 
           <PaginationBase setPage={setPage} data={{}} />
