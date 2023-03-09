@@ -11,6 +11,9 @@ import { ChargerManufacturer } from "src/pages/Charger/ChargerManufacturer";
 import { ChargerOperator } from "src/pages/Charger/ChargerOperator";
 import Charger from "src/pages/Charger/Charger";
 import ChargerContract from "src/pages/Charger/ChargerContract";
+import OperatorAccount from "src/pages/Operator/OperatorAccount";
+import OperatorCounselor from "src/pages/Operator/OperatorCounselor";
+import OperatorRole from "src/pages/Operator/OperatorRole";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -36,6 +39,10 @@ const userRoutes: Array<RouteProps> = [
   { path: "/member/withdraw", element: <ChargerOperator /> },
   { path: "/member/card", element: <ChargerOperator /> },
   { path: "/member/group", element: <ChargerOperator /> },
+
+  { path: "/operator/account", element: <OperatorAccount /> },
+  { path: "/operator/counselor", element: <OperatorCounselor /> },
+  { path: "/operator/role", element: <OperatorRole /> },
   // { path: "/member/card", element: <ChargerOperator /> },
   // { path: "/member/card", element: <ChargerOperator /> },
 ];

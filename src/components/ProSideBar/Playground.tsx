@@ -230,6 +230,17 @@ export const Playground = (props: any) => {
                 <MenuItem>법인 관리</MenuItem>
                 <MenuItem>법인 계약 관리</MenuItem>
               </SubMenu>
+              <SubMenu label="운영자 관리" icon={<Global />}>
+                <MenuItem component={<Link to={"/operator/account"} />}>
+                  계정 관리
+                </MenuItem>
+                <MenuItem component={<Link to={"/operator/counselor"} />}>
+                  상담사 계정 관리
+                </MenuItem>
+                <MenuItem component={<Link to={"/operator/role"} />}>
+                  권한 관리
+                </MenuItem>
+              </SubMenu>
               <SubMenu label="Theme" icon={<InkBottle />}>
                 <MenuItem> Dark</MenuItem>
                 <MenuItem> Light</MenuItem>
