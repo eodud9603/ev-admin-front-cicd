@@ -21,6 +21,13 @@ const userRoutes: Array<RouteProps> = [
   { path: "/charger/trouble", element: <ChargerTrouble /> },
   { path: "/charger/manufacturer", element: <ChargerManufacturer /> },
   { path: "/charger/operator", element: <ChargerOperator /> },
+
+  { path: "/member/management", element: <ChargerOperator /> },
+  { path: "/member/withdraw", element: <ChargerOperator /> },
+  { path: "/member/card", element: <ChargerOperator /> },
+  { path: "/member/group", element: <ChargerOperator /> },
+  // { path: "/member/card", element: <ChargerOperator /> },
+  // { path: "/member/card", element: <ChargerOperator /> },
 ];
 
 const authRoutes: Array<RouteProps> = [

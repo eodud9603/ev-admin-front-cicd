@@ -120,8 +120,8 @@ export const ChargerOperator = () => {
           <Row className={"mb-4"}>
             <Col>
               <AmountInfo className={"text-size-13 fw-bold"}>
-                총 <AmountInfo className={"text-turu"}>0건</AmountInfo>의 충전기
-                제조사 정보가 있습니다.
+                총 <AmountInfo className={"text-turu"}>0건</AmountInfo>의 서비스
+                운영사 정보가 있습니다.
               </AmountInfo>
             </Col>
             <Col className={"d-flex justify-content-end"}>

@@ -220,9 +220,15 @@ export const Playground = (props: any) => {
                   서비스 운영사 관리
                 </MenuItem>
               </SubMenu>
-              <SubMenu label="Maps" icon={<Global />}>
-                <MenuItem> Google maps</MenuItem>
-                <MenuItem> Open street maps</MenuItem>
+              <SubMenu label="회원 및 카드 관리" icon={<Global />}>
+                <MenuItem>회원 관리</MenuItem>
+                <MenuItem>탈퇴회원 관리</MenuItem>
+                <MenuItem>회원카드 관리</MenuItem>
+                <MenuItem>로밍카드 관리</MenuItem>
+                <MenuItem>인증거절 내역</MenuItem>
+                <MenuItem>그룹 관리</MenuItem>
+                <MenuItem>법인 관리</MenuItem>
+                <MenuItem>법인 계약 관리</MenuItem>
               </SubMenu>
               <SubMenu label="Theme" icon={<InkBottle />}>
                 <MenuItem> Dark</MenuItem>
