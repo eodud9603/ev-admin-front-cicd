@@ -25,6 +25,7 @@ import { MemberContract } from "src/pages/Member/MemberContract";
 import { CounselingCustomer } from "src/pages/Counseling/CounselingCustomer";
 import OperateAnnouncement from "src/pages/Operate/OperateAnnouncement";
 import { CounselingHistory } from "src/pages/Counseling/CounselingHistory";
+import { CounselingManagement } from "src/pages/Counseling/CounselingManagement";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -65,7 +66,7 @@ const userRoutes: Array<RouteProps> = [
 
   { path: "/counseling/customer", element: <CounselingCustomer /> },
   { path: "/counseling/history", element: <CounselingHistory /> },
-  { path: "/counseling/management", element: <CounselingCustomer /> },
+  { path: "/counseling/management", element: <CounselingManagement /> },
 ];
 
 const authRoutes: Array<RouteProps> = [

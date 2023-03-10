@@ -48,12 +48,17 @@ const memberRadio = [{ label: "전체" }, { label: "회원" }, { label: "비회�
 
 const tableHeader = [
   { label: "번호", sort: () => {} },
-  { label: "회원소속" },
-  { label: "회원등급" },
+  { label: "상담유형" },
+  { label: "보상구분" },
+  { label: "회원여부" },
+  { label: "회원명" },
   { label: "회원 ID" },
-  { label: "탈퇴구분" },
-  { label: "탈퇴일시" },
-  { label: "이용내역" },
+  { label: "상담원명" },
+  { label: "접수일" },
+  { label: "처리상태" },
+  { label: "관리자명" },
+  { label: "관리자 처리상태" },
+  { label: "처리일시" },
 ];
 
 type TabType = "ALL" | "JOIN" | "USE" | "DISORDER" | "CHARGER" | "FEE" | "ETC";
