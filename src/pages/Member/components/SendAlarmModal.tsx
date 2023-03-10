@@ -4,11 +4,13 @@ import { Label } from "reactstrap";
 import styled from "styled-components";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
+import { DetailDropdownRow } from "src/components/Common/DetailContentRow/DetailDropdownRow";
 
 const sendTypeRadio = [
   { label: "카카오 알림톡", value: "1" },
   { label: "SMS", value: "1" },
 ];
+
 interface ISendAlarmModal {
   isOpen: boolean;
   onClose: () => void;
@@ -35,6 +37,20 @@ export const SendAlarmModal = (props: ISendAlarmModal) => {
           <RadioGroup name={"sendType"} list={sendTypeRadio} />
         </div>
         <DetailTextInputRow rows={[{ title: "답변내용", type: "textarea" }]} />
+        <DetailDropdownRow
+          rows={[
+            {
+              title: "분류",
+              titleWidthRatio: 2,
+              dropdownItems: [
+                {
+                  disabled: false,
+                  menuItems: [{ label: "서버 작업 안내", value: "1" }],
+                },
+              ],
+            },
+          ]}
+        />
       </ModalContainer>
     </ModalBase>
   );

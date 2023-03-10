@@ -6,6 +6,7 @@ interface IDropboxGroupProps {
   label?: string;
   className?: string;
   dropdownItems: Array<{
+    disabled?: boolean;
     menuItems: Array<{
       label: string;
       value: string;
