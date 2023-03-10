@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
+import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
+import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 
 const roleTabList = [
@@ -28,6 +30,14 @@ const roleTabList = [
     label: "관계사",
     value: "5",
   },
+];
+
+/* 목록 헤더 */
+const tableHeader = [
+  { label: "1차" },
+  { label: "2차" },
+  { label: "편집" },
+  { label: "조회" },
 ];
 
 /* 임시 목록 데이터 */
@@ -214,7 +224,21 @@ const OperatorRole = () => {
           </div>
         </RoleSection>
 
-        <ListSection></ListSection>
+        <ListSection>
+          {/* TODO: 펼치기/숨기기 애니메이션 작업 필요 */}
+          <TableBase tableClassName={"mb-5"} tableHeader={tableHeader}>
+            <>
+              {roleList.map((role, index) => (
+                <FirstRole key={index} index={index} {...role} />
+              ))}
+            </>
+          </TableBase>
+
+          <div className={"d-flex flex-row justify-content-center gap-4"}>
+            <ButtonBase className={"width-110"} outline label={"목록"} />
+            <ButtonBase className={"width-110"} color={"turu"} label={"수정"} />
+          </div>
+        </ListSection>
       </BodyBase>
     </ContainerBase>
   );
@@ -224,3 +248,111 @@ export default OperatorRole;
 
 const RoleSection = styled.section``;
 const ListSection = styled.section``;
+
+const DropArea = styled.div`
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const Icon = styled.i<{ isOpen: boolean }>`
+  transition: all ease 0.5s;
+  transform: rotate(${({ isOpen }) => (isOpen ? 180 : 360)}deg);
+`;
+
+const DetailTr = styled.tr`
+  overflow: hidden;
+  max-height: 0;
+  transition: all 10s ease;
+`;
+
+/* TODO: 별도 컴포넌트 빼내기 */
+const FirstRole = (props: {
+  index: number;
+  name: string;
+  detailList: { name: string; read: boolean; write: boolean }[];
+  write: boolean;
+  read: boolean;
+}) => {
+  const { index, name, detailList } = props;
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onChangeOpenHandler = () => {
+    if (detailList.length > 0) {
+      setIsOpen((prev) => !prev);
+    }
+  };
+
+  return (
+    <>
+      <tr>
+        <td
+          className={"align-top"}
+          rowSpan={isOpen ? detailList.length + 1 : 1}
+        >
+          <DropArea
+            className={
+              "d-flex flex-row align-items-center justify-content-between"
+            }
+            onClick={onChangeOpenHandler}
+          >
+            <span>{name}</span>
+            {/* 2차 항목이 있는 경우 */}
+            {detailList.length > 0 && (
+              <Icon isOpen={isOpen} className={"bx bx-down-arrow-alt"} />
+            )}
+          </DropArea>
+        </td>
+        <td>{detailList.length > 0 && "전체"}</td>
+        <td>
+          <CheckBoxBase
+            label={""}
+            name={`write-${name}-${index}`}
+            checked={true}
+            disabled={true}
+          />
+        </td>
+        <td>
+          <CheckBoxBase
+            label={""}
+            name={`read-${name}-${index}`}
+            checked={true}
+            disabled={true}
+          />
+        </td>
+      </tr>
+      {isOpen &&
+        (detailList ?? []).map((detail, detailIndex) => (
+          <DetailRole key={detailIndex} index={detailIndex} {...detail} />
+        ))}
+    </>
+  );
+};
+
+/* TODO: 별도 컴포넌트 빼내기 */
+const DetailRole = (props: { index: number; name: string }) => {
+  const { index, name } = props;
+
+  return (
+    <DetailTr>
+      <td>{name}</td>
+      <td>
+        <CheckBoxBase
+          label={""}
+          name={`write-${name}-${index}`}
+          checked={true}
+          disabled={true}
+        />
+      </td>
+      <td>
+        <CheckBoxBase
+          label={""}
+          name={`read-${name}-${index}`}
+          checked={true}
+          disabled={true}
+        />
+      </td>
+    </DetailTr>
+  );
+};
