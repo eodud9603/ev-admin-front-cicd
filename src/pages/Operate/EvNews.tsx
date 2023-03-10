@@ -20,19 +20,16 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 
-/* 진행 여부 필터 */
-const progressList = [
+/* 삭제 여부 필터 */
+const deleteList = [
   {
     label: "전체",
   },
   {
-    label: "예정",
+    label: "Y",
   },
   {
-    label: "진행",
-  },
-  {
-    label: "종료",
+    label: "N",
   },
 ];
 
@@ -64,12 +61,11 @@ const tableHeader = [
   { label: "선택" },
   { label: "번호", sort: () => {} },
   { label: "제목" },
-  { label: "이벤트 기간", sort: () => {} },
   { label: "업로드 대상", sort: () => {} },
   { label: "작성자", sort: () => {} },
   { label: "조회수", sort: () => {} },
   { label: "작성일", sort: () => {} },
-  { label: "진행 여부", sort: () => {} },
+  { label: "삭제 여부", sort: () => {} },
 ];
 
 /* 목록 표시 개수 */
@@ -83,21 +79,19 @@ const countList = [
 const noticeList: Omit<IListItemProps, "index">[] = [
   {
     title: "개인정보 처리방침 변경 안내",
-    eventDate: "2022.01.07 ~ 2022.02.06",
     upload: "전체",
     writer: "홍길동",
     view: 15,
     date: "2022.01.07",
-    progress: "예정",
+    isDelete: "Y",
   },
   {
     title: "개인정보 처리방침 변경 안내",
-    eventDate: "2022.01.07 ~ 2022.02.06",
     upload: "IOS",
     writer: "홍길동",
     view: 10,
     date: "2022.01.07",
-    progress: "진행",
+    isDelete: "N",
   },
 ];
 
@@ -109,16 +103,15 @@ interface IListRefProps {
 interface IListItemProps {
   index: number;
   title: string;
-  eventDate: string;
   upload: string;
   writer: string;
   view: number;
   date: string;
-  progress: string;
+  isDelete: "Y" | "N";
 }
 
-const Event = () => {
-  const [tabList, setTabList] = useState([{ label: "이벤트" }]);
+const EvNews = () => {
+  const [tabList, setTabList] = useState([{ label: "EV 뉴스" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
@@ -174,9 +167,9 @@ const Event = () => {
           list={[
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
-            { label: "이벤트", href: "" },
+            { label: "EV 뉴스", href: "" },
           ]}
-          title={"이벤트"}
+          title={"EV 뉴스"}
         />
 
         <SearchSection className={"pt-2 pb-4 border-top border-bottom"}>
@@ -186,9 +179,9 @@ const Event = () => {
             </Col>
             <Col md={4}>
               <RadioGroup
-                title={"진행 여부"}
-                name={"progressGroup"}
-                list={progressList}
+                title={"삭제 여부"}
+                name={"deleteGroup"}
+                list={deleteList}
               />
             </Col>
             <Col md={4}>
@@ -198,12 +191,6 @@ const Event = () => {
                 list={uploadList}
               />
             </Col>
-          </Row>
-          <Row className={"mt-3 d-flex align-items-center"}>
-            <Col md={4}>
-              <DateGroup className={"mb-0"} label={"이벤트 기간"} />
-            </Col>
-            <Col md={8} />
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col md={7}>
@@ -226,7 +213,7 @@ const Event = () => {
           >
             <span className={"font-size-13 fw-bold"}>
               총 <span className={"text-turu"}>{noticeList.length}개</span>의
-              이벤트가 있습니다.
+              뉴스가 있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
@@ -260,8 +247,8 @@ const Event = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={9} className={"py-5 text-center text"}>
-                      등록된 이벤트가 없습니다.
+                    <td colSpan={8} className={"py-5 text-center text"}>
+                      등록된 뉴스가 없습니다.
                     </td>
                   </tr>
                 )}
@@ -276,14 +263,13 @@ const Event = () => {
   );
 };
 
-export default Event;
+export default EvNews;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
 
 const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
-  const { index, title, eventDate, upload, writer, view, date, progress } =
-    props;
+  const { index, title, upload, writer, view, date, isDelete } = props;
   const [checked, setChecked] = useState(false);
 
   const onChangeCheck = () => {
@@ -312,12 +298,11 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
       </td>
       <td>{index + 1}</td>
       <td>{title}</td>
-      <td>{eventDate}</td>
       <td>{upload}</td>
       <td>{writer}</td>
       <td>{view}</td>
       <td>{date}</td>
-      <td>{progress}</td>
+      <td>{isDelete}</td>
     </tr>
   );
 });

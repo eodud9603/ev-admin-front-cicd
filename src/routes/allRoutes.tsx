@@ -28,6 +28,7 @@ import OperateNotice from "src/pages/Operate/OperateNotice";
 import CorporateNotice from "src/pages/Operate/CorporateNotice";
 import CorporateQnA from "src/pages/Operate/CorporateQnA";
 import Event from "src/pages/Operate/Event";
+import EvNews from "src/pages/Operate/EvNews";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -64,10 +65,12 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/corporateNotice", element: <CorporateNotice /> },
   { path: "/operate/corporateQna", element: <CorporateQnA /> },
   { path: "/operate/event", element: <Event /> },
+  { path: "/operate/evNews", element: <EvNews /> },
 
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },
   { path: "/operator/role", element: <OperatorRole /> },
+
   // { path: "/member/card", element: <ChargerOperator /> },
   // { path: "/member/card", element: <ChargerOperator /> },
 ];
