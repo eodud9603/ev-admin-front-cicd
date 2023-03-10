@@ -11,6 +11,8 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
+import { DetailTextRow } from "src/components/Common/DetailContentRow/DetailTextRow";
+import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
 
 const MemberHistoryTableHeader = [
   { label: "번호" },
@@ -27,56 +29,6 @@ const counselingDropdown = [
   { menuItems: [{ label: "선택", value: "1" }] },
 ];
 const inoutRadio = [{ label: "전체" }, { label: "HEV" }, { label: "JEV" }];
-interface IMemberInfoRow {
-  rows: Array<{ title: string; content: string }>;
-}
-const MemberInfoRow = (props: IMemberInfoRow) => {
-  const { rows } = props;
-
-  return (
-    <Row className={"border border-0 border-top border-2 border-light mx-1"}>
-      {rows.map((item, index) => (
-        <Col key={index} sm={rows.length > 1 && 6} className={"d-flex p-0"}>
-          <Col
-            xs={rows.length > 1 && 6 ? 4 : 2}
-            className={"fw-bold bg-light bg-opacity-10 p-3 "}
-          >
-            {item.title}
-          </Col>
-          <Col className={"bg-white p-3"}>{item.content}</Col>
-        </Col>
-      ))}
-    </Row>
-  );
-};
-
-interface ITextBoxRow {
-  title: string;
-  content: string;
-  disabled?: boolean;
-  titleWidthRatio?: number;
-}
-const TextBoxRow = (props: ITextBoxRow) => {
-  const { title, content, disabled, titleWidthRatio } = props;
-
-  return (
-    <Row className={"border border-0 border-top border-2 border-light mx-1"}>
-      <Col className={"d-flex p-0"}>
-        <Col
-          xs={titleWidthRatio ?? 4}
-          className={
-            "d-flex align-items-center fw-bold bg-light bg-opacity-10 p-3"
-          }
-        >
-          {title}
-        </Col>
-        <Col className={"bg-white p-3"}>
-          <Input type={"textarea"} />
-        </Col>
-      </Col>
-    </Row>
-  );
-};
 export const CounselingCustomer = () => {
   const [selected, setSelected] = useState("0");
 
@@ -141,37 +93,37 @@ export const CounselingCustomer = () => {
                   <ButtonBase label={"비밀번호 초기화"} outline={true} />
                 </div>
               </div>
-              <MemberInfoRow
+              <DetailTextRow
                 rows={[
                   { title: "이름", content: "홍길동" },
                   { title: "회원 ID", content: "hong" },
                 ]}
               />
-              <MemberInfoRow
+              <DetailTextRow
                 rows={[
                   { title: "생년월일", content: "0000.00.00" },
                   { title: "성별", content: "남성" },
                 ]}
               />
-              <MemberInfoRow
+              <DetailTextRow
                 rows={[
                   { title: "휴대전화", content: "000-0000-0000" },
                   { title: "회원등급", content: "정회원" },
                 ]}
               />
-              <MemberInfoRow
+              <DetailTextRow
                 rows={[{ title: "이메일", content: "Hh@humax.co.kr" }]}
               />
-              <MemberInfoRow
+              <DetailTextRow
                 rows={[{ title: "회원카드번호", content: "0000000000" }]}
               />
-              <MemberInfoRow
+              <DetailTextRow
                 rows={[
                   { title: "그룹정보", content: "휴맥스" },
                   { title: "사원번호", content: "111111" },
                 ]}
               />
-              <MemberInfoRow
+              <DetailTextRow
                 rows={[{ title: "주소", content: "경기도 성남시" }]}
               />
             </Col>
@@ -193,8 +145,12 @@ export const CounselingCustomer = () => {
                 </div>
               </div>
               <TableBase tableHeader={MemberHistoryTableHeader} />
-              <TextBoxRow title={"질문내용"} content={""} />
-              <TextBoxRow title={"답변내용"} content={""} />
+              <DetailTextInputRow
+                rows={[{ title: "질문내용", type: "textarea" }]}
+              />
+              <DetailTextInputRow
+                rows={[{ title: "답변내용", type: "textarea" }]}
+              />
             </Col>
           </Row>
 
@@ -236,8 +192,12 @@ export const CounselingCustomer = () => {
             </Col>
           </Row>
           <Col>
-            <TextBoxRow title={"질문내용"} content={""} titleWidthRatio={1} />
-            <TextBoxRow title={"답변내용"} content={""} titleWidthRatio={1} />
+            <DetailTextInputRow
+              rows={[{ title: "질문내용", type: "textarea" }]}
+            />
+            <DetailTextInputRow
+              rows={[{ title: "답변내용", type: "textarea" }]}
+            />
           </Col>
           {/* # depth4 */}
           <Row

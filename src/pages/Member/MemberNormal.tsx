@@ -14,6 +14,7 @@ import SearchTextInput from "src/components/Common/Filter/component/SearchTextIn
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
+import { SendAlarmModal } from "src/pages/Member/components/SendAlarmModal";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -65,8 +66,13 @@ const tableHeader = [
 
 export const MemberNormal = () => {
   const [page, setPage] = useState(1);
+  const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("0");
   const [text, setText] = useState("");
+
+  const handleModalState = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
     <ContainerBase>
@@ -154,7 +160,11 @@ export const MemberNormal = () => {
                   2023-04-01 14:51기준
                 </span>
                 <DropdownBase menuItems={dropdownData} />
-                <ButtonBase label={"신규 등록"} color={"turu"} />
+                <ButtonBase
+                  label={"알림 발송"}
+                  color={"turu"}
+                  onClick={handleModalState}
+                />
                 <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
               </div>
             </Col>
@@ -163,6 +173,7 @@ export const MemberNormal = () => {
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
+      <SendAlarmModal isOpen={isOpen} onClose={handleModalState} />
     </ContainerBase>
   );
 };

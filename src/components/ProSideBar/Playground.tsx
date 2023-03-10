@@ -197,6 +197,12 @@ export const Playground = (props: any) => {
           />
           <div style={{ flex: 1, marginBottom: "100px" }}>
             <Menu menuItemStyles={menuItemStyles}>
+              <SubMenu
+                label="Components"
+                icon={<BarChart />}
+                component={<Link to={"/example"} />}
+                open={allOpen}
+              />
               <SubMenu label="충전 모니터링" icon={<BarChart />} open={allOpen}>
                 <MenuItem component={<Link to={"/charger/ChargerStation"} />}>
                   충전소 관리
