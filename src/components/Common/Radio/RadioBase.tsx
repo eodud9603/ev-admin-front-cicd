@@ -28,7 +28,12 @@ const RadioBase = (props: IRadioBaseProps) => {
   } = props;
 
   return (
-    <FormGroup className={"form-check-turu"} check inline disabled={disabled}>
+    <FormGroup
+      className={`form-check-${disabled ? "dark" : "turu"}`}
+      check
+      inline
+      disabled={disabled}
+    >
       <Input
         id={id}
         type={"radio"}
