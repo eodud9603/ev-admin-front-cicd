@@ -253,7 +253,9 @@ export const Playground = (props: any) => {
                 <MenuItem component={<Link to={"/operate/evModel"} />}>
                   전기차 모델 관리
                 </MenuItem>
-                <MenuItem>정책 관리</MenuItem>
+                <MenuItem component={<Link to={"/operate/policy"} />}>
+                  정책 관리
+                </MenuItem>
                 <MenuItem>카카오 알림톡 관리</MenuItem>
                 <MenuItem>SMS 관리</MenuItem>
                 <MenuItem>MMS 관리</MenuItem>

@@ -59,7 +59,7 @@ const countList = [
 ];
 
 /* 임시 목록 데이터 */
-const modelList = [];
+const modelList: unknown[] = [];
 
 const EvModel = () => {
   const [tabList, setTabList] = useState([{ label: "전기차 모델 관리" }]);
