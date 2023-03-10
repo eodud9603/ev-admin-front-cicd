@@ -292,8 +292,8 @@ const ChargingStationManagement = () => {
                     )
                   )
                 ) : (
-                  <tr className={"m-10"}>
-                    <td colSpan={10} className={"text-center text"}>
+                  <tr>
+                    <td colSpan={10} className={"py-5 text-center text"}>
                       등록된 충전소 정보가 없습니다.
                     </td>
                   </tr>
