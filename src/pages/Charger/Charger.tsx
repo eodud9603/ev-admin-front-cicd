@@ -302,8 +302,8 @@ const Charger = () => {
                     )
                   )
                 ) : (
-                  <tr className={"m-10"}>
-                    <td colSpan={16} className={"text-center text"}>
+                  <tr>
+                    <td colSpan={16} className={"py-5 text-center text"}>
                       등록된 충전기 정보가 없습니다.
                     </td>
                   </tr>

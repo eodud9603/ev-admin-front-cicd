@@ -23,9 +23,23 @@ import { MemberGroup } from "src/pages/Member/MemberGroup";
 import { MemberCorporation } from "src/pages/Member/MemberCorporation";
 import { MemberContract } from "src/pages/Member/MemberContract";
 import { CounselingCustomer } from "src/pages/Counseling/CounselingCustomer";
-import OperateAnnouncement from "src/pages/Operate/OperateAnnouncement";
 import { CounselingHistory } from "src/pages/Counseling/CounselingHistory";
 import { CounselingManagement } from "src/pages/Counseling/CounselingManagement";
+import OperateQnA from "src/pages/Operate/OperateQnA";
+import OperateFAQ from "src/pages/Operate/OperateFAQ";
+import OperateNotice from "src/pages/Operate/OperateNotice";
+import CorporateNotice from "src/pages/Operate/CorporateNotice";
+import CorporateQnA from "src/pages/Operate/CorporateQnA";
+import Event from "src/pages/Operate/Event";
+import EvNews from "src/pages/Operate/EvNews";
+import OperatePopup from "src/pages/Operate/OperatePopup";
+import InstallCharger from "src/pages/Operate/InstallCharger";
+import EvModel from "src/pages/Operate/EvModel";
+import OperatePolicy from "src/pages/Operate/OperatePolicy";
+import OperateCode from "src/pages/Operate/OperateCode";
+import OperateVariable from "src/pages/Operate/OperateVariable";
+import OperateSms from "src/pages/Operate/OperateSMS";
+import OperateNotificationTalk from "src/pages/Operate/OperateNotificationTalk";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -56,11 +70,26 @@ const userRoutes: Array<RouteProps> = [
   { path: "/member/corporation", element: <MemberCorporation /> },
   { path: "/member/contract", element: <MemberContract /> },
 
-  { path: "/operate/announcement", element: <OperateAnnouncement /> },
+  { path: "/operate/notice", element: <OperateNotice /> },
+  { path: "/operate/qna", element: <OperateQnA /> },
+  { path: "/operate/faq", element: <OperateFAQ /> },
+  { path: "/operate/corporateNotice", element: <CorporateNotice /> },
+  { path: "/operate/corporateQna", element: <CorporateQnA /> },
+  { path: "/operate/event", element: <Event /> },
+  { path: "/operate/evNews", element: <EvNews /> },
+  { path: "/operate/popup", element: <OperatePopup /> },
+  { path: "/operate/installCharger", element: <InstallCharger /> },
+  { path: "/operate/evModel", element: <EvModel /> },
+  { path: "/operate/policy", element: <OperatePolicy /> },
+  { path: "/operate/talk", element: <OperateNotificationTalk /> },
+  { path: "/operate/sms", element: <OperateSms /> },
+  { path: "/operate/variable", element: <OperateVariable /> },
+  { path: "/operate/code", element: <OperateCode /> },
 
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },
   { path: "/operator/role", element: <OperatorRole /> },
+
   // { path: "/member/card", element: <ChargerOperator /> },
   // { path: "/member/card", element: <ChargerOperator /> },
 
