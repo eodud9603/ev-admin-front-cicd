@@ -8,6 +8,8 @@ interface IDetailTextInputRow {
     disabled?: boolean;
     type?: "textarea" | "text";
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    containerWidthRatio?: number;
+    titleWidthRatio?: number;
   }>;
 }
 export const DetailTextInputRow = (props: IDetailTextInputRow) => {
@@ -16,9 +18,13 @@ export const DetailTextInputRow = (props: IDetailTextInputRow) => {
   return (
     <Row className={"border border-0 border-top border-2 border-light mx-1"}>
       {rows.map((item, index) => (
-        <Col key={index} sm={rows.length > 1 && 6} className={"d-flex p-0"}>
+        <Col
+          key={index}
+          sm={item?.containerWidthRatio}
+          className={"d-flex p-0"}
+        >
           <Col
-            xs={rows.length > 1 && 6 ? 4 : 2}
+            xs={item?.titleWidthRatio}
             className={
               "d-flex fw-bold align-items-center bg-light bg-opacity-10 p-3 "
             }

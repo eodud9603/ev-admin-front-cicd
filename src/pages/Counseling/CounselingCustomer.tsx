@@ -146,10 +146,14 @@ export const CounselingCustomer = () => {
               </div>
               <TableBase tableHeader={MemberHistoryTableHeader} />
               <DetailTextInputRow
-                rows={[{ title: "질문내용", type: "textarea" }]}
+                rows={[
+                  { title: "질문내용", type: "textarea", titleWidthRatio: 2 },
+                ]}
               />
               <DetailTextInputRow
-                rows={[{ title: "답변내용", type: "textarea" }]}
+                rows={[
+                  { title: "답변내용", type: "textarea", titleWidthRatio: 2 },
+                ]}
               />
             </Col>
           </Row>
@@ -193,10 +197,14 @@ export const CounselingCustomer = () => {
           </Row>
           <Col>
             <DetailTextInputRow
-              rows={[{ title: "질문내용", type: "textarea" }]}
+              rows={[
+                { title: "질문내용", type: "textarea", titleWidthRatio: 1 },
+              ]}
             />
             <DetailTextInputRow
-              rows={[{ title: "답변내용", type: "textarea" }]}
+              rows={[
+                { title: "답변내용", type: "textarea", titleWidthRatio: 1 },
+              ]}
             />
           </Col>
           {/* # depth4 */}
