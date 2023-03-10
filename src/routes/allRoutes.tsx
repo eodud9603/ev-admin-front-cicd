@@ -22,9 +22,9 @@ import { MemberAuthReject } from "src/pages/Member/MemberAuthReject";
 import { MemberGroup } from "src/pages/Member/MemberGroup";
 import { MemberCorporation } from "src/pages/Member/MemberCorporation";
 import { MemberContract } from "src/pages/Member/MemberContract";
-import OperateAnnouncement from "src/pages/Operate/OperateAnnouncement";
 import OperateQnA from "src/pages/Operate/OperateQnA";
 import OperateFAQ from "src/pages/Operate/OperateFAQ";
+import OperateNotice from "src/pages/Operate/OperateNotice";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -55,7 +55,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/member/corporation", element: <MemberCorporation /> },
   { path: "/member/contract", element: <MemberContract /> },
 
-  { path: "/operate/announcement", element: <OperateAnnouncement /> },
+  { path: "/operate/notice", element: <OperateNotice /> },
   { path: "/operate/qna", element: <OperateQnA /> },
   { path: "/operate/faq", element: <OperateFAQ /> },
 

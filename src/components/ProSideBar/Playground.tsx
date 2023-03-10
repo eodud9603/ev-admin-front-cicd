@@ -221,7 +221,7 @@ export const Playground = (props: any) => {
                 </MenuItem>
               </SubMenu>
               <SubMenu label="운영 관리" icon={<Global />}>
-                <MenuItem component={<Link to={"/operate/announcement"} />}>
+                <MenuItem component={<Link to={"/operate/notice"} />}>
                   공지사항
                 </MenuItem>
                 <MenuItem component={<Link to={"/operate/qna"} />}>

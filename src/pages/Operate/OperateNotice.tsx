@@ -77,7 +77,7 @@ const countList = [
 ];
 
 /* 임시 목록 데이터 */
-const announcementList: Omit<IListItemProps, "index">[] = [
+const noticeList: Omit<IListItemProps, "index">[] = [
   {
     title: "개인정보 처리방침 변경 안내",
     upload: "전체",
@@ -110,7 +110,7 @@ interface IListItemProps {
   isDelete: "Y" | "N";
 }
 
-const OperateAnnouncement = () => {
+const OperateNotice = () => {
   const [tabList, setTabList] = useState([{ label: "공지사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [text, setText] = useState("");
@@ -206,8 +206,7 @@ const OperateAnnouncement = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총{" "}
-              <span className={"text-turu"}>{announcementList.length}개</span>의
+              총 <span className={"text-turu"}>{noticeList.length}개</span>의
               공지사항이 있습니다.
             </span>
 
@@ -229,15 +228,15 @@ const OperateAnnouncement = () => {
           <div className="table-responsive">
             <TableBase tableHeader={tableHeader}>
               <>
-                {announcementList.length > 0 ? (
-                  announcementList.map((announcement, index) => (
+                {noticeList.length > 0 ? (
+                  noticeList.map((notice, index) => (
                     <TableRow
                       ref={(ref: IListRefProps) =>
                         (listRef.current[index] = ref)
                       }
                       key={index}
                       index={index}
-                      {...announcement}
+                      {...notice}
                     />
                   ))
                 ) : (
@@ -258,7 +257,7 @@ const OperateAnnouncement = () => {
   );
 };
 
-export default OperateAnnouncement;
+export default OperateNotice;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
