@@ -257,7 +257,9 @@ export const Playground = (props: any) => {
                   정책 관리
                 </MenuItem>
                 <MenuItem>카카오 알림톡 관리</MenuItem>
-                <MenuItem>SMS 관리</MenuItem>
+                <MenuItem component={<Link to={"/operate/sms"} />}>
+                  제어 문자 관리
+                </MenuItem>
                 <MenuItem>MMS 관리</MenuItem>
                 <MenuItem component={<Link to={"/operate/variable"} />}>
                   변수 관리
