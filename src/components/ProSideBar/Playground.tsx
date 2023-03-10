@@ -224,7 +224,9 @@ export const Playground = (props: any) => {
                 <MenuItem component={<Link to={"/operate/announcement"} />}>
                   공지사항
                 </MenuItem>
-                <MenuItem>Q&A</MenuItem>
+                <MenuItem component={<Link to={"/operate/qna"} />}>
+                  Q&A
+                </MenuItem>
                 <MenuItem>FAQ</MenuItem>
                 <MenuItem>법인 공지사항</MenuItem>
                 <MenuItem>법인 문의사항</MenuItem>
