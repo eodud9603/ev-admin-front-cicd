@@ -240,8 +240,8 @@ const OperatorAccount = () => {
                     )
                   )
                 ) : (
-                  <tr className={"m-10"}>
-                    <td colSpan={16} className={"text-center text"}>
+                  <tr>
+                    <td colSpan={11} className={"py-5 text-center text"}>
                       등록된 계정 정보가 없습니다.
                     </td>
                   </tr>
