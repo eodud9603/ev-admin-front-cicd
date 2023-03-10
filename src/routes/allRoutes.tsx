@@ -34,6 +34,7 @@ import InstallCharger from "src/pages/Operate/InstallCharger";
 import EvModel from "src/pages/Operate/EvModel";
 import OperatePolicy from "src/pages/Operate/OperatePolicy";
 import OperateCode from "src/pages/Operate/OperateCode";
+import OperateVariable from "src/pages/Operate/OperateVariable";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -75,6 +76,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/installCharger", element: <InstallCharger /> },
   { path: "/operate/evModel", element: <EvModel /> },
   { path: "/operate/policy", element: <OperatePolicy /> },
+  { path: "/operate/variable", element: <OperateVariable /> },
   { path: "/operate/code", element: <OperateCode /> },
 
   { path: "/operator/account", element: <OperatorAccount /> },
