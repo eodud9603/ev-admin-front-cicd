@@ -24,6 +24,7 @@ import { MemberCorporation } from "src/pages/Member/MemberCorporation";
 import { MemberContract } from "src/pages/Member/MemberContract";
 import OperateAnnouncement from "src/pages/Operate/OperateAnnouncement";
 import OperateQnA from "src/pages/Operate/OperateQnA";
+import OperateFAQ from "src/pages/Operate/OperateFAQ";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -56,6 +57,7 @@ const userRoutes: Array<RouteProps> = [
 
   { path: "/operate/announcement", element: <OperateAnnouncement /> },
   { path: "/operate/qna", element: <OperateQnA /> },
+  { path: "/operate/faq", element: <OperateFAQ /> },
 
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },

@@ -15,7 +15,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 
-/* 삭제 여부 필터 */
+/* 답변상태 필터 */
 const statusList = [
   {
     label: "전체",
@@ -201,45 +201,47 @@ const OperateQnA = () => {
             </div>
           </div>
 
-          <TableBase tableHeader={tableHeader}>
-            <>
-              {qnaList.length > 0 ? (
-                qnaList.map(
-                  (
-                    {
-                      category,
-                      title,
-                      userName,
-                      userId,
-                      regDate,
-                      answerName,
-                      answerDate,
-                      status,
-                    },
-                    index
-                  ) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{category}</td>
-                      <td>{title}</td>
-                      <td>{userName}</td>
-                      <td>{userId}</td>
-                      <td>{regDate}</td>
-                      <td>{answerName}</td>
-                      <td>{answerDate}</td>
-                      <td>{status}</td>
-                    </tr>
+          <div className={"table-responsive"}>
+            <TableBase tableHeader={tableHeader}>
+              <>
+                {qnaList.length > 0 ? (
+                  qnaList.map(
+                    (
+                      {
+                        category,
+                        title,
+                        userName,
+                        userId,
+                        regDate,
+                        answerName,
+                        answerDate,
+                        status,
+                      },
+                      index
+                    ) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{category}</td>
+                        <td>{title}</td>
+                        <td>{userName}</td>
+                        <td>{userId}</td>
+                        <td>{regDate}</td>
+                        <td>{answerName}</td>
+                        <td>{answerDate}</td>
+                        <td>{status}</td>
+                      </tr>
+                    )
                   )
-                )
-              ) : (
-                <tr className={"m-10"}>
-                  <td colSpan={16} className={"text-center text"}>
-                    등록된 문의사항이 없습니다.
-                  </td>
-                </tr>
-              )}
-            </>
-          </TableBase>
+                ) : (
+                  <tr>
+                    <td colSpan={9} className={"py-5 text-center text"}>
+                      등록된 문의사항이 없습니다.
+                    </td>
+                  </tr>
+                )}
+              </>
+            </TableBase>
+          </div>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
