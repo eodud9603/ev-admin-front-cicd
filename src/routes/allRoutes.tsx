@@ -27,6 +27,7 @@ import OperateFAQ from "src/pages/Operate/OperateFAQ";
 import OperateNotice from "src/pages/Operate/OperateNotice";
 import CorporateNotice from "src/pages/Operate/CorporateNotice";
 import CorporateQnA from "src/pages/Operate/CorporateQnA";
+import Event from "src/pages/Operate/Event";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -62,6 +63,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/faq", element: <OperateFAQ /> },
   { path: "/operate/corporateNotice", element: <CorporateNotice /> },
   { path: "/operate/corporateQna", element: <CorporateQnA /> },
+  { path: "/operate/event", element: <Event /> },
 
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },

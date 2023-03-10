@@ -20,16 +20,19 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 
-/* 삭제 여부 필터 */
-const deleteList = [
+/* 진행 여부 필터 */
+const progressList = [
   {
     label: "전체",
   },
   {
-    label: "Y",
+    label: "예정",
   },
   {
-    label: "N",
+    label: "진행",
+  },
+  {
+    label: "종료",
   },
 ];
 
@@ -53,8 +56,7 @@ const uploadList = [
 const searchList = [
   { label: "전체", value: "1" },
   { label: "제목", value: "2" },
-  { label: "내용", value: "3" },
-  { label: "작성자", value: "4" },
+  { label: "작성자", value: "3" },
 ];
 
 /* 목록 헤더 */
@@ -62,11 +64,12 @@ const tableHeader = [
   { label: "선택" },
   { label: "번호", sort: () => {} },
   { label: "제목" },
+  { label: "이벤트 기간", sort: () => {} },
   { label: "업로드 대상", sort: () => {} },
   { label: "작성자", sort: () => {} },
   { label: "조회수", sort: () => {} },
   { label: "작성일", sort: () => {} },
-  { label: "삭제 여부", sort: () => {} },
+  { label: "진행 여부", sort: () => {} },
 ];
 
 /* 목록 표시 개수 */
@@ -80,19 +83,21 @@ const countList = [
 const noticeList: Omit<IListItemProps, "index">[] = [
   {
     title: "개인정보 처리방침 변경 안내",
+    eventDate: "2022.01.07 ~ 2022.02.06",
     upload: "전체",
     writer: "홍길동",
     view: 15,
     date: "2022.01.07",
-    isDelete: "N",
+    progress: "예정",
   },
   {
     title: "개인정보 처리방침 변경 안내",
+    eventDate: "2022.01.07 ~ 2022.02.06",
     upload: "IOS",
     writer: "홍길동",
     view: 10,
     date: "2022.01.07",
-    isDelete: "Y",
+    progress: "진행",
   },
 ];
 
@@ -104,15 +109,16 @@ interface IListRefProps {
 interface IListItemProps {
   index: number;
   title: string;
+  eventDate: string;
   upload: string;
   writer: string;
   view: number;
   date: string;
-  isDelete: "Y" | "N";
+  progress: string;
 }
 
-const OperateNotice = () => {
-  const [tabList, setTabList] = useState([{ label: "공지사항" }]);
+const Event = () => {
+  const [tabList, setTabList] = useState([{ label: "이벤트" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
@@ -168,9 +174,9 @@ const OperateNotice = () => {
           list={[
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
-            { label: "공지사항", href: "" },
+            { label: "이벤트", href: "" },
           ]}
-          title={"공지사항"}
+          title={"이벤트"}
         />
 
         <SearchSection className={"pt-2 pb-4 border-top border-bottom"}>
@@ -180,9 +186,9 @@ const OperateNotice = () => {
             </Col>
             <Col md={4}>
               <RadioGroup
-                title={"삭제 여부"}
-                name={"deleteGroup"}
-                list={deleteList}
+                title={"진행 여부"}
+                name={"progressGroup"}
+                list={progressList}
               />
             </Col>
             <Col md={4}>
@@ -192,6 +198,12 @@ const OperateNotice = () => {
                 list={uploadList}
               />
             </Col>
+          </Row>
+          <Row className={"mt-3 d-flex align-items-center"}>
+            <Col md={4}>
+              <DateGroup className={"mb-0"} label={"작성일"} />
+            </Col>
+            <Col md={8} />
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col md={7}>
@@ -214,7 +226,7 @@ const OperateNotice = () => {
           >
             <span className={"font-size-13 fw-bold"}>
               총 <span className={"text-turu"}>{noticeList.length}개</span>의
-              공지사항이 있습니다.
+              이벤트가 있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
@@ -248,8 +260,8 @@ const OperateNotice = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className={"py-5 text-center text"}>
-                      등록된 공지사항이 없습니다.
+                    <td colSpan={9} className={"py-5 text-center text"}>
+                      등록된 이벤트가 없습니다.
                     </td>
                   </tr>
                 )}
@@ -264,13 +276,14 @@ const OperateNotice = () => {
   );
 };
 
-export default OperateNotice;
+export default Event;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
 
 const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
-  const { index, title, upload, writer, view, date, isDelete } = props;
+  const { index, title, eventDate, upload, writer, view, date, progress } =
+    props;
   const [checked, setChecked] = useState(false);
 
   const onChangeCheck = () => {
@@ -299,11 +312,12 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
       </td>
       <td>{index + 1}</td>
       <td>{title}</td>
+      <td>{eventDate}</td>
       <td>{upload}</td>
       <td>{writer}</td>
       <td>{view}</td>
       <td>{date}</td>
-      <td>{isDelete}</td>
+      <td>{progress}</td>
     </tr>
   );
 });

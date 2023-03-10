@@ -100,6 +100,7 @@ const noticeList: Omit<IListItemProps, "index">[] = [
 ];
 
 interface IListRefProps {
+  data: IListItemProps;
   checked: boolean;
   onChange: (bool: boolean) => void;
 }
@@ -142,10 +143,16 @@ const CorporateNotice = () => {
     setTabList(tempList);
   };
 
-  /** 체크해제 */
-  const uncheckedHandler = () => {
-    for (const data of listRef.current) {
-      data.onChange(false);
+  /** 선택항목 삭제 */
+  const deleteHandler = () => {
+    const checkedList = [];
+    for (const item of listRef.current) {
+      const { checked, data } = item;
+
+      if (checked) {
+        checkedList.push(data);
+        item.onChange(false);
+      }
     }
   };
 
@@ -224,7 +231,7 @@ const CorporateNotice = () => {
                 label={"선택 삭제"}
                 outline={true}
                 color={"turu"}
-                onClick={uncheckedHandler}
+                onClick={deleteHandler}
               />
             </div>
           </div>
@@ -278,10 +285,11 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
   useImperativeHandle(
     ref,
     () => ({
+      data: props,
       checked,
       onChange: (bool: boolean) => setChecked(bool),
     }),
-    [checked]
+    [props, checked]
   );
 
   return (
