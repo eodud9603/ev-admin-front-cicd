@@ -27,10 +27,10 @@ const addressList = [
     menuItems: [{ label: "시,도", value: "1" }],
   },
   {
-    menuItems: [{ label: "구,군", value: "2" }],
+    menuItems: [{ label: "구,군", value: "1" }],
   },
   {
-    menuItems: [{ label: "동,읍", value: "3" }],
+    menuItems: [{ label: "동,읍", value: "1" }],
   },
 ];
 
