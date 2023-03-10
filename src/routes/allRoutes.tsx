@@ -23,6 +23,7 @@ import { MemberGroup } from "src/pages/Member/MemberGroup";
 import { MemberCorporation } from "src/pages/Member/MemberCorporation";
 import { MemberContract } from "src/pages/Member/MemberContract";
 import { CounselingCustomer } from "src/pages/Counseling/CounselingCustomer";
+import OperateAnnouncement from "src/pages/Operate/OperateAnnouncement";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -52,6 +53,8 @@ const userRoutes: Array<RouteProps> = [
   { path: "/member/group", element: <MemberGroup /> },
   { path: "/member/corporation", element: <MemberCorporation /> },
   { path: "/member/contract", element: <MemberContract /> },
+
+  { path: "/operate/announcement", element: <OperateAnnouncement /> },
 
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },

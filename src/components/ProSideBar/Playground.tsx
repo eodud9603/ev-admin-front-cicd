@@ -220,6 +220,28 @@ export const Playground = (props: any) => {
                   서비스 운영사 관리
                 </MenuItem>
               </SubMenu>
+              <SubMenu label="운영 관리" icon={<Global />}>
+                <MenuItem component={<Link to={"/operate/announcement"} />}>
+                  공지사항
+                </MenuItem>
+                <MenuItem>Q&A</MenuItem>
+                <MenuItem>FAQ</MenuItem>
+                <MenuItem>법인 공지사항</MenuItem>
+                <MenuItem>법인 문의사항</MenuItem>
+                <MenuItem>이벤트</MenuItem>
+                <MenuItem>EV 뉴스</MenuItem>
+                <MenuItem>팝업 관리</MenuItem>
+                <MenuItem>충전기 고장 신고 관리</MenuItem>
+                <MenuItem>충전기 설치 신청 관리</MenuItem>
+                <MenuItem>제휴 문의 관리</MenuItem>
+                <MenuItem>전기차 모델 관리</MenuItem>
+                <MenuItem>정책 관리</MenuItem>
+                <MenuItem>카카오 알림톡 관리</MenuItem>
+                <MenuItem>SMS 관리</MenuItem>
+                <MenuItem>MMS 관리</MenuItem>
+                <MenuItem>변수 관리</MenuItem>
+                <MenuItem>코드 관리</MenuItem>
+              </SubMenu>
               <SubMenu label="회원 및 카드 관리" icon={<Global />}>
                 <MenuItem component={<Link to={"/member/normal"} />}>
                   회원 관리
