@@ -25,6 +25,7 @@ import { MemberContract } from "src/pages/Member/MemberContract";
 import OperateQnA from "src/pages/Operate/OperateQnA";
 import OperateFAQ from "src/pages/Operate/OperateFAQ";
 import OperateNotice from "src/pages/Operate/OperateNotice";
+import CorporateNotice from "src/pages/Operate/CorporateNotice";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -58,6 +59,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/notice", element: <OperateNotice /> },
   { path: "/operate/qna", element: <OperateQnA /> },
   { path: "/operate/faq", element: <OperateFAQ /> },
+  { path: "/operate/corporateNotice", element: <CorporateNotice /> },
 
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },
