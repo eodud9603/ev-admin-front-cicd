@@ -8,9 +8,11 @@ interface IButtonBase {
   className?: string;
   outline?: boolean;
   onClick?: () => void;
+
+  disabled?: boolean;
 }
 export const ButtonBase = (props: IButtonBase) => {
-  const { label, color, className, icon, outline, onClick } = props;
+  const { label, color, className, icon, outline, onClick, disabled } = props;
 
   return (
     <Button
@@ -18,6 +20,7 @@ export const ButtonBase = (props: IButtonBase) => {
       color={color}
       outline={outline}
       onClick={onClick}
+      disabled={disabled}
     >
       <>
         {icon}

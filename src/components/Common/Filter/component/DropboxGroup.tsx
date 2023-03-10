@@ -3,7 +3,7 @@ import { Label } from "reactstrap";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 
 interface IDropboxGroupProps {
-  label: string;
+  label?: string;
   className?: string;
   dropdownItems: Array<{
     menuItems: Array<{
@@ -18,7 +18,7 @@ export const DropboxGroup = (props: IDropboxGroupProps) => {
 
   return (
     <div className="btn-group d-flex align-items-center">
-      <Label className={"fw-bold m-0 w-xs"}>{label}</Label>
+      {label && <Label className={"fw-bold m-0 w-xs"}>{label}</Label>}
       {dropdownItems &&
         dropdownItems.length > 0 &&
         dropdownItems.map((item, idx) => (

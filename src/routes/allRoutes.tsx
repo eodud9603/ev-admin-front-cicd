@@ -22,6 +22,7 @@ import { MemberAuthReject } from "src/pages/Member/MemberAuthReject";
 import { MemberGroup } from "src/pages/Member/MemberGroup";
 import { MemberCorporation } from "src/pages/Member/MemberCorporation";
 import { MemberContract } from "src/pages/Member/MemberContract";
+import { CounselingCustomer } from "src/pages/Counseling/CounselingCustomer";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -57,6 +58,10 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operator/role", element: <OperatorRole /> },
   // { path: "/member/card", element: <ChargerOperator /> },
   // { path: "/member/card", element: <ChargerOperator /> },
+
+  { path: "/counseling/customer", element: <CounselingCustomer /> },
+  { path: "/counseling/history", element: <CounselingCustomer /> },
+  { path: "/counseling/management", element: <CounselingCustomer /> },
 ];
 
 const authRoutes: Array<RouteProps> = [

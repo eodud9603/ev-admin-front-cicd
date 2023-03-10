@@ -18,7 +18,8 @@ const ContainerBase = (props: IContainerProps) => {
 
   return (
     <CustomContainer
-      className={`d-flex flex-column p-0 bg-light bg-opacity-75 ${className}`}
+      className={`d-flex flex-column mb-5 p-0 bg-light bg-opacity-75
+       ${className}`}
       fluid
     >
       {children}

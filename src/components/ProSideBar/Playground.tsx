@@ -246,6 +246,17 @@ export const Playground = (props: any) => {
                   법인 계약 관리
                 </MenuItem>
               </SubMenu>
+              <SubMenu label="상담 관리" icon={<InkBottle />}>
+                <MenuItem component={<Link to={"/counseling/customer"} />}>
+                  고객 상담
+                </MenuItem>
+                <MenuItem component={<Link to={"/counseling/history"} />}>
+                  상담 내역
+                </MenuItem>
+                <MenuItem component={<Link to={"/counseling/management"} />}>
+                  상담/보상유형 관리
+                </MenuItem>
+              </SubMenu>
               <SubMenu label="운영자 관리" icon={<Global />}>
                 <MenuItem component={<Link to={"/operator/account"} />}>
                   계정 관리
@@ -257,10 +268,7 @@ export const Playground = (props: any) => {
                   권한 관리
                 </MenuItem>
               </SubMenu>
-              <SubMenu label="Theme" icon={<InkBottle />}>
-                <MenuItem> Dark</MenuItem>
-                <MenuItem> Light</MenuItem>
-              </SubMenu>
+
               <SubMenu label="Components" icon={<Diamond />}>
                 <MenuItem> Grid</MenuItem>
                 <MenuItem> Layout</MenuItem>
