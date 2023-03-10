@@ -92,7 +92,7 @@ const countList = [
 ];
 
 /* 임시 목록 데이터 */
-const noticeList: Omit<IListItemProps, "index">[] = [
+const popupList: Omit<IListItemProps, "index">[] = [
   {
     category: "공지사항 팝업",
     title: "개인정보 처리방침 변경 안내",
@@ -247,7 +247,7 @@ const OperatePopup = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{noticeList.length}개</span>의
+              총 <span className={"text-turu"}>{popupList.length}개</span>의
               팝업이 있습니다.
             </span>
 
@@ -269,15 +269,15 @@ const OperatePopup = () => {
           <div className="table-responsive">
             <TableBase tableHeader={tableHeader}>
               <>
-                {noticeList.length > 0 ? (
-                  noticeList.map((notice, index) => (
+                {popupList.length > 0 ? (
+                  popupList.map((popup, index) => (
                     <TableRow
                       ref={(ref: IListRefProps) =>
                         (listRef.current[index] = ref)
                       }
                       key={index}
                       index={index}
-                      {...notice}
+                      {...popup}
                     />
                   ))
                 ) : (

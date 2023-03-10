@@ -10,6 +10,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
+import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
@@ -20,52 +21,48 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 
-/* 삭제 여부 필터 */
-const deleteList = [
+/* 신청 상태 필터 */
+const applicationStatusList = [
   {
     label: "전체",
   },
   {
-    label: "Y",
+    label: "신청",
   },
   {
-    label: "N",
+    label: "접수",
   },
 ];
 
-/* 업로드 대상 필터 */
-const uploadList = [
+/* 지역 필터 */
+const regionList = [
   {
-    label: "전체",
-  },
-  {
-    label: "IOS",
-  },
-  {
-    label: "AOS",
-  },
-  {
-    label: "WEB",
+    menuItems: [{ label: "전체", value: "1" }],
   },
 ];
 
 /* 검색어 필터 */
 const searchList = [
   { label: "전체", value: "1" },
-  { label: "제목", value: "2" },
-  { label: "작성자", value: "3" },
+  { label: "신청자", value: "2" },
+  { label: "접수자", value: "3" },
+  { label: "전화번호", value: "4" },
+  { label: "주소", value: "5" },
 ];
 
 /* 목록 헤더 */
 const tableHeader = [
   { label: "선택" },
   { label: "번호", sort: () => {} },
-  { label: "제목" },
-  { label: "업로드 대상", sort: () => {} },
-  { label: "작성자", sort: () => {} },
-  { label: "조회수", sort: () => {} },
-  { label: "작성일", sort: () => {} },
-  { label: "삭제 여부", sort: () => {} },
+  { label: "지역", sort: () => {} },
+  { label: "신청자", sort: () => {} },
+  { label: "전화번호", sort: () => {} },
+  { label: "신청지 주소", sort: () => {} },
+  { label: "상담자", sort: () => {} },
+  { label: "신청일", sort: () => {} },
+  { label: "신청 상태", sort: () => {} },
+  { label: "접수 담당자", sort: () => {} },
+  { label: "확인일", sort: () => {} },
 ];
 
 /* 목록 표시 개수 */
@@ -76,22 +73,18 @@ const countList = [
 ];
 
 /* 임시 목록 데이터 */
-const newsList: Omit<IListItemProps, "index">[] = [
+const applicationList: Omit<IListItemProps, "index">[] = [
   {
-    title: "개인정보 처리방침 변경 안내",
-    upload: "전체",
-    writer: "홍길동",
-    view: 15,
-    date: "2022.01.07",
-    isDelete: "Y",
-  },
-  {
-    title: "개인정보 처리방침 변경 안내",
-    upload: "IOS",
-    writer: "홍길동",
-    view: 10,
-    date: "2022.01.07",
-    isDelete: "N",
+    region: "경기",
+    applicant: "홍길동",
+    tel: "010-1234-1234",
+    address: "경기 성남시 분당구 황새울로 216",
+    addressDetail: "상세 주소",
+    counselorName: "김아무개",
+    applicationDate: "2023.02.10",
+    applicationStatus: "신청",
+    receptionistName: "아무개",
+    confirmationDate: "2023.02.11",
   },
 ];
 
@@ -102,16 +95,20 @@ interface IListRefProps {
 }
 interface IListItemProps {
   index: number;
-  title: string;
-  upload: string;
-  writer: string;
-  view: number;
-  date: string;
-  isDelete: "Y" | "N";
+  region: string;
+  applicant: string;
+  tel: string;
+  address: string;
+  addressDetail: string;
+  counselorName: string;
+  applicationDate: string;
+  applicationStatus: string;
+  receptionistName: string;
+  confirmationDate: string;
 }
 
-const EvNews = () => {
-  const [tabList, setTabList] = useState([{ label: "EV 뉴스" }]);
+const InstallCharger = () => {
+  const [tabList, setTabList] = useState([{ label: "충전기 설치 신청 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
@@ -167,33 +164,41 @@ const EvNews = () => {
           list={[
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
-            { label: "EV 뉴스", href: "" },
+            { label: "충전기 설치 신청 관리", href: "" },
           ]}
-          title={"EV 뉴스"}
+          title={"충전기 설치 신청 관리"}
         />
 
         <SearchSection className={"pt-2 pb-4 border-top border-bottom"}>
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col md={4}>
-              <DateGroup className={"mb-0"} label={"작성일"} />
+              <DateGroup className={"mb-0"} label={"신청일"} />
             </Col>
+            <Col md={4} />
             <Col md={4}>
               <RadioGroup
-                title={"삭제 여부"}
-                name={"deleteGroup"}
-                list={deleteList}
-              />
-            </Col>
-            <Col md={4}>
-              <RadioGroup
-                title={"업로드 대상"}
-                name={"uploadGroup"}
-                list={uploadList}
+                title={"신청 상태"}
+                name={"applicationGroup"}
+                list={applicationStatusList}
               />
             </Col>
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
-            <Col md={7}>
+            <Col md={4}>
+              <DateGroup className={"mb-0"} label={"접수일"} />
+            </Col>
+            <Col md={4} />
+            <Col className={"d-flex"} md={4}>
+              <DropboxGroup
+                label={"지역"}
+                dropdownItems={regionList}
+                className={"me-2 w-xs"}
+              />
+              <ButtonBase label={"추가"} color={"dark"} />
+            </Col>
+          </Row>
+          <Row className={"mt-3 d-flex align-items-center"}>
+            <Col md={8}>
               <SearchTextInput
                 title={"검색어"}
                 name={"searchText"}
@@ -203,7 +208,7 @@ const EvNews = () => {
                 onChange={(e) => setText(e.target.value)}
               />
             </Col>
-            <Col md={5} />
+            <Col className={"d-flex"} md={4} />
           </Row>
         </SearchSection>
 
@@ -212,8 +217,8 @@ const EvNews = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{newsList.length}개</span>의
-              뉴스가 있습니다.
+              총 <span className={"text-turu"}>{applicationList.length}개</span>
+              의 신청이 있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
@@ -234,21 +239,21 @@ const EvNews = () => {
           <div className="table-responsive">
             <TableBase tableHeader={tableHeader}>
               <>
-                {newsList.length > 0 ? (
-                  newsList.map((news, index) => (
+                {applicationList.length > 0 ? (
+                  applicationList.map((application, index) => (
                     <TableRow
                       ref={(ref: IListRefProps) =>
                         (listRef.current[index] = ref)
                       }
                       key={index}
                       index={index}
-                      {...news}
+                      {...application}
                     />
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className={"py-5 text-center text"}>
-                      등록된 뉴스가 없습니다.
+                    <td colSpan={11} className={"py-5 text-center text"}>
+                      등록된 신청이 없습니다.
                     </td>
                   </tr>
                 )}
@@ -263,13 +268,26 @@ const EvNews = () => {
   );
 };
 
-export default EvNews;
+export default InstallCharger;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
 
 const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
-  const { index, title, upload, writer, view, date, isDelete } = props;
+  const {
+    index,
+    region,
+    applicant,
+    tel,
+    address,
+    addressDetail,
+    counselorName,
+    applicationDate,
+    applicationStatus,
+    receptionistName,
+    confirmationDate,
+  } = props;
+
   const [checked, setChecked] = useState(false);
 
   const onChangeCheck = () => {
@@ -297,12 +315,17 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
         />
       </td>
       <td>{index + 1}</td>
-      <td>{title}</td>
-      <td>{upload}</td>
-      <td>{writer}</td>
-      <td>{view}</td>
-      <td>{date}</td>
-      <td>{isDelete}</td>
+      <td>{region}</td>
+      <td>{applicant}</td>
+      <td>{tel}</td>
+      <td>
+        {address}, {addressDetail}
+      </td>
+      <td>{counselorName}</td>
+      <td>{applicationDate}</td>
+      <td>{applicationStatus}</td>
+      <td>{receptionistName}</td>
+      <td>{confirmationDate}</td>
     </tr>
   );
 });

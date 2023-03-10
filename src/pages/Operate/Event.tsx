@@ -80,7 +80,7 @@ const countList = [
 ];
 
 /* 임시 목록 데이터 */
-const noticeList: Omit<IListItemProps, "index">[] = [
+const eventList: Omit<IListItemProps, "index">[] = [
   {
     title: "개인정보 처리방침 변경 안내",
     eventDate: "2022.01.07 ~ 2022.02.06",
@@ -225,7 +225,7 @@ const Event = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{noticeList.length}개</span>의
+              총 <span className={"text-turu"}>{eventList.length}개</span>의
               이벤트가 있습니다.
             </span>
 
@@ -247,15 +247,15 @@ const Event = () => {
           <div className="table-responsive">
             <TableBase tableHeader={tableHeader}>
               <>
-                {noticeList.length > 0 ? (
-                  noticeList.map((notice, index) => (
+                {eventList.length > 0 ? (
+                  eventList.map((event, index) => (
                     <TableRow
                       ref={(ref: IListRefProps) =>
                         (listRef.current[index] = ref)
                       }
                       key={index}
                       index={index}
-                      {...notice}
+                      {...event}
                     />
                   ))
                 ) : (

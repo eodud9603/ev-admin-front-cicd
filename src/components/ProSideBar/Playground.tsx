@@ -247,7 +247,9 @@ export const Playground = (props: any) => {
                   팝업 관리
                 </MenuItem>
                 <MenuItem>충전기 고장 신고 관리</MenuItem>
-                <MenuItem>충전기 설치 신청 관리</MenuItem>
+                <MenuItem component={<Link to={"/operate/installCharger"} />}>
+                  충전기 설치 신청 관리
+                </MenuItem>
                 <MenuItem>제휴 문의 관리</MenuItem>
                 <MenuItem>전기차 모델 관리</MenuItem>
                 <MenuItem>정책 관리</MenuItem>
