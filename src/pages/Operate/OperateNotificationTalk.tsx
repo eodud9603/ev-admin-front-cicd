@@ -21,13 +21,35 @@ const progressList = [
     label: "전체",
   },
   {
-    label: "요청",
+    label: "예약",
   },
   {
-    label: "성공",
+    label: "발송",
+  },
+  {
+    label: "지연",
   },
   {
     label: "실패",
+  },
+];
+
+/* 발신 구분 필터 */
+const divisionList = [
+  {
+    label: "전체",
+  },
+  {
+    label: "카카오톡",
+  },
+  {
+    label: "SMS",
+  },
+  {
+    label: "LMS",
+  },
+  {
+    label: "MMS",
   },
 ];
 
@@ -52,15 +74,15 @@ const categoryList = [
 const tableHeader = [
   { label: "선택" },
   { label: "번호", sort: () => {} },
-  { label: "충전소명", sort: () => {} },
-  { label: "충전기 ID", sort: () => {} },
-  { label: "충전기 CH", sort: () => {} },
-  { label: "단말기 번호", sort: () => {} },
-  { label: "명령어", sort: () => {} },
-  { label: "제어 요청자", sort: () => {} },
-  { label: "제어 요청일", sort: () => {} },
-  { label: "제어 완료일", sort: () => {} },
-  { label: "제어 상태", sort: () => {} },
+  { label: "분류", sort: () => {} },
+  { label: "카테고리", sort: () => {} },
+  { label: "제목", sort: () => {} },
+  { label: "수신자", sort: () => {} },
+  { label: "발신자", sort: () => {} },
+  { label: "발신 번호", sort: () => {} },
+  { label: "발신일", sort: () => {} },
+  { label: "발신 예약일", sort: () => {} },
+  { label: "진행 상태", sort: () => {} },
 ];
 
 /* 목록 표시 개수 */
@@ -73,8 +95,8 @@ const countList = [
 /* 임시 목록 데이터 */
 const smsList: unknown[] = [];
 
-const OperateSms = () => {
-  const [tabList, setTabList] = useState([{ label: "제어 문자 관리" }]);
+const OperateNotificationTalk = () => {
+  const [tabList, setTabList] = useState([{ label: "알림톡 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
@@ -118,13 +140,13 @@ const OperateSms = () => {
           list={[
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
-            { label: "제어 문자 관리", href: "" },
+            { label: "알림톡 관리", href: "" },
           ]}
         />
         <section
           className={"pb-4 d-flex align-items-center justify-content-between"}
         >
-          <h3 className={"font-size-24"}>제어 문자 관리</h3>
+          <h3 className={"font-size-24"}>알림톡 관리</h3>
 
           <div>
             <ButtonBase
@@ -145,9 +167,8 @@ const OperateSms = () => {
         <SearchSection className={"pt-2 pb-4 border-top border-bottom"}>
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col md={4}>
-              <DateGroup className={"mb-0"} label={"제어 요청일"} />
+              <DateGroup className={"mb-0"} label={"발신일"} />
             </Col>
-            <Col md={4} />
             <Col md={4}>
               <RadioGroup
                 title={"진행 여부"}
@@ -155,10 +176,17 @@ const OperateSms = () => {
                 list={progressList}
               />
             </Col>
+            <Col md={4}>
+              <RadioGroup
+                title={"발신 여부"}
+                name={"divisionGroup"}
+                list={divisionList}
+              />
+            </Col>
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col md={4}>
-              <DateGroup className={"mb-0"} label={"제어 완료일"} />
+              <DateGroup className={"mb-0"} label={"등록일"} />
             </Col>
             <Col md={4} />
             <Col className={"d-flex"} md={4}>
@@ -198,7 +226,7 @@ const OperateSms = () => {
           >
             <span className={"font-size-13 fw-bold"}>
               총 <span className={"text-turu"}>{smsList.length}개</span>의
-              제어내역이 있습니다.
+              발신내역이 있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
@@ -231,7 +259,7 @@ const OperateSms = () => {
                 ) : (
                   <tr>
                     <td colSpan={11} className={"py-5 text-center text"}>
-                      등록된 제어내역이 없습니다.
+                      등록된 발신내역이 없습니다.
                     </td>
                   </tr>
                 )}
@@ -246,7 +274,7 @@ const OperateSms = () => {
   );
 };
 
-export default OperateSms;
+export default OperateNotificationTalk;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;

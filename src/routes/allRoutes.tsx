@@ -36,6 +36,7 @@ import OperatePolicy from "src/pages/Operate/OperatePolicy";
 import OperateCode from "src/pages/Operate/OperateCode";
 import OperateVariable from "src/pages/Operate/OperateVariable";
 import OperateSms from "src/pages/Operate/OperateSMS";
+import OperateNotificationTalk from "src/pages/Operate/OperateNotificationTalk";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -77,6 +78,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/installCharger", element: <InstallCharger /> },
   { path: "/operate/evModel", element: <EvModel /> },
   { path: "/operate/policy", element: <OperatePolicy /> },
+  { path: "/operate/talk", element: <OperateNotificationTalk /> },
   { path: "/operate/sms", element: <OperateSms /> },
   { path: "/operate/variable", element: <OperateVariable /> },
   { path: "/operate/code", element: <OperateCode /> },
