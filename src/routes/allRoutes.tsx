@@ -31,6 +31,7 @@ import Event from "src/pages/Operate/Event";
 import EvNews from "src/pages/Operate/EvNews";
 import OperatePopup from "src/pages/Operate/OperatePopup";
 import InstallCharger from "src/pages/Operate/InstallCharger";
+import EvModel from "src/pages/Operate/EvModel";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -70,6 +71,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/evNews", element: <EvNews /> },
   { path: "/operate/popup", element: <OperatePopup /> },
   { path: "/operate/installCharger", element: <InstallCharger /> },
+  { path: "/operate/evModel", element: <EvModel /> },
 
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },

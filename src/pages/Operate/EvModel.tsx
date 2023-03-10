@@ -15,52 +15,25 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 
-/* 삭제 여부 필터 */
-const deleteList = [
+/* 급/완속 필터 */
+const speedList = [
   {
     label: "전체",
   },
   {
-    label: "Y",
+    label: "급속",
   },
   {
-    label: "N",
-  },
-];
-
-/* 업로드 대상 필터 */
-const uploadList = [
-  {
-    label: "전체",
-  },
-  {
-    label: "IOS",
-  },
-  {
-    label: "AOS",
-  },
-  {
-    label: "WEB",
+    label: "완속",
   },
 ];
 /* 검색어 필터 */
-const searchList = [
-  { label: "전체", value: "1" },
-  { label: "제목", value: "4" },
-  { label: "작성자", value: "5" },
-];
+const searchList = [{ label: "전체", value: "1" }];
 
-/* 카테고리 필터 */
-const categoryList = [
+/* 충전기 타입 필터 */
+const typeList = [
   {
-    menuItems: [
-      { label: "전체", value: "1" },
-      { label: "가입 승인", value: "2" },
-      { label: "결제 카드", value: "3" },
-      { label: "충전기 예약", value: "4" },
-      { label: "충전기 사용", value: "5" },
-      { label: "기타", value: "6" },
-    ],
+    menuItems: [{ label: "전체", value: "1" }],
   },
 ];
 
@@ -68,13 +41,14 @@ const categoryList = [
 const tableHeader = [
   { label: "선택" },
   { label: "번호", sort: () => {} },
-  { label: "카테고리", sort: () => {} },
-  { label: "제목", sort: () => {} },
-  { label: "업로드 대상", sort: () => {} },
-  { label: "작성자", sort: () => {} },
-  { label: "조회 수", sort: () => {} },
-  { label: "작성일", sort: () => {} },
-  { label: "삭제여부", sort: () => {} },
+  { label: "급속/완속", sort: () => {} },
+  { label: "충전기 타입", sort: () => {} },
+  { label: "제조사명", sort: () => {} },
+  { label: "차량 모델명", sort: () => {} },
+  { label: "연식", sort: () => {} },
+  { label: "배터리 용량", sort: () => {} },
+  { label: "관리자", sort: () => {} },
+  { label: "등록일", sort: () => {} },
 ];
 
 /* 목록 표시 개수 */
@@ -85,10 +59,10 @@ const countList = [
 ];
 
 /* 임시 목록 데이터 */
-const faqList = [];
+const modelList = [];
 
-const OperateFAQ = () => {
-  const [tabList, setTabList] = useState([{ label: "FAQ" }]);
+const EvModel = () => {
+  const [tabList, setTabList] = useState([{ label: "전기차 모델 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
@@ -130,28 +104,22 @@ const OperateFAQ = () => {
           list={[
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
-            { label: "FAQ", href: "" },
+            { label: "전기차 모델 관리", href: "" },
           ]}
-          title={"FAQ"}
+          title={"전기차 모델 관리"}
         />
 
         <SearchSection className={"pt-2 pb-4 border-top border-bottom"}>
           <Row className={"mt-3 d-flex align-items-center"}>
-            <Col md={5}>
-              <DateGroup className={"mb-0"} label={"답변일시"} />
+            <Col md={4}>
+              <DateGroup className={"mb-0"} label={"등록일"} />
             </Col>
-            <Col md={3}>
-              <RadioGroup
-                title={"삭제 여부"}
-                name={"deleteGroup"}
-                list={deleteList}
-              />
-            </Col>
+            <Col md={4} />
             <Col md={4}>
               <RadioGroup
-                title={"업로드 대상"}
-                name={"uploadGroup"}
-                list={uploadList}
+                title={"급속 / 완속"}
+                name={"speedGroup"}
+                list={speedList}
               />
             </Col>
           </Row>
@@ -168,8 +136,8 @@ const OperateFAQ = () => {
             </Col>
             <Col className={"d-flex"} md={4}>
               <DropboxGroup
-                label={"카테고리"}
-                dropdownItems={categoryList}
+                label={"충전기 타입"}
+                dropdownItems={typeList}
                 className={"me-2 w-xs"}
               />
               <ButtonBase label={"추가"} color={"dark"} />
@@ -182,8 +150,8 @@ const OperateFAQ = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{faqList.length}개</span>의 FAQ가
-              있습니다.
+              총 <span className={"text-turu"}>{modelList.length}개</span>의
+              모델이 있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
@@ -197,8 +165,8 @@ const OperateFAQ = () => {
           <div className={"table-responsive"}>
             <TableBase tableHeader={tableHeader}>
               <>
-                {faqList.length > 0 ? (
-                  faqList.map((faq, index) => (
+                {modelList.length > 0 ? (
+                  modelList.map((model, index) => (
                     <tr key={index}>
                       <td></td>
                       <td>{index + 1}</td>
@@ -213,8 +181,8 @@ const OperateFAQ = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={9} className={"py-5 text-center text"}>
-                      등록된 FAQ가 없습니다.
+                    <td colSpan={10} className={"py-5 text-center text"}>
+                      등록된 모델이 없습니다.
                     </td>
                   </tr>
                 )}
@@ -229,7 +197,7 @@ const OperateFAQ = () => {
   );
 };
 
-export default OperateFAQ;
+export default EvModel;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
