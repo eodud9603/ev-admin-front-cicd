@@ -243,7 +243,9 @@ export const Playground = (props: any) => {
                 <MenuItem component={<Link to={"/operate/evNews"} />}>
                   EV 뉴스
                 </MenuItem>
-                <MenuItem>팝업 관리</MenuItem>
+                <MenuItem component={<Link to={"/operate/popup"} />}>
+                  팝업 관리
+                </MenuItem>
                 <MenuItem>충전기 고장 신고 관리</MenuItem>
                 <MenuItem>충전기 설치 신청 관리</MenuItem>
                 <MenuItem>제휴 문의 관리</MenuItem>

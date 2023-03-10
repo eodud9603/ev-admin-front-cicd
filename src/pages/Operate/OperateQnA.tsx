@@ -38,7 +38,7 @@ const searchList = [
 ];
 
 /* 카테고리 필터 */
-const addressList = [
+const categoryList = [
   {
     menuItems: [
       { label: "전체", value: "1" },
@@ -176,7 +176,7 @@ const OperateQnA = () => {
             <Col className={"d-flex"} md={4}>
               <DropboxGroup
                 label={"카테고리"}
-                dropdownItems={addressList}
+                dropdownItems={categoryList}
                 className={"me-2 w-xs"}
               />
               <ButtonBase label={"추가"} color={"dark"} />
