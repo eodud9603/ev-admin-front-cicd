@@ -13,6 +13,7 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
+import { COUNT_LIST } from "src/constants/list";
 import styled from "styled-components";
 
 /* 답변상태 필터 */
@@ -62,13 +63,6 @@ const tableHeader = [
   { label: "답변자", sort: () => {} },
   { label: "답변 일시", sort: () => {} },
   { label: "상태", sort: () => {} },
-];
-
-/* 목록 표시 개수 */
-const countList = [
-  { label: "10개씩 보기", value: "1" },
-  { label: "20개씩 보기", value: "2" },
-  { label: "50개씩 보기", value: "3" },
 ];
 
 /* 임시 목록 데이터 */
@@ -197,7 +191,7 @@ const CorporateQnA = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={countList} />
+              <DropdownBase menuItems={COUNT_LIST} />
             </div>
           </div>
 

@@ -11,6 +11,7 @@ interface IDateInputProps {
     onClick?: () => void;
     className?: string;
   }[];
+  className?: string;
 }
 
 export const DateGroup = (props: IDateInputProps) => {
