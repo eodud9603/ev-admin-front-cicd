@@ -6,7 +6,7 @@ export const COUNT_FILTER_LIST = [
     { label: "50개씩 보기", value: "3" },
   ];
 
-  /** 운영사 필터 */
+/** 운영사 필터 */
 export const OPERATOR_FILTER_LIST  = [
   {
     label: "전체",

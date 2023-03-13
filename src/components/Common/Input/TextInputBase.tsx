@@ -32,7 +32,11 @@ const TextInputBase = (props: ITextInputBaseProps) => {
 
   return (
     <InputBase
-      className={`font-size-14 ${className}`}
+      className={`font-size-14 ${
+        disabled
+          ? "bg-light bg-opacity-50 border-secondary border-opacity-50"
+          : "bg-white"
+      } ${className}`}
       inputstyle={inputstyle}
       id={name}
       type={"text"}

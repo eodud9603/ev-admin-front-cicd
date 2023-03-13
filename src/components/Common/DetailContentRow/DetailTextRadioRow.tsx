@@ -22,7 +22,11 @@ export const DetailTextRadioRow = (props: IDetailTextRadioRow) => {
   const { rows } = props;
 
   return (
-    <Row className={"border border-0 border-top border-2 border-light mx-1"}>
+    <Row
+      className={
+        "border border-0 border-top border-2 border-light mx-1 align-items-center"
+      }
+    >
       {rows.map((item, index) => (
         <Col key={index} sm={rows.length > 1 && 6} className={"d-flex p-0"}>
           <Col

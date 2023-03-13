@@ -33,10 +33,12 @@ const RadioGroup = (props: IRadioGroupProps) => {
       {Boolean(title) && (
         <Label className={"fw-bold m-0 w-xs me-3"}>{title}</Label>
       )}
-      {list.map(({ label }, index) => (
+      {list.map(({ label, disabled, checked }, index) => (
         <RadioBase
           key={index}
           label={label}
+          disabled={disabled}
+          checked={checked}
           name={name}
           id={`${name}-${index}`}
           onChange={onChange}
