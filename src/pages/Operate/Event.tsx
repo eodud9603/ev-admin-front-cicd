@@ -18,7 +18,7 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { COUNT_LIST } from "src/constants/list";
+import { COUNT_FILTER_LIST, UPLOAD_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
 
 /* 진행 여부 필터 */
@@ -34,22 +34,6 @@ const progressList = [
   },
   {
     label: "종료",
-  },
-];
-
-/* 업로드 대상 필터 */
-const uploadList = [
-  {
-    label: "전체",
-  },
-  {
-    label: "IOS",
-  },
-  {
-    label: "AOS",
-  },
-  {
-    label: "WEB",
   },
 ];
 
@@ -189,7 +173,7 @@ const Event = () => {
               <RadioGroup
                 title={"업로드 대상"}
                 name={"uploadGroup"}
-                list={uploadList}
+                list={UPLOAD_FILTER_LIST}
               />
             </Col>
           </Row>
@@ -227,7 +211,7 @@ const Event = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_LIST} />
+              <DropdownBase menuItems={COUNT_FILTER_LIST} />
               <ButtonBase label={"신규 등록"} color={"turu"} />
               <ButtonBase
                 label={"선택 삭제"}

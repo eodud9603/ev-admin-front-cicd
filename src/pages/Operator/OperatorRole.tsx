@@ -7,30 +7,8 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
+import { ROLE_LIST } from "src/constants/list";
 import styled from "styled-components";
-
-const roleTabList = [
-  {
-    label: "최고관리자",
-    value: "1",
-  },
-  {
-    label: "일반관리자",
-    value: "2",
-  },
-  {
-    label: "상담사",
-    value: "3",
-  },
-  {
-    label: "제조사",
-    value: "4",
-  },
-  {
-    label: "관계사",
-    value: "5",
-  },
-];
 
 /* 목록 헤더 */
 const tableHeader = [
@@ -187,7 +165,7 @@ const OperatorRole = () => {
         />
 
         <RoleSection>
-          {roleTabList.map(({ label, value }, index) => (
+          {ROLE_LIST.map(({ label, value }, index) => (
             <ButtonBase
               className={`width-110 rounded-0 fw-bold ${
                 index > 0 ? "border-start-0" : ""

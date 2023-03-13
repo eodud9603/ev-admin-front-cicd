@@ -13,21 +13,11 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { COUNT_LIST } from "src/constants/list";
+import {
+  ANSWER_STATUS_FILTER_LIST,
+  COUNT_FILTER_LIST,
+} from "src/constants/list";
 import styled from "styled-components";
-
-/* 답변상태 필터 */
-const statusList = [
-  {
-    label: "전체",
-  },
-  {
-    label: "완료",
-  },
-  {
-    label: "대기",
-  },
-];
 
 /* 검색어 필터 */
 const searchList = [
@@ -152,7 +142,7 @@ const CorporateQnA = () => {
               <RadioGroup
                 title={"답변 상태"}
                 name={"statusGroup"}
-                list={statusList}
+                list={ANSWER_STATUS_FILTER_LIST}
               />
             </Col>
           </Row>
@@ -191,7 +181,7 @@ const CorporateQnA = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_LIST} />
+              <DropdownBase menuItems={COUNT_FILTER_LIST} />
             </div>
           </div>
 

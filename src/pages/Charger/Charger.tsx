@@ -12,7 +12,11 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { COUNT_LIST } from "src/constants/list";
+import {
+  COUNT_FILTER_LIST,
+  DEMOLITION_FILTER_LIST,
+  OPERATOR_FILTER_LIST,
+} from "src/constants/list";
 import styled from "styled-components";
 
 /* 주소(지역) 필터 */
@@ -25,32 +29,6 @@ const addressList = [
   },
   {
     menuItems: [{ label: "동,읍", value: "1" }],
-  },
-];
-
-/* 운영사 필터 */
-const operatorList = [
-  {
-    label: "전체",
-  },
-  {
-    label: "HEV",
-  },
-  {
-    label: "JEV",
-  },
-];
-
-/* 철거여부 필터 */
-const demolitionList = [
-  {
-    label: "전체",
-  },
-  {
-    label: "철거",
-  },
-  {
-    label: "철거예정",
   },
 ];
 
@@ -179,7 +157,7 @@ const Charger = () => {
               <RadioGroup
                 title={"운영사"}
                 name={"operatorGroup"}
-                list={operatorList}
+                list={OPERATOR_FILTER_LIST}
               />
             </Col>
           </Row>
@@ -197,7 +175,7 @@ const Charger = () => {
               <RadioGroup
                 title={"철거여부"}
                 name={"demolitionGroup"}
-                list={demolitionList}
+                list={DEMOLITION_FILTER_LIST}
               />
             </Col>
           </Row>
@@ -225,7 +203,7 @@ const Charger = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_LIST} />
+              <DropdownBase menuItems={COUNT_FILTER_LIST} />
               <ButtonBase label={"신규 등록"} color={"turu"} />
               <ButtonBase label={"일괄 제어"} outline={true} color={"turu"} />
               <ButtonBase label={"단일 제어"} outline={true} color={"turu"} />

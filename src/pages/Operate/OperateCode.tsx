@@ -18,21 +18,8 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { COUNT_LIST } from "src/constants/list";
+import { COUNT_FILTER_LIST, DELETE_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
-
-/* 삭제 여부 필터 */
-const deleteList = [
-  {
-    label: "전체",
-  },
-  {
-    label: "Y",
-  },
-  {
-    label: "N",
-  },
-];
 
 /* 검색어 필터 */
 const searchList = [{ label: "전체", value: "1" }];
@@ -149,7 +136,7 @@ const OperateCode = () => {
               <RadioGroup
                 title={"삭제 여부"}
                 name={"deleteGroup"}
-                list={deleteList}
+                list={DELETE_FILTER_LIST}
               />
             </Col>
           </Row>
@@ -181,7 +168,7 @@ const OperateCode = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_LIST} />
+              <DropdownBase menuItems={COUNT_FILTER_LIST} />
               <ButtonBase label={"신규 등록"} color={"turu"} />
               <ButtonBase
                 label={"선택 삭제"}

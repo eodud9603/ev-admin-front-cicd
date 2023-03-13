@@ -12,7 +12,7 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { COUNT_LIST } from "src/constants/list";
+import { COUNT_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
 
 /* 검색어 필터 */
@@ -127,7 +127,7 @@ const OperatePolicy = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_LIST} />
+              <DropdownBase menuItems={COUNT_FILTER_LIST} />
               <ButtonBase label={"신규 등록"} color={"turu"} />
               <ButtonBase label={"선택 삭제"} outline={true} color={"turu"} />
             </div>
