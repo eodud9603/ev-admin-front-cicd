@@ -203,7 +203,7 @@ const OperatorRole = () => {
         </RoleSection>
 
         <ListSection>
-          {/* TODO: 펼치기/숨기기 애니메이션 작업 필요 */}
+          {/** @TODO 펼치기/숨기기 애니메이션 작업 필요 */}
           <TableBase tableClassName={"mb-5"} tableHeader={tableHeader}>
             <>
               {roleList.map((role, index) => (
@@ -244,7 +244,7 @@ const DetailTr = styled.tr`
   transition: all 10s ease;
 `;
 
-/* TODO: 별도 컴포넌트 빼내기 */
+/** @TODO 별도 컴포넌트 빼내기 */
 const FirstRole = (props: {
   index: number;
   name: string;
@@ -308,7 +308,7 @@ const FirstRole = (props: {
   );
 };
 
-/* TODO: 별도 컴포넌트 빼내기 */
+/** @TODO 별도 컴포넌트 빼내기 */
 const DetailRole = (props: { index: number; name: string }) => {
   const { index, name } = props;
 

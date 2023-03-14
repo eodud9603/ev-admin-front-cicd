@@ -18,7 +18,7 @@ const HeaderBase = (props: IHeaderBaseProps) => {
     headerStyle,
   } = props;
 
-  /* TODO: 임시 */
+  /** @TODO 임시 */
   const [darkMode, setDarkMode] = useState(false);
   const dispatch = useDispatch();
   const { layoutType } = useSelector((state: any) => ({

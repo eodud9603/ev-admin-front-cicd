@@ -158,7 +158,7 @@ const OperatorAccount = () => {
                           <HoverSpan
                             className={"text-turu"}
                             onClick={() => {
-                              // TODO: 상담사
+                              /** @TODO 상담사 */
                             }}
                           >
                             <u>{counselorName}</u>
