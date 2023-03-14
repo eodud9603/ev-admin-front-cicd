@@ -161,14 +161,17 @@ const ChargerDetail = () => {
                       {
                         label: "급속",
                         checked: true,
+                        value: "1",
                         disabled,
                       },
                       {
                         label: "완속",
+                        value: "2",
                         disabled,
                       },
                       {
                         label: "과금형 콘센트",
+                        value: "3",
                         disabled,
                       },
                     ]}
