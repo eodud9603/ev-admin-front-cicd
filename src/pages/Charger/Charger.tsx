@@ -19,6 +19,8 @@ import {
   OPERATOR_FILTER_LIST,
 } from "src/constants/list";
 import styled from "styled-components";
+import BatchControlModal from "./components/BatchControlModal";
+import SingleControlModal from "./components/SingleControlModal";
 
 /* 주소(지역) 필터 */
 const addressList = [
@@ -102,6 +104,10 @@ const Charger = () => {
   const [text, setText] = useState("");
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
+  /* 일괄 제어 모달 */
+  const [batchControlModalOpen, setBatchControlModalOpen] = useState(false);
+  /* 단일 제어 모달 */
+  const [singleControlModalOpen, setSingleControlModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -208,8 +214,22 @@ const Charger = () => {
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
               <ButtonBase label={"신규 등록"} color={"turu"} />
-              <ButtonBase label={"일괄 제어"} outline={true} color={"turu"} />
-              <ButtonBase label={"단일 제어"} outline={true} color={"turu"} />
+              <ButtonBase
+                label={"일괄 제어"}
+                outline={true}
+                color={"turu"}
+                onClick={() => {
+                  setBatchControlModalOpen(true);
+                }}
+              />
+              <ButtonBase
+                label={"단일 제어"}
+                outline={true}
+                color={"turu"}
+                onClick={() => {
+                  setSingleControlModalOpen(true);
+                }}
+              />
               <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
             </div>
           </div>
@@ -290,6 +310,19 @@ const Charger = () => {
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
       </BodyBase>
+
+      <BatchControlModal
+        isOpen={batchControlModalOpen}
+        onClose={() => {
+          setBatchControlModalOpen((prev) => !prev);
+        }}
+      />
+      <SingleControlModal
+        isOpen={singleControlModalOpen}
+        onClose={() => {
+          setSingleControlModalOpen((prev) => !prev);
+        }}
+      />
     </ContainerBase>
   );
 };
