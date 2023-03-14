@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -20,6 +21,7 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import styled from "styled-components";
+import DetailBottomButton from "./components/DetailBottomButton";
 
 const disabled = true;
 
@@ -33,6 +35,8 @@ const ChargerDetail = () => {
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 설치정보 drop */
   const [isInstallDrop, setIsInstallDrop] = useState(true);
+
+  const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -796,6 +800,11 @@ const ChargerDetail = () => {
             </Row>
           )}
         </div>
+
+        <DetailBottomButton
+          listHandler={() => navigate("/charger/charger")}
+          editDisabled={true}
+        />
       </BodyBase>
     </ContainerBase>
   );

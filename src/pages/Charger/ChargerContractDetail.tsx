@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
-import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import {
   DetailContentCol,
   DetailGroupCol,
@@ -19,6 +18,7 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import styled from "styled-components";
+import DetailBottomButton from "./components/DetailBottomButton";
 
 const disabled = true;
 
@@ -368,25 +368,10 @@ const ChargerContractDetail = () => {
           />
         </Row>
 
-        <div
-          className={"mb-4 d-flex align-items-center justify-content-center"}
-        >
-          <ButtonBase
-            className={"width-110 me-2"}
-            outline
-            label={"목록"}
-            onClick={() => {
-              navigate("/charger/contract");
-            }}
-          />
-          <ButtonBase
-            className={"width-110 ms-2"}
-            disabled={true}
-            label={"수정"}
-            color={"turu"}
-            onClick={() => {}}
-          />
-        </div>
+        <DetailBottomButton
+          listHandler={() => navigate("/charger/contract")}
+          editDisabled={true}
+        />
       </BodyBase>
     </ContainerBase>
   );

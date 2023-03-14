@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -20,6 +21,7 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
+import DetailBottomButton from "./components/DetailBottomButton";
 
 /** 전역 disabled 처리 */
 const disabled = true;
@@ -97,6 +99,8 @@ const ChargerStationDetail = () => {
   /* 계약정보 drop */
   const [isContractDrop, setIsContractDrop] = useState(true);
 
+  const navigate = useNavigate();
+
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
   };
@@ -155,19 +159,12 @@ const ChargerStationDetail = () => {
               />
             </DropArea>
 
-            <div className={"d-flex align-items-center gap-3"}>
-              <ButtonBase
-                className={"width-110"}
-                label={"충전기 등록"}
-                color={"turu"}
-                outline
-              />
-              <ButtonBase
-                className={"width-110"}
-                label={"수정"}
-                color={"turu"}
-              />
-            </div>
+            <ButtonBase
+              className={"width-110"}
+              label={"충전기 등록"}
+              color={"turu"}
+              outline
+            />
           </div>
 
           <Row>
@@ -741,6 +738,12 @@ const ChargerStationDetail = () => {
             </Col>
           </Row>
         </div>
+
+        <DetailBottomButton
+          containerClassName={"my-5"}
+          listHandler={() => navigate("/charger/chargerStation")}
+          editDisabled={true}
+        />
       </BodyBase>
     </ContainerBase>
   );
