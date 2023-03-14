@@ -6,6 +6,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import { ModalBody } from "reactstrap";
+import DetailCompleteModal from "./DetailCompleteModal";
 
 interface IAlarmAddMemberModal {
   isOpen: boolean;
@@ -28,9 +29,10 @@ const SingleControlModal = (props: IAlarmAddMemberModal) => {
   const { isOpen, onClose } = props;
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
-
-  /** @TODO 적용 버튼 비활성화 적용해야함(임시) */
-  const disabled = true;
+  /* 적용 버튼 disabled */
+  const [disabled, setDisabled] = useState(true);
+  /* 잔송완료 모달 */
+  const [completeModalOpen, setCompleteModal] = useState(false);
 
   return (
     <ModalBase
@@ -83,9 +85,27 @@ const SingleControlModal = (props: IAlarmAddMemberModal) => {
             label={"적용"}
             color={disabled ? "secondary" : "turu"}
             className={"w-xs"}
+            onClick={() => {
+              setDisabled(true);
+              /** @TODO 적용 로직 */
+
+              /* 적용 성공 */
+              setCompleteModal(true);
+            }}
           />
         </div>
       </ModalBody>
+
+      <DetailCompleteModal
+        isOpen={completeModalOpen}
+        title={"단일 제어 완료"}
+        contents={"단일 제어 SMS 전송이 완료되었습니다."}
+        onClose={() => {
+          setCompleteModal(false);
+          onClose();
+          setDisabled(false);
+        }}
+      />
     </ModalBase>
   );
 };
