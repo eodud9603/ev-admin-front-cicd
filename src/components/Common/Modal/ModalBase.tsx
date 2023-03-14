@@ -49,7 +49,7 @@ const ModalBase = (props: IModalBaseProps) => {
       <ModalHeader
         className={`py-3 border-bottom border-light border-2 ${headerClassName}`}
         close={
-          isCloseButton && (
+          isCloseButton ? (
             <Button
               type={"button"}
               className={`pe-3 btn-close bg-transparent btn-close-dark`}
@@ -58,7 +58,7 @@ const ModalBase = (props: IModalBaseProps) => {
               size={"sm"}
               onClick={onClose}
             />
-          )
+          ) : undefined
         }
       >
         <span className={"font-size-20"}>{title}</span>
