@@ -21,7 +21,8 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
-import DetailBottomButton from "./components/DetailBottomButton";
+import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
+import DetailTextModal from "src/pages/Charger/components/DetailTextModal";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -95,8 +96,10 @@ const ChargerStationDetail = () => {
   const [isOperateDrop, setIsOperateDrop] = useState(true);
   /* 계약정보 drop */
   const [isContractDrop, setIsContractDrop] = useState(true);
-  /** 전역 disabled 처리 */
+  /* 전역 disabled 처리 */
   const [disabled, setDisabled] = useState(true);
+  /* 수정완료 모달 */
+  const [isEditComplete, setIsEditComplete] = useState(false);
 
   const navigate = useNavigate();
 
@@ -745,10 +748,22 @@ const ChargerStationDetail = () => {
           editHandler={() => setDisabled(false)}
           saveHandler={() => {
             /* TODO: 저장 로직 추가 필요 */
+
+            /* 저장 성공 */
             setDisabled(true);
+            setIsEditComplete(true);
           }}
         />
       </BodyBase>
+
+      <DetailTextModal
+        isOpen={isEditComplete}
+        onClose={() => {
+          setIsEditComplete((prev) => !prev);
+        }}
+        title={"충전 정보 수정 완료 안내"}
+        contents={"수정된 충전기 정보가 저장되었습니다."}
+      />
     </ContainerBase>
   );
 };

@@ -18,7 +18,8 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import styled from "styled-components";
-import DetailBottomButton from "./components/DetailBottomButton";
+import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
+import DetailTextModal from "src/pages/Charger/components/DetailTextModal";
 
 const ChargerContractDetail = () => {
   const [tabList, setTabList] = useState([
@@ -28,6 +29,8 @@ const ChargerContractDetail = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   /** 전역 disabled 처리 */
   const [disabled, setDisabled] = useState(true);
+  /* 수정완료 모달 */
+  const [isEditComplete, setIsEditComplete] = useState(false);
 
   /* 주소(지역) 필터 */
   const addressList = [
@@ -375,10 +378,22 @@ const ChargerContractDetail = () => {
           editHandler={() => setDisabled(false)}
           saveHandler={() => {
             /* TODO: 저장 로직 추가 필요 */
+
+            /* 저장 성공 */
             setDisabled(true);
+            setIsEditComplete(true);
           }}
         />
       </BodyBase>
+
+      <DetailTextModal
+        isOpen={isEditComplete}
+        onClose={() => {
+          setIsEditComplete((prev) => !prev);
+        }}
+        title={"충전소 계약 정보 수정 완료 안내"}
+        contents={"수정된 충전소 계약 정보가 저장되었습니다."}
+      />
     </ContainerBase>
   );
 };
