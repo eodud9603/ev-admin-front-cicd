@@ -7,6 +7,7 @@ interface IDetailTextInputRow {
 
     content?: string;
     disabled?: boolean;
+    required?: boolean;
     type?: "textarea" | "text";
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     containerWidthRatio?: number;
@@ -33,11 +34,12 @@ export const DetailTextInputRow = (props: IDetailTextInputRow) => {
           >
             <Col
               xs={item?.titleWidthRatio}
-              className={
-                "d-flex fw-bold align-items-center bg-light bg-opacity-10 p-3 "
-              }
+              className={`d-flex fw-bold align-items-center bg-light bg-opacity-10 p-3 ${
+                item.required ? "gap-1" : ""
+              }`}
             >
               {item.title}
+              {item.required && <span className={"text-danger"}>*</span>}
             </Col>
             <Col className={"bg-white p-3"}>
               <InputGroup>

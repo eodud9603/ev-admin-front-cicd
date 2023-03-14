@@ -182,6 +182,7 @@ const ChargerStationDetail = () => {
                     {
                       titleWidthRatio: 4,
                       title: "충전소명",
+                      required: true,
                       content: "휴맥스 카플랫 전용 A",
                       disabled,
                     },
