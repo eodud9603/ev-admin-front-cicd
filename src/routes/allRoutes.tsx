@@ -45,6 +45,7 @@ import ChargerDetail from "src/pages/Charger/ChargerDetail";
 import ChargerContractDetail from "src/pages/Charger/ChargerContractDetail";
 import { MemberNormalDetail } from "src/pages/Member/MemberNormalDetail";
 import { MemberUsageHistory } from "src/pages/Member/MemberUsageHistory";
+import { MemberIssuanceNormalCard } from "src/pages/Member/MemberIssuanceNormalCard";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -83,6 +84,8 @@ const userRoutes: Array<RouteProps> = [
   { path: "/member/normal/history/:id", element: <MemberUsageHistory /> },
   { path: "/member/withdraw", element: <MemberWithdraw /> },
   { path: "/member/card/normal", element: <MemberNormalCard /> },
+  { path: "/member/card/normal/detail/:id", element: <MemberNormalCard /> },
+  { path: "/member/card/normal/add", element: <MemberIssuanceNormalCard /> },
   { path: "/member/card/roaming", element: <MemberRoamingCard /> },
   { path: "/member/reject", element: <MemberAuthReject /> },
   { path: "/member/group", element: <MemberGroup /> },

@@ -14,6 +14,7 @@ import SearchTextInput from "src/components/Common/Filter/component/SearchTextIn
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -62,6 +63,7 @@ const tableHeader = [
 
 const data = [
   {
+    cardSeq: 1,
     issuanceStatus: "a",
     issuanceDivision: "신규",
     memberDivision: "그룹(그룹명)",
@@ -71,6 +73,7 @@ const data = [
     createDt: "YYYY.MM.DD",
   },
   {
+    cardSeq: 2,
     issuanceStatus: "b",
     issuanceDivision: "신규",
     memberDivision: "그룹(그룹명)",
@@ -80,6 +83,7 @@ const data = [
     createDt: "YYYY.MM.DD",
   },
   {
+    cardSeq: 3,
     issuanceStatus: "c",
     issuanceDivision: "신규",
     memberDivision: "그룹(그룹명)",
@@ -89,6 +93,7 @@ const data = [
     createDt: "YYYY.MM.DD",
   },
   {
+    cardSeq: 4,
     issuanceStatus: "d",
     issuanceDivision: "신규",
     memberDivision: "그룹(그룹명)",
@@ -99,7 +104,7 @@ const data = [
   },
 ];
 interface IIssuanceStatusButton {
-  issuanceStatus: "a" | "b" | "c" | "d";
+  issuanceStatus: string;
 }
 const IssuanceStatusButton = (props: IIssuanceStatusButton) => {
   const { issuanceStatus } = props;
@@ -138,9 +143,19 @@ const IssuanceStatusButton = (props: IIssuanceStatusButton) => {
 };
 
 export const MemberNormalCard = () => {
+  const nav = useNavigate();
+  const { pathname } = useLocation();
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState("0");
   const [text, setText] = useState("");
+
+  const moveToDetail = (id: number) => {
+    nav(`${pathname}/detail/${id}`);
+  };
+
+  const moveToIssuance = () => {
+    nav(`${pathname}/add`);
+  };
 
   return (
     <ContainerBase>
@@ -228,7 +243,11 @@ export const MemberNormalCard = () => {
                   2023-04-01 14:51기준
                 </span>
                 <DropdownBase menuItems={dropdownData} />
-                <ButtonBase label={"신규 발급"} color={"turu"} />
+                <ButtonBase
+                  label={"신규 발급"}
+                  color={"turu"}
+                  onClick={moveToIssuance}
+                />
                 <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
               </div>
             </Col>
@@ -245,7 +264,10 @@ export const MemberNormalCard = () => {
                     <td>{e.issuanceDivision}</td>
                     <td>{e.memberDivision}</td>
                     <td>
-                      <HoverSpan className={"text-turu"}>
+                      <HoverSpan
+                        className={"text-turu"}
+                        onClick={() => moveToDetail(e.cardSeq)}
+                      >
                         <u>{e.name}</u>
                       </HoverSpan>
                     </td>

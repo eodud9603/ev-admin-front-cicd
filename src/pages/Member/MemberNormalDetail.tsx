@@ -40,6 +40,17 @@ export const MemberNormalDetail = () => {
     if (tabList.length === 1) {
       return;
     }
+
+    const tempList = [...tabList];
+    const deleteIndex = Number(e.currentTarget.value);
+    tempList.splice(deleteIndex, 1);
+
+    const isExistTab = tempList[Number(selectedIndex)];
+    if (!isExistTab) {
+      setSelectedIndex(`${tempList.length - 1}`);
+    }
+
+    setTabList(tempList);
   };
 
   return (

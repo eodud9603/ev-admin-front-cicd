@@ -5,7 +5,7 @@ import styled from "styled-components";
 interface IDetailTextInputRow {
   rows: Array<{
     title: string;
-
+    placeholder?: string;
     content?: string;
     disabled?: boolean;
     required?: boolean;
@@ -50,6 +50,7 @@ export const DetailTextInputRow = (props: IDetailTextInputRow) => {
                       ? "bg-light bg-opacity-50 border-1 border-secondary border-opacity-50"
                       : ""
                   }`}
+                  placeholder={item.placeholder}
                   type={item?.type ?? "text"}
                   value={item?.content}
                   disabled={item?.disabled}
