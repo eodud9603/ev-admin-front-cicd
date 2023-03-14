@@ -206,7 +206,7 @@ const OperatorAccount = () => {
                           <HoverSpan
                             className={"text-turu"}
                             onClick={() => {
-                              // TODO: 계정 > 그룹명
+                              /** @TODO 계정 > 그룹명 */
                             }}
                           >
                             <u>{groupName}</u>
@@ -216,7 +216,7 @@ const OperatorAccount = () => {
                           <HoverSpan
                             className={"text-turu"}
                             onClick={() => {
-                              // TODO: 운영자
+                              /** @TODO 운영자 */
                             }}
                           >
                             <u>{operatorName}</u>

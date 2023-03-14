@@ -302,7 +302,7 @@ const ChargerDetail = () => {
                 ]}
               />
 
-              {/* TODO: (CPO, 계약된 법인, 개인회원-미확정 선택 가능) */}
+              {/** @TODO (CPO, 계약된 법인, 개인회원-미확정 선택 가능) */}
               <DetailRow>
                 <DetailLabelCol sm={2}>위탁사명</DetailLabelCol>
                 <DetailContentCol>
@@ -433,7 +433,7 @@ const ChargerDetail = () => {
                 <DetailLabelCol sm={2}>
                   최대 충전 시간(분) - 급속
                 </DetailLabelCol>
-                {/* TODO: 완속 또는 과금형인 경우 해당 텍스트 필드 미노출, 입력 비활성화 분기처리 필요 */}
+                {/** @TODO 완속 또는 과금형인 경우 해당 텍스트 필드 미노출, 입력 비활성화 분기처리 필요 */}
                 <DetailContentCol>
                   <TextInputBase
                     name={"최대 충전 시간(분) - 급속"}
@@ -704,7 +704,7 @@ const ChargerDetail = () => {
                       "펌웨어 정보 노출(자사 관리/ 충전기가 보고하는 펌웨어 정보)",
                     onChange: () => {},
                   },
-                  /* TODO: 자동 노출 표시로 disabled true 고정 */
+                  /** @TODO 자동 노출 표시로 disabled true 고정 */
                   {
                     titleWidthRatio: 4,
                     disabled: true,
@@ -821,7 +821,7 @@ const ChargerDetail = () => {
           editDisabled={disabled}
           editHandler={() => setDisabled(false)}
           saveHandler={() => {
-            /* TODO: 저장 로직 추가 필요 */
+            /** @TODO 저장 로직 추가 필요 */
 
             /* 저장 성공 */
             setDisabled(true);

@@ -444,7 +444,6 @@ const ChargerStationDetail = () => {
                   ]}
                 />
 
-                {/* TODO: 지번 주소 추가 */}
                 <DetailRow>
                   <DetailGroupCol>
                     <DetailLabelCol sm={2}>지번 주소</DetailLabelCol>
@@ -758,7 +757,7 @@ const ChargerStationDetail = () => {
           editDisabled={disabled}
           editHandler={() => setDisabled(false)}
           saveHandler={() => {
-            /* TODO: 저장 로직 추가 필요 */
+            /** @TODO 저장 로직 추가 필요 */
 
             /* 저장 성공 */
             setDisabled(true);

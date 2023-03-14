@@ -247,7 +247,6 @@ const ChargingStationManagement = () => {
                           <HoverSpan
                             className={"text-turu"}
                             onClick={() => {
-                              // TODO: 충전소 상세페이지
                               navigate("/charger/chargerStation/detail");
                             }}
                           >
