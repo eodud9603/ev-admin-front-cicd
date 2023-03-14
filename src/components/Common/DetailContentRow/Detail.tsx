@@ -28,7 +28,7 @@ export const DetailGroupCol = (props: IDetailColProps) => {
   const { children, sm, className = "" } = props;
 
   return (
-    <Col sm={sm} className={`d-flex p-0 ${className}`}>
+    <Col sm={sm} className={`d-flex p-0 align-items-center ${className}`}>
       {children}
     </Col>
   );
