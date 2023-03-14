@@ -97,3 +97,99 @@ export const ROLE_LIST  = [
     value: "5",
   },
 ];
+
+/** 권한등급 목록 데이터(서버에서 받는 목록) */
+export const ROLE_TABLE_LIST = [
+  /* default */
+  {
+    name: "전체",
+    detailList: [],
+    read: true,
+    write: true,
+  },
+  /* server sample response */
+  {
+    name: "충전소 및 충전기 관리",
+    detailList: [
+      {
+        name: "충전소 관리",
+        read: true,
+        write: true,
+      },
+      {
+        name: "충전기 관리",
+        read: true,
+        write: true,
+      },
+      {
+        name: "충전기 고장/파손 관리",
+        read: true,
+        write: true,
+      },
+      {
+        name: "충전기 제조사 관리",
+        read: true,
+        write: true,
+      },
+      {
+        name: "서비스 운영사(사업자) 관리",
+        read: true,
+        write: true,
+      },
+    ],
+    read: true,
+    write: true,
+  },
+  {
+    name: "회원 및 카드 관리",
+    detailList: [
+      {
+        name: "회원 관리",
+        read: true,
+        write: true,
+      },
+      {
+        name: "탈퇴회원 관리",
+        read: true,
+        write: true,
+      },
+      {
+        name: "소항목 목록 노출",
+        read: true,
+        write: true,
+      },
+    ],
+    read: true,
+    write: true,
+  },
+  {
+    name: "운영 관리",
+    detailList: [],
+    read: true,
+    write: true,
+  },
+  {
+    name: "상담 관리",
+    detailList: [],
+    read: true,
+    write: true,
+  },
+  {
+    name: "운영자 관리",
+    detailList: [],
+    read: true,
+    write: true,
+  },
+  {
+    name: "이용 통계",
+    detailList: [],
+    read: true,
+    write: true,
+  },
+  {
+    name: "로그 관리",
+    detailList: [],
+    read: true,
+    write: true,
+  },
+];

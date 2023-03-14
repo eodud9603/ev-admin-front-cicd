@@ -18,6 +18,7 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import DetailBottomButton from "../Charger/components/DetailBottomButton";
+import AuthLevelModal from "./components/AuthLevelModal";
 
 const groupItems = [{ label: "휴맥스EV", value: "1" }];
 
@@ -29,6 +30,8 @@ const OperatorAccountDetail = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 수정 비활성화 */
   const [disabled, setDisabled] = useState(true);
+  /* 권한등급 모달 */
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   /** Y/N 라디오 목록 */
   const radioList = [
@@ -151,7 +154,9 @@ const OperatorAccountDetail = () => {
               outline
               label={"보기"}
               color={"turu"}
-              onClick={() => {}}
+              onClick={() => {
+                setAuthModalOpen(true);
+              }}
             />
           </DetailContentCol>
         </DetailRow>
@@ -226,6 +231,14 @@ const OperatorAccountDetail = () => {
           }}
         />
       </BodyBase>
+
+      <AuthLevelModal
+        type={disabled ? "READ" : "WRITE"}
+        isOpen={authModalOpen}
+        onClose={() => {
+          setAuthModalOpen(false);
+        }}
+      />
     </ContainerBase>
   );
 };
