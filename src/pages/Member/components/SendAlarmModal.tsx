@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ModalBase from "src/components/Common/Modal/ModalBase";
 import { Label } from "reactstrap";
 import styled from "styled-components";
@@ -6,6 +6,8 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
 import { DetailDropdownRow } from "src/components/Common/DetailContentRow/DetailDropdownRow";
 import { TableBase } from "src/components/Common/Table/TableBase";
+import { ButtonBase } from "src/components/Common/Button/ButtonBase";
+import { AlarmAddMemberModal } from "src/pages/Member/components/AlarmAddMemberModal";
 
 const sendTypeRadio = [
   { label: "카카오 알림톡", value: "1" },
@@ -26,6 +28,11 @@ interface ISendAlarmModal {
 }
 export const SendAlarmModal = (props: ISendAlarmModal) => {
   const { isOpen, onClose } = props;
+  const [addModalOpen, setAddModalOpen] = useState(false);
+
+  const handleAddModal = () => {
+    setAddModalOpen(!addModalOpen);
+  };
 
   return (
     <ModalBase
@@ -60,8 +67,10 @@ export const SendAlarmModal = (props: ISendAlarmModal) => {
             },
           ]}
         />
-        <DetailTextInputRow rows={[{ title: "제목" }]} />
-        <DetailTextInputRow rows={[{ title: "내용", type: "textarea" }]} />
+        <DetailTextInputRow rows={[{ title: "제목", titleWidthRatio: 2 }]} />
+        <DetailTextInputRow
+          rows={[{ title: "내용", type: "textarea", titleWidthRatio: 2 }]}
+        />
 
         <div className={"mt-3"}>
           <Label className={"fw-bold m-0 my-3"}>발신 번호</Label>
@@ -81,11 +90,41 @@ export const SendAlarmModal = (props: ISendAlarmModal) => {
           />
         </div>
 
-        <div className={"mt-3"}>
-          <Label className={"fw-bold m-0 my-3"}>수신 회원</Label>
+        <div className={"my-5"}>
+          <div
+            className={"d-flex justify-content-between align-items-center mb-3"}
+          >
+            <Label className={"fw-bold m-0"}>수신 회원</Label>
+            <ButtonBase
+              label={"추가"}
+              color={"turu"}
+              outline={true}
+              className={"w-xs"}
+              onClick={handleAddModal}
+            />
+          </div>
           <TableBase tableHeader={receptionTableHeader} />
         </div>
+
+        <div className={"d-flex justify-content-center my-5"}>
+          <span className={"text-size-13 fw-bold"}>
+            총 <span className={"text-turu"}>0명</span>의 회원에게{" "}
+            <span className={"text-turu"}>서버 작업 안내</span>
+            SMS 알림을 발송합니다.
+          </span>
+        </div>
+
+        <div className={"d-flex justify-content-center"}>
+          <ButtonBase
+            label={"닫기"}
+            color={"secondary"}
+            outline={true}
+            className={"w-xs mx-2"}
+          />
+          <ButtonBase label={"발송"} color={"turu"} className={"w-xs"} />
+        </div>
       </ModalContainer>
+      <AlarmAddMemberModal isOpen={addModalOpen} onClose={handleAddModal} />
     </ModalBase>
   );
 };

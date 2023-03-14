@@ -15,7 +15,7 @@ interface IModalBaseProps extends ModalProps {
   onClose: () => void;
   headerClassName?: string;
 
-  size?: "ms" | "md" | "lg";
+  size?: "ms" | "md" | "lg" | "xl";
   title?: string;
   body?: Pick<ModalBodyProps, "children">["children"];
   footer?: Pick<ModalFooterProps, "children">["children"];
