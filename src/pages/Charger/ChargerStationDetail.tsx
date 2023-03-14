@@ -21,10 +21,9 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
-import DetailBottomButton from "./components/DetailBottomButton";
-
-/** 전역 disabled 처리 */
-const disabled = true;
+import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
+import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -98,6 +97,12 @@ const ChargerStationDetail = () => {
   const [isOperateDrop, setIsOperateDrop] = useState(true);
   /* 계약정보 drop */
   const [isContractDrop, setIsContractDrop] = useState(true);
+  /* 전역 disabled 처리 */
+  const [disabled, setDisabled] = useState(true);
+  /* 수정완료 모달 */
+  const [isEditComplete, setIsEditComplete] = useState(false);
+  /* 수정취소 모달 */
+  const [isEditCancel, setIsEditCancel] = useState(false);
 
   const navigate = useNavigate();
 
@@ -741,10 +746,48 @@ const ChargerStationDetail = () => {
 
         <DetailBottomButton
           containerClassName={"my-5"}
-          listHandler={() => navigate("/charger/chargerStation")}
-          editDisabled={true}
+          listHandler={() => {
+            /* 수정모드 상태에서 목록 버튼 클릭 */
+            if (!disabled) {
+              setIsEditCancel(true);
+              return;
+            }
+
+            navigate("/charger/chargerStation");
+          }}
+          editDisabled={disabled}
+          editHandler={() => setDisabled(false)}
+          saveHandler={() => {
+            /* TODO: 저장 로직 추가 필요 */
+
+            /* 저장 성공 */
+            setDisabled(true);
+            setIsEditComplete(true);
+          }}
         />
       </BodyBase>
+
+      <DetailCompleteModal
+        isOpen={isEditComplete}
+        onClose={() => {
+          setIsEditComplete((prev) => !prev);
+        }}
+        title={"충전 정보 수정 완료 안내"}
+        contents={"수정된 충전기 정보가 저장되었습니다."}
+      />
+      <DetailCancelModal
+        isOpen={isEditCancel}
+        onClose={() => {
+          setIsEditCancel((prev) => !prev);
+        }}
+        cancelHandler={() => {
+          navigate("/charger/chargerStation");
+        }}
+        title={"충전소 정보 수정 취소 안내"}
+        contents={
+          "수정된 충전소 정보가 저장되지 않습니다.\n수정을 취소하시겠습니까?"
+        }
+      />
     </ContainerBase>
   );
 };

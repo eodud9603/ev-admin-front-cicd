@@ -15,6 +15,7 @@ interface IModalBaseProps extends ModalProps {
   onClose: () => void;
   headerClassName?: string;
 
+  isCloseButton?: boolean;
   size?: "ms" | "md" | "lg" | "xl";
   title?: string;
   body?: Pick<ModalBodyProps, "children">["children"];
@@ -33,6 +34,7 @@ const ModalBase = (props: IModalBaseProps) => {
     onClose,
     children,
     /* Optional */
+    isCloseButton = true,
     size = "md",
     title = "",
     headerClassName = "",
@@ -47,14 +49,16 @@ const ModalBase = (props: IModalBaseProps) => {
       <ModalHeader
         className={`py-3 border-bottom border-light border-2 ${headerClassName}`}
         close={
-          <Button
-            type={"button"}
-            className={`pe-3 btn-close bg-transparent btn-close-dark`}
-            aria-label={"Close"}
-            outline
-            size={"sm"}
-            onClick={onClose}
-          />
+          isCloseButton && (
+            <Button
+              type={"button"}
+              className={`pe-3 btn-close bg-transparent btn-close-dark`}
+              aria-label={"Close"}
+              outline
+              size={"sm"}
+              onClick={onClose}
+            />
+          )
         }
       >
         <span className={"font-size-20"}>{title}</span>
