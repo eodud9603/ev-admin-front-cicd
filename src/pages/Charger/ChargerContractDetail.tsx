@@ -91,9 +91,9 @@ const ChargerContractDetail = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 계약 관리", href: "" },
-            { label: "충전기 계약 상세", href: "" },
+            { label: "충전소 계약 상세", href: "" },
           ]}
-          title={"충전기 계약 상세"}
+          title={"충전소 계약 상세"}
         />
 
         <p className={"mt-3 mb-2 font-size-20 text-dark fw-bold"}>기본정보</p>
