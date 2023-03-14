@@ -15,6 +15,7 @@ import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { SendAlarmModal } from "src/pages/Member/components/SendAlarmModal";
+import { useLocation, useNavigate, useNavigation } from "react-router-dom";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -64,7 +65,36 @@ const tableHeader = [
   { label: "이용내역" },
 ];
 
+const data = [
+  {
+    userSeq: 1,
+    affiliation: "HEV",
+    grade: "정회원",
+    division: "개인",
+    name: "김회원",
+    userId: "kim",
+    birthday: "YYYY.MM.DD",
+    phone: "000-0000-0000",
+    memberCardNumber: "000000",
+    createDt: "YYYY.MM.DD",
+  },
+  {
+    userSeq: 2,
+    affiliation: "HEV",
+    grade: "정회원",
+    division: "개인",
+    name: "김회원",
+    userId: "kim",
+    birthday: "YYYY.MM.DD",
+    phone: "000-0000-0000",
+    memberCardNumber: "000000",
+    createDt: "YYYY.MM.DD",
+  },
+];
+
 export const MemberNormal = () => {
+  const nav = useNavigate();
+  const { pathname } = useLocation();
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("0");
@@ -72,6 +102,10 @@ export const MemberNormal = () => {
 
   const handleModalState = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleNavigation = (id: number, path: string) => {
+    nav(`${pathname}/${path}/${id}`);
   };
 
   return (
@@ -145,6 +179,7 @@ export const MemberNormal = () => {
           </Row>
         </FilterSection>
         <Separator />
+        <Separator />
 
         <ListSection className={"py-4"}>
           <Row className={"mb-4"}>
@@ -169,7 +204,39 @@ export const MemberNormal = () => {
               </div>
             </Col>
           </Row>
-          <TableBase tableHeader={tableHeader}></TableBase>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {data.length > 0 &&
+                data.map((e, i) => (
+                  <tr key={i}>
+                    <td></td>
+                    <td>{e.userSeq}</td>
+                    <td>{e.grade}</td>
+                    <td>{e.division}</td>
+                    <td>{e.name}</td>
+                    <td>
+                      <HoverSpan
+                        className={"text-turu"}
+                        onClick={() => handleNavigation(e.userSeq, "detail")}
+                      >
+                        <u>{e.userId}</u>
+                      </HoverSpan>
+                    </td>
+                    <td>{e.birthday}</td>
+                    <td>{e.phone}</td>
+                    <td>{e.memberCardNumber}</td>
+                    <td>{e.createDt}</td>
+                    <td>
+                      <ButtonBase
+                        label={"보기"}
+                        outline={true}
+                        onClick={() => handleNavigation(e.userSeq, "history")}
+                      />
+                    </td>
+                  </tr>
+                ))}
+            </>
+          </TableBase>
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
@@ -182,3 +249,9 @@ const ListSection = styled.section``;
 const FilterSection = styled.section``;
 const AmountInfo = styled.span``;
 const Separator = styled.hr``;
+
+const HoverSpan = styled.span`
+  :hover {
+    cursor: pointer;
+  }
+`;

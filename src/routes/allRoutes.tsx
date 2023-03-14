@@ -41,6 +41,8 @@ import OperateVariable from "src/pages/Operate/OperateVariable";
 import OperateSms from "src/pages/Operate/OperateSMS";
 import OperateNotificationTalk from "src/pages/Operate/OperateNotificationTalk";
 import ChargerStationDetail from "src/pages/Charger/ChargerStationDetail";
+import { MemberNormalDetail } from "src/pages/Member/MemberNormalDetail";
+import { MemberUsageHistory } from "src/pages/Member/MemberUsageHistory";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -67,6 +69,8 @@ const userRoutes: Array<RouteProps> = [
   { path: "/charger/operator", element: <ChargerOperator /> },
 
   { path: "/member/normal", element: <MemberNormal /> },
+  { path: "/member/normal/detail/:id", element: <MemberNormalDetail /> },
+  { path: "/member/normal/history/:id", element: <MemberUsageHistory /> },
   { path: "/member/withdraw", element: <MemberWithdraw /> },
   { path: "/member/card/normal", element: <MemberNormalCard /> },
   { path: "/member/card/roaming", element: <MemberRoamingCard /> },
