@@ -4,6 +4,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 interface IDetailBottomButtonProps {
   listHandler?: () => void;
   editHandler?: () => void;
+  saveHandler?: () => void;
   editDisabled?: boolean;
   containerClassName?: string;
 }
@@ -11,8 +12,9 @@ interface IDetailBottomButtonProps {
 const DetailBottomButton = (props: IDetailBottomButtonProps) => {
   const {
     listHandler,
-    editDisabled = true,
     editHandler,
+    saveHandler,
+    editDisabled = false,
     containerClassName = "",
   } = props;
 
@@ -28,10 +30,9 @@ const DetailBottomButton = (props: IDetailBottomButtonProps) => {
       />
       <ButtonBase
         className={"width-110 ms-2"}
-        disabled={editDisabled}
-        label={"수정"}
+        label={!editDisabled ? "저장" : "수정"}
         color={"turu"}
-        onClick={editHandler}
+        onClick={!editDisabled ? saveHandler : editHandler}
       />
     </div>
   );

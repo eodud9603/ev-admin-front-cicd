@@ -23,8 +23,6 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import styled from "styled-components";
 import DetailBottomButton from "./components/DetailBottomButton";
 
-const disabled = true;
-
 const ChargerDetail = () => {
   const [tabList, setTabList] = useState([
     { label: "공지사항" },
@@ -35,6 +33,8 @@ const ChargerDetail = () => {
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 설치정보 drop */
   const [isInstallDrop, setIsInstallDrop] = useState(true);
+  /** 전역 disabled 처리 */
+  const [disabled, setDisabled] = useState(true);
 
   const navigate = useNavigate();
 
@@ -802,8 +802,14 @@ const ChargerDetail = () => {
         </div>
 
         <DetailBottomButton
+          containerClassName={"my-5"}
           listHandler={() => navigate("/charger/charger")}
-          editDisabled={true}
+          editDisabled={disabled}
+          editHandler={() => setDisabled(false)}
+          saveHandler={() => {
+            /* TODO: 저장 로직 추가 필요 */
+            setDisabled(true);
+          }}
         />
       </BodyBase>
     </ContainerBase>

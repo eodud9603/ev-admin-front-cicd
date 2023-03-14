@@ -20,30 +20,30 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import styled from "styled-components";
 import DetailBottomButton from "./components/DetailBottomButton";
 
-const disabled = true;
-
-/* 주소(지역) 필터 */
-const addressList = [
-  {
-    disabled,
-    menuItems: [{ label: "시,도", value: "1" }],
-  },
-  {
-    disabled,
-    menuItems: [{ label: "구,군", value: "1" }],
-  },
-  {
-    disabled,
-    menuItems: [{ label: "동,읍", value: "1" }],
-  },
-];
-
 const ChargerContractDetail = () => {
   const [tabList, setTabList] = useState([
     { label: "공지사항" },
     { label: "충전소 계약 관리" },
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
+  /** 전역 disabled 처리 */
+  const [disabled, setDisabled] = useState(true);
+
+  /* 주소(지역) 필터 */
+  const addressList = [
+    {
+      disabled,
+      menuItems: [{ label: "시,도", value: "1" }],
+    },
+    {
+      disabled,
+      menuItems: [{ label: "구,군", value: "1" }],
+    },
+    {
+      disabled,
+      menuItems: [{ label: "동,읍", value: "1" }],
+    },
+  ];
 
   const navigate = useNavigate();
 
@@ -369,8 +369,14 @@ const ChargerContractDetail = () => {
         </Row>
 
         <DetailBottomButton
+          containerClassName={"my-5"}
           listHandler={() => navigate("/charger/contract")}
-          editDisabled={true}
+          editDisabled={disabled}
+          editHandler={() => setDisabled(false)}
+          saveHandler={() => {
+            /* TODO: 저장 로직 추가 필요 */
+            setDisabled(true);
+          }}
         />
       </BodyBase>
     </ContainerBase>

@@ -23,9 +23,6 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 import DetailBottomButton from "./components/DetailBottomButton";
 
-/** 전역 disabled 처리 */
-const disabled = true;
-
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
   {
@@ -98,6 +95,8 @@ const ChargerStationDetail = () => {
   const [isOperateDrop, setIsOperateDrop] = useState(true);
   /* 계약정보 drop */
   const [isContractDrop, setIsContractDrop] = useState(true);
+  /** 전역 disabled 처리 */
+  const [disabled, setDisabled] = useState(true);
 
   const navigate = useNavigate();
 
@@ -742,7 +741,12 @@ const ChargerStationDetail = () => {
         <DetailBottomButton
           containerClassName={"my-5"}
           listHandler={() => navigate("/charger/chargerStation")}
-          editDisabled={true}
+          editDisabled={disabled}
+          editHandler={() => setDisabled(false)}
+          saveHandler={() => {
+            /* TODO: 저장 로직 추가 필요 */
+            setDisabled(true);
+          }}
         />
       </BodyBase>
     </ContainerBase>
