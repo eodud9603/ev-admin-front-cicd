@@ -20,7 +20,10 @@ const DetailBottomButton = (props: IDetailBottomButtonProps) => {
 
   return (
     <div
-      className={`mb-4 d-flex align-items-center justify-content-center ${containerClassName}`}
+      className={
+        "mb-4 d-flex align-items-center justify-content-center " +
+        `${containerClassName}`
+      }
     >
       <ButtonBase
         className={"width-110 me-2"}

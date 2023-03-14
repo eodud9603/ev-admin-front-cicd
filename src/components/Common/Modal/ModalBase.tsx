@@ -47,7 +47,9 @@ const ModalBase = (props: IModalBaseProps) => {
   return (
     <Modal isOpen={isOpen} size={size} {...rest}>
       <ModalHeader
-        className={`py-3 border-bottom border-light border-2 ${headerClassName}`}
+        className={
+          "py-3 border-bottom border-light border-2 " + `${headerClassName}`
+        }
         close={
           isCloseButton ? (
             <Button
