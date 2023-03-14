@@ -41,7 +41,8 @@ const HeaderBase = (props: IHeaderBaseProps) => {
   return (
     <Header
       className={
-        "d-sm-flex justify-content-end align-items-center p-3 border-bottom gap-3"
+        "d-sm-flex justify-content-end align-items-center " +
+        "p-3 border-bottom gap-3"
       }
       headerStyle={headerStyle}
     >

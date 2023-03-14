@@ -11,7 +11,10 @@ export const DetailRow = (props: IDetailRowProps) => {
 
   return (
     <Row
-      className={`border border-0 border-top border-2 border-light mx-1 align-items-center ${className}`}
+      className={
+        "border border-0 border-top border-2 border-light " +
+        `mx-1 align-items-center ${className}`
+      }
     >
       {children}
     </Row>
@@ -40,7 +43,10 @@ export const DetailLabelCol = (props: IDetailColProps) => {
   return (
     <Col
       sm={sm}
-      className={`d-flex fw-bold align-items-center bg-light bg-opacity-10 p-3 ${className}`}
+      className={
+        "d-flex fw-bold align-items-center " +
+        `bg-light bg-opacity-10 p-3 ${className}`
+      }
     >
       {children}
     </Col>

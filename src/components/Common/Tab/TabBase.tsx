@@ -30,7 +30,10 @@ const TabBase = (props: ITabBaseProps) => {
 
   return (
     <div
-      className={`d-inline-flex align-items-center btn-group rounded-bottom-0 rounded-top-3 border-0 ${containerClass} ${className}`}
+      className={
+        "d-inline-flex align-items-center btn-group " +
+        `rounded-bottom-0 rounded-top-3 border-0 ${containerClass} ${className}`
+      }
     >
       <Button
         type={"button"}

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -96,6 +97,8 @@ const OperatorAccount = () => {
   const [text, setText] = useState("");
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
+
+  const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -216,7 +219,7 @@ const OperatorAccount = () => {
                           <HoverSpan
                             className={"text-turu"}
                             onClick={() => {
-                              /** @TODO 운영자 */
+                              navigate("/operator/account/detail");
                             }}
                           >
                             <u>{operatorName}</u>

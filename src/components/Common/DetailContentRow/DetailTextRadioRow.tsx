@@ -24,7 +24,8 @@ export const DetailTextRadioRow = (props: IDetailTextRadioRow) => {
   return (
     <Row
       className={
-        "border border-0 border-top border-2 border-light mx-1 align-items-center"
+        "border border-0 border-top border-2 border-light " +
+        "mx-1 align-items-center"
       }
     >
       {rows.map((item, index) => (
