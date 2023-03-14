@@ -3,7 +3,7 @@ import { Button } from "reactstrap";
 
 interface IButtonBase {
   label: string;
-  color?: "turu" | "secondary" | "dark";
+  color?: "turu" | "secondary" | "dark" | "info" | "success" | "white";
   icon?: HTMLElement;
   className?: string;
   outline?: boolean;
