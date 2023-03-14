@@ -41,6 +41,8 @@ import OperateVariable from "src/pages/Operate/OperateVariable";
 import OperateSms from "src/pages/Operate/OperateSMS";
 import OperateNotificationTalk from "src/pages/Operate/OperateNotificationTalk";
 import ChargerStationDetail from "src/pages/Charger/ChargerStationDetail";
+import ChargerDetail from "src/pages/Charger/ChargerDetail";
+import ChargerContractDetail from "src/pages/Charger/ChargerContractDetail";
 import { MemberNormalDetail } from "src/pages/Member/MemberNormalDetail";
 import { MemberUsageHistory } from "src/pages/Member/MemberUsageHistory";
 
@@ -61,8 +63,16 @@ const userRoutes: Array<RouteProps> = [
     element: <Charger />,
   },
   {
+    path: "/charger/charger/detail",
+    element: <ChargerDetail />,
+  },
+  {
     path: "/charger/contract",
     element: <ChargerContract />,
+  },
+  {
+    path: "/charger/contract/detail",
+    element: <ChargerContractDetail />,
   },
   { path: "/charger/trouble", element: <ChargerTrouble /> },
   { path: "/charger/manufacturer", element: <ChargerManufacturer /> },

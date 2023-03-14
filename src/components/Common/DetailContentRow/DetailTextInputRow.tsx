@@ -1,5 +1,6 @@
 import React from "react";
 import { Col, Input, InputGroup, Row } from "reactstrap";
+import styled from "styled-components";
 
 interface IDetailTextInputRow {
   rows: Array<{
@@ -43,7 +44,7 @@ export const DetailTextInputRow = (props: IDetailTextInputRow) => {
             </Col>
             <Col className={"bg-white p-3"}>
               <InputGroup>
-                <Input
+                <DetailInput
                   className={`${
                     item?.disabled
                       ? "bg-light bg-opacity-50 border-1 border-secondary border-opacity-50"
@@ -65,3 +66,12 @@ export const DetailTextInputRow = (props: IDetailTextInputRow) => {
     </Row>
   );
 };
+
+const DetailInput = styled(Input)`
+  ::placeholder {
+    color: #bdbdbd;
+  }
+  :focus {
+    border-color: #fc6c00;
+  }
+`;

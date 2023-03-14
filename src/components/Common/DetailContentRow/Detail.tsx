@@ -48,7 +48,11 @@ export const DetailLabelCol = (props: IDetailColProps) => {
 };
 
 export const DetailContentCol = (props: IDetailColProps) => {
-  const { children, className = "" } = props;
+  const { children, sm, className = "" } = props;
 
-  return <Col className={`bg-white p-3 ${className}`}>{children}</Col>;
+  return (
+    <Col sm={sm} className={`bg-white p-3 ${className}`}>
+      {children}
+    </Col>
+  );
 };
