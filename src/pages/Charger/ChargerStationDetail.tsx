@@ -446,18 +446,32 @@ const ChargerStationDetail = () => {
                     <DetailGroupCol>
                       <DetailLabelCol sm={2}>지번 주소</DetailLabelCol>
                       <DetailContentCol>
-                        <TextInputBase
-                          bsSize={"lg"}
-                          disabled={disabled}
-                          className={"mb-4"}
-                          name={"우편번호"}
-                          value={"우편번호 노출"}
-                          onChange={() => {}}
-                        />
+                        <div className={"d-flex gap-4"}>
+                          <TextInputBase
+                            inputstyle={{ flex: 1 }}
+                            bsSize={"lg"}
+                            disabled={true}
+                            className={"mb-4"}
+                            name={"우편번호"}
+                            value={"우편번호 노출"}
+                            onChange={() => {}}
+                          />
+                          <div style={{ flex: 3 }}>
+                            {!disabled && (
+                              <ButtonBase
+                                className={"width-110"}
+                                outline
+                                label={"우편번호 검색"}
+                                color={"turu"}
+                                onClick={() => {}}
+                              />
+                            )}
+                          </div>
+                        </div>
                         <div className={"d-flex gap-4"}>
                           <TextInputBase
                             bsSize={"lg"}
-                            disabled={disabled}
+                            disabled={true}
                             name={"주소"}
                             value={"검색된 주소 정보 노출"}
                             onChange={() => {}}
