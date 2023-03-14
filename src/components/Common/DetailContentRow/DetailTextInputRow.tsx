@@ -14,15 +14,15 @@ interface IDetailTextInputRow {
 
     children?: string | JSX.Element | JSX.Element[];
   } | null>;
+  className?: string;
 }
 export const DetailTextInputRow = (props: IDetailTextInputRow) => {
-  const { rows } = props;
+  const { rows, className } = props;
 
   return (
     <Row
-      className={
-        "border border-0 border-top border-2 border-light mx-1 align-items-center"
-      }
+      className={`border border-0 border-top border-2 border-light mx-1 
+      align-items-center ${className ?? ""}`}
     >
       {rows.map((item, index) =>
         item ? (
