@@ -46,6 +46,7 @@ import ChargerContractDetail from "src/pages/Charger/ChargerContractDetail";
 import { MemberNormalDetail } from "src/pages/Member/MemberNormalDetail";
 import { MemberUsageHistory } from "src/pages/Member/MemberUsageHistory";
 import { MemberIssuanceNormalCard } from "src/pages/Member/MemberIssuanceNormalCard";
+import OperatorCounselorDetail from "src/pages/Operator/OperatorCounselorDetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -110,6 +111,7 @@ const userRoutes: Array<RouteProps> = [
 
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },
+  { path: "/operator/counselor/detail", element: <OperatorCounselorDetail /> },
   { path: "/operator/role", element: <OperatorRole /> },
 
   // { path: "/member/card", element: <ChargerOperator /> },

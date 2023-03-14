@@ -8,6 +8,7 @@ export interface ITextInputBaseProps {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 
   placeholder?: string;
+  type?: string;
   disabled?: boolean;
   bsSize?: "sm" | "lg";
   inputstyle?: React.CSSProperties;
@@ -21,6 +22,7 @@ const TextInputBase = (props: ITextInputBaseProps) => {
     value,
     onChange,
     /* optional */
+    type = "text",
     placeholder = "입력해주세요.",
     bsSize = "sm",
     disabled = false,
@@ -39,7 +41,7 @@ const TextInputBase = (props: ITextInputBaseProps) => {
       } ${className}`}
       inputstyle={inputstyle}
       id={name}
-      type={"text"}
+      type={type}
       valid={false}
       invalid={false}
       bsSize={bsSize}

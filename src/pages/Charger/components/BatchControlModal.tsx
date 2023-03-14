@@ -8,6 +8,7 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import { ModalBody } from "reactstrap";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
+import DetailCompleteModal from "./DetailCompleteModal";
 
 interface IAlarmAddMemberModal {
   isOpen: boolean;
@@ -42,9 +43,10 @@ const BatchControlModal = (props: IAlarmAddMemberModal) => {
   const { isOpen, onClose } = props;
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
-
-  /** @TODO 적용 버튼 비활성화 적용해야함(임시) */
-  const disabled = true;
+  /* 적용 버튼 disabled */
+  const [disabled, setDisabled] = useState(true);
+  /* 잔송완료 모달 */
+  const [completeModalOpen, setCompleteModal] = useState(false);
 
   return (
     <ModalBase
@@ -121,9 +123,27 @@ const BatchControlModal = (props: IAlarmAddMemberModal) => {
             label={"적용"}
             color={disabled ? "secondary" : "turu"}
             className={"w-xs"}
+            onClick={() => {
+              setDisabled(true);
+              /** @TODO 적용 로직 */
+
+              /* 적용 성공 */
+              setCompleteModal(true);
+            }}
           />
         </div>
       </ModalBody>
+
+      <DetailCompleteModal
+        isOpen={completeModalOpen}
+        title={"일괄 제어 완료"}
+        contents={"일괄 제어 SMS 전송이 완료되었습니다."}
+        onClose={() => {
+          setCompleteModal(false);
+          onClose();
+          setDisabled(false);
+        }}
+      />
     </ModalBase>
   );
 };
