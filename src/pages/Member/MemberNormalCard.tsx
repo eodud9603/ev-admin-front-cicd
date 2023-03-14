@@ -60,6 +60,83 @@ const tableHeader = [
   { label: "신청일" },
 ];
 
+const data = [
+  {
+    issuanceStatus: "a",
+    issuanceDivision: "신규",
+    memberDivision: "그룹(그룹명)",
+    name: "김회원",
+    userId: "kim",
+    memberCardNumber: "0000-0000-0000-0000",
+    createDt: "YYYY.MM.DD",
+  },
+  {
+    issuanceStatus: "b",
+    issuanceDivision: "신규",
+    memberDivision: "그룹(그룹명)",
+    name: "김회원",
+    userId: "kim",
+    memberCardNumber: "0000-0000-0000-0000",
+    createDt: "YYYY.MM.DD",
+  },
+  {
+    issuanceStatus: "c",
+    issuanceDivision: "신규",
+    memberDivision: "그룹(그룹명)",
+    name: "김회원",
+    userId: "kim",
+    memberCardNumber: "0000-0000-0000-0000",
+    createDt: "YYYY.MM.DD",
+  },
+  {
+    issuanceStatus: "d",
+    issuanceDivision: "신규",
+    memberDivision: "그룹(그룹명)",
+    name: "김회원",
+    userId: "kim",
+    memberCardNumber: "0000-0000-0000-0000",
+    createDt: "YYYY.MM.DD",
+  },
+];
+interface IIssuanceStatusButton {
+  issuanceStatus: "a" | "b" | "c" | "d";
+}
+const IssuanceStatusButton = (props: IIssuanceStatusButton) => {
+  const { issuanceStatus } = props;
+
+  switch (issuanceStatus) {
+    case "a":
+      return (
+        <ButtonBase
+          color={"info"}
+          className={"w-xs rounded-5 py-1"}
+          label={"신청"}
+        />
+      );
+    case "b":
+      return (
+        <ButtonBase
+          color={"success"}
+          className={"w-xs rounded-5 py-1"}
+          label={"발급"}
+        />
+      );
+    case "c":
+      return <ButtonBase label={"발송"} className={"w-xs rounded-5 py-1"} />;
+    case "d":
+      return (
+        <ButtonBase
+          color={"white"}
+          className={"w-xs rounded-5 py-1"}
+          label={"수령완료"}
+        />
+      );
+    default:
+      return <></>;
+  }
+  return <></>;
+};
+
 export const MemberNormalCard = () => {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState("0");
@@ -156,7 +233,29 @@ export const MemberNormalCard = () => {
               </div>
             </Col>
           </Row>
-          <TableBase tableHeader={tableHeader}></TableBase>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {data.length > 0 &&
+                data.map((e, i) => (
+                  <tr key={i}>
+                    <td></td>
+                    <td>
+                      <IssuanceStatusButton issuanceStatus={e.issuanceStatus} />
+                    </td>
+                    <td>{e.issuanceDivision}</td>
+                    <td>{e.memberDivision}</td>
+                    <td>
+                      <HoverSpan className={"text-turu"}>
+                        <u>{e.name}</u>
+                      </HoverSpan>
+                    </td>
+                    <td>{e.userId}</td>
+                    <td>{e.memberCardNumber}</td>
+                    <td>{e.createDt}</td>
+                  </tr>
+                ))}
+            </>
+          </TableBase>
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
@@ -168,3 +267,8 @@ const ListSection = styled.section``;
 const FilterSection = styled.section``;
 const AmountInfo = styled.span``;
 const Separator = styled.hr``;
+const HoverSpan = styled.span`
+  :hover {
+    cursor: pointer;
+  }
+`;
