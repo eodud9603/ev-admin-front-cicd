@@ -41,6 +41,7 @@ import OperateVariable from "src/pages/Operate/OperateVariable";
 import OperateSms from "src/pages/Operate/OperateSMS";
 import OperateNotificationTalk from "src/pages/Operate/OperateNotificationTalk";
 import ChargerStationDetail from "src/pages/Charger/ChargerStationDetail";
+import ChargerDetail from "src/pages/Charger/ChargerDetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -57,6 +58,10 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/charger",
     element: <Charger />,
+  },
+  {
+    path: "/charger/charger/detail",
+    element: <ChargerDetail />,
   },
   {
     path: "/charger/contract",
