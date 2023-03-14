@@ -22,7 +22,8 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import styled from "styled-components";
 import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
-import DetailTextModal from "src/pages/Charger/components/DetailTextModal";
+import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 
 const ChargerDetail = () => {
   const [tabList, setTabList] = useState([
@@ -38,6 +39,8 @@ const ChargerDetail = () => {
   const [disabled, setDisabled] = useState(true);
   /* 수정완료 모달 */
   const [isEditComplete, setIsEditComplete] = useState(false);
+  /* 수정취소 모달 */
+  const [isEditCancel, setIsEditCancel] = useState(false);
 
   const navigate = useNavigate();
 
@@ -806,7 +809,15 @@ const ChargerDetail = () => {
 
         <DetailBottomButton
           containerClassName={"my-5"}
-          listHandler={() => navigate("/charger/charger")}
+          listHandler={() => {
+            /* 수정모드 상태에서 목록 버튼 클릭 */
+            if (!disabled) {
+              setIsEditCancel(true);
+              return;
+            }
+
+            navigate("/charger/charger");
+          }}
           editDisabled={disabled}
           editHandler={() => setDisabled(false)}
           saveHandler={() => {
@@ -819,13 +830,26 @@ const ChargerDetail = () => {
         />
       </BodyBase>
 
-      <DetailTextModal
+      <DetailCompleteModal
         isOpen={isEditComplete}
         onClose={() => {
           setIsEditComplete((prev) => !prev);
         }}
         title={"충전기 정보 수정 완료 안내"}
         contents={"수정된 충전기 정보가 저장되었습니다."}
+      />
+      <DetailCancelModal
+        isOpen={isEditCancel}
+        onClose={() => {
+          setIsEditCancel((prev) => !prev);
+        }}
+        cancelHandler={() => {
+          navigate("/charger/charger");
+        }}
+        title={"충전기 정보 수정 취소 안내"}
+        contents={
+          "수정된 충전기 정보가 저장되지 않습니다.\n수정을 취소하시겠습니까?"
+        }
       />
     </ContainerBase>
   );
