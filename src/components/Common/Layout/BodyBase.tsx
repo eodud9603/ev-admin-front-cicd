@@ -18,7 +18,9 @@ const BodyBase = (props: IBodyProps) => {
 
   return (
     <Body
-      className={`d-flex-block flex-grow-1 p-0 px-4 py-4 m-0 bg-white ${className}`}
+      className={
+        "d-flex-block flex-grow-1 " + `p-0 px-4 py-4 m-0 bg-white ${className}`
+      }
       {...rest}
     >
       {children}

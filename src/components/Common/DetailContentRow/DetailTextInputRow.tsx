@@ -35,9 +35,10 @@ export const DetailTextInputRow = (props: IDetailTextInputRow) => {
           >
             <Col
               xs={item?.titleWidthRatio}
-              className={`d-flex fw-bold align-items-center bg-light bg-opacity-10 p-3 ${
-                item.required ? "gap-1" : ""
-              }`}
+              className={
+                "d-flex fw-bold align-items-center " +
+                `bg-light bg-opacity-10 p-3 ${item.required ? "gap-1" : ""}`
+              }
             >
               {item.title}
               {item.required && <span className={"text-danger"}>*</span>}
@@ -47,7 +48,8 @@ export const DetailTextInputRow = (props: IDetailTextInputRow) => {
                 <DetailInput
                   className={`${
                     item?.disabled
-                      ? "bg-light bg-opacity-50 border-1 border-secondary border-opacity-50"
+                      ? "bg-light bg-opacity-50 " +
+                        "border-1 border-secondary border-opacity-50"
                       : ""
                   }`}
                   placeholder={item.placeholder}

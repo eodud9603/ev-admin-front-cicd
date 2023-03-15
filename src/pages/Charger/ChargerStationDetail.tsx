@@ -612,7 +612,8 @@ const ChargerStationDetail = () => {
             <Col
               md={4}
               className={
-                "p-2 bg-light bg-opacity-50 rounded-1 border border-2 border-light"
+                "p-2 bg-light bg-opacity-50 " +
+                "rounded-1 border border-2 border-light"
               }
             >
               {/* 지도 */}
@@ -736,7 +737,8 @@ const ChargerStationDetail = () => {
                             <td>
                               <span
                                 className={
-                                  "px-2 py-1 d-inline-block bg-success rounded-pill text-center text-white"
+                                  "px-2 py-1 d-inline-block bg-success " +
+                                  "rounded-pill text-center text-white"
                                 }
                               >
                                 {chargerStatus}
@@ -842,7 +844,10 @@ const IconButton = ({
 }) => {
   return (
     <IconBtn
-      className={`d-flex justify-content-center align-items-center border rounded bg-white font-size-16 text-secondary ${className}`}
+      className={
+        "d-flex justify-content-center align-items-center " +
+        `border rounded bg-white font-size-16 text-secondary ${className}`
+      }
       {...rest}
     />
   );

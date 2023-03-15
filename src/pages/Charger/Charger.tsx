@@ -280,7 +280,8 @@ const Charger = () => {
                         <td>
                           <span
                             className={
-                              "px-2 py-1 d-inline-block bg-success rounded-pill text-center text-white"
+                              "px-2 py-1 d-inline-block " +
+                              "bg-success rounded-pill text-center text-white"
                             }
                           >
                             {status}
