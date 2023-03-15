@@ -10,7 +10,7 @@ import {
   Button,
 } from "reactstrap";
 
-interface IModalBaseProps extends ModalProps {
+export interface IModalBaseProps extends ModalProps {
   isOpen: boolean;
   onClose: () => void;
   headerClassName?: string;

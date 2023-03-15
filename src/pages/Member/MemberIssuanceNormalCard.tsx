@@ -16,6 +16,7 @@ import TextInputBase from "src/components/Common/Input/TextInputBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
+import { MemberSearchModal } from "src/pages/Member/components/MemberSearchModal";
 
 export const MemberIssuanceNormalCard = () => {
   const [tabList, setTabList] = useState([
@@ -34,6 +35,7 @@ export const MemberIssuanceNormalCard = () => {
     sendDt: "",
     etc: "",
   });
+  const [memberSearchModal, setMemberSearchModal] = useState(false);
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
   };
@@ -60,6 +62,10 @@ export const MemberIssuanceNormalCard = () => {
       ...prev,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const handleMemberSearchModal = () => {
+    setMemberSearchModal(!memberSearchModal);
   };
 
   return (
@@ -102,6 +108,7 @@ export const MemberIssuanceNormalCard = () => {
                     outline={true}
                     color={"turu"}
                     className={"w-xs"}
+                    onClick={handleMemberSearchModal}
                   />
                 </Col>
               </Row>
@@ -170,6 +177,10 @@ export const MemberIssuanceNormalCard = () => {
           <ButtonBase label={"등록"} className={"w-xs"} />
         </div>
       </BodyBase>
+      <MemberSearchModal
+        isOpen={memberSearchModal}
+        onClose={handleMemberSearchModal}
+      />
     </ContainerBase>
   );
 };

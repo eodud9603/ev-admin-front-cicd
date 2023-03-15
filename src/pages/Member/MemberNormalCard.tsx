@@ -106,7 +106,7 @@ const data = [
 interface IIssuanceStatusButton {
   issuanceStatus: string;
 }
-const IssuanceStatusButton = (props: IIssuanceStatusButton) => {
+export const IssuanceStatusButton = (props: IIssuanceStatusButton) => {
   const { issuanceStatus } = props;
 
   switch (issuanceStatus) {
