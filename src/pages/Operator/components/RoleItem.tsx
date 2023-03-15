@@ -1,4 +1,9 @@
-import React, { forwardRef, useImperativeHandle, useRef } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import { useState } from "react";
 import { Col, Row } from "reactstrap";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
@@ -120,6 +125,10 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
   const subRef = useRef<IRoleSubItemRef[]>([]);
 
   const isSubListOpened = isOpen && detailList.length > 0;
+
+  useEffect(() => {
+    setIsOpen(initialOpen);
+  }, [initialOpen]);
 
   const onChangeOpenHandler = () => {
     if (detailList.length > 0) {

@@ -118,7 +118,7 @@ const userRoutes: Array<RouteProps> = [
 
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/account/add", element: <OperatorAccountAdd /> },
-  { path: "/operator/account/detail:/id", element: <OperatorAccountDetail /> },
+  { path: "/operator/account/detail/:id", element: <OperatorAccountDetail /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },
   { path: "/operator/counselor/add", element: <OperatorCounselorAdd /> },
   {

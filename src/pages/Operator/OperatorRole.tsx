@@ -19,6 +19,8 @@ const OperatorRole = () => {
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [selectedRole, setSelectedRole] = useState("1");
+  /* 전체보기 */
+  const [allOpen, setAllOpen] = useState(false);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -93,18 +95,25 @@ const OperatorRole = () => {
 
             <ButtonBase
               className={"rounded-0 fw-bold"}
-              label={"전체 보기"}
+              label={allOpen ? "전체 닫기" : "전체 보기"}
               outline={true}
               color={"secondary"}
+              onClick={() => {
+                setAllOpen((prev) => !prev);
+              }}
             />
           </div>
         </RoleSection>
 
         <ListSection>
-          {/** @TODO 펼치기/숨기기 애니메이션 작업 필요 */}
           <RoleHeaderItem />
           {ROLE_TABLE_LIST.map((props, index) => (
-            <RoleMainItem key={index} index={index} {...props} />
+            <RoleMainItem
+              key={index}
+              index={index}
+              initialOpen={allOpen}
+              {...props}
+            />
           ))}
         </ListSection>
 
