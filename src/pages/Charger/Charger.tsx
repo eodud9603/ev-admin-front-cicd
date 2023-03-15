@@ -278,14 +278,11 @@ const Charger = () => {
                         <td>{type}</td>
                         <td>{connector}</td>
                         <td>
-                          <span
-                            className={
-                              "px-2 py-1 d-inline-block " +
-                              "bg-success rounded-pill text-center text-white"
-                            }
-                          >
-                            {status}
-                          </span>
+                          <ButtonBase
+                            className={"w-xs rounded-5 py-1"}
+                            label={status}
+                            color={"success"}
+                          />
                         </td>
                         <td>{communication}</td>
                         <td>{start}</td>
