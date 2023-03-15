@@ -1,31 +1,17 @@
 import React from "react";
-import { Label, ModalBody, ModalFooter } from "reactstrap";
+import { Label, ModalBody, ModalFooter, Row } from "reactstrap";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import ModalBase from "src/components/Common/Modal/ModalBase";
-import { TableBase } from "src/components/Common/Table/TableBase";
 import { ROLE_TABLE_LIST } from "src/constants/list";
-import RoleCategoryItem from "./RoleCategoryItem";
-
+import {
+  RoleHeaderItem,
+  RoleMainItem,
+} from "src/pages/Operator/components/RoleItem";
 interface IAuthLevelModalProps {
   type?: "WRITE" | "READ";
   isOpen: boolean;
   onClose: () => void;
 }
-
-const tableHeader = [
-  {
-    label: "1차",
-  },
-  {
-    label: "2차",
-  },
-  {
-    label: "편집",
-  },
-  {
-    label: "조회",
-  },
-];
 
 const AuthLevelModal = (props: IAuthLevelModalProps) => {
   const { type = "READ", isOpen, onClose } = props;
@@ -42,18 +28,15 @@ const AuthLevelModal = (props: IAuthLevelModalProps) => {
           <span className={"me-1 font-size-16 text-black fw-bold"}>목록</span>
           <span>(권한등급 : 최고 관리자)</span>
         </Label>
-        <TableBase tableHeader={tableHeader}>
-          <>
-            {ROLE_TABLE_LIST.map((role, index) => (
-              <RoleCategoryItem
-                key={index}
-                index={index}
-                initialOpen={true}
-                {...role}
-              />
-            ))}
-          </>
-        </TableBase>
+        <RoleHeaderItem />
+        {ROLE_TABLE_LIST.map((props, index) => (
+          <RoleMainItem
+            key={index}
+            index={index}
+            initialOpen={true}
+            {...props}
+          />
+        ))}
       </ModalBody>
       <ModalFooter
         className={
