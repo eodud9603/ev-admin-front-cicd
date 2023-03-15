@@ -9,49 +9,68 @@ import {
   DetailRow,
 } from "src/components/Common/DetailContentRow/Detail";
 import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
+import { DetailTextRadioRow } from "src/components/Common/DetailContentRow/DetailTextRadioRow";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
+import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
-import useInputs from "src/hooks/useInputs";
+import AuthLevelModal from "./components/AuthLevelModal";
 import AddButton from "src/pages/Operator/components/AddButton";
+import useInputs from "src/hooks/useInputs";
 
-const groupItems = [{ label: "선택", value: "1" }];
+/** 소속그룹 목록 */
+const groupItems = [
+  { label: "선택", value: "0" },
+  { label: "휴맥스EV", value: "1" },
+];
 
-const OperatorCounselorAdd = () => {
+/** Y/N 라디오 목록 */
+const radioList = [
+  {
+    label: "Y",
+    value: "Y",
+  },
+  {
+    label: "N",
+    value: "N",
+  },
+];
+
+/** 계정등급 라디오 목록 */
+const roleList = [
+  { label: "최고 관리자", value: "1" },
+  { label: "일반 관리자", value: "2" },
+  { label: "관계사", value: "3" },
+  { label: "제조사", value: "4" },
+];
+
+/** 계정상태 라디오 목록 */
+const accountStatusList = [
+  { label: "정상", value: "1" },
+  { label: "차단", value: "2" },
+];
+
+const OperatorAccountAdd = () => {
   const [tabList, setTabList] = useState([
     { label: "공지사항" },
-    { label: "상담사 정보 관리" },
+    { label: "계정 관리" },
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const {
-    name,
-    id,
-    password,
-    agency,
-    cti,
-    acd,
-    extension,
-    zipCode,
-    address,
-    addressDetail,
-    etc,
-    onChange,
-  } = useInputs({
-    name: "",
-    id: "",
-    password: "",
-    agency: "",
-    cti: "",
-    acd: "",
-    extension: "",
-    zipCode: "",
-    address: "",
-    addressDetail: "",
-    etc: "",
-  });
+  const { name, id, password, tel, mobileTel, department, etc, onChange } =
+    useInputs({
+      name: "",
+      id: "",
+      password: "",
+      tel: "",
+      mobileTel: "",
+      department: "",
+      etc: "",
+    });
+  /* 권한등급 모달 */
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -76,12 +95,6 @@ const OperatorCounselorAdd = () => {
     setTabList(tempList);
   };
 
-  const validCheck = () => {
-    /** @TODO 인풋값 유효 체크 로직 추가 */
-
-    return false;
-  };
-
   return (
     <ContainerBase>
       <HeaderBase />
@@ -98,10 +111,10 @@ const OperatorCounselorAdd = () => {
           list={[
             { label: "홈", href: "" },
             { label: "운영자 관리", href: "" },
-            { label: "상담사 정보 관리", href: "" },
-            { label: "상담사 신규 등록", href: "" },
+            { label: "계정 관리", href: "" },
+            { label: "계정 신규 등록", href: "" },
           ]}
-          title={"상담사 신규 등록"}
+          title={"계정 신규 등록"}
         />
 
         <Label className={"m-0 mb-4 font-size-20 fw-bold"}>기본정보</Label>
@@ -109,7 +122,7 @@ const OperatorCounselorAdd = () => {
           rows={[
             {
               titleWidthRatio: 4,
-              title: "상담사명",
+              title: "운영자명",
               name: "name",
               content: name,
               onChange,
@@ -117,7 +130,7 @@ const OperatorCounselorAdd = () => {
             },
             {
               titleWidthRatio: 4,
-              title: "상담사 ID",
+              title: "계정 ID",
               name: "id",
               content: id,
               onChange,
@@ -141,88 +154,71 @@ const OperatorCounselorAdd = () => {
             />
           </DetailContentCol>
         </DetailRow>
+        {/** @TODO 권한 row 추가 */}
         <DetailRow>
-          <DetailLabelCol sm={2}>소속사</DetailLabelCol>
+          <DetailLabelCol sm={2}>권한등급</DetailLabelCol>
           <DetailContentCol>
-            <TextInputBase
-              bsSize={"lg"}
-              name={"agency"}
-              value={agency}
-              onChange={onChange}
-            />
+            <RadioGroup name={"roleLevel"} list={roleList} />
           </DetailContentCol>
-          <DetailLabelCol sm={2}>소프트폰</DetailLabelCol>
-
-          <DetailContentCol className={"d-flex align-items-center gap-3"}>
-            <span>CTI</span>
-            <TextInputBase
-              inputstyle={{ flex: 1 }}
-              bsSize={"lg"}
-              name={"cti"}
-              value={cti}
-              onChange={onChange}
-            />
-            <span>ACD</span>
-            <TextInputBase
-              inputstyle={{ flex: 1 }}
-              bsSize={"lg"}
-              name={"acd"}
-              value={acd}
-              onChange={onChange}
-            />
-            <span>내선</span>
-            <TextInputBase
-              inputstyle={{ flex: 1 }}
-              bsSize={"lg"}
-              name={"extension"}
-              value={extension}
-              onChange={onChange}
+          <DetailLabelCol sm={2}>권한등록</DetailLabelCol>
+          <DetailContentCol>
+            <ButtonBase
+              outline
+              label={"권한등록"}
+              color={"secondary"}
+              onClick={() => {
+                setAuthModalOpen(true);
+              }}
             />
           </DetailContentCol>
         </DetailRow>
-
+        <DetailTextInputRow
+          rows={[
+            {
+              titleWidthRatio: 4,
+              title: "전화번호",
+              name: "tel",
+              content: tel,
+              onChange,
+            },
+            {
+              titleWidthRatio: 4,
+              title: "휴대전화 번호",
+              name: "mobileTel",
+              content: mobileTel,
+              onChange,
+            },
+          ]}
+        />
         <DetailRow>
-          <DetailLabelCol sm={2}>주소</DetailLabelCol>
+          <DetailLabelCol sm={2}>부서</DetailLabelCol>
           <DetailContentCol>
-            <div className={"d-flex gap-4"}>
-              <TextInputBase
-                inputstyle={{ flex: 1 }}
-                bsSize={"lg"}
-                disabled={true}
-                className={"mb-4"}
-                name={"zipCode"}
-                value={zipCode}
-                placeholder={""}
-                onChange={onChange}
-              />
-              <div style={{ flex: 3 }}>
-                <ButtonBase
-                  className={"width-110"}
-                  outline
-                  label={"우편번호 검색"}
-                  color={"turu"}
-                />
-              </div>
-            </div>
-            <div className={"d-flex gap-4"}>
-              <TextInputBase
-                bsSize={"lg"}
-                disabled={true}
-                name={"address"}
-                value={address}
-                placeholder={""}
-                onChange={onChange}
-              />
-              <TextInputBase
-                bsSize={"lg"}
-                name={"addressDetail"}
-                value={addressDetail}
-                placeholder={"상세 주소를 입력해주세요"}
-                onChange={onChange}
-              />
-            </div>
+            <TextInputBase
+              name={"department"}
+              bsSize={"lg"}
+              value={department}
+              onChange={onChange}
+            />
+          </DetailContentCol>
+          <DetailLabelCol sm={2}>계정상태</DetailLabelCol>
+          <DetailContentCol>
+            <RadioGroup name={"accountStatus"} list={accountStatusList} />
           </DetailContentCol>
         </DetailRow>
+        <DetailTextRadioRow
+          rows={[
+            {
+              name: "mobileAccess",
+              title: "모바일 접속 허용 여부",
+              list: radioList,
+            },
+            {
+              name: "externalAccess",
+              title: "외부 접속 허용 여부",
+              list: radioList,
+            },
+          ]}
+        />
         <DetailTextInputRow
           className={"border-bottom border-2"}
           rows={[
@@ -231,21 +227,30 @@ const OperatorCounselorAdd = () => {
               title: "비고",
               name: "etc",
               content: etc,
+              placeholder: "입력해주세요.",
               onChange,
             },
           ]}
         />
 
         <AddButton
-          disabled={validCheck()}
+          disabled={true}
           listHandler={() => {
-            navigate("/operator/counselor");
+            navigate("/operator/account");
           }}
           addHandler={() => {}}
         />
       </BodyBase>
+
+      <AuthLevelModal
+        type={"WRITE"}
+        isOpen={authModalOpen}
+        onClose={() => {
+          setAuthModalOpen(false);
+        }}
+      />
     </ContainerBase>
   );
 };
 
-export default OperatorCounselorAdd;
+export default OperatorAccountAdd;

@@ -50,6 +50,7 @@ import OperatorCounselorDetail from "src/pages/Operator/OperatorCounselorDetail"
 import OperatorAccountDetail from "src/pages/Operator/OperatorAccountDetail";
 import { MemberNormalCardDetail } from "src/pages/Member/MemberNormalCardDetail";
 import OperatorCounselorAdd from "src/pages/Operator/OperatorCounselorAdd";
+import OperatorAccountAdd from "src/pages/Operator/OperatorAccountAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -116,6 +117,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/code", element: <OperateCode /> },
 
   { path: "/operator/account", element: <OperatorAccount /> },
+  { path: "/operator/account/add", element: <OperatorAccountAdd /> },
   { path: "/operator/account/detail", element: <OperatorAccountDetail /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },
   { path: "/operator/counselor/add", element: <OperatorCounselorAdd /> },
