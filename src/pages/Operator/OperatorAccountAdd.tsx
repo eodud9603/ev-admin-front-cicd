@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { Label } from "reactstrap";
+import { Form, Label } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import {
@@ -145,13 +145,16 @@ const OperatorAccountAdd = () => {
           </DetailContentCol>
           <DetailLabelCol sm={2}>비밀번호</DetailLabelCol>
           <DetailContentCol>
-            <TextInputBase
-              bsSize={"lg"}
-              name={"password"}
-              type={"password"}
-              value={password}
-              onChange={onChange}
-            />
+            <Form>
+              <TextInputBase
+                bsSize={"lg"}
+                name={"password"}
+                type={"password"}
+                value={password}
+                onChange={onChange}
+                autoComplete={"off"}
+              />
+            </Form>
           </DetailContentCol>
         </DetailRow>
         {/** @TODO 권한 row 추가 */}
