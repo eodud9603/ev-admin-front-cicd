@@ -51,6 +51,7 @@ import OperatorAccountDetail from "src/pages/Operator/OperatorAccountDetail";
 import { MemberNormalCardDetail } from "src/pages/Member/MemberNormalCardDetail";
 import OperatorCounselorAdd from "src/pages/Operator/OperatorCounselorAdd";
 import OperatorAccountAdd from "src/pages/Operator/OperatorAccountAdd";
+import ChargerContractAdd from "src/pages/Charger/ChargerContractAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -75,6 +76,10 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/contract",
     element: <ChargerContract />,
+  },
+  {
+    path: "/charger/contract/add",
+    element: <ChargerContractAdd />,
   },
   {
     path: "/charger/contract/detail/:id",
