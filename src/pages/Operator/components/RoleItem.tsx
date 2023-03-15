@@ -2,39 +2,98 @@ import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { useState } from "react";
 import { Col, Row } from "reactstrap";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
+interface IColProps {
+  ratio: number;
+  className?: string;
+  children?: string | React.ReactElement | React.ReactElement[];
+}
+
+interface IRoleMainItemProps {
+  name: string;
+  index: number;
+
+  disabled?: boolean;
+  initialOpen?: boolean;
+  detailList: { name: string; read: boolean; write: boolean }[];
+}
+
+interface IRoleSubItemProps {
+  name: string;
+  index: number;
+  disabled: boolean;
+
+  lastIndex: number;
+  mainWrite: boolean;
+  mainRead: boolean;
+
+  getSubRoleList: () => {
+    list: IRoleSubItemRef[];
+    setRead: React.Dispatch<React.SetStateAction<boolean>>;
+    setWrite: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+}
+
+interface IRoleSubItemRef {
+  write: boolean;
+  read: boolean;
+  onChangeSubWrite: (bool: boolean) => void;
+  onChangeSubRead: (bool: boolean) => void;
+}
+
+/** 권한 테이블형식 공통 border css */
+const borderCSS = "border-bottom border-2";
+/** 2차 권한 row 크기 */
+const DEFAULT_ROW_HEIGHT = "55px";
+
+/* 권한 테이블형식 UI Col */
+const RoleCol = ({ ratio, children, className = "", ...rest }: IColProps) => {
+  return (
+    <Col
+      sm={ratio}
+      md={ratio}
+      lg={ratio}
+      xl={ratio}
+      xs={ratio}
+      xxl={ratio}
+      className={`py-3 ${className}`}
+      {...rest}
+    >
+      {children}
+    </Col>
+  );
+};
+
+const TextCol = (props: Omit<IColProps, "ratio">) => {
+  return <RoleCol ratio={5} {...props} />;
+};
+
+const CheckBoxCol = ({ className = "", ...rest }: Omit<IColProps, "ratio">) => {
+  return (
+    <RoleCol ratio={1} className={`ps-0 ${borderCSS} ${className}`} {...rest} />
+  );
+};
+
+/** 권한 헤더뷰 */
 export const RoleHeaderItem = () => {
   return (
     <Row
       className={
-        "px-3 py-4 bg-light bg-opacity-50 " +
-        "fw-bold font-size-16 border-bottom border-2"
+        "px-3 py-1 bg-light bg-opacity-50 " +
+        `fw-bold font-size-16 ${borderCSS}`
       }
     >
-      <Col sm={5} md={5} lg={5} xl={5} xs={5} xxl={5}>
-        1차
-      </Col>
-      <Col sm={5} md={5} lg={5} xl={5} xs={5} xxl={5}>
-        2차
-      </Col>
-      <Col sm={1} md={1} lg={1} xl={1} xs={1} xxl={1}>
-        편집
-      </Col>
-      <Col sm={1} md={1} lg={1} xl={1} xs={1} xxl={1}>
-        조회
-      </Col>
+      <TextCol>1차</TextCol>
+      <TextCol>2차</TextCol>
+      <CheckBoxCol>편집</CheckBoxCol>
+      <CheckBoxCol>조회</CheckBoxCol>
     </Row>
   );
 };
 
-export const RoleMainItem = (props: {
-  initialOpen?: boolean;
-  disabled?: boolean;
-  name: string;
-  detailList: { name: string; read: boolean; write: boolean }[];
-  index: number;
-}) => {
+/** 1차 권한 목록뷰 */
+export const RoleMainItem = (props: IRoleMainItemProps) => {
   const {
     initialOpen = false,
     disabled = false,
@@ -44,16 +103,14 @@ export const RoleMainItem = (props: {
   } = props;
 
   const [isOpen, setIsOpen] = useState(initialOpen);
+
   /** 편집/조회 */
   const [write, setWrite] = useState(true);
   const [read, setRead] = useState(true);
 
-  const subRef = useRef<
-    {
-      onChangeSubWrite: (bool: boolean) => void;
-      onChangeSubRead: (bool: boolean) => void;
-    }[]
-  >([]);
+  const subRef = useRef<IRoleSubItemRef[]>([]);
+
+  const isSubListOpened = isOpen && detailList.length > 0;
 
   const onChangeOpenHandler = () => {
     if (detailList.length > 0) {
@@ -61,20 +118,20 @@ export const RoleMainItem = (props: {
     }
   };
 
-  const isSubListOpened = isOpen && detailList.length > 0;
+  const getSubRoleList = () => {
+    const list = [...subRef.current];
+
+    return {
+      list,
+      setWrite,
+      setRead,
+    };
+  };
 
   return (
     <div>
-      <Row key={index}>
-        <Col
-          className={`py-3 ${!isSubListOpened ? "border-bottom border-2" : ""}`}
-          sm={5}
-          md={5}
-          lg={5}
-          xl={5}
-          xs={5}
-          xxl={5}
-        >
+      <Row>
+        <TextCol className={`${!isSubListOpened ? borderCSS : ""}`}>
           <DropArea
             className={
               "d-flex flex-row align-items-center justify-content-between"
@@ -90,27 +147,9 @@ export const RoleMainItem = (props: {
               />
             )}
           </DropArea>
-        </Col>
-        <Col
-          className={"py-3 border-bottom border-2"}
-          sm={5}
-          md={5}
-          lg={5}
-          xl={5}
-          xs={5}
-          xxl={5}
-        >
-          전체
-        </Col>
-        <Col
-          className={"ps-0 py-3 border-bottom border-2"}
-          sm={1}
-          md={1}
-          lg={1}
-          xl={1}
-          xs={1}
-          xxl={1}
-        >
+        </TextCol>
+        <TextCol className={borderCSS}>전체</TextCol>
+        <CheckBoxCol>
           <CheckBoxBase
             label={""}
             name={`main-write-${name}-${index}`}
@@ -123,16 +162,8 @@ export const RoleMainItem = (props: {
               setWrite((prev) => !prev);
             }}
           />
-        </Col>
-        <Col
-          className={"ps-0 py-3 border-bottom border-2"}
-          sm={1}
-          md={1}
-          lg={1}
-          xl={1}
-          xs={1}
-          xxl={1}
-        >
+        </CheckBoxCol>
+        <CheckBoxCol>
           <CheckBoxBase
             label={""}
             name={`main-read-${name}-${index}`}
@@ -145,18 +176,16 @@ export const RoleMainItem = (props: {
               setRead((prev) => !prev);
             }}
           />
-        </Col>
+        </CheckBoxCol>
       </Row>
       {isOpen &&
-        (detailList ?? []).map((detail, detailIndex) => (
+        detailList.map((detail, detailIndex) => (
           <RoleSubItem
-            ref={(ref: {
-              onChangeSubWrite: (bool: boolean) => void;
-              onChangeSubRead: (bool: boolean) => void;
-            }) => (subRef.current[detailIndex] = ref)}
+            ref={(ref: IRoleSubItemRef) => (subRef.current[detailIndex] = ref)}
             key={detailIndex}
             index={detailIndex}
             lastIndex={detailList.length - 1}
+            getSubRoleList={getSubRoleList}
             disabled={disabled}
             mainWrite={write}
             mainRead={read}
@@ -167,97 +196,89 @@ export const RoleMainItem = (props: {
   );
 };
 
-const RoleSubItem = forwardRef<
-  any,
-  {
-    name: string;
-    lastIndex: number;
-    index: number;
-    disabled: boolean;
+/** 2차 권한 목록뷰 */
+const RoleSubItem = forwardRef<IRoleSubItemRef, IRoleSubItemProps>(
+  (props, ref) => {
+    const {
+      index,
+      lastIndex,
+      name,
+      disabled,
+      mainWrite,
+      mainRead,
+      getSubRoleList,
+    } = props;
+    /** 편집/조회 */
+    const [write, setWrite] = useState(mainWrite);
+    const [read, setRead] = useState(mainRead);
 
-    mainWrite: boolean;
-    mainRead: boolean;
+    useImperativeHandle(
+      ref,
+      () => ({
+        write,
+        read,
+        onChangeSubWrite: (bool: boolean) => setWrite(bool),
+        onChangeSubRead: (bool: boolean) => setRead(bool),
+      }),
+      [write, read]
+    );
+
+    return (
+      <RoleSubItemRow>
+        <TextCol className={`${index === lastIndex ? borderCSS : ""}`} />
+        <TextCol className={borderCSS}>{name}</TextCol>
+        <CheckBoxCol>
+          <CheckBoxBase
+            label={""}
+            name={`sub-write-${name}-${index}`}
+            checked={write}
+            disabled={disabled}
+            /** @TODO 코드 정리 필요 */
+            onChange={() => {
+              const { list, setWrite: setMainWrite } = getSubRoleList();
+              const listCount = lastIndex + 1;
+              const checkCount =
+                list.filter((item) => item.write).length + (!write ? 1 : -1);
+
+              if (listCount === checkCount && !mainWrite) {
+                setMainWrite(true);
+              }
+              if (listCount !== checkCount && mainWrite) {
+                setMainWrite(false);
+              }
+
+              setWrite((prev) => !prev);
+            }}
+          />
+        </CheckBoxCol>
+        <CheckBoxCol>
+          <CheckBoxBase
+            label={""}
+            name={`sub-read-${name}-${index}`}
+            checked={read}
+            disabled={disabled}
+            /** @TODO 코드 정리 필요 */
+            onChange={() => {
+              const { list, setRead: setMainRead } = getSubRoleList();
+              const listCount = lastIndex + 1;
+              const checkCount =
+                list.filter((item) => item.read).length + (!read ? 1 : -1);
+
+              if (listCount === checkCount && !mainRead) {
+                setMainRead(true);
+              }
+              if (listCount !== checkCount && mainRead) {
+                setMainRead(false);
+              }
+
+              setRead((prev) => !prev);
+            }}
+          />
+        </CheckBoxCol>
+      </RoleSubItemRow>
+    );
   }
->((props, ref) => {
-  const { index, lastIndex, name, disabled, mainWrite, mainRead } = props;
-  /** 편집/조회 */
-  const [write, setWrite] = useState(mainWrite);
-  const [read, setRead] = useState(mainRead);
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      onChangeSubWrite: (bool: boolean) => setWrite(bool),
-      onChangeSubRead: (bool: boolean) => setRead(bool),
-    }),
-    []
-  );
-
-  return (
-    <Row key={index}>
-      <Col
-        className={`py-3 ${
-          index === lastIndex ? " border-bottom border-2" : ""
-        }`}
-        sm={5}
-        md={5}
-        lg={5}
-        xl={5}
-        xs={5}
-        xxl={5}
-      />
-      <Col
-        className={"py-3 border-bottom border-2"}
-        sm={5}
-        md={5}
-        lg={5}
-        xl={5}
-        xs={5}
-        xxl={5}
-      >
-        {name}
-      </Col>
-      <Col
-        className={"ps-0 py-3 border-bottom border-2"}
-        sm={1}
-        md={1}
-        lg={1}
-        xl={1}
-        xs={1}
-        xxl={1}
-      >
-        <CheckBoxBase
-          label={""}
-          name={`sub-write-${name}-${index}`}
-          checked={write}
-          disabled={disabled}
-          onChange={() => {
-            setWrite((prev) => !prev);
-          }}
-        />
-      </Col>
-      <Col
-        className={"ps-0 py-3 border-bottom border-2"}
-        sm={1}
-        md={1}
-        lg={1}
-        xl={1}
-        xs={1}
-        xxl={1}
-      >
-        <CheckBoxBase
-          label={""}
-          name={`sub-read-${name}-${index}`}
-          checked={read}
-          disabled={disabled}
-          onChange={() => {
-            setRead((prev) => !prev);
-          }}
-        />
-      </Col>
-    </Row>
-  );
-});
+);
 
 const DropArea = styled.div`
   :hover {
@@ -268,4 +289,17 @@ const DropArea = styled.div`
 const Icon = styled.i<{ isOpen: boolean }>`
   transition: all ease 0.5s;
   transform: rotate(${({ isOpen }) => (isOpen ? 180 : 360)}deg);
+`;
+
+const breatheAnimation = keyframes`
+ from { max-height: 0px; opacity: 0; }
+ to { max-height: ${DEFAULT_ROW_HEIGHT}; opacity: 1; }
+`;
+
+const RoleSubItemRow = styled(Row)`
+  overflow: hidden;
+  max-height: auto;
+  animation-name: ${breatheAnimation};
+  animation-duration: 0.7s;
+  animation-iteration-count: 1;
 `;
