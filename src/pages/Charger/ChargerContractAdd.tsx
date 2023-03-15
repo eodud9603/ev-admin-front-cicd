@@ -457,8 +457,8 @@ const ChargerContractAdd = () => {
         onClose={() => {
           setIsAddComplete((prev) => !prev);
         }}
-        title={"충전소 계약 정보 수정 완료 안내"}
-        contents={"수정된 충전소 계약 정보가 저장되었습니다."}
+        title={"신규 충전소 계약 정보 등록 완료"}
+        contents={"충전소 계약  정보가 등록되었습니다."}
       />
       <DetailCancelModal
         isOpen={isAddCancel}
@@ -468,9 +468,9 @@ const ChargerContractAdd = () => {
         cancelHandler={() => {
           navigate("/charger/contract");
         }}
-        title={"충전소 계약 정보 수정 취소 안내"}
+        title={"신규 충전소 계약 정보 등록 취소 안내"}
         contents={
-          "수정된 충전소 계약 정보가 저장되지 않습니다.\n수정을 취소하시겠습니까?"
+          "입력된 충전소 계약 정보가 저장되지 않습니다.\n신규 등록을 취소하시겠습니까?"
         }
       />
     </ContainerBase>
