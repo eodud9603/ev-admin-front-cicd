@@ -179,6 +179,7 @@ const OperatorAccountAdd = () => {
               title: "전화번호",
               name: "tel",
               content: tel,
+              placeholder: "입력해주세요.",
               onChange,
             },
             {
@@ -186,6 +187,7 @@ const OperatorAccountAdd = () => {
               title: "휴대전화 번호",
               name: "mobileTel",
               content: mobileTel,
+              placeholder: "입력해주세요.",
               onChange,
             },
           ]}

@@ -237,7 +237,7 @@ const OperatorCounselorAdd = () => {
         />
 
         <AddButton
-          disabled={validCheck()}
+          disabled={!validCheck()}
           listHandler={() => {
             navigate("/operator/counselor");
           }}
