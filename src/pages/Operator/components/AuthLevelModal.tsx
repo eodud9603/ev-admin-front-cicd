@@ -33,6 +33,7 @@ const AuthLevelModal = (props: IAuthLevelModalProps) => {
           <RoleMainItem
             key={index}
             index={index}
+            disabled={type === "READ"}
             initialOpen={true}
             {...props}
           />

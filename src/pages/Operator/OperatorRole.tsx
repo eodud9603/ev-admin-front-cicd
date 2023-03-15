@@ -106,11 +106,13 @@ const OperatorRole = () => {
           {ROLE_TABLE_LIST.map((props, index) => (
             <RoleMainItem key={index} index={index} {...props} />
           ))}
-          <div className={"d-flex flex-row justify-content-center gap-4"}>
-            <ButtonBase className={"width-110"} outline label={"목록"} />
-            <ButtonBase className={"width-110"} color={"turu"} label={"수정"} />
-          </div>
         </ListSection>
+
+        <div className={"my-5 d-flex flex-row justify-content-center gap-4"}>
+          {/** @TODO 권한관리의 별도 페이지가 없으므로 주석 처리 (추후 추가시, 적용) */}
+          {/* <ButtonBase className={"width-110"} outline label={"목록"} /> */}
+          <ButtonBase className={"width-110"} color={"turu"} label={"수정"} />
+        </div>
       </BodyBase>
     </ContainerBase>
   );

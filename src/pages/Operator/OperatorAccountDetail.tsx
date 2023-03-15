@@ -152,7 +152,7 @@ const OperatorAccountDetail = () => {
             <ButtonBase
               className={"width-70"}
               outline
-              label={"보기"}
+              label={disabled ? "보기" : "수정"}
               color={"turu"}
               onClick={() => {
                 setAuthModalOpen(true);

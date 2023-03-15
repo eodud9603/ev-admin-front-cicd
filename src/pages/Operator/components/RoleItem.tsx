@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { useState } from "react";
 import { Col, Row } from "reactstrap";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
@@ -30,13 +30,30 @@ export const RoleHeaderItem = () => {
 
 export const RoleMainItem = (props: {
   initialOpen?: boolean;
+  disabled?: boolean;
   name: string;
   detailList: { name: string; read: boolean; write: boolean }[];
   index: number;
 }) => {
-  const { initialOpen = false, name, index, detailList } = props;
+  const {
+    initialOpen = false,
+    disabled = false,
+    name,
+    index,
+    detailList,
+  } = props;
 
   const [isOpen, setIsOpen] = useState(initialOpen);
+  /** 편집/조회 */
+  const [write, setWrite] = useState(true);
+  const [read, setRead] = useState(true);
+
+  const subRef = useRef<
+    {
+      onChangeSubWrite: (bool: boolean) => void;
+      onChangeSubRead: (bool: boolean) => void;
+    }[]
+  >([]);
 
   const onChangeOpenHandler = () => {
     if (detailList.length > 0) {
@@ -97,8 +114,14 @@ export const RoleMainItem = (props: {
           <CheckBoxBase
             label={""}
             name={`main-write-${name}-${index}`}
-            checked={true}
-            disabled={true}
+            checked={write}
+            disabled={disabled}
+            onChange={() => {
+              for (const sub of subRef.current) {
+                sub?.onChangeSubWrite(!write);
+              }
+              setWrite((prev) => !prev);
+            }}
           />
         </Col>
         <Col
@@ -113,17 +136,30 @@ export const RoleMainItem = (props: {
           <CheckBoxBase
             label={""}
             name={`main-read-${name}-${index}`}
-            checked={true}
-            disabled={true}
+            checked={read}
+            disabled={disabled}
+            onChange={() => {
+              for (const sub of subRef.current) {
+                sub?.onChangeSubRead(!read);
+              }
+              setRead((prev) => !prev);
+            }}
           />
         </Col>
       </Row>
       {isOpen &&
         (detailList ?? []).map((detail, detailIndex) => (
           <RoleSubItem
+            ref={(ref: {
+              onChangeSubWrite: (bool: boolean) => void;
+              onChangeSubRead: (bool: boolean) => void;
+            }) => (subRef.current[detailIndex] = ref)}
             key={detailIndex}
             index={detailIndex}
             lastIndex={detailList.length - 1}
+            disabled={disabled}
+            mainWrite={write}
+            mainRead={read}
             {...detail}
           />
         ))}
@@ -131,15 +167,32 @@ export const RoleMainItem = (props: {
   );
 };
 
-const RoleSubItem = ({
-  index,
-  lastIndex,
-  name,
-}: {
-  name: string;
-  lastIndex: number;
-  index: number;
-}) => {
+const RoleSubItem = forwardRef<
+  any,
+  {
+    name: string;
+    lastIndex: number;
+    index: number;
+    disabled: boolean;
+
+    mainWrite: boolean;
+    mainRead: boolean;
+  }
+>((props, ref) => {
+  const { index, lastIndex, name, disabled, mainWrite, mainRead } = props;
+  /** 편집/조회 */
+  const [write, setWrite] = useState(mainWrite);
+  const [read, setRead] = useState(mainRead);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      onChangeSubWrite: (bool: boolean) => setWrite(bool),
+      onChangeSubRead: (bool: boolean) => setRead(bool),
+    }),
+    []
+  );
+
   return (
     <Row key={index}>
       <Col
@@ -176,8 +229,11 @@ const RoleSubItem = ({
         <CheckBoxBase
           label={""}
           name={`sub-write-${name}-${index}`}
-          checked={true}
-          disabled={true}
+          checked={write}
+          disabled={disabled}
+          onChange={() => {
+            setWrite((prev) => !prev);
+          }}
         />
       </Col>
       <Col
@@ -192,13 +248,16 @@ const RoleSubItem = ({
         <CheckBoxBase
           label={""}
           name={`sub-read-${name}-${index}`}
-          checked={true}
-          disabled={true}
+          checked={read}
+          disabled={disabled}
+          onChange={() => {
+            setRead((prev) => !prev);
+          }}
         />
       </Col>
     </Row>
   );
-};
+});
 
 const DropArea = styled.div`
   :hover {
