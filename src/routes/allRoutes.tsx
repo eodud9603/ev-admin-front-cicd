@@ -61,7 +61,7 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargingStation />,
   },
   {
-    path: "/charger/chargerStation/detail",
+    path: "/charger/chargerStation/detail/:id",
     element: <ChargerStationDetail />,
   },
   {
@@ -69,7 +69,7 @@ const userRoutes: Array<RouteProps> = [
     element: <Charger />,
   },
   {
-    path: "/charger/charger/detail",
+    path: "/charger/charger/detail/:id",
     element: <ChargerDetail />,
   },
   {
@@ -77,7 +77,7 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargerContract />,
   },
   {
-    path: "/charger/contract/detail",
+    path: "/charger/contract/detail/:id",
     element: <ChargerContractDetail />,
   },
   { path: "/charger/trouble", element: <ChargerTrouble /> },
@@ -118,10 +118,13 @@ const userRoutes: Array<RouteProps> = [
 
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/account/add", element: <OperatorAccountAdd /> },
-  { path: "/operator/account/detail", element: <OperatorAccountDetail /> },
+  { path: "/operator/account/detail:/id", element: <OperatorAccountDetail /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },
   { path: "/operator/counselor/add", element: <OperatorCounselorAdd /> },
-  { path: "/operator/counselor/detail", element: <OperatorCounselorDetail /> },
+  {
+    path: "/operator/counselor/detail/:id",
+    element: <OperatorCounselorDetail />,
+  },
   { path: "/operator/role", element: <OperatorRole /> },
 
   // { path: "/member/card", element: <ChargerOperator /> },

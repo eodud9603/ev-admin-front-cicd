@@ -247,7 +247,9 @@ const ChargingStationManagement = () => {
                           <HoverSpan
                             className={"text-turu"}
                             onClick={() => {
-                              navigate("/charger/chargerStation/detail");
+                              navigate(
+                                `/charger/chargerStation/detail/${index}`
+                              );
                             }}
                           >
                             <u>{chargerName}</u>

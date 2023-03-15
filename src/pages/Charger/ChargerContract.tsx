@@ -277,7 +277,7 @@ const ChargerContract = () => {
                           <HoverSpan
                             className={"text-turu"}
                             onClick={() => {
-                              navigate("/charger/contract/detail");
+                              navigate(`/charger/contract/detail/${index}`);
                             }}
                           >
                             <u>

@@ -225,7 +225,7 @@ const OperatorAccount = () => {
                           <HoverSpan
                             className={"text-turu"}
                             onClick={() => {
-                              navigate("/operator/account/detail");
+                              navigate(`/operator/account/detail/${index}`);
                             }}
                           >
                             <u>{operatorName}</u>
