@@ -8,11 +8,11 @@ import styled from "styled-components";
 import { Col, Input, Label, Row } from "reactstrap";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { DetailTextRow } from "src/components/Common/DetailContentRow/DetailTextRow";
 import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
+import { MemberSearchModal } from "src/pages/Member/components/MemberSearchModal";
 
 const MemberHistoryTableHeader = [
   { label: "번호" },
@@ -31,6 +31,11 @@ const counselingDropdown = [
 const inoutRadio = [{ label: "전체" }, { label: "HEV" }, { label: "JEV" }];
 export const CounselingCustomer = () => {
   const [selected, setSelected] = useState("0");
+  const [isMemberSearchModal, setIsMemberSearchModal] = useState(false);
+
+  const handleMemberSearchModal = () => {
+    setIsMemberSearchModal((prev) => !prev);
+  };
 
   return (
     <ContainerBase>
@@ -83,7 +88,11 @@ export const CounselingCustomer = () => {
               >
                 <Label className={"fw-bold m-0 font-size-16"}>회원정보</Label>
                 <div className={"d-flex"}>
-                  <ButtonBase label={"회원 조회"} color={"turu"} />
+                  <ButtonBase
+                    label={"회원 조회"}
+                    color={"turu"}
+                    onClick={handleMemberSearchModal}
+                  />
                   <ButtonBase
                     label={"비회원 상담"}
                     className={"mx-2"}
@@ -263,6 +272,10 @@ export const CounselingCustomer = () => {
           </div>
         </InfoSection>
       </BodyBase>
+      <MemberSearchModal
+        isOpen={isMemberSearchModal}
+        onClose={handleMemberSearchModal}
+      />
     </ContainerBase>
   );
 };

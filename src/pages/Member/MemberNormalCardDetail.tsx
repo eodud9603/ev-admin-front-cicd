@@ -91,7 +91,7 @@ export const MemberNormalCardDetail = () => {
   const [isReIssuanceInfoDrop, setIsReIssuanceInfoDrop] =
     useState<boolean>(true);
   const [isReIssuanceInfoModal, setIsReIssuanceInfoModal] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
   };

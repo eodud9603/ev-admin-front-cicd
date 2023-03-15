@@ -10,6 +10,7 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 interface IMemberSearchModal {
   isOpen: boolean;
   onClose: () => void;
+  title?: string;
 }
 
 const dropdownGroupSearch = [
@@ -34,13 +35,13 @@ const dropdownData = [
   { label: "50개씩 보기", value: "3" },
 ];
 export const MemberSearchModal = (props: IMemberSearchModal) => {
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, title } = props;
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
 
   return (
     <ModalBase
-      title={"회원 검색"}
+      title={title ?? "회원 검색"}
       size={"lg"}
       isOpen={isOpen}
       onClose={onClose}
@@ -52,16 +53,14 @@ export const MemberSearchModal = (props: IMemberSearchModal) => {
             "bg-opacity-10 p-3 rounded-3 mb-3"
           }
         >
-          <div className={"mb-4"}>
-            <SearchTextInput
-              title={"검색어"}
-              menuItems={dropdownGroupSearch}
-              placeholder={"입력해주세요"}
-              name={"searchText"}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
-          </div>
+          <SearchTextInput
+            title={"검색어"}
+            menuItems={dropdownGroupSearch}
+            placeholder={"입력해주세요"}
+            name={"searchText"}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
         </FilterSection>
 
         <ListSection className={"py-4"}>

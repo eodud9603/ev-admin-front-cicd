@@ -63,6 +63,21 @@ const tableHeader = [
 
 type TabType = "ALL" | "REQUEST";
 
+const data = [
+  {
+    groupSeq: "1",
+    acceptStatus: "a",
+    division: "법인(B2B)",
+    groupName: "휴맥스모빌리티",
+    groupId: "HMOBILITY 02",
+    name: "휴담당",
+    phone: "010-0000-0000",
+    d: "휴담당",
+    a: "YYYY.MM.DD 00:00:00",
+    memberNum: "휴담당",
+  },
+];
+
 export const MemberGroup = () => {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState("0");
@@ -171,7 +186,9 @@ export const MemberGroup = () => {
               </div>
             </Col>
           </Row>
-          <TableBase tableHeader={tableHeader}></TableBase>
+          <TableBase tableHeader={tableHeader}>
+            <>{data.length > 0 && data.map((e, i) => <tr key={i}></tr>)}</>
+          </TableBase>
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
