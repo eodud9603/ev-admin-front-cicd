@@ -49,6 +49,7 @@ import { MemberIssuanceNormalCard } from "src/pages/Member/MemberIssuanceNormalC
 import OperatorCounselorDetail from "src/pages/Operator/OperatorCounselorDetail";
 import OperatorAccountDetail from "src/pages/Operator/OperatorAccountDetail";
 import { MemberNormalCardDetail } from "src/pages/Member/MemberNormalCardDetail";
+import OperatorCounselorAdd from "src/pages/Operator/OperatorCounselorAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -117,7 +118,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operator/account", element: <OperatorAccount /> },
   { path: "/operator/account/detail", element: <OperatorAccountDetail /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },
-
+  { path: "/operator/counselor/add", element: <OperatorCounselorAdd /> },
   { path: "/operator/counselor/detail", element: <OperatorCounselorDetail /> },
   { path: "/operator/role", element: <OperatorRole /> },
 

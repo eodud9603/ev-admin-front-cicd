@@ -10,6 +10,7 @@ interface IDetailTextInputRow {
     disabled?: boolean;
     required?: boolean;
     type?: "textarea" | "text";
+    name?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     containerWidthRatio?: number;
     titleWidthRatio?: number;
@@ -54,9 +55,10 @@ export const DetailTextInputRow = (props: IDetailTextInputRow) => {
                   }`}
                   placeholder={item.placeholder}
                   type={item?.type ?? "text"}
+                  name={item?.name}
                   value={item?.content}
                   disabled={item?.disabled}
-                  onChange={item?.onChange && item.onChange}
+                  onChange={item.onChange}
                 />
                 {item.children}
               </InputGroup>

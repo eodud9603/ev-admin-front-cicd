@@ -131,7 +131,13 @@ const OperatorAccount = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
-              <ButtonBase label={"신규 등록"} color={"turu"} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  navigate("/operator/counselor/add");
+                }}
+              />
               <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
             </div>
           </div>
