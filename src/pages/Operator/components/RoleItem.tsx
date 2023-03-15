@@ -8,6 +8,7 @@ interface IColProps {
   ratio: number;
   className?: string;
   children?: string | React.ReactElement | React.ReactElement[];
+  isBorder?: boolean;
 }
 
 interface IRoleMainItemProps {
@@ -69,9 +70,17 @@ const TextCol = (props: Omit<IColProps, "ratio">) => {
   return <RoleCol ratio={5} {...props} />;
 };
 
-const CheckBoxCol = ({ className = "", ...rest }: Omit<IColProps, "ratio">) => {
+const CheckBoxCol = ({
+  className = "",
+  isBorder = true,
+  ...rest
+}: Omit<IColProps, "ratio">) => {
   return (
-    <RoleCol ratio={1} className={`ps-0 ${borderCSS} ${className}`} {...rest} />
+    <RoleCol
+      ratio={1}
+      className={`ps-0 ${isBorder ? borderCSS : ""} ${className}`}
+      {...rest}
+    />
   );
 };
 
@@ -86,8 +95,8 @@ export const RoleHeaderItem = () => {
     >
       <TextCol>1차</TextCol>
       <TextCol>2차</TextCol>
-      <CheckBoxCol>편집</CheckBoxCol>
-      <CheckBoxCol>조회</CheckBoxCol>
+      <CheckBoxCol isBorder={false}>편집</CheckBoxCol>
+      <CheckBoxCol isBorder={false}>조회</CheckBoxCol>
     </Row>
   );
 };
