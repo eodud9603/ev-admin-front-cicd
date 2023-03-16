@@ -18,6 +18,7 @@ import {
   COUNT_FILTER_LIST,
 } from "src/constants/list";
 import styled from "styled-components";
+import CategoryModal from "./components/CategoryModal";
 
 /* 검색어 필터 */
 const searchList = [
@@ -84,6 +85,8 @@ const OperateQnA = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+  /* 카테고리 모달 */
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -163,7 +166,13 @@ const OperateQnA = () => {
                 dropdownItems={categoryList}
                 className={"me-2 w-xs"}
               />
-              <ButtonBase label={"추가"} color={"dark"} />
+              <ButtonBase
+                label={"추가"}
+                color={"dark"}
+                onClick={() => {
+                  setIsCategoryModalOpen(true);
+                }}
+              />
             </Col>
           </Row>
         </SearchSection>
@@ -230,6 +239,13 @@ const OperateQnA = () => {
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
       </BodyBase>
+
+      <CategoryModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => {
+          setIsCategoryModalOpen((prev) => !prev);
+        }}
+      />
     </ContainerBase>
   );
 };
