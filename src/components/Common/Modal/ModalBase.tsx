@@ -16,7 +16,7 @@ export interface IModalBaseProps extends ModalProps {
   headerClassName?: string;
 
   isCloseButton?: boolean;
-  size?: "ms" | "md" | "lg" | "xl";
+  size?: "sm" | "md" | "lg" | "xl";
   title?: string;
   body?: Pick<ModalBodyProps, "children">["children"];
   footer?: Pick<ModalFooterProps, "children">["children"];
@@ -65,7 +65,6 @@ const ModalBase = (props: IModalBaseProps) => {
       >
         <span className={"font-size-20"}>{title}</span>
       </ModalHeader>
-
       {/* children or body/footer 태그 */}
       {children ?? (
         <>

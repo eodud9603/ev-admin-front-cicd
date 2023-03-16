@@ -10,11 +10,18 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
-import { DetailTextRow } from "src/components/Common/DetailContentRow/DetailTextRow";
 import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
-import { MemberSearchModal } from "src/pages/Member/components/MemberSearchModal";
+import { CounselingMemberSearchModal } from "src/pages/Counseling/components/CounselingMemberSearchModal";
+import { PasswordResetModal } from "src/pages/Counseling/components/PasswordResetModal";
+import { ChangeOperatorModal } from "src/pages/Counseling/components/ChangeOperatorModal";
+import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
+import { TermsAgreeModal } from "src/pages/Counseling/components/TermsAgreeModal";
+import {
+  MemberInfoTemplate,
+  NonMemberInfoTemplate,
+} from "src/pages/Counseling/components/MemberInfoTemplates";
 
-const MemberHistoryTableHeader = [
+const CounselingHistoryTableHeader = [
   { label: "번호" },
   { label: "In/Out" },
   { label: "접수일시" },
@@ -23,23 +30,74 @@ const MemberHistoryTableHeader = [
   { label: "담당자" },
 ];
 
+const UsageHistoryTableHeader = [
+  { label: "번호" },
+  { label: "주문ID" },
+  { label: "충전소명" },
+  { label: "충전기ID" },
+  { label: "충전기상태" },
+  { label: "충전시작일시" },
+  { label: "충전종료일시" },
+  { label: "종료(중단) 유형" },
+  { label: "총 충전량(kWh)" },
+  { label: "총 이용요금(원)" },
+];
+
+const counselingData = [];
+const usageData = [
+  {
+    orderId: "OD2022120112345678",
+    stationName: "휴맥스 카플랫 전용 A",
+    chargerId: "0000",
+    chargerStatus: "a",
+    chargingStartDt: "YYYY.MM.DD 00:00:00",
+    chargingEndDt: "YYYY.MM.DD 00:00:00",
+    endType: "",
+    amount: "000",
+    fee: "000",
+  },
+];
+
 const counselingDropdown = [
   { menuItems: [{ label: "선택", value: "1" }] },
   { menuItems: [{ label: "선택", value: "1" }] },
   { menuItems: [{ label: "선택", value: "1" }] },
 ];
 const inoutRadio = [{ label: "전체" }, { label: "HEV" }, { label: "JEV" }];
+const processingStatusRadio = [{ label: "처리완료" }, { label: "관리자 이관" }];
+
 export const CounselingCustomer = () => {
   const [selected, setSelected] = useState("0");
+  const [tab, setTab] = useState<"COUNSELING" | "USAGE">("COUNSELING");
+  const [memberInfoTemplate, setMemberInfoTemplate] = useState<
+    "MEMBER" | "NONMEMBER"
+  >("MEMBER");
   const [isMemberSearchModal, setIsMemberSearchModal] = useState(false);
+  const [isPasswordResetModal, setIsPasswordResetModal] = useState(false);
+  const [isChangeOperatorModal, setIsChangeOperatorModal] = useState(false);
+  const [isTermsAgreeModal, setIsTermsAgreeModal] = useState(false);
 
   const handleMemberSearchModal = () => {
     setIsMemberSearchModal((prev) => !prev);
+    setMemberInfoTemplate("MEMBER");
   };
+  const handlePasswordResetModal = () => {
+    setIsPasswordResetModal((prev) => !prev);
+  };
+  const handleChangeOperatorModal = () => {
+    setIsChangeOperatorModal((prev) => !prev);
+  };
+  const handleTermsAgreeModal = () => {
+    setIsTermsAgreeModal((prev) => !prev);
+  };
+  const handleMemberInfoTemplate = (type: "MEMBER" | "NONMEMBER") => {
+    setMemberInfoTemplate(type);
+  };
+  const handleHistorySearch = () => {};
 
   return (
     <ContainerBase>
-      <HeaderBase></HeaderBase>
+      <HeaderBase />
       <TabGroup
         list={[{ label: "공지사항" }, { label: "고객 상담" }]}
         selectedIndex={selected}
@@ -58,7 +116,7 @@ export const CounselingCustomer = () => {
         <AmountSection>
           <div
             className={
-              "d-flex bg-light bg-opacity-10 py-2 px-2 border border-2 " +
+              "d-flex bg-light bg-opacity-10 p-2 border border-2 " +
               "border-light border-start-0 border-end-0"
             }
           >
@@ -92,52 +150,30 @@ export const CounselingCustomer = () => {
                     label={"회원 조회"}
                     color={"turu"}
                     onClick={handleMemberSearchModal}
+                    outline={!(memberInfoTemplate === "MEMBER")}
                   />
                   <ButtonBase
                     label={"비회원 상담"}
                     className={"mx-2"}
                     color={"turu"}
-                    outline={true}
+                    outline={!(memberInfoTemplate === "NONMEMBER")}
+                    onClick={() => handleMemberInfoTemplate("NONMEMBER")}
                   />
-                  <ButtonBase label={"비밀번호 초기화"} outline={true} />
+                  <ButtonBase
+                    label={"비밀번호 초기화"}
+                    outline={true}
+                    onClick={handlePasswordResetModal}
+                  />
                 </div>
               </div>
-              <DetailTextRow
-                rows={[
-                  { title: "이름", content: "홍길동" },
-                  { title: "회원 ID", content: "hong" },
-                ]}
-              />
-              <DetailTextRow
-                rows={[
-                  { title: "생년월일", content: "0000.00.00" },
-                  { title: "성별", content: "남성" },
-                ]}
-              />
-              <DetailTextRow
-                rows={[
-                  { title: "휴대전화", content: "000-0000-0000" },
-                  { title: "회원등급", content: "정회원" },
-                ]}
-              />
-              <DetailTextRow
-                rows={[{ title: "이메일", content: "Hh@humax.co.kr" }]}
-              />
-              <DetailTextRow
-                rows={[{ title: "회원카드번호", content: "0000000000" }]}
-              />
-              <DetailTextRow
-                rows={[
-                  { title: "그룹정보", content: "휴맥스" },
-                  { title: "사원번호", content: "111111" },
-                ]}
-              />
-              <DetailTextRow
-                rows={[{ title: "주소", content: "경기도 성남시" }]}
-              />
+              {memberInfoTemplate === "MEMBER" ? (
+                <MemberInfoTemplate />
+              ) : (
+                <NonMemberInfoTemplate historySearch={handleHistorySearch} />
+              )}
             </Col>
             {/*고객이력*/}
-            <Col>
+            <Col md={6}>
               <div
                 className={
                   "d-flex justify-content-between align-items-center my-3"
@@ -145,25 +181,25 @@ export const CounselingCustomer = () => {
               >
                 <Label className={"fw-bold m-0 font-size-16"}>고객이력</Label>
                 <div className={"btn-group"}>
-                  <ButtonBase label={"상담이력"} color={"turu"} />
                   <ButtonBase
+                    label={"상담이력"}
+                    color={"turu"}
+                    onClick={() => setTab("COUNSELING")}
+                    outline={!(tab === "COUNSELING")}
+                  />
+                  <ButtonBase
+                    onClick={() => setTab("USAGE")}
                     label={"이용내역"}
                     color={"turu"}
-                    outline={true}
+                    outline={!(tab === "USAGE")}
                   />
                 </div>
               </div>
-              <TableBase tableHeader={MemberHistoryTableHeader} />
-              <DetailTextInputRow
-                rows={[
-                  { title: "질문내용", type: "textarea", titleWidthRatio: 2 },
-                ]}
-              />
-              <DetailTextInputRow
-                rows={[
-                  { title: "답변내용", type: "textarea", titleWidthRatio: 2 },
-                ]}
-              />
+              {tab === "COUNSELING" ? (
+                <CounselingHistoryTab />
+              ) : (
+                <UsageHistoryTab />
+              )}
             </Col>
           </Row>
 
@@ -224,10 +260,23 @@ export const CounselingCustomer = () => {
           >
             <Col className={"d-flex p-0 align-items-center"}>
               <Col xs={2} className={"fw-bold p-3 bg-light bg-opacity-10 me-2"}>
-                In/Out
+                처리상태
               </Col>
-              <Col>
-                <RadioGroup name={"inout"} list={inoutRadio} />
+              <Col className={"d-flex align-items-center"}>
+                <RadioGroup
+                  name={"processingStatus"}
+                  list={processingStatusRadio}
+                />
+                <span className={"text-turu font-size-12"}>
+                  이관할 관리자명(관리자ID)
+                </span>
+                <ButtonBase
+                  label={"관리자 변경"}
+                  color={"turu"}
+                  outline={true}
+                  className={"w-xs mx-2"}
+                  onClick={handleChangeOperatorModal}
+                />
               </Col>
             </Col>
             <Col className={"d-flex p-0"}>
@@ -272,13 +321,166 @@ export const CounselingCustomer = () => {
           </div>
         </InfoSection>
       </BodyBase>
-      <MemberSearchModal
+      <CounselingMemberSearchModal
         isOpen={isMemberSearchModal}
         onClose={handleMemberSearchModal}
+      />
+      <PasswordResetModal
+        size={"lg"}
+        isOpen={isPasswordResetModal}
+        onClose={handlePasswordResetModal}
+      />
+      <ChangeOperatorModal
+        isOpen={isChangeOperatorModal}
+        onClose={handleChangeOperatorModal}
+      />
+      <TermsAgreeModal
+        isOpen={isTermsAgreeModal}
+        onClose={handleTermsAgreeModal}
       />
     </ContainerBase>
   );
 };
 
+const CounselingHistoryTab = () => {
+  return (
+    <>
+      <TableBase tableHeader={CounselingHistoryTableHeader}>
+        <>
+          {counselingData.length > 0 &&
+            counselingData.map((e, i) => (
+              <tr key={i}>
+                <td></td>
+              </tr>
+            ))}
+        </>
+      </TableBase>
+      <DetailTextInputRow
+        rows={[
+          {
+            title: "질문내용",
+            type: "textarea",
+            titleWidthRatio: 2,
+            disabled: true,
+          },
+        ]}
+      />
+      <DetailTextInputRow
+        rows={[
+          {
+            title: "답변내용",
+            type: "textarea",
+            titleWidthRatio: 2,
+            disabled: true,
+          },
+        ]}
+      />
+    </>
+  );
+};
+
+const UsageHistoryTab = () => {
+  return (
+    <>
+      <div
+        className={
+          "d-flex align-items-center justify-content-between " +
+          "bg-light bg-opacity-10 py-2 px-3"
+        }
+      >
+        <DateGroup
+          label={"조회기간"}
+          buttonState={[
+            { label: "7일" },
+            { label: "1개월" },
+            { label: "3개월" },
+          ]}
+        />
+        <ButtonBase label={"검색"} color={"dark"} />
+      </div>
+
+      <TableBase tableHeader={UsageHistoryTableHeader}>
+        <>
+          {usageData.length > 0 &&
+            usageData.map((e, i) => (
+              <tr key={i}>
+                <td></td>
+                <td>{e.orderId}</td>
+                <td>
+                  <HoverSpan className={"text-turu"}>
+                    <u>{e.stationName}</u>
+                  </HoverSpan>
+                </td>
+                <td>
+                  <HoverSpan className={"text-turu"}>
+                    <u>{e.chargerId}</u>
+                  </HoverSpan>
+                </td>
+                <td>
+                  <ChargerStatusButton chargerStatus={e.chargerStatus} />
+                </td>
+                <td>{e.chargingStartDt}</td>
+                <td>{e.chargingEndDt}</td>
+                <td>{e.endType}</td>
+                <td>{e.amount}</td>
+                <td>{e.fee}</td>
+              </tr>
+            ))}
+        </>
+      </TableBase>
+    </>
+  );
+};
+
+interface IChargerStatusButton {
+  chargerStatus: string;
+}
+const ChargerStatusButton = (props: IChargerStatusButton) => {
+  const { chargerStatus } = props;
+
+  switch (chargerStatus) {
+    case "a":
+      return (
+        <ButtonBase
+          color={"info"}
+          className={"w-xs rounded-5 py-1"}
+          label={"충전대기"}
+        />
+      );
+    case "b":
+      return (
+        <ButtonBase
+          color={"success"}
+          className={"w-xs rounded-5 py-1"}
+          label={"충전중"}
+        />
+      );
+    case "c":
+      return (
+        <ButtonBase
+          label={"통신이상"}
+          color={"danger"}
+          className={"w-xs rounded-5 py-1"}
+        />
+      );
+    case "d":
+      return (
+        <ButtonBase
+          color={"white"}
+          className={"w-xs rounded-5 py-1"}
+          label={"수령완료"}
+        />
+      );
+    default:
+      return <></>;
+  }
+  return <></>;
+};
+
 const AmountSection = styled.section``;
 const InfoSection = styled.section``;
+const HoverSpan = styled.span`
+  :hover {
+    cursor: pointer;
+  }
+`;
