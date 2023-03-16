@@ -20,6 +20,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST, DELETE_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
+import CodeModal from "src/pages/Operate/components/CodeModal";
 
 /* 검색어 필터 */
 const searchList = [{ label: "전체", value: "1" }];
@@ -38,7 +39,7 @@ const tableHeader = [
 ];
 
 /* 임시 목록 데이터 */
-const codeList: Omit<IListItemProps, "index">[] = [
+const codeList: Omit<IListItemProps, "index" | "setCodeModal">[] = [
   {
     groupCode: "P12345",
     groupCodeName: "회원 승인",
@@ -62,6 +63,10 @@ interface IListItemProps {
   regName: string;
   regDate: string;
   isDelete: "Y" | "N";
+
+  setCodeModal: React.Dispatch<
+    React.SetStateAction<{ isOpen: boolean; data: IListItemProps }>
+  >;
 }
 
 const OperateCode = () => {
@@ -70,6 +75,11 @@ const OperateCode = () => {
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
   const listRef = useRef<IListRefProps[]>([]);
+  /* 코드관리 모달 */
+  const [codeModal, setCodeModal] = useState({
+    isOpen: false,
+    data: {} as IListItemProps,
+  });
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -190,6 +200,7 @@ const OperateCode = () => {
                       }
                       key={index}
                       index={index}
+                      setCodeModal={setCodeModal}
                       {...code}
                     />
                   ))
@@ -207,6 +218,13 @@ const OperateCode = () => {
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
       </BodyBase>
+
+      <CodeModal
+        {...codeModal}
+        onClose={() => {
+          setCodeModal((prev) => ({ ...prev, isOpen: false }));
+        }}
+      />
     </ContainerBase>
   );
 };
@@ -225,6 +243,8 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
     regName,
     regDate,
     isDelete,
+
+    setCodeModal,
   } = props;
   const [checked, setChecked] = useState(false);
 
@@ -259,7 +279,15 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
       <td>{regName}</td>
       <td>{regDate}</td>
       <td>
-        {<ButtonBase label={"코드 관리"} color={"dark"} onClick={() => {}} />}
+        {
+          <ButtonBase
+            label={"코드 관리"}
+            color={"dark"}
+            onClick={() => {
+              setCodeModal({ isOpen: true, data: props });
+            }}
+          />
+        }
       </td>
       <td>{isDelete}</td>
     </tr>
