@@ -12,32 +12,11 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import ModalBase from "src/components/Common/Modal/ModalBase";
 import useInputs from "src/hooks/useInputs";
 
-const categoryList = [
-  {
-    categoryId: 1,
-    text: "가입 승인",
-  },
-  {
-    categoryId: 2,
-    text: "결제 카드",
-  },
-  {
-    categoryId: 3,
-    text: "충전기 계약",
-  },
-  {
-    categoryId: 4,
-    text: "충전기 사용",
-  },
-  {
-    categoryId: 5,
-    text: "기타",
-  },
-];
-
 interface ICategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
+
+  list: any[] /** @TODO 추후 수정 필요 */;
 }
 interface ICategoryItemProps {
   text: string;
@@ -49,8 +28,9 @@ interface ICategoryItemRef {
   data: ICategoryItemProps;
 }
 
+/** @TODO 추가/수정/삭제 핸들러 props 추가 및 연결 필요 */
 const CategoryModal = (props: ICategoryModalProps) => {
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, list = [] } = props;
   const { categoryText, onChange } = useInputs({
     categoryText: "",
   });
@@ -59,10 +39,10 @@ const CategoryModal = (props: ICategoryModalProps) => {
   const itemsRef = useRef<ICategoryItemRef[]>([]);
 
   return (
-    <ModalBase title={"카테고리명"} isOpen={isOpen} onClose={onClose}>
+    <ModalBase title={"카테고리 관리"} isOpen={isOpen} onClose={onClose}>
       {/* 카테고리 인풋 */}
       <ModalBody
-        style={{ height: "70vh", overflowY: "scroll" }}
+        style={{ maxHeight: "70vh", overflowY: "scroll" }}
         className={"p-0 pt-4 pb-2"}
       >
         <section
@@ -112,7 +92,7 @@ const CategoryModal = (props: ICategoryModalProps) => {
         </div>
         <div className={"mx-2"}>
           {/* 카테고리 목록 */}
-          {categoryList.map((category, index) => (
+          {list.map((category, index) => (
             <CategoryItem
               ref={(ref: ICategoryItemRef) => (itemsRef.current[index] = ref)}
               key={index}

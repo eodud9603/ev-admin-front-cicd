@@ -15,6 +15,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import {
   ANSWER_STATUS_FILTER_LIST,
+  CATEGORY_LIST,
   COUNT_FILTER_LIST,
 } from "src/constants/list";
 import styled from "styled-components";
@@ -245,6 +246,7 @@ const OperateQnA = () => {
         onClose={() => {
           setIsCategoryModalOpen((prev) => !prev);
         }}
+        list={CATEGORY_LIST}
       />
     </ContainerBase>
   );
