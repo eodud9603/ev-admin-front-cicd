@@ -4,6 +4,7 @@ import RadioBase from "../Radio/RadioBase";
 
 interface IDetailTextRadioRow {
   rows: Array<{
+    id?: string;
     name?: string;
 
     title: string;
@@ -43,6 +44,7 @@ export const DetailTextRadioRow = (props: IDetailTextRadioRow) => {
               <RadioBase
                 key={index}
                 name={item.name ?? item.title}
+                id={item.id ?? `${item?.name ?? item.title}-${index}`}
                 {...radio}
                 onChange={item.onChange}
               />

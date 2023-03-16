@@ -7,6 +7,7 @@ export interface ITextInputBaseProps {
   value: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 
+  autoComplete?: string;
   placeholder?: string;
   type?: string;
   disabled?: boolean;
@@ -24,6 +25,7 @@ const TextInputBase = (props: ITextInputBaseProps) => {
     /* optional */
     type = "text",
     placeholder = "입력해주세요.",
+    autoComplete,
     bsSize = "sm",
     disabled = false,
     inputstyle,
@@ -42,6 +44,7 @@ const TextInputBase = (props: ITextInputBaseProps) => {
       inputstyle={inputstyle}
       id={name}
       type={type}
+      autoComplete={autoComplete}
       valid={false}
       invalid={false}
       bsSize={bsSize}

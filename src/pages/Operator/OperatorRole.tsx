@@ -5,18 +5,12 @@ import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
-import { TableBase } from "src/components/Common/Table/TableBase";
 import { ROLE_LIST, ROLE_TABLE_LIST } from "src/constants/list";
 import styled from "styled-components";
-import RoleCategoryItem from "./components/RoleCategoryItem";
-
-/* 목록 헤더 */
-const tableHeader = [
-  { label: "1차" },
-  { label: "2차" },
-  { label: "편집" },
-  { label: "조회" },
-];
+import {
+  RoleHeaderItem,
+  RoleMainItem,
+} from "src/pages/Operator/components/RoleItem";
 
 const OperatorRole = () => {
   const [tabList, setTabList] = useState([
@@ -25,6 +19,8 @@ const OperatorRole = () => {
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [selectedRole, setSelectedRole] = useState("1");
+  /* 전체보기 */
+  const [allOpen, setAllOpen] = useState(false);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -99,28 +95,33 @@ const OperatorRole = () => {
 
             <ButtonBase
               className={"rounded-0 fw-bold"}
-              label={"전체 보기"}
+              label={allOpen ? "전체 닫기" : "전체 보기"}
               outline={true}
               color={"secondary"}
+              onClick={() => {
+                setAllOpen((prev) => !prev);
+              }}
             />
           </div>
         </RoleSection>
 
         <ListSection>
-          {/** @TODO 펼치기/숨기기 애니메이션 작업 필요 */}
-          <TableBase tableClassName={"mb-5"} tableHeader={tableHeader}>
-            <>
-              {ROLE_TABLE_LIST.map((role, index) => (
-                <RoleCategoryItem key={index} index={index} {...role} />
-              ))}
-            </>
-          </TableBase>
-
-          <div className={"d-flex flex-row justify-content-center gap-4"}>
-            <ButtonBase className={"width-110"} outline label={"목록"} />
-            <ButtonBase className={"width-110"} color={"turu"} label={"수정"} />
-          </div>
+          <RoleHeaderItem />
+          {ROLE_TABLE_LIST.map((props, index) => (
+            <RoleMainItem
+              key={index}
+              index={index}
+              initialOpen={allOpen}
+              {...props}
+            />
+          ))}
         </ListSection>
+
+        <div className={"my-5 d-flex flex-row justify-content-center gap-4"}>
+          {/** @TODO 권한관리의 별도 페이지가 없으므로 주석 처리 (추후 추가시, 적용) */}
+          {/* <ButtonBase className={"width-110"} outline label={"목록"} /> */}
+          <ButtonBase className={"width-110"} color={"turu"} label={"수정"} />
+        </div>
       </BodyBase>
     </ContainerBase>
   );

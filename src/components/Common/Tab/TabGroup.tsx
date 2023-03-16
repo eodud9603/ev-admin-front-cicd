@@ -18,7 +18,7 @@ const TabGroup = (props: ITabGroupProps) => {
   } = props;
 
   return (
-    <TabSection className={"mt-4 mx-5"}>
+    <TabSection className={"mt-4 mx-5 d-flex flex-nowrap"}>
       {list.map(({ label }, index) => (
         <TabBase
           key={index}

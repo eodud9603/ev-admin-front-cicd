@@ -19,8 +19,13 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { COUNT_FILTER_LIST, UPLOAD_FILTER_LIST } from "src/constants/list";
+import {
+  COUNT_FILTER_LIST,
+  POPUP_CATEGORY_LIST,
+  UPLOAD_FILTER_LIST,
+} from "src/constants/list";
 import styled from "styled-components";
+import CategoryModal from "./components/CategoryModal";
 
 /* 진행 여부 필터 */
 const progressList = [
@@ -117,6 +122,8 @@ const OperatePopup = () => {
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
   const listRef = useRef<IListRefProps[]>([]);
+  /* 카테고리 모달 */
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -216,7 +223,13 @@ const OperatePopup = () => {
                 dropdownItems={categoryList}
                 className={"me-2 w-xs"}
               />
-              <ButtonBase label={"추가"} color={"dark"} />
+              <ButtonBase
+                label={"추가"}
+                color={"dark"}
+                onClick={() => {
+                  setIsCategoryModalOpen(true);
+                }}
+              />
             </Col>
           </Row>
         </SearchSection>
@@ -273,6 +286,14 @@ const OperatePopup = () => {
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
       </BodyBase>
+
+      <CategoryModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => {
+          setIsCategoryModalOpen((prev) => !prev);
+        }}
+        list={POPUP_CATEGORY_LIST}
+      />
     </ContainerBase>
   );
 };

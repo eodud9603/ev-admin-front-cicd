@@ -37,7 +37,7 @@ const TabBase = (props: ITabBaseProps) => {
     >
       <Button
         type={"button"}
-        className={`border-0 px-3 ps-3 bg-transparent ${tabClass}`}
+        className={`border-0 px-3 ps-3 bg-transparent text-nowrap ${tabClass}`}
         outline
         value={index}
         onClick={onClick}

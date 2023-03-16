@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { Label } from "reactstrap";
+import { Form, Label } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import {
@@ -17,50 +17,60 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
-import DetailBottomButton from "../Charger/components/DetailBottomButton";
 import AuthLevelModal from "./components/AuthLevelModal";
+import AddButton from "src/pages/Operator/components/AddButton";
+import useInputs from "src/hooks/useInputs";
 
-const groupItems = [{ label: "휴맥스EV", value: "1" }];
+/** 소속그룹 목록 */
+const groupItems = [
+  { label: "선택", value: "0" },
+  { label: "휴맥스EV", value: "1" },
+];
 
-const OperatorAccountDetail = () => {
+/** Y/N 라디오 목록 */
+const radioList = [
+  {
+    label: "Y",
+    value: "Y",
+  },
+  {
+    label: "N",
+    value: "N",
+  },
+];
+
+/** 계정등급 라디오 목록 */
+const roleList = [
+  { label: "최고 관리자", value: "1" },
+  { label: "일반 관리자", value: "2" },
+  { label: "관계사", value: "3" },
+  { label: "제조사", value: "4" },
+];
+
+/** 계정상태 라디오 목록 */
+const accountStatusList = [
+  { label: "정상", value: "1" },
+  { label: "차단", value: "2" },
+];
+
+const OperatorAccountAdd = () => {
   const [tabList, setTabList] = useState([
     { label: "공지사항" },
     { label: "계정 관리" },
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  /* 수정 비활성화 */
-  const [disabled, setDisabled] = useState(true);
+  const { name, id, password, tel, mobileTel, department, etc, onChange } =
+    useInputs({
+      name: "",
+      id: "",
+      password: "",
+      tel: "",
+      mobileTel: "",
+      department: "",
+      etc: "",
+    });
   /* 권한등급 모달 */
   const [authModalOpen, setAuthModalOpen] = useState(false);
-
-  /** Y/N 라디오 목록 */
-  const radioList = [
-    {
-      label: "Y",
-      value: "Y",
-      checked: true,
-      disabled,
-    },
-    {
-      label: "N",
-      value: "N",
-      disabled,
-    },
-  ];
-
-  /** 계정등급 라디오 목록 */
-  const roleList = [
-    { label: "최고 관리자", value: "1", checked: true, disabled },
-    { label: "일반 관리자", value: "2", disabled },
-    { label: "관계사", value: "3", disabled },
-    { label: "제조사", value: "4", disabled },
-  ];
-
-  /** 계정상태 라디오 목록 */
-  const accountStatusList = [
-    { label: "정상", value: "1", checked: true, disabled },
-    { label: "차단", value: "2", disabled },
-  ];
 
   const navigate = useNavigate();
 
@@ -102,9 +112,9 @@ const OperatorAccountDetail = () => {
             { label: "홈", href: "" },
             { label: "운영자 관리", href: "" },
             { label: "계정 관리", href: "" },
-            { label: "계정 상세", href: "" },
+            { label: "계정 신규 등록", href: "" },
           ]}
-          title={"계정 상세"}
+          title={"계정 신규 등록"}
         />
 
         <Label className={"m-0 mb-4 font-size-20 fw-bold"}>기본정보</Label>
@@ -113,32 +123,38 @@ const OperatorAccountDetail = () => {
             {
               titleWidthRatio: 4,
               title: "운영자명",
-              content: "이팀장",
-              disabled,
+              name: "name",
+              content: name,
+              onChange,
+              placeholder: "입력해주세요.",
             },
             {
               titleWidthRatio: 4,
               title: "계정 ID",
-              content: "K05@humaxev.com",
-              disabled,
+              name: "id",
+              content: id,
+              onChange,
+              placeholder: "입력해주세요.",
             },
           ]}
         />
         <DetailRow>
           <DetailLabelCol sm={2}>소속 그룹</DetailLabelCol>
           <DetailContentCol>
-            <DropdownBase disabled={disabled} menuItems={groupItems} />
+            <DropdownBase menuItems={groupItems} />
           </DetailContentCol>
           <DetailLabelCol sm={2}>비밀번호</DetailLabelCol>
           <DetailContentCol>
-            <TextInputBase
-              disabled={disabled}
-              bsSize={"lg"}
-              name={"password"}
-              type={"password"}
-              value={"1234"}
-              onChange={() => {}}
-            />
+            <Form>
+              <TextInputBase
+                bsSize={"lg"}
+                name={"password"}
+                type={"password"}
+                value={password}
+                onChange={onChange}
+                autoComplete={"off"}
+              />
+            </Form>
           </DetailContentCol>
         </DetailRow>
         {/** @TODO 권한 row 추가 */}
@@ -150,10 +166,9 @@ const OperatorAccountDetail = () => {
           <DetailLabelCol sm={2}>권한등록</DetailLabelCol>
           <DetailContentCol>
             <ButtonBase
-              className={"width-70"}
               outline
-              label={disabled ? "보기" : "수정"}
-              color={"turu"}
+              label={"권한등록"}
+              color={"secondary"}
               onClick={() => {
                 setAuthModalOpen(true);
               }}
@@ -165,14 +180,18 @@ const OperatorAccountDetail = () => {
             {
               titleWidthRatio: 4,
               title: "전화번호",
-              content: "0000-0000",
-              disabled,
+              name: "tel",
+              content: tel,
+              placeholder: "입력해주세요.",
+              onChange,
             },
             {
               titleWidthRatio: 4,
               title: "휴대전화 번호",
-              content: "000-0000-0000",
-              disabled,
+              name: "mobileTel",
+              content: mobileTel,
+              placeholder: "입력해주세요.",
+              onChange,
             },
           ]}
         />
@@ -182,9 +201,8 @@ const OperatorAccountDetail = () => {
             <TextInputBase
               name={"department"}
               bsSize={"lg"}
-              disabled={disabled}
-              value={"서비스 운영팀"}
-              onChange={() => {}}
+              value={department}
+              onChange={onChange}
             />
           </DetailContentCol>
           <DetailLabelCol sm={2}>계정상태</DetailLabelCol>
@@ -195,10 +213,12 @@ const OperatorAccountDetail = () => {
         <DetailTextRadioRow
           rows={[
             {
+              name: "mobileAccess",
               title: "모바일 접속 허용 여부",
               list: radioList,
             },
             {
+              name: "externalAccess",
               title: "외부 접속 허용 여부",
               list: radioList,
             },
@@ -210,30 +230,25 @@ const OperatorAccountDetail = () => {
             {
               titleWidthRatio: 2,
               title: "비고",
-              content: "입력 정보 노출",
-              disabled,
+              name: "etc",
+              content: etc,
+              placeholder: "입력해주세요.",
+              onChange,
             },
           ]}
         />
-        <DetailBottomButton
-          containerClassName={"my-5"}
-          editDisabled={disabled}
+
+        <AddButton
+          disabled={true}
           listHandler={() => {
             navigate("/operator/account");
           }}
-          editHandler={() => {
-            setDisabled(false);
-          }}
-          saveHandler={() => {
-            /** @TODO 저장로직 추가 */
-
-            setDisabled(true);
-          }}
+          addHandler={() => {}}
         />
       </BodyBase>
 
       <AuthLevelModal
-        type={disabled ? "READ" : "WRITE"}
+        type={"WRITE"}
         isOpen={authModalOpen}
         onClose={() => {
           setAuthModalOpen(false);
@@ -243,4 +258,4 @@ const OperatorAccountDetail = () => {
   );
 };
 
-export default OperatorAccountDetail;
+export default OperatorAccountAdd;

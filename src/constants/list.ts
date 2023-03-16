@@ -193,3 +193,38 @@ export const ROLE_TABLE_LIST = [
     write: true,
   },
 ];
+
+/** 카테고리 목록 임시 데이터 */
+export const CATEGORY_LIST = [
+  {
+    categoryId: 1,
+    text: "가입 승인",
+  },
+  {
+    categoryId: 2,
+    text: "결제 카드",
+  },
+  {
+    categoryId: 3,
+    text: "충전기 계약",
+  },
+  {
+    categoryId: 4,
+    text: "충전기 사용",
+  },
+  {
+    categoryId: 5,
+    text: "기타",
+  },
+];
+
+export const POPUP_CATEGORY_LIST = [
+  {
+    categoryId: 1,
+    text: "이벤트 팝업",
+  },
+  {
+    categoryId: 2,
+    text: "공지사항 팝업",
+  },
+];

@@ -49,6 +49,9 @@ import { MemberIssuanceNormalCard } from "src/pages/Member/MemberIssuanceNormalC
 import OperatorCounselorDetail from "src/pages/Operator/OperatorCounselorDetail";
 import OperatorAccountDetail from "src/pages/Operator/OperatorAccountDetail";
 import { MemberNormalCardDetail } from "src/pages/Member/MemberNormalCardDetail";
+import OperatorCounselorAdd from "src/pages/Operator/OperatorCounselorAdd";
+import OperatorAccountAdd from "src/pages/Operator/OperatorAccountAdd";
+import ChargerContractAdd from "src/pages/Charger/ChargerContractAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -59,7 +62,7 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargingStation />,
   },
   {
-    path: "/charger/chargerStation/detail",
+    path: "/charger/chargerStation/detail/:id",
     element: <ChargerStationDetail />,
   },
   {
@@ -67,7 +70,7 @@ const userRoutes: Array<RouteProps> = [
     element: <Charger />,
   },
   {
-    path: "/charger/charger/detail",
+    path: "/charger/charger/detail/:id",
     element: <ChargerDetail />,
   },
   {
@@ -75,7 +78,11 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargerContract />,
   },
   {
-    path: "/charger/contract/detail",
+    path: "/charger/contract/add",
+    element: <ChargerContractAdd />,
+  },
+  {
+    path: "/charger/contract/detail/:id",
     element: <ChargerContractDetail />,
   },
   { path: "/charger/trouble", element: <ChargerTrouble /> },
@@ -115,10 +122,14 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/code", element: <OperateCode /> },
 
   { path: "/operator/account", element: <OperatorAccount /> },
-  { path: "/operator/account/detail", element: <OperatorAccountDetail /> },
+  { path: "/operator/account/add", element: <OperatorAccountAdd /> },
+  { path: "/operator/account/detail/:id", element: <OperatorAccountDetail /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },
-
-  { path: "/operator/counselor/detail", element: <OperatorCounselorDetail /> },
+  { path: "/operator/counselor/add", element: <OperatorCounselorAdd /> },
+  {
+    path: "/operator/counselor/detail/:id",
+    element: <OperatorCounselorDetail />,
+  },
   { path: "/operator/role", element: <OperatorRole /> },
 
   // { path: "/member/card", element: <ChargerOperator /> },
