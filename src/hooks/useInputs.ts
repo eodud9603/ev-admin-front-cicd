@@ -26,11 +26,18 @@ const useInputs = <T,>(object: T) => {
     setInputs((prev) => ({ ...prev, [name]: value }));
   }, []);
 
+  const onChangeSingle = useCallback((object: Partial<T>) => {
+
+    /* 단일 값 업데이트 */
+    setInputs((prev) => ({ ...prev, ...object }));
+  }, []);
+
   const reset = useCallback(() => setInputs(object), [object]);
 
   return {
     ...input,
     onChange,
+    onChangeSingle,
     reset,
   };
 };

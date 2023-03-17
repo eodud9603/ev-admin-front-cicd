@@ -21,6 +21,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST, DELETE_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
+import VariableModal from "src/pages/Operate/components/VariableModal";
 
 /* 검색어 필터 */
 const searchList = [{ label: "전체", value: "1" }];
@@ -80,6 +81,7 @@ const OperateVariable = () => {
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
   const listRef = useRef<IListRefProps[]>([]);
+  const [variableModalOpen, setVariableModalOpen] = useState(false);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -186,7 +188,13 @@ const OperateVariable = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
-              <ButtonBase label={"신규 등록"} color={"turu"} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  setVariableModalOpen(true);
+                }}
+              />
               <ButtonBase
                 label={"선택 삭제"}
                 outline={true}
@@ -224,6 +232,13 @@ const OperateVariable = () => {
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
       </BodyBase>
+
+      <VariableModal
+        isOpen={variableModalOpen}
+        onClose={() => {
+          setVariableModalOpen(false);
+        }}
+      />
     </ContainerBase>
   );
 };
