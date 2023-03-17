@@ -149,7 +149,7 @@ export const MemberNormal = () => {
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col className={"mt-3"}>
               <SearchTextInput
                 title={"검색어"}
                 menuItems={dropdownGroupSearch}

@@ -97,7 +97,7 @@ export const MemberWithdraw = () => {
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col className={"mt-3"}>
               <SearchTextInput
                 title={"검색어"}
                 placeholder={`${text}를 입력해주세요`}
