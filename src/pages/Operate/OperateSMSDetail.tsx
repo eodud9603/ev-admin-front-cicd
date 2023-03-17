@@ -12,23 +12,23 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TextColGroup } from "src/pages/Operate/components/OperateCol";
 
 /** 카테고리 목록, 임시 데이터 */
-const categoryList = [
+const commandList = [
   {
-    label: "회원",
+    label: "충전기 제어",
     value: "1",
   },
 ];
 
 /** 제목 목록, 임시 데이터 */
-const titleList = [
+const statusList = [
   {
-    label: "회원 방침 변경",
+    label: "요청",
     value: "1",
   },
 ];
 
-const OperateNotificationTalkDetail = () => {
-  const [tabList, setTabList] = useState([{ label: "알림톡 관리" }]);
+const OperateSMSDetail = () => {
+  const [tabList, setTabList] = useState([{ label: "제어 문자 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
   const navigate = useNavigate();
@@ -70,58 +70,61 @@ const OperateNotificationTalkDetail = () => {
           list={[
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
-            { label: "알림톡 관리", href: "" },
+            { label: "제어 문자 관리", href: "" },
             { label: "문자 발신 상세", href: "" },
           ]}
           title={"문자 발신 상세"}
         />
 
-        <section className={"mb-5"}>
-          <p className={"mb-3 font-size-20 fw-semibold"}>수신자</p>
-          <Row>
-            <TextColGroup title={"이름"}>홍길동</TextColGroup>
-            <TextColGroup title={"전화번호"}>010.1234.1234</TextColGroup>
-            <TextColGroup title={"분류"}>카카오톡</TextColGroup>
-            <Col sm={3} />
-          </Row>
-        </section>
-
         <Row className={"mb-5"}>
           <Col sm={6} className={"pe-3"}>
-            <p className={"mb-3 font-size-20 fw-semibold"}>발신자 정보</p>
-            <Row>
-              <TextColGroup title={"이름"} labelSm={2}>
-                백민규
-              </TextColGroup>
-              <TextColGroup title={"전화번호"} labelSm={2}>
-                1800.3188
-              </TextColGroup>
-            </Row>
-            <Row>
-              <TextColGroup title={"발송일"} labelSm={2}>
-                2022.02.07 12:00:00
-              </TextColGroup>
-              <TextColGroup title={"발송 예약일"} labelSm={2}>
-                2022.02.07 12:00:00
-              </TextColGroup>
-            </Row>
-            <Row>
-              <TextColGroup title={"등록일"} labelSm={2}>
-                2022.02.07 12:00:00
-              </TextColGroup>
-              <TextColGroup title={"진행 상태"} labelSm={2}>
-                발송
-              </TextColGroup>
-            </Row>
+            <Col className={"mb-5"} sm={12}>
+              <p className={"mb-3 font-size-20 fw-semibold"}>충전기 정보</p>
+              <Row>
+                <TextColGroup title={"충전소명"} labelSm={2}>
+                  휴맥스 빌리지
+                </TextColGroup>
+                <TextColGroup title={"충전기 ID"} labelSm={2}>
+                  2
+                </TextColGroup>
+              </Row>
+              <Row>
+                <TextColGroup title={"충전기 CH."} labelSm={2}>
+                  001122
+                </TextColGroup>
+                <TextColGroup title={"단말기 정보"} labelSm={2}>
+                  22222
+                </TextColGroup>
+              </Row>
+            </Col>
+            <Col sm={12}>
+              <p className={"mb-3 font-size-20 fw-semibold"}>제어 요청자</p>
+              <Row>
+                <TextColGroup title={"이름"} labelSm={2}>
+                  백민규
+                </TextColGroup>
+                <TextColGroup title={"전화번호"} labelSm={2}>
+                  010.1234.1234
+                </TextColGroup>
+              </Row>
+              <Row>
+                <TextColGroup title={"제어 요청일"} labelSm={2}>
+                  2022.02.07 12:00:00
+                </TextColGroup>
+                <TextColGroup title={"제어 완료일"} labelSm={2}>
+                  2022.02.07 12:00:00
+                </TextColGroup>
+              </Row>
+            </Col>
           </Col>
           <Col sm={6} className={"ps-3"}>
             <p className={"mb-3 font-size-20 fw-semibold"}>발신 내용</p>
             <Row>
-              <TextColGroup title={"카테고리"} labelSm={2}>
-                <DropdownBase disabled menuItems={categoryList} />
+              <TextColGroup title={"제어 명령어"} labelSm={2}>
+                <DropdownBase disabled menuItems={commandList} />
               </TextColGroup>
-              <TextColGroup title={"제목"} labelSm={2}>
-                <DropdownBase disabled menuItems={titleList} />
+              <TextColGroup title={"제어 상태"} labelSm={2}>
+                <DropdownBase disabled menuItems={statusList} />
               </TextColGroup>
             </Row>
             <Row>
@@ -132,7 +135,7 @@ const OperateNotificationTalkDetail = () => {
                   disabled
                   type={"textarea"}
                   name={"content"}
-                  value={"입력내용"}
+                  value={"충전 재시작"}
                   onChange={() => {}}
                 />
               </TextColGroup>
@@ -147,7 +150,7 @@ const OperateNotificationTalkDetail = () => {
             label={"목록"}
             color={"secondary"}
             onClick={() => {
-              navigate("/operate/talk");
+              navigate("/operate/sms");
             }}
           />
         </div>
@@ -156,4 +159,4 @@ const OperateNotificationTalkDetail = () => {
   );
 };
 
-export default OperateNotificationTalkDetail;
+export default OperateSMSDetail;
