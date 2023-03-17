@@ -21,6 +21,7 @@ const InstallChargerDetail = () => {
   const [disabled, setDisabled] = useState(true);
   /** @TODO 상세정보 불러오면 initial값 넣어주기 */
   const {
+    personalAgreement,
     application,
     self,
     open,
@@ -31,6 +32,7 @@ const InstallChargerDetail = () => {
     onChange,
     onChangeSingle,
   } = useInputs({
+    personalAgreement: "1",
     application: "1",
     self: "1",
     open: "1",
@@ -115,9 +117,20 @@ const InstallChargerDetail = () => {
           <RadioGroup
             title={"개인정보 수집 및 이용 동의"}
             name={"personalAgreement"}
+            onChange={onChange}
             list={[
-              { disabled, label: "동의", checked: true },
-              { disabled, label: "미동의" },
+              {
+                disabled,
+                label: "동의",
+                value: "1",
+                checked: personalAgreement === "1",
+              },
+              {
+                disabled,
+                label: "미동의",
+                value: "2",
+                checked: personalAgreement === "2",
+              },
             ]}
           />
         </section>
