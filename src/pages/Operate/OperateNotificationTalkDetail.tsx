@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
-import { DetailDropdownRow } from "src/components/Common/DetailContentRow/DetailDropdownRow";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
