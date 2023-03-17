@@ -20,6 +20,11 @@ import {
   MemberInfoTemplate,
   NonMemberInfoTemplate,
 } from "src/pages/Counseling/components/MemberInfoTemplates";
+import {
+  DetailContentCol,
+  DetailLabelCol,
+  DetailRow,
+} from "src/components/Common/DetailContentRow/Detail";
 
 const CounselingHistoryTableHeader = [
   { label: "번호" },
@@ -304,33 +309,21 @@ export const CounselingCustomer = () => {
             </div>
           </Row>
           {/* # depth1 */}
-          <Row
-            className={"border border-0 border-2 border-top border-light mx-1"}
-          >
-            <Col sm={5} className={"d-flex p-0"}>
-              <Col xs={3} className={"fw-bold p-3 bg-light bg-opacity-10"}>
-                상담유형
-              </Col>
+          <DetailRow>
+            <DetailLabelCol sm={1}>상담유형</DetailLabelCol>
+            <DetailContentCol className={"py-0"}>
               <DropboxGroup
                 dropdownItems={counselingDropdown}
                 className={"mx-2"}
               />
-            </Col>
-            <Col sm={3} className={"d-flex align-items-center"}>
-              <Col xs={4} className={"fw-bold p-3 bg-light bg-opacity-10 me-2"}>
-                In/Out
-              </Col>
-              <Col>
-                <RadioGroup name={"inout"} list={inoutRadio} />
-              </Col>
-            </Col>
-            <Col sm={4} className={"d-flex align-items-center"}>
-              <Col xs={4} className={"fw-bold p-3 bg-light bg-opacity-10 me-2"}>
-                접수일시
-              </Col>
-              <Col>0000.00.00</Col>
-            </Col>
-          </Row>
+            </DetailContentCol>
+            <DetailLabelCol sm={1}>In/Out</DetailLabelCol>
+            <DetailContentCol className={"py-0"}>
+              <RadioGroup name={"inout"} list={inoutRadio} />
+            </DetailContentCol>
+            <DetailLabelCol sm={1}>접수일시</DetailLabelCol>
+            <DetailContentCol className={"py-0"}>0000.00.00</DetailContentCol>
+          </DetailRow>
           <Col>
             <DetailTextInputRow
               rows={[
@@ -343,63 +336,43 @@ export const CounselingCustomer = () => {
               ]}
             />
           </Col>
-          {/* # depth4 */}
-          <Row
-            className={
-              "border border-0 border-2 border-top" + " border-light mx-1"
-            }
-          >
-            <Col className={"d-flex p-0 align-items-center"}>
-              <Col xs={2} className={"fw-bold p-3 bg-light bg-opacity-10 me-2"}>
-                처리상태
-              </Col>
-              <Col className={"d-flex align-items-center"}>
-                <RadioGroup
-                  name={"processingStatus"}
-                  list={processingStatusRadio}
-                />
-                <span className={"text-turu font-size-12"}>
-                  이관할 관리자명(관리자ID)
-                </span>
-                <ButtonBase
-                  label={"관리자 변경"}
-                  color={"turu"}
-                  outline={true}
-                  className={"w-xs mx-2"}
-                  onClick={handleChangeOperatorModal}
-                />
-              </Col>
-            </Col>
-            <Col className={"d-flex p-0"}>
-              <Col xs={2} className={"fw-bold p-3 bg-light bg-opacity-10"}>
-                보상구분
-              </Col>
+
+          <DetailRow>
+            <DetailLabelCol sm={2}>처리상태</DetailLabelCol>
+            <DetailContentCol className={"d-flex align-items-center py-0"}>
+              <RadioGroup
+                name={"processingStatus"}
+                list={processingStatusRadio}
+              />
+              <span className={"text-turu font-size-12"}>
+                이관할 관리자명(관리자ID)
+              </span>
+              <ButtonBase
+                label={"관리자 변경"}
+                color={"turu"}
+                outline={true}
+                className={"w-xs mx-2"}
+                onClick={handleChangeOperatorModal}
+              />
+            </DetailContentCol>
+            <DetailLabelCol sm={2}>보상구분</DetailLabelCol>
+            <DetailContentCol className={"py-0"}>
               <DropboxGroup
                 dropdownItems={counselingDropdown}
                 className={"mx-2"}
               />
-            </Col>
-          </Row>
-
-          {/* # depth5 */}
-          <Row
-            className={
-              "border border-0 border-2 border-top" + " border-light mx-1"
-            }
-          >
-            <Col className={"d-flex p-0 align-items-center"}>
-              <Col xs={1} className={"fw-bold p-3 bg-light bg-opacity-10 me-2"}>
-                접수일시
-              </Col>
-              <Col className={"d-flex align-items-center"}>
-                <Input className={"width-80"} type={"number"} />
-                <div className={"mx-2"}>-</div>
-                <Input className={"width-120"} type={"number"} />
-                <div className={"mx-2"}>-</div>
-                <Input className={"width-100"} type={"number"} />
-              </Col>
-            </Col>
-          </Row>
+            </DetailContentCol>
+          </DetailRow>
+          <DetailRow>
+            <DetailLabelCol sm={2}>연락처</DetailLabelCol>
+            <DetailContentCol className={"d-flex align-items-center py-0"}>
+              <Input className={"width-80"} type={"number"} />
+              <div className={"mx-2"}>-</div>
+              <Input className={"width-120"} type={"number"} />
+              <div className={"mx-2"}>-</div>
+              <Input className={"width-100"} type={"number"} />
+            </DetailContentCol>
+          </DetailRow>
 
           <div className={"d-flex justify-content-center mb-5"}>
             <ButtonBase
@@ -599,7 +572,6 @@ const ChargerStatusButton = (props: IChargerStatusButton) => {
     default:
       return <></>;
   }
-  return <></>;
 };
 
 const TableContainer = styled.div`
