@@ -12,20 +12,15 @@ import TextInputBase from "src/components/Common/Input/TextInputBase";
 import ModalBase from "src/components/Common/Modal/ModalBase";
 import useInputs from "src/hooks/useInputs";
 
-interface ICodeModalProps {
+interface IVariableModalProps {
   isOpen: boolean;
   onClose: () => void;
-  data: Partial<{
-    groupCode: string;
-    groupCodeName: string;
-    contents: string;
-    regName: string;
-    regDate: string;
-    isDelete: "Y" | "N";
+  data?: Partial<{
+    mainCode: string;
   }>;
 }
 
-const CodeModal = (props: ICodeModalProps) => {
+const VariableModal = (props: IVariableModalProps) => {
   const { isOpen, onClose, data } = props;
   /** @TODO initial props 데이터 매칭하여 추가 필요, 현재 등록자명 추가  */
   const {
@@ -35,15 +30,17 @@ const CodeModal = (props: ICodeModalProps) => {
     varValue,
     regName,
     regDate,
+    contents,
     onChange,
     reset,
   } = useInputs({
-    mainCode: "",
-    code: data.groupCode ?? "",
+    mainCode: data?.mainCode ?? "",
+    code: "",
     varName: "",
     varValue: "",
-    regName: data.regName ?? "",
+    regName: "",
     regDate: "",
+    contents: "",
   });
 
   return (
@@ -52,7 +49,7 @@ const CodeModal = (props: ICodeModalProps) => {
       onClose={onClose}
       onClosed={reset}
       size={"lg"}
-      title={"하위 코드 관리"}
+      title={"변수 관리"}
     >
       <ModalBody>
         <p className={"mb-2 px-1 font-size-16 fw-semibold"}>상위 코드</p>
@@ -124,7 +121,12 @@ const CodeModal = (props: ICodeModalProps) => {
         <div
           className={"py-3 px-2 border-top border-bottom border-2 font-size-16"}
         >
-          {data.contents}
+          <TextInputBase
+            name={"contents"}
+            type={"textarea"}
+            value={contents}
+            onChange={onChange}
+          />
         </div>
       </ModalBody>
 
@@ -144,4 +146,4 @@ const CodeModal = (props: ICodeModalProps) => {
   );
 };
 
-export default CodeModal;
+export default VariableModal;

@@ -17,14 +17,17 @@ interface IDetailTextInputRow {
 
     children?: string | JSX.Element | JSX.Element[];
   } | null>;
+  hasMargin?: boolean;
   className?: string;
 }
 export const DetailTextInputRow = (props: IDetailTextInputRow) => {
-  const { rows, className } = props;
+  const { rows, hasMargin = true, className } = props;
 
   return (
     <Row
-      className={`border border-0 border-top border-2 border-light mx-1 
+      className={`border border-0 border-top border-2 border-light ${
+        hasMargin ? "mx-1" : "m-0"
+      } 
       align-items-center ${className ?? ""}`}
     >
       {rows.map((item, index) =>

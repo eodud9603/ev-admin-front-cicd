@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -99,6 +100,8 @@ interface IListItemProps {
   applicationStatus: string;
   receptionistName: string;
   confirmationDate: string;
+
+  rowClickHandler?: () => void;
 }
 
 const InstallCharger = () => {
@@ -107,6 +110,8 @@ const InstallCharger = () => {
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
   const listRef = useRef<IListRefProps[]>([]);
+
+  const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -241,6 +246,9 @@ const InstallCharger = () => {
                       }
                       key={index}
                       index={index}
+                      rowClickHandler={() =>
+                        navigate(`/operate/installCharger/detail/${index}`)
+                      }
                       {...application}
                     />
                   ))
@@ -266,6 +274,11 @@ export default InstallCharger;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
+const HoverTr = styled.tr`
+  :hover {
+    cursor: pointer;
+  }
+`;
 
 const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
   const {
@@ -280,6 +293,8 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
     applicationStatus,
     receptionistName,
     confirmationDate,
+
+    rowClickHandler,
   } = props;
 
   const [checked, setChecked] = useState(false);
@@ -299,7 +314,7 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
   );
 
   return (
-    <tr key={index}>
+    <HoverTr key={index} onClick={rowClickHandler}>
       <td>
         <CheckBoxBase
           name={`announcement-${index}`}
@@ -320,6 +335,6 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
       <td>{applicationStatus}</td>
       <td>{receptionistName}</td>
       <td>{confirmationDate}</td>
-    </tr>
+    </HoverTr>
   );
 });

@@ -52,6 +52,7 @@ import { MemberNormalCardDetail } from "src/pages/Member/MemberNormalCardDetail"
 import OperatorCounselorAdd from "src/pages/Operator/OperatorCounselorAdd";
 import OperatorAccountAdd from "src/pages/Operator/OperatorAccountAdd";
 import ChargerContractAdd from "src/pages/Charger/ChargerContractAdd";
+import InstallChargerDetail from "src/pages/Operate/InstallChargerDetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -114,6 +115,10 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/evNews", element: <EvNews /> },
   { path: "/operate/popup", element: <OperatePopup /> },
   { path: "/operate/installCharger", element: <InstallCharger /> },
+  {
+    path: "/operate/installCharger/detail/:id",
+    element: <InstallChargerDetail />,
+  },
   { path: "/operate/evModel", element: <EvModel /> },
   { path: "/operate/policy", element: <OperatePolicy /> },
   { path: "/operate/talk", element: <OperateNotificationTalk /> },
