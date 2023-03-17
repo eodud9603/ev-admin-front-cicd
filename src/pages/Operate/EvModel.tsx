@@ -87,7 +87,7 @@ const EvModel = () => {
   >({
     type: "REGISTRATION",
     isOpen: false,
-    data: {},
+    data: undefined,
   });
 
   const itemsRef = useRef<IEvModelItemRef[]>([]);
