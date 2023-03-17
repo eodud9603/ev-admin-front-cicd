@@ -70,6 +70,7 @@ const tableHeader = [
 /* 임시 목록 데이터 */
 const applicationList: Omit<IListItemProps, "index">[] = [
   {
+    id: "1",
     region: "경기",
     applicant: "홍길동",
     tel: "010-1234-1234",
@@ -89,6 +90,7 @@ interface IListRefProps {
   onChange: (bool: boolean) => void;
 }
 interface IListItemProps {
+  id: string;
   index: number;
   region: string;
   applicant: string;
@@ -247,7 +249,9 @@ const InstallCharger = () => {
                       key={index}
                       index={index}
                       rowClickHandler={() =>
-                        navigate(`/operate/installCharger/detail/${index}`)
+                        navigate(
+                          `/operate/installCharger/detail/${application.id}`
+                        )
                       }
                       {...application}
                     />

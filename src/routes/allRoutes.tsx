@@ -54,6 +54,7 @@ import OperatorAccountAdd from "src/pages/Operator/OperatorAccountAdd";
 import ChargerContractAdd from "src/pages/Charger/ChargerContractAdd";
 import InstallChargerDetail from "src/pages/Operate/InstallChargerDetail";
 import { CounselingHistoryDetail } from "src/pages/Counseling/CounselingHistoryDetail";
+import OperateNotificationTalkDetail from "src/pages/Operate/OperateNotificationTalkDetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -123,6 +124,10 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/evModel", element: <EvModel /> },
   { path: "/operate/policy", element: <OperatePolicy /> },
   { path: "/operate/talk", element: <OperateNotificationTalk /> },
+  {
+    path: "/operate/talk/detail/:id",
+    element: <OperateNotificationTalkDetail />,
+  },
   { path: "/operate/sms", element: <OperateSms /> },
   { path: "/operate/variable", element: <OperateVariable /> },
   { path: "/operate/code", element: <OperateCode /> },

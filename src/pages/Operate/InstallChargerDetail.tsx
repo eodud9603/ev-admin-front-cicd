@@ -13,6 +13,7 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import useInputs from "src/hooks/useInputs";
+import { TextColGroup } from "src/pages/Operate/components/OperateCol";
 
 const InstallChargerDetail = () => {
   const [tabList, setTabList] = useState([{ label: "충전기 설치 신청 관리" }]);
@@ -278,61 +279,3 @@ const InstallChargerDetail = () => {
 };
 
 export default InstallChargerDetail;
-
-interface ITextColProps {
-  sm?: number;
-  className?: string;
-  children?: string | React.ReactElement | React.ReactElement[];
-}
-
-const TextLabelCol = (props: ITextColProps) => {
-  const { sm = 1, className = "", children } = props;
-
-  return (
-    <Col
-      sm={sm}
-      className={
-        "d-flex align-items-center fw-bold bg-light bg-opacity-10 p-3 " +
-        "border-top border-bottom border-2 border-light " +
-        className
-      }
-    >
-      {children}
-    </Col>
-  );
-};
-
-const TextContentCol = (props: ITextColProps) => {
-  const { sm, className = "", children } = props;
-
-  return (
-    <Col
-      sm={sm}
-      className={
-        "d-flex align-items-center bg-white p-3 " +
-        "border-top border-bottom border-2 border-light " +
-        className
-      }
-    >
-      {children}
-    </Col>
-  );
-};
-
-const TextColGroup = (props: {
-  title: string;
-  sm?: number;
-  className?: string;
-  children?: string | React.ReactElement | React.ReactElement[];
-}) => {
-  const { title = "", sm, className = "", children } = props;
-
-  return (
-    <>
-      <TextLabelCol>{title}</TextLabelCol>
-      <TextContentCol sm={sm} className={className}>
-        {children}
-      </TextContentCol>
-    </>
-  );
-};
