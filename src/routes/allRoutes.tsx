@@ -53,6 +53,7 @@ import OperatorCounselorAdd from "src/pages/Operator/OperatorCounselorAdd";
 import OperatorAccountAdd from "src/pages/Operator/OperatorAccountAdd";
 import ChargerContractAdd from "src/pages/Charger/ChargerContractAdd";
 import InstallChargerDetail from "src/pages/Operate/InstallChargerDetail";
+import { CounselingHistoryDetail } from "src/pages/Counseling/CounselingHistoryDetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -92,13 +93,13 @@ const userRoutes: Array<RouteProps> = [
 
   { path: "/member/normal", element: <MemberNormal /> },
   { path: "/member/normal/detail/:id", element: <MemberNormalDetail /> },
-  { path: "/member/normal/history/:id", element: <MemberUsageHistory /> },
   { path: "/member/withdraw", element: <MemberWithdraw /> },
   { path: "/member/card/normal", element: <MemberNormalCard /> },
   {
     path: "/member/card/normal/detail/:id",
     element: <MemberNormalCardDetail />,
   },
+  { path: "/member/normal/history/:id", element: <MemberUsageHistory /> },
   { path: "/member/card/normal/add", element: <MemberIssuanceNormalCard /> },
   { path: "/member/card/roaming", element: <MemberRoamingCard /> },
   { path: "/member/reject", element: <MemberAuthReject /> },
@@ -142,6 +143,10 @@ const userRoutes: Array<RouteProps> = [
 
   { path: "/counseling/customer", element: <CounselingCustomer /> },
   { path: "/counseling/history", element: <CounselingHistory /> },
+  {
+    path: "/counseling/history/detail/:id",
+    element: <CounselingHistoryDetail />,
+  },
   { path: "/counseling/management", element: <CounselingManagement /> },
 ];
 

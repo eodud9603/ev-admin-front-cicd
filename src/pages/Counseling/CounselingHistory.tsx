@@ -14,6 +14,7 @@ import SearchTextInput from "src/components/Common/Filter/component/SearchTextIn
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -61,9 +62,27 @@ const tableHeader = [
   { label: "처리일시" },
 ];
 
+const data = [
+  {
+    counselingType: "가입안내",
+    rewardDivision: "",
+    memberYn: "회원",
+    userName: "홍길동",
+    userId: "hong",
+    counselor: "김상담",
+    receptionDt: "YYYY.MM.DD",
+    processingStatus: "관리자 이관",
+    operatorName: "관리자명",
+    operatorProcessingStatus: "처리완료",
+    processingDt: "YYYY.MM.DD 00:00:00",
+  },
+];
+
 type TabType = "ALL" | "JOIN" | "USE" | "DISORDER" | "CHARGER" | "FEE" | "ETC";
 
 export const CounselingHistory = () => {
+  const nav = useNavigate();
+  const { pathname } = useLocation();
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState("0");
   const [text, setText] = useState("");
@@ -103,6 +122,9 @@ export const CounselingHistory = () => {
     []
   );
 
+  const moveToDetail = (id: string) => {
+    nav(`${pathname}/detail/${id}`);
+  };
   return (
     <ContainerBase>
       <HeaderBase></HeaderBase>
@@ -144,7 +166,7 @@ export const CounselingHistory = () => {
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col className={"mt-3"}>
               <SearchTextInput
                 title={"검색어"}
                 menuItems={dropdownGroupSearch}
@@ -207,7 +229,33 @@ export const CounselingHistory = () => {
               </div>
             </Col>
           </Row>
-          <TableBase tableHeader={tableHeader}></TableBase>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {data.length > 0 &&
+                data.map((e, i) => (
+                  <tr key={i}>
+                    <td>{}</td>
+                    <td>{e.counselingType}</td>
+                    <td>{e.rewardDivision}</td>
+                    <td>{e.memberYn}</td>
+                    <td>{e.userName}</td>
+                    <td>
+                      <HoverSpan
+                        className={"text-turu"}
+                        onClick={() => moveToDetail(`${i}`)}
+                      >
+                        <u>{e.userId}</u>
+                      </HoverSpan>
+                    </td>
+                    <td>{e.counselor}</td>
+                    <td>{e.receptionDt}</td>
+                    <td>{e.processingStatus}</td>
+                    <td>{e.operatorName}</td>
+                    <td>{e.processingDt}</td>
+                  </tr>
+                ))}
+            </>
+          </TableBase>
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
@@ -219,3 +267,8 @@ const ListSection = styled.section``;
 const FilterSection = styled.section``;
 const AmountInfo = styled.span``;
 const Separator = styled.hr``;
+const HoverSpan = styled.span`
+  :hover {
+    cursor: pointer;
+  }
+`;

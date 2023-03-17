@@ -94,7 +94,7 @@ export const MemberAuthReject = () => {
             </Col>
           </Row>
           <Row>
-            <Col md={6}>
+            <Col md={6} className={"mt-3"}>
               <SearchTextInput
                 title={"검색어"}
                 menuItems={dropdownGroupSearch}
