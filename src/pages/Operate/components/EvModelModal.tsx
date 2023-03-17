@@ -154,11 +154,11 @@ const EvModelModal = (props: IEvModelModalProps) => {
             <DropdownBase
               menuItems={[
                 {
-                  label: "코나 EV",
+                  label: "현대",
                   value: "1",
                 },
                 {
-                  label: "코난 EV",
+                  label: "기아",
                   value: "2",
                 },
               ]}

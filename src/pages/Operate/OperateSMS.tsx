@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -51,7 +52,6 @@ const categoryList = [
 
 /* 목록 헤더 */
 const tableHeader = [
-  { label: "선택" },
   { label: "번호", sort: () => {} },
   { label: "충전소명", sort: () => {} },
   { label: "충전기 ID", sort: () => {} },
@@ -65,7 +65,20 @@ const tableHeader = [
 ];
 
 /* 임시 목록 데이터 */
-const smsList: unknown[] = [];
+const smsList = [
+  {
+    id: "1",
+    chargingName: "휴맥스 빌리지",
+    chargingId: "2",
+    chargerCH: "001122",
+    terminalNumber: "22222",
+    command: "{명령어}",
+    controlRequester: "백민규",
+    controlRequestDate: "2022.02.07 12:00:00",
+    controlCompleteDate: "2022.02.07 12:00:00",
+    status: "요청",
+  },
+];
 
 const OperateSms = () => {
   const [tabList, setTabList] = useState([{ label: "제어 문자 관리" }]);
@@ -74,6 +87,8 @@ const OperateSms = () => {
   const [page, setPage] = useState(1);
   /* 0: 문자발신, 1: 발신내역 */
   const [subTab, setSubTab] = useState(1);
+
+  const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -208,19 +223,14 @@ const OperateSms = () => {
               <>
                 {smsList.length > 0 ? (
                   smsList.map((sms, index) => (
-                    <tr key={index}>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
+                    <SMSItem
+                      key={index}
+                      index={index}
+                      rowClickHandler={() => {
+                        navigate(`/operate/sms/detail/${sms.id}`);
+                      }}
+                      {...sms}
+                    />
                   ))
                 ) : (
                   <tr>
@@ -244,3 +254,54 @@ export default OperateSms;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
+const HoverTr = styled.tr`
+  :hover {
+    cursor: pointer;
+  }
+`;
+interface ISMSItemProps {
+  id: string;
+  index: number;
+  chargingName: string;
+  chargingId: string;
+  chargerCH: string;
+  terminalNumber: string;
+  command: string;
+  controlRequester: string;
+  controlRequestDate: string;
+  controlCompleteDate: string;
+  status: string;
+
+  rowClickHandler?: () => void;
+}
+
+const SMSItem = (props: ISMSItemProps) => {
+  const {
+    index,
+    chargingName,
+    chargingId,
+    chargerCH,
+    terminalNumber,
+    command,
+    controlRequester,
+    controlRequestDate,
+    controlCompleteDate,
+    status,
+    rowClickHandler,
+  } = props;
+
+  return (
+    <HoverTr onClick={rowClickHandler}>
+      <td>{index + 1}</td>
+      <td>{chargingName}</td>
+      <td>{chargingId}</td>
+      <td>{chargerCH}</td>
+      <td>{terminalNumber}</td>
+      <td>{command}</td>
+      <td>{controlRequester}</td>
+      <td>{controlRequestDate}</td>
+      <td>{controlCompleteDate}</td>
+      <td>{status}</td>
+    </HoverTr>
+  );
+};

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -73,7 +74,6 @@ const categoryList = [
 
 /* 목록 헤더 */
 const tableHeader = [
-  { label: "선택" },
   { label: "번호", sort: () => {} },
   { label: "분류", sort: () => {} },
   { label: "카테고리", sort: () => {} },
@@ -87,7 +87,20 @@ const tableHeader = [
 ];
 
 /* 임시 목록 데이터 */
-const smsList: unknown[] = [];
+const smsList = [
+  {
+    id: "1",
+    type: "카카오톡",
+    category: "회원",
+    title: "회원 방침 변경",
+    receiver: "홍길동",
+    caller: "백민규",
+    outgoingNumber: "18003188",
+    sendDate: "2022.02.07 12:00:00",
+    reservationDate: "2022.02.07 12:00:00",
+    status: "발송",
+  },
+];
 
 const OperateNotificationTalk = () => {
   const [tabList, setTabList] = useState([{ label: "알림톡 관리" }]);
@@ -96,6 +109,8 @@ const OperateNotificationTalk = () => {
   const [page, setPage] = useState(1);
   /* 0: 문자발신, 1: 발신내역 */
   const [subTab, setSubTab] = useState(1);
+
+  const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -236,19 +251,14 @@ const OperateNotificationTalk = () => {
               <>
                 {smsList.length > 0 ? (
                   smsList.map((sms, index) => (
-                    <tr key={index}>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
+                    <SMSItem
+                      key={index}
+                      index={index}
+                      rowClickHandler={() => {
+                        navigate(`/operate/talk/detail/${sms.id}`);
+                      }}
+                      {...sms}
+                    />
                   ))
                 ) : (
                   <tr>
@@ -272,3 +282,56 @@ export default OperateNotificationTalk;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
+const HoverTr = styled.tr`
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+interface ISMSItemProps {
+  index: number;
+  id: string;
+  type: string;
+  category: string;
+  title: string;
+  receiver: string;
+  caller: string;
+  outgoingNumber: string;
+  sendDate: string;
+  reservationDate: string;
+  status: string;
+
+  rowClickHandler?: () => void;
+}
+
+const SMSItem = (props: ISMSItemProps) => {
+  const {
+    index,
+    type,
+    category,
+    title,
+    receiver,
+    caller,
+    outgoingNumber,
+    sendDate,
+    reservationDate,
+    status,
+
+    rowClickHandler,
+  } = props;
+
+  return (
+    <HoverTr onClick={rowClickHandler}>
+      <td>{index + 1}</td>
+      <td>{type}</td>
+      <td>{category}</td>
+      <td>{title}</td>
+      <td>{receiver}</td>
+      <td>{caller}</td>
+      <td>{outgoingNumber}</td>
+      <td>{sendDate}</td>
+      <td>{reservationDate}</td>
+      <td>{status}</td>
+    </HoverTr>
+  );
+};
