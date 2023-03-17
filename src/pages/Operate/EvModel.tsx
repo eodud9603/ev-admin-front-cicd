@@ -21,6 +21,9 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
+import EvModelModal, {
+  IEvModelModalProps,
+} from "src/pages/Operate/components/EvModelModal";
 
 /* 급/완속 필터 */
 const speedList = [
@@ -62,12 +65,12 @@ const tableHeader = [
 const modelList = [
   {
     id: "1",
-    type: "급속",
-    chargerType: "DC 콤보",
+    chargerType: "급속",
+    connectorType: "DC 콤보",
     manufacturer: "현대",
     carModel: "코나 EV",
     carYear: "2023",
-    battery: "58Kwh",
+    battery: "58",
     manager: "백민규",
     regDate: "2022.01.07",
   },
@@ -78,6 +81,15 @@ const EvModel = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+  /* 모델 등록/수정 모달 */
+  const [modelModal, setModelModal] = useState<
+    Pick<IEvModelModalProps, "type" | "isOpen" | "data">
+  >({
+    type: "REGISTRATION",
+    isOpen: false,
+    data: {},
+  });
+
   const itemsRef = useRef<IEvModelItemRef[]>([]);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -183,7 +195,17 @@ const EvModel = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
-              <ButtonBase label={"신규 등록"} color={"turu"} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  setModelModal({
+                    isOpen: true,
+                    type: "REGISTRATION",
+                    data: undefined,
+                  });
+                }}
+              />
               <ButtonBase
                 label={"선택 삭제"}
                 outline={true}
@@ -204,7 +226,13 @@ const EvModel = () => {
                       }
                       key={index}
                       index={index}
-                      rowClickHandler={() => {}}
+                      rowClickHandler={() => {
+                        setModelModal({
+                          isOpen: true,
+                          type: "EDIT",
+                          data: evModel,
+                        });
+                      }}
                       {...evModel}
                     />
                   ))
@@ -222,6 +250,13 @@ const EvModel = () => {
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
       </BodyBase>
+
+      <EvModelModal
+        {...modelModal}
+        onClose={() => {
+          setModelModal((prev) => ({ ...prev, isOpen: false }));
+        }}
+      />
     </ContainerBase>
   );
 };
@@ -245,8 +280,8 @@ interface IEvModelItemRef {
 interface IEvModelItemProps {
   index: number;
   id: string;
-  type: string;
   chargerType: string;
+  connectorType: string;
   manufacturer: string;
   carModel: string;
   carYear: string;
@@ -261,8 +296,8 @@ const EvModelItem = forwardRef<IEvModelItemRef, IEvModelItemProps>(
     const {
       index,
       id,
-      type,
       chargerType,
+      connectorType,
       manufacturer,
       carModel,
       carYear,
@@ -299,12 +334,12 @@ const EvModelItem = forwardRef<IEvModelItemRef, IEvModelItemProps>(
           />
         </td>
         <td>{index + 1}</td>
-        <td>{type}</td>
         <td>{chargerType}</td>
+        <td>{connectorType}</td>
         <td>{manufacturer}</td>
         <td>{carModel}</td>
         <td>{carYear}</td>
-        <td>{battery}</td>
+        <td>{battery}Kwh</td>
         <td>{manager}</td>
         <td>{regDate}</td>
       </HoverTr>

@@ -13,6 +13,7 @@ export interface ITextInputBaseProps {
   disabled?: boolean;
   bsSize?: "sm" | "lg";
   inputstyle?: React.CSSProperties;
+  maxLength?: number;
   className?: string;
 }
 
