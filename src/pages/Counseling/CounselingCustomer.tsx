@@ -5,7 +5,7 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import styled from "styled-components";
-import { Col, Input, Label, Row, Table } from "reactstrap";
+import { Col, Input, Label, Row } from "reactstrap";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
@@ -55,6 +55,72 @@ const counselingData = [
     operator: "관리자A",
     question: "질문내용입니다",
     answer: "답변내용입니다.",
+  },
+  {
+    counselingSeq: "2",
+    inout: "InBound",
+    createDt: "YYYY.MM.DD",
+    counselingType: "가입안내",
+    processingStatus: "관리자 이관",
+    charger: "이상담",
+    operator: "",
+    question: "질문내용입니다2",
+    answer: "답변내용입니다.2",
+  },
+  {
+    counselingSeq: "2",
+    inout: "InBound",
+    createDt: "YYYY.MM.DD",
+    counselingType: "가입안내",
+    processingStatus: "관리자 이관",
+    charger: "이상담",
+    operator: "",
+    question: "질문내용입니다2",
+    answer: "답변내용입니다.2",
+  },
+  {
+    counselingSeq: "2",
+    inout: "InBound",
+    createDt: "YYYY.MM.DD",
+    counselingType: "가입안내",
+    processingStatus: "관리자 이관",
+    charger: "이상담",
+    operator: "",
+    question: "질문내용입니다2",
+    answer: "답변내용입니다.2",
+  },
+  {
+    counselingSeq: "2",
+    inout: "InBound",
+    createDt: "YYYY.MM.DD",
+    counselingType: "가입안내",
+    processingStatus: "관리자 이관",
+    charger: "이상담",
+    operator: "",
+    question: "질문내용입니다2",
+    answer: "답변내용입니다.2",
+  },
+  {
+    counselingSeq: "2",
+    inout: "InBound",
+    createDt: "YYYY.MM.DD",
+    counselingType: "가입안내",
+    processingStatus: "관리자 이관",
+    charger: "이상담",
+    operator: "",
+    question: "질문내용입니다2",
+    answer: "답변내용입니다.2",
+  },
+  {
+    counselingSeq: "2",
+    inout: "InBound",
+    createDt: "YYYY.MM.DD",
+    counselingType: "가입안내",
+    processingStatus: "관리자 이관",
+    charger: "이상담",
+    operator: "",
+    question: "질문내용입니다2",
+    answer: "답변내용입니다.2",
   },
   {
     counselingSeq: "2",
@@ -117,7 +183,6 @@ export const CounselingCustomer = () => {
   const handleMemberInfoTemplate = (type: "MEMBER" | "NONMEMBER") => {
     setMemberInfoTemplate(type);
   };
-  const handleHistorySearch = () => {};
 
   return (
     <ContainerBase>
@@ -193,7 +258,9 @@ export const CounselingCustomer = () => {
               {memberInfoTemplate === "MEMBER" ? (
                 <MemberInfoTemplate />
               ) : (
-                <NonMemberInfoTemplate historySearch={handleHistorySearch} />
+                <NonMemberInfoTemplate
+                  handleTermsAgreeModal={handleTermsAgreeModal}
+                />
               )}
             </Col>
             {/*고객이력*/}
@@ -382,33 +449,35 @@ const CounselingHistoryTab = () => {
 
   return (
     <>
-      <TableBase
-        tableHeader={CounselingHistoryTableHeader}
-        tableClassName={"table-hover"}
-      >
-        <>
-          {counselingData.length > 0 &&
-            counselingData.map((e, i) => (
-              <tr
-                key={i}
-                className={`${
-                  choice.counselingSeq === e.counselingSeq
-                    ? "bg-turu bg-opacity-10"
-                    : ""
-                }`}
-                onClick={() => onClickRow(e)}
-              >
-                <td>{}</td>
-                <td>{e.inout}</td>
-                <td>{e.createDt}</td>
-                <td>{e.counselingType}</td>
-                <td>{e.processingStatus}</td>
-                <td>{e.charger}</td>
-                <td>{e.operator}</td>
-              </tr>
-            ))}
-        </>
-      </TableBase>
+      <TableContainer>
+        <TableBase
+          tableHeader={CounselingHistoryTableHeader}
+          tableClassName={"table-hover"}
+        >
+          <>
+            {counselingData.length > 0 &&
+              counselingData.map((e, i) => (
+                <tr
+                  key={i}
+                  className={`${
+                    choice.counselingSeq === e.counselingSeq
+                      ? "bg-turu bg-opacity-10"
+                      : ""
+                  }`}
+                  onClick={() => onClickRow(e)}
+                >
+                  <td>{}</td>
+                  <td>{e.inout}</td>
+                  <td>{e.createDt}</td>
+                  <td>{e.counselingType}</td>
+                  <td>{e.processingStatus}</td>
+                  <td>{e.charger}</td>
+                  <td>{e.operator}</td>
+                </tr>
+              ))}
+          </>
+        </TableBase>
+      </TableContainer>
       <DetailTextInputRow
         rows={[
           {
@@ -533,6 +602,10 @@ const ChargerStatusButton = (props: IChargerStatusButton) => {
   return <></>;
 };
 
+const TableContainer = styled.div`
+  max-height: 250px;
+  overflow-y: auto;
+`;
 const AmountSection = styled.section``;
 const InfoSection = styled.section``;
 const HoverSpan = styled.span`

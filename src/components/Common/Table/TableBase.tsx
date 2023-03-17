@@ -15,6 +15,7 @@ interface ITableBase {
   tableClassName?: string;
   onClickAllCheck?: () => void;
   subtitle?: string;
+  maxHeight?: number;
 }
 export const EmptyTableBody = (props: IEmptyTableBody) => {
   const { text } = props;
@@ -38,10 +39,11 @@ export const EmptyTableBody = (props: IEmptyTableBody) => {
 };
 
 export const TableBase = (props: ITableBase) => {
-  const { tableHeader, children, theadClassName, tableClassName } = props;
+  const { tableHeader, children, theadClassName, tableClassName, maxHeight } =
+    props;
 
   return (
-    <Container fluid={true} style={{ overflowX: "auto" }}>
+    <Container fluid={true} style={{ overflowX: "auto", maxHeight }}>
       <TableWrapper className={`table ${tableClassName ?? ""}`}>
         <thead className={theadClassName ?? "table-light"}>
           <tr>
