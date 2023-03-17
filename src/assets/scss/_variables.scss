@@ -818,7 +818,8 @@ $table-active-bg:             rgba(var(--#{$prefix}tertiary-bg-rgb), $table-acti
 
 $table-hover-color:           $table-color;
 $table-hover-bg-factor:       .075;
-$table-hover-bg:             rgba(var(--#{$prefix}tertiary-bg-rgb), $table-hover-bg-factor);
+//$table-hover-bg:             rgba(var(--#{$prefix}tertiary-bg-rgb), $table-hover-bg-factor);
+$table-hover-bg:             rgba($turu, .05);
 
 $table-border-factor:         .1;
 $table-border-width:          $border-width;

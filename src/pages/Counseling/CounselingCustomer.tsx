@@ -5,7 +5,7 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import styled from "styled-components";
-import { Col, Input, Label, Row } from "reactstrap";
+import { Col, Input, Label, Row, Table } from "reactstrap";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
@@ -28,6 +28,7 @@ const CounselingHistoryTableHeader = [
   { label: "상담유형" },
   { label: "처리상태" },
   { label: "담당자" },
+  { label: "관리자" },
 ];
 
 const UsageHistoryTableHeader = [
@@ -43,7 +44,30 @@ const UsageHistoryTableHeader = [
   { label: "총 이용요금(원)" },
 ];
 
-const counselingData = [];
+const counselingData = [
+  {
+    counselingSeq: "1",
+    inout: "InBound",
+    createDt: "YYYY.MM.DD",
+    counselingType: "이용안내",
+    processingStatus: "관리자 이관",
+    charger: "김상담",
+    operator: "관리자A",
+    question: "질문내용입니다",
+    answer: "답변내용입니다.",
+  },
+  {
+    counselingSeq: "2",
+    inout: "InBound",
+    createDt: "YYYY.MM.DD",
+    counselingType: "가입안내",
+    processingStatus: "관리자 이관",
+    charger: "이상담",
+    operator: "",
+    question: "질문내용입니다2",
+    answer: "답변내용입니다.2",
+  },
+];
 const usageData = [
   {
     orderId: "OD2022120112345678",
@@ -343,14 +367,44 @@ export const CounselingCustomer = () => {
 };
 
 const CounselingHistoryTab = () => {
+  const [choice, setChoice] = useState({
+    counselingSeq: "",
+    question: "",
+    answer: "",
+  });
+  const onClickRow = (props: {
+    counselingSeq: string;
+    answer: string;
+    question: string;
+  }) => {
+    setChoice({ ...props });
+  };
+
   return (
     <>
-      <TableBase tableHeader={CounselingHistoryTableHeader}>
+      <TableBase
+        tableHeader={CounselingHistoryTableHeader}
+        tableClassName={"table-hover"}
+      >
         <>
           {counselingData.length > 0 &&
             counselingData.map((e, i) => (
-              <tr key={i}>
-                <td></td>
+              <tr
+                key={i}
+                className={`${
+                  choice.counselingSeq === e.counselingSeq
+                    ? "bg-turu bg-opacity-10"
+                    : ""
+                }`}
+                onClick={() => onClickRow(e)}
+              >
+                <td>{}</td>
+                <td>{e.inout}</td>
+                <td>{e.createDt}</td>
+                <td>{e.counselingType}</td>
+                <td>{e.processingStatus}</td>
+                <td>{e.charger}</td>
+                <td>{e.operator}</td>
               </tr>
             ))}
         </>
@@ -359,6 +413,7 @@ const CounselingHistoryTab = () => {
         rows={[
           {
             title: "질문내용",
+            content: choice.question,
             type: "textarea",
             titleWidthRatio: 2,
             disabled: true,
@@ -369,6 +424,7 @@ const CounselingHistoryTab = () => {
         rows={[
           {
             title: "답변내용",
+            content: choice.answer,
             type: "textarea",
             titleWidthRatio: 2,
             disabled: true,
