@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
+import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
@@ -15,6 +21,9 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
+import EvModelModal, {
+  IEvModelModalProps,
+} from "src/pages/Operate/components/EvModelModal";
 
 /* 급/완속 필터 */
 const speedList = [
@@ -53,13 +62,35 @@ const tableHeader = [
 ];
 
 /* 임시 목록 데이터 */
-const modelList: unknown[] = [];
+const modelList = [
+  {
+    id: "1",
+    chargerType: "급속",
+    connectorType: "DC 콤보",
+    manufacturer: "현대",
+    carModel: "코나 EV",
+    carYear: "2023",
+    battery: "58",
+    manager: "백민규",
+    regDate: "2022.01.07",
+  },
+];
 
 const EvModel = () => {
   const [tabList, setTabList] = useState([{ label: "전기차 모델 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+  /* 모델 등록/수정 모달 */
+  const [modelModal, setModelModal] = useState<
+    Pick<IEvModelModalProps, "type" | "isOpen" | "data">
+  >({
+    type: "REGISTRATION",
+    isOpen: false,
+    data: undefined,
+  });
+
+  const itemsRef = useRef<IEvModelItemRef[]>([]);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -80,6 +111,17 @@ const EvModel = () => {
     }
 
     setTabList(tempList);
+  };
+
+  const deleteHandler = () => {
+    /** @TODO 체크된 항목 삭제 로직 추가 */
+
+    /** @TODO 임시 체크 해제(삭제로직 추가 후, 삭제) */
+    for (const item of itemsRef.current) {
+      if (item.check) {
+        item.onChange(false);
+      }
+    }
   };
 
   return (
@@ -153,6 +195,23 @@ const EvModel = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  setModelModal({
+                    isOpen: true,
+                    type: "REGISTRATION",
+                    data: undefined,
+                  });
+                }}
+              />
+              <ButtonBase
+                label={"선택 삭제"}
+                outline={true}
+                color={"turu"}
+                onClick={deleteHandler}
+              />
             </div>
           </div>
 
@@ -160,18 +219,22 @@ const EvModel = () => {
             <TableBase tableHeader={tableHeader}>
               <>
                 {modelList.length > 0 ? (
-                  modelList.map((model, index) => (
-                    <tr key={index}>
-                      <td></td>
-                      <td>{index + 1}</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
+                  modelList.map((evModel, index) => (
+                    <EvModelItem
+                      ref={(ref: IEvModelItemRef) =>
+                        (itemsRef.current[index] = ref)
+                      }
+                      key={index}
+                      index={index}
+                      rowClickHandler={() => {
+                        setModelModal({
+                          isOpen: true,
+                          type: "EDIT",
+                          data: evModel,
+                        });
+                      }}
+                      {...evModel}
+                    />
                   ))
                 ) : (
                   <tr>
@@ -187,6 +250,13 @@ const EvModel = () => {
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
       </BodyBase>
+
+      <EvModelModal
+        {...modelModal}
+        onClose={() => {
+          setModelModal((prev) => ({ ...prev, isOpen: false }));
+        }}
+      />
     </ContainerBase>
   );
 };
@@ -195,3 +265,84 @@ export default EvModel;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
+const HoverTr = styled.tr`
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+interface IEvModelItemRef {
+  check: boolean;
+  onChange: (bool: boolean) => void;
+  data: IEvModelItemProps;
+}
+
+interface IEvModelItemProps {
+  index: number;
+  id: string;
+  chargerType: string;
+  connectorType: string;
+  manufacturer: string;
+  carModel: string;
+  carYear: string;
+  battery: string;
+  manager: string;
+  regDate: string;
+  rowClickHandler?: () => void;
+}
+
+const EvModelItem = forwardRef<IEvModelItemRef, IEvModelItemProps>(
+  (props, ref) => {
+    const {
+      index,
+      id,
+      chargerType,
+      connectorType,
+      manufacturer,
+      carModel,
+      carYear,
+      battery,
+      manager,
+      regDate,
+
+      rowClickHandler,
+    } = props;
+    const [check, setChecked] = useState(false);
+
+    const onChange = () => {
+      setChecked((prev) => !prev);
+    };
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        check,
+        onChange,
+        data: props,
+      }),
+      [check, props]
+    );
+
+    return (
+      <HoverTr onClick={rowClickHandler}>
+        <td>
+          <CheckBoxBase
+            label={""}
+            name={id}
+            checked={check}
+            onChange={onChange}
+          />
+        </td>
+        <td>{index + 1}</td>
+        <td>{chargerType}</td>
+        <td>{connectorType}</td>
+        <td>{manufacturer}</td>
+        <td>{carModel}</td>
+        <td>{carYear}</td>
+        <td>{battery}Kwh</td>
+        <td>{manager}</td>
+        <td>{regDate}</td>
+      </HoverTr>
+    );
+  }
+);

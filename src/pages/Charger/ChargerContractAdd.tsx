@@ -321,6 +321,10 @@ const ChargerContractAdd = () => {
                   name={"contractFile"}
                   accept={"*"}
                   onChange={(e) => {
+                    if (!e.target.files) {
+                      return;
+                    }
+
                     setFile(e.target.files);
                   }}
                 />
