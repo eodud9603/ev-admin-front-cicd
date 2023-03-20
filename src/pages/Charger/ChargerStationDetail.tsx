@@ -813,7 +813,9 @@ const ChargerStationDetail = () => {
                             <td>
                               <HoverSpan
                                 className={"text-turu"}
-                                onClick={() => {}}
+                                onClick={() => {
+                                  navigate(`/charger/charger/detail/${index}`);
+                                }}
                               >
                                 <u>{chargerNum}</u>
                               </HoverSpan>
