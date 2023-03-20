@@ -5,7 +5,7 @@ import styled from "styled-components";
 export interface ITextInputBaseProps {
   name: string;
   value: string;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
 
   autoComplete?: string;
   placeholder?: string;
