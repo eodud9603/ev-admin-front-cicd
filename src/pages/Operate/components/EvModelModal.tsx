@@ -116,10 +116,14 @@ const EvModelModal = (props: IEvModelModalProps) => {
               list={[
                 {
                   label: "급속",
-                  value: "1",
-                  checked: chargerType === "1",
+                  value: "급속",
+                  checked: chargerType === "급속",
                 },
-                { label: "완속", value: "2", checked: chargerType === "2" },
+                {
+                  label: "완속",
+                  value: "완속",
+                  checked: chargerType === "완속",
+                },
               ]}
               onChange={onChange}
             />
@@ -265,7 +269,7 @@ const EvModelModal = (props: IEvModelModalProps) => {
           </DetailLabelCol>
         </DetailRow>
         {images.map((image) => (
-          <Row key={image.src} className={"m-0 border-top border-2"}>
+          <Row key={image.src} className={"m-0 py-4 border-top border-2"}>
             <Col sm={12}>
               <img width={"100%"} src={image.src} alt={image.file.name} />
             </Col>
