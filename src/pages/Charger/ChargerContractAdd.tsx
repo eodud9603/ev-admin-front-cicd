@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { Input, Row } from "reactstrap";
+import { Col, Input, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import {
   DetailContentCol,
@@ -134,32 +134,26 @@ const ChargerContractAdd = () => {
 
         <p className={"mt-3 mb-2 font-size-20 text-dark fw-bold"}>기본정보</p>
         <Row className={"mb-4"}>
-          <DetailRow>
-            <DetailLabelCol sm={2}>계약장소명</DetailLabelCol>
-            <DetailContentCol>
-              <TextInputBase
-                bsSize={"lg"}
-                name={"contractPlace"}
-                value={contractPlace}
-                onChange={onChange}
-              />
-            </DetailContentCol>
-            <DetailLabelCol sm={2}>환경부 연동여부</DetailLabelCol>
-            <DetailContentCol>
-              <RadioGroup
-                name={"환경부 연동여부"}
-                list={[
-                  {
-                    label: "연동",
-                  },
-                  {
-                    label: "미연동",
-                  },
-                ]}
-                onChange={() => {}}
-              />
-            </DetailContentCol>
-          </DetailRow>
+          <DetailTextInputRow
+            rows={[
+              {
+                titleWidthRatio: 4,
+                title: "계약장소명",
+                name: "contractPlace",
+                content: contractPlace,
+                onChange,
+                placeholder: "입력해주세요.",
+              },
+              {
+                titleWidthRatio: 4,
+                title: "계약자명",
+                name: "contractName",
+                content: contractName,
+                onChange,
+                placeholder: "입력해주세요.",
+              },
+            ]}
+          />
 
           <DetailRow>
             <DetailLabelCol sm={2}>계약여부</DetailLabelCol>
@@ -178,6 +172,24 @@ const ChargerContractAdd = () => {
                   {
                     label: "해지",
                     value: "3",
+                  },
+                ]}
+                onChange={() => {}}
+              />
+            </DetailContentCol>
+          </DetailRow>
+
+          <DetailRow>
+            <DetailLabelCol sm={2}>환경부 연동여부</DetailLabelCol>
+            <DetailContentCol>
+              <RadioGroup
+                name={"환경부 연동여부"}
+                list={[
+                  {
+                    label: "연동",
+                  },
+                  {
+                    label: "미연동",
                   },
                 ]}
                 onChange={() => {}}
@@ -203,23 +215,7 @@ const ChargerContractAdd = () => {
                 <input type={"date"} className={"form-control w-xs"} />
               </div>
             </DetailContentCol>
-            <DetailLabelCol sm={2}>사용여부</DetailLabelCol>
-            <DetailContentCol>
-              <RadioGroup
-                name={"사용여부"}
-                list={[
-                  {
-                    label: "사용",
-                    value: "1",
-                  },
-                  {
-                    label: "미사용",
-                    value: "2",
-                  },
-                ]}
-                onChange={() => {}}
-              />
-            </DetailContentCol>
+            <Col sm={6} />
           </DetailRow>
 
           <DetailRow>

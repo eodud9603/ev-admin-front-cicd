@@ -88,7 +88,6 @@ const tableHeader = [
   { label: "장소 담당자명" },
   { label: "장소 담당자연락처" },
   { label: "계약기간" },
-  { label: "최종 연결" },
   { label: "계약체결일" },
   { label: "등록일" },
 ];
