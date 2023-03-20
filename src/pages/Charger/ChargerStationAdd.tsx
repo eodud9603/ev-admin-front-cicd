@@ -505,6 +505,7 @@ const ChargerStationAdd = () => {
                         name: "meter",
                         content: meter,
                         onChange,
+                        placeholder: "최대 1개 입력 가능합니다",
                       },
                     ]}
                   />

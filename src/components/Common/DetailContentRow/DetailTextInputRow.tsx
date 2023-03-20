@@ -56,7 +56,7 @@ export const DetailTextInputRow = (props: IDetailTextInputRow) => {
                         "border-1 border-secondary border-opacity-50"
                       : ""
                   }`}
-                  placeholder={item.placeholder}
+                  placeholder={item.placeholder ?? "입력해주세요"}
                   type={item?.type ?? "text"}
                   name={item?.name}
                   value={item?.content}
