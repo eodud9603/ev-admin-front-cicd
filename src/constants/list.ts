@@ -228,3 +228,19 @@ export const POPUP_CATEGORY_LIST = [
     text: "공지사항 팝업",
   },
 ];
+
+/** 운영관리 > 문자발신 - 카테고리 목록 */
+export const MESSAGE_CATEGORY_LIST = [
+  {
+    label: "회원",
+    value: "1",
+  },
+];
+
+/** 운영관리 > 문자발신 - 제목 목록 */
+export const MESSAGE_TITLE_LIST = [
+  {
+    label: "회원 방침 변경",
+    value: "1",
+  },
+];

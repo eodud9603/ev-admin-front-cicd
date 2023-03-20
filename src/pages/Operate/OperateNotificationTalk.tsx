@@ -3,18 +3,10 @@ import { NavigateFunction, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
-import {
-  DetailContentCol,
-  DetailGroupCol,
-  DetailLabelCol,
-  DetailRow,
-} from "src/components/Common/DetailContentRow/Detail";
-import { DetailDropdownRow } from "src/components/Common/DetailContentRow/DetailDropdownRow";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
-import TextInputBase from "src/components/Common/Input/TextInputBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
@@ -22,9 +14,13 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { COUNT_FILTER_LIST } from "src/constants/list";
-import useInputs from "src/hooks/useInputs";
+import {
+  COUNT_FILTER_LIST,
+  MESSAGE_CATEGORY_LIST,
+  MESSAGE_TITLE_LIST,
+} from "src/constants/list";
 import styled from "styled-components";
+import SendMessage from "src/pages/Operate/components/SendMessage";
 
 /* 진행 여부 필터 */
 const progressList = [
@@ -111,30 +107,6 @@ const smsList = [
   },
 ];
 
-/* 문자발신 카테고리 목록 */
-const sendCategoryList = [
-  {
-    menuItems: [
-      {
-        label: "회원",
-        value: "1",
-      },
-    ],
-  },
-];
-
-/* 문자발신 제목 목록 */
-const sendTitleList = [
-  {
-    menuItems: [
-      {
-        label: "회원 방침 변경",
-        value: "1",
-      },
-    ],
-  },
-];
-
 const OperateNotificationTalk = () => {
   const [tabList, setTabList] = useState([{ label: "알림톡 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
@@ -181,16 +153,17 @@ const OperateNotificationTalk = () => {
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
             {
-              label: subTab === "LIST" ? "문자 발신" : "알림톡 관리",
+              label: "알림톡 관리",
               href: "",
             },
+            ...(subTab === "SEND" ? [{ label: "문자 발신", href: "" }] : []),
           ]}
         />
         <section
           className={"pb-4 d-flex align-items-center justify-content-between"}
         >
           <h3 className={"font-size-24"}>
-            {subTab === "LIST" ? "문자 발신" : "알림톡 관리"}
+            {subTab === "SEND" ? "문자 발신" : "알림톡 관리"}
           </h3>
 
           <div>
@@ -218,7 +191,12 @@ const OperateNotificationTalk = () => {
         {subTab === "LIST" ? (
           <TalkList navigate={navigate} />
         ) : (
-          <SendTalk
+          <SendMessage
+            type={"TALK"}
+            receiverInputTitle={"전화번호"}
+            sentContentTitle={"신규 템플릿"}
+            categoryList={MESSAGE_CATEGORY_LIST}
+            titleList={MESSAGE_TITLE_LIST}
             onChangeTab={() => {
               setSubTab("LIST");
             }}
@@ -398,209 +376,5 @@ const SMSItem = (props: ISMSItemProps) => {
       <td>{reservationDate}</td>
       <td>{status}</td>
     </HoverTr>
-  );
-};
-
-/** subTab: "SEND" UI */
-const SendTalk = (props: { onChangeTab: () => void }) => {
-  const { onChangeTab } = props;
-  const {
-    terminalNumber,
-    sendContent,
-    newTemplateContent,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
-    terminalNumber: "",
-    sendContent: "템플릿 등록 내용 표시",
-    newTemplateContent: "",
-  });
-  const [telList, setTelList] = useState<{ name: string; value: string }[]>([]);
-
-  const addTelHandler = () => {
-    if (terminalNumber.trim().length === 0) {
-      return;
-    }
-
-    setTelList((prev) => [
-      ...prev,
-      {
-        name: `tel-${prev.length + 1}`,
-        value: terminalNumber.trim(),
-      },
-    ]);
-    onChangeSingle({ terminalNumber: "" });
-  };
-
-  return (
-    <>
-      <Row className={"mb-4"}>
-        <Col sm={5}>
-          <Row className={"pb-2 d-flex align-items-center"}>
-            <Col className={"font-size-20 fw-semibold"} sm={6}>
-              수신자
-            </Col>
-            <Col sm={6} className={"d-flex justify-content-end"}>
-              <ButtonBase className={"w-xs"} label={"조회"} color={"dark"} />
-            </Col>
-          </Row>
-          <DetailRow>
-            <DetailLabelCol sm={3}>단말기 번호</DetailLabelCol>
-            <DetailContentCol>
-              <DetailGroupCol className={"gap-2"}>
-                <TextInputBase
-                  type={"tel"}
-                  bsSize={"lg"}
-                  placeholder={"전화번호를 입력해주세요."}
-                  name={"terminalNumber"}
-                  value={terminalNumber}
-                  onChange={onChange}
-                />
-                <ButtonBase
-                  className={"w-xs"}
-                  label={"추가"}
-                  color={"dark"}
-                  onClick={addTelHandler}
-                />
-              </DetailGroupCol>
-            </DetailContentCol>
-          </DetailRow>
-          <DetailRow className={"py-4"} />
-          {telList.map(({ name, value }, index) => (
-            <DetailRow key={index}>
-              <DetailLabelCol sm={3}>{`No. ${index + 1}`}</DetailLabelCol>
-              <DetailContentCol>
-                <DetailGroupCol className={"gap-2"}>
-                  <div className={"position-relative"}>
-                    <TextInputBase
-                      className={"ps-5"}
-                      disabled={true}
-                      type={"tel"}
-                      bsSize={"lg"}
-                      placeholder={"전화번호를 입력해주세요."}
-                      name={name}
-                      value={value}
-                    />
-                    <span
-                      className={
-                        "ms-2 position-absolute bottom-0 start-0 " +
-                        "translate-middle-y font-size-14 text-secondary"
-                      }
-                    >
-                      비회원
-                    </span>
-                  </div>
-                  <ButtonBase
-                    className={"w-xs"}
-                    label={"삭제"}
-                    color={"turu"}
-                    onClick={() => {
-                      const tempList = [...telList];
-                      tempList.splice(index, 1);
-
-                      setTelList(tempList);
-                    }}
-                  />
-                </DetailGroupCol>
-              </DetailContentCol>
-            </DetailRow>
-          ))}
-        </Col>
-        <Col sm={1} />
-        <Col sm={6}>
-          <Row className={"pb-2 d-flex align-items-center"}>
-            <Col className={"font-size-20 fw-semibold"} sm={6}>
-              문자 내용
-            </Col>
-            <Col sm={6} className={"d-flex justify-content-end"}>
-              <ButtonBase
-                className={"w-xs"}
-                label={"문자 발신"}
-                color={"turu"}
-              />
-            </Col>
-          </Row>
-          <DetailDropdownRow
-            rows={[
-              {
-                titleWidthRatio: 4,
-                title: "카테고리",
-                dropdownItems: sendCategoryList,
-              },
-              {
-                titleWidthRatio: 4,
-                title: "제목",
-                dropdownItems: sendTitleList,
-              },
-            ]}
-          />
-          <DetailRow className={"border-bottom border-2 mb-4"}>
-            <DetailLabelCol sm={2}>발신 내용</DetailLabelCol>
-            <DetailContentCol>
-              <TextInputBase
-                /* init 높이, 유저 조절 가능 */
-                inputstyle={{ height: 300 }}
-                type={"textarea"}
-                disabled={true}
-                name={"sendContent"}
-                value={sendContent}
-                onChange={onChange}
-              />
-            </DetailContentCol>
-          </DetailRow>
-
-          <Row />
-
-          <Row className={"pb-2 d-flex align-items-center"}>
-            <Col className={"font-size-20 fw-semibold"} sm={6}>
-              신규 템플릿
-            </Col>
-            <Col sm={6} className={"d-flex justify-content-end"}>
-              <ButtonBase
-                className={"w-xs"}
-                label={"신규 등록"}
-                color={"turu"}
-              />
-            </Col>
-          </Row>
-          <DetailDropdownRow
-            rows={[
-              {
-                titleWidthRatio: 4,
-                title: "카테고리",
-                dropdownItems: sendCategoryList,
-              },
-              {
-                titleWidthRatio: 4,
-                title: "제목",
-                dropdownItems: sendTitleList,
-              },
-            ]}
-          />
-          <DetailRow>
-            <DetailLabelCol sm={2}>발신 내용</DetailLabelCol>
-            <DetailContentCol>
-              <TextInputBase
-                /* init 높이, 유저 조절 가능 */
-                inputstyle={{ height: 300 }}
-                type={"textarea"}
-                name={"newTemplateContent"}
-                value={newTemplateContent}
-                onChange={onChange}
-              />
-            </DetailContentCol>
-          </DetailRow>
-        </Col>
-      </Row>
-      <div className={"d-flex justify-content-center"}>
-        <ButtonBase
-          className={"w-md"}
-          outline
-          label={"목록"}
-          color={"secondary"}
-          onClick={onChangeTab}
-        />
-      </div>
-    </>
   );
 };
