@@ -27,10 +27,12 @@ const CheckBoxBase = (props: ICheckBoxBaseProps) => {
     ...rest
   } = props;
 
+  const shareId = id ?? name;
+
   return (
     <FormGroup className={"form-check-turu"} check inline disabled={disabled}>
       <Input
-        id={id}
+        id={shareId}
         type={"checkbox"}
         name={name}
         disabled={disabled}
@@ -39,7 +41,12 @@ const CheckBoxBase = (props: ICheckBoxBaseProps) => {
         onChange={onChange}
         {...rest}
       />
-      <Label className={"text-nowrap"} htmlFor={id} disabled={disabled} check>
+      <Label
+        className={"text-nowrap"}
+        htmlFor={shareId}
+        disabled={disabled}
+        check
+      >
         {label}
       </Label>
     </FormGroup>

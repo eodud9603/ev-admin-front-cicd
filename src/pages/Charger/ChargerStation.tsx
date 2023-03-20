@@ -33,6 +33,12 @@ const addressList = [
   },
 ];
 
+/* 사용여부 필터 */
+const useList = [
+  { label: "Y", value: "Y" },
+  { label: "N", value: "N" },
+];
+
 /* 검색어 필터 */
 const searchList = [
   { label: "충전소명", value: "1" },
@@ -63,7 +69,7 @@ const tableHeader = [
   { label: "주소" },
   { label: "급/완속(기)" },
   { label: "개방여부" },
-  { label: "철거여부" },
+  { label: "사용여부" },
   { label: "등록일" },
 ];
 
@@ -79,7 +85,7 @@ const chargingStationList = [
     fast: "3",
     slow: "2",
     isOpen: "완전",
-    isClosure: "N",
+    isUse: "N",
     date: "YYYY.MM.DD",
   },
   {
@@ -92,7 +98,7 @@ const chargingStationList = [
     fast: "3",
     slow: "2",
     isOpen: "완전",
-    isClosure: "N",
+    isUse: "N",
     date: "YYYY.MM.DD",
   },
 ];
@@ -178,11 +184,7 @@ const ChargingStationManagement = () => {
               />
             </Col>
             <Col md={5}>
-              <RadioGroup
-                title={"철거여부"}
-                name={"demolitionGroup"}
-                list={DEMOLITION_FILTER_LIST}
-              />
+              <RadioGroup title={"사용여부"} name={"useList"} list={useList} />
             </Col>
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
@@ -234,7 +236,7 @@ const ChargingStationManagement = () => {
                         fast,
                         slow,
                         isOpen,
-                        isClosure,
+                        isUse,
                         date,
                       },
                       index
@@ -263,7 +265,7 @@ const ChargingStationManagement = () => {
                           {fast} / {slow}
                         </td>
                         <td>{isOpen ? "완전" : "X"}</td>
-                        <td>{isClosure}</td>
+                        <td>{isUse}</td>
                         <td>{date}</td>
                       </tr>
                     )

@@ -124,8 +124,9 @@ const ChargerDetail = () => {
               <DetailRow>
                 <DetailLabelCol sm={2}>충전소명</DetailLabelCol>
                 <DetailContentCol>
-                  <DetailGroupCol className={"gap-3"}>
+                  <DetailGroupCol className={"d-flex align-items-center gap-3"}>
                     <TextInputBase
+                      inputstyle={{ flex: 1 }}
                       name={"충전소명"}
                       bsSize={"lg"}
                       disabled={disabled}
