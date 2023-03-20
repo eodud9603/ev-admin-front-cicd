@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -10,6 +10,8 @@ import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import { TableBase } from "src/components/Common/Table/TableBase";
+import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
+import { NewTypeRegistrationModal } from "src/pages/Counseling/components/NewTypeRegistrationModal";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -31,13 +33,47 @@ const tableHeader = [
   { label: "유형 수정" },
 ];
 
+const data = [
+  {
+    division: "상담",
+    firstType: "가입안내",
+    secondType: ["개인회원가입", "법인회원가입"],
+    thirdType: "",
+    registrationDt: "YYYY.MM.DD 00:00:00",
+    registerName: "장관리",
+    updateDt: "YYYY.MM.DD 00:00:00",
+    updaterName: "김관리",
+  },
+  {
+    division: "상담",
+    firstType: "이용안내",
+    secondType: ["회원카드", "충전기", "로밍"],
+    thirdType: "",
+    registrationDt: "YYYY.MM.DD 00:00:00",
+    registerName: "장관리",
+    updateDt: "YYYY.MM.DD 00:00:00",
+    updaterName: "김관리",
+  },
+  {
+    division: "보상",
+    firstType: "포인트 적립",
+    secondType: ["충전오류"],
+    thirdType: "",
+    registrationDt: "YYYY.MM.DD 00:00:00",
+    registerName: "장관리",
+    updateDt: "YYYY.MM.DD 00:00:00",
+    updaterName: "김관리",
+  },
+];
+
 type TabType = "ALL" | "COUNSELING" | "REWARD";
 
 export const CounselingManagement = () => {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState("0");
-  const [text, setText] = useState("");
   const [tab, setTab] = useState<TabType>("ALL");
+  const [newTypeRegistrationModal, setNewTypeRegistrationModal] =
+    useState(false);
 
   const tabButton: { label: string; type: TabType }[] = useMemo(
     () => [
@@ -56,6 +92,10 @@ export const CounselingManagement = () => {
     ],
     []
   );
+
+  const handleNewTypeRegistration = () => {
+    setNewTypeRegistrationModal((prev) => !prev);
+  };
 
   return (
     <ContainerBase>
@@ -104,7 +144,11 @@ export const CounselingManagement = () => {
                   2023-04-01 14:51기준
                 </span>
                 <DropdownBase menuItems={dropdownData} />
-                <ButtonBase label={"신규 등록"} color={"turu"} />
+                <ButtonBase
+                  label={"신규 등록"}
+                  color={"turu"}
+                  onClick={handleNewTypeRegistration}
+                />
                 <ButtonBase
                   label={"선택 삭제"}
                   outline={true}
@@ -114,10 +158,49 @@ export const CounselingManagement = () => {
               </div>
             </Col>
           </Row>
-          <TableBase tableHeader={tableHeader}></TableBase>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {data.length > 0 &&
+                data.map((e, i) => (
+                  <tr key={i}>
+                    <td>
+                      <CheckBoxBase name={`row${i}`} label={""} />
+                    </td>
+                    <td>{}</td>
+                    <td>{e.division}</td>
+                    <td>{e.firstType}</td>
+                    <td>
+                      {e.secondType.length > 0 &&
+                        e.secondType.map((el, idx) => (
+                          <Fragment key={idx}>
+                            {el}
+                            <br />
+                          </Fragment>
+                        ))}
+                    </td>
+                    <td>{e.thirdType}</td>
+                    <td>{e.registrationDt}</td>
+                    <td>{e.registerName}</td>
+                    <td>{e.updateDt}</td>
+                    <td>{e.updaterName}</td>
+                    <td>
+                      <ButtonBase
+                        label={"수정"}
+                        outline={true}
+                        className={"w-xs"}
+                      />
+                    </td>
+                  </tr>
+                ))}
+            </>
+          </TableBase>
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
+      <NewTypeRegistrationModal
+        isOpen={newTypeRegistrationModal}
+        onClose={handleNewTypeRegistration}
+      ></NewTypeRegistrationModal>
     </ContainerBase>
   );
 };
