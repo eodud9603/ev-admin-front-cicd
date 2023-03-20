@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { NavigateFunction, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -14,8 +14,13 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { COUNT_FILTER_LIST } from "src/constants/list";
+import {
+  COUNT_FILTER_LIST,
+  MESSAGE_CATEGORY_LIST,
+  MESSAGE_TITLE_LIST,
+} from "src/constants/list";
 import styled from "styled-components";
+import SendMessage from "src/pages/Operate/components/SendMessage";
 
 /* 진행 여부 필터 */
 const progressList = [
@@ -83,10 +88,8 @@ const smsList = [
 const OperateSms = () => {
   const [tabList, setTabList] = useState([{ label: "제어 문자 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const [text, setText] = useState("");
-  const [page, setPage] = useState(1);
-  /* 0: 문자발신, 1: 발신내역 */
-  const [subTab, setSubTab] = useState(1);
+  /* SEND: 문자발신, LIST: 발신내역 */
+  const [subTab, setSubTab] = useState<"LIST" | "SEND">("LIST");
 
   const navigate = useNavigate();
 
@@ -128,123 +131,52 @@ const OperateSms = () => {
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
             { label: "제어 문자 관리", href: "" },
+            ...(subTab === "SEND" ? [{ label: "문자 발신", href: "" }] : []),
           ]}
         />
         <section
           className={"pb-4 d-flex align-items-center justify-content-between"}
         >
-          <h3 className={"font-size-24"}>제어 문자 관리</h3>
+          <h3 className={"font-size-24"}>
+            {subTab === "SEND" ? "문자 발신" : "제어 문자 관리"}
+          </h3>
 
           <div>
             <ButtonBase
               className={"rounded-0 width-110"}
               label={"문자 발신"}
-              outline={subTab !== 0}
+              outline={subTab !== "SEND"}
               color={"turu"}
+              onClick={() => {
+                setSubTab("SEND");
+              }}
             />
             <ButtonBase
               className={"rounded-0 width-110"}
               label={"발신 내역"}
-              outline={subTab !== 1}
+              outline={subTab !== "LIST"}
               color={"turu"}
+              onClick={() => {
+                setSubTab("LIST");
+              }}
             />
           </div>
         </section>
 
-        <SearchSection className={"pt-2 pb-4 border-top border-bottom"}>
-          <Row className={"mt-3 d-flex align-items-center"}>
-            <Col md={4}>
-              <DateGroup className={"mb-0"} label={"제어 요청일"} />
-            </Col>
-            <Col md={4} />
-            <Col md={4}>
-              <RadioGroup
-                title={"진행 여부"}
-                name={"progressGroup"}
-                list={progressList}
-              />
-            </Col>
-          </Row>
-          <Row className={"mt-3 d-flex align-items-center"}>
-            <Col md={4}>
-              <DateGroup className={"mb-0"} label={"제어 완료일"} />
-            </Col>
-            <Col md={4} />
-            <Col className={"d-flex"} md={4}>
-              <DropboxGroup
-                label={"분류"}
-                dropdownItems={classificationList}
-                className={"me-2 w-xs"}
-              />
-              <ButtonBase label={"추가"} color={"dark"} />
-            </Col>
-          </Row>
-          <Row className={"mt-3 d-flex align-items-center"}>
-            <Col md={8}>
-              <SearchTextInput
-                title={"검색어"}
-                name={"searchText"}
-                menuItems={searchList}
-                placeholder={"검색어를 입력해주세요."}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-              />
-            </Col>
-            <Col className={"d-flex"} md={4}>
-              <DropboxGroup
-                label={"카테고리"}
-                dropdownItems={categoryList}
-                className={"me-2 w-xs"}
-              />
-              <ButtonBase label={"추가"} color={"dark"} />
-            </Col>
-          </Row>
-        </SearchSection>
-
-        <ListSection className={"py-4"}>
-          <div
-            className={"d-flex align-items-center justify-content-between mb-4"}
-          >
-            <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{smsList.length}개</span>의
-              제어내역이 있습니다.
-            </span>
-
-            <div className={"d-flex align-items-center gap-3"}>
-              <span className={"font-size-10 text-muted"}>
-                2023-04-01 14:51기준
-              </span>
-              <DropdownBase menuItems={COUNT_FILTER_LIST} />
-            </div>
-          </div>
-
-          <div className="table-responsive">
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {smsList.length > 0 ? (
-                  smsList.map((sms, index) => (
-                    <SMSItem
-                      key={index}
-                      index={index}
-                      rowClickHandler={() => {
-                        navigate(`/operate/sms/detail/${sms.id}`);
-                      }}
-                      {...sms}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={11} className={"py-5 text-center text"}>
-                      등록된 제어내역이 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
-
-          <PaginationBase setPage={setPage} data={{}} />
-        </ListSection>
+        {subTab === "LIST" ? (
+          <SMSList navigate={navigate} />
+        ) : (
+          <SendMessage
+            type={"SMS"}
+            receiverInputTitle={"단말기 번호"}
+            sentContentTitle={"신규 명령어"}
+            categoryList={MESSAGE_CATEGORY_LIST}
+            titleList={MESSAGE_TITLE_LIST}
+            onChangeTab={() => {
+              setSubTab("LIST");
+            }}
+          />
+        )}
       </BodyBase>
     </ContainerBase>
   );
@@ -275,6 +207,113 @@ interface ISMSItemProps {
   rowClickHandler?: () => void;
 }
 
+/** subTab: "LIST" UI */
+const SMSList = (props: { navigate: NavigateFunction }) => {
+  const { navigate } = props;
+
+  const [text, setText] = useState("");
+  const [page, setPage] = useState(1);
+
+  return (
+    <>
+      <SearchSection className={"pt-2 pb-4 border-top border-bottom"}>
+        <Row className={"mt-3 d-flex align-items-center"}>
+          <Col md={4}>
+            <DateGroup className={"mb-0"} label={"제어 요청일"} />
+          </Col>
+          <Col md={4} />
+          <Col md={4}>
+            <RadioGroup
+              title={"진행 여부"}
+              name={"progressGroup"}
+              list={progressList}
+            />
+          </Col>
+        </Row>
+        <Row className={"mt-3 d-flex align-items-center"}>
+          <Col md={4}>
+            <DateGroup className={"mb-0"} label={"제어 완료일"} />
+          </Col>
+          <Col md={4} />
+          <Col className={"d-flex"} md={4}>
+            <DropboxGroup
+              label={"분류"}
+              dropdownItems={classificationList}
+              className={"me-2 w-xs"}
+            />
+            <ButtonBase label={"추가"} color={"dark"} />
+          </Col>
+        </Row>
+        <Row className={"mt-3 d-flex align-items-center"}>
+          <Col md={8}>
+            <SearchTextInput
+              title={"검색어"}
+              name={"searchText"}
+              menuItems={searchList}
+              placeholder={"검색어를 입력해주세요."}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+            />
+          </Col>
+          <Col className={"d-flex"} md={4}>
+            <DropboxGroup
+              label={"카테고리"}
+              dropdownItems={categoryList}
+              className={"me-2 w-xs"}
+            />
+            <ButtonBase label={"추가"} color={"dark"} />
+          </Col>
+        </Row>
+      </SearchSection>
+      <ListSection className={"py-4"}>
+        <div
+          className={"d-flex align-items-center justify-content-between mb-4"}
+        >
+          <span className={"font-size-13 fw-bold"}>
+            총 <span className={"text-turu"}>{smsList.length}개</span>의
+            제어내역이 있습니다.
+          </span>
+
+          <div className={"d-flex align-items-center gap-3"}>
+            <span className={"font-size-10 text-muted"}>
+              2023-04-01 14:51기준
+            </span>
+            <DropdownBase menuItems={COUNT_FILTER_LIST} />
+          </div>
+        </div>
+
+        <div className="table-responsive">
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {smsList.length > 0 ? (
+                smsList.map((sms, index) => (
+                  <SMSItem
+                    key={index}
+                    index={index}
+                    rowClickHandler={() => {
+                      navigate(`/operate/sms/detail/${sms.id}`);
+                    }}
+                    {...sms}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={11} className={"py-5 text-center text"}>
+                    등록된 제어내역이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
+        </div>
+
+        <PaginationBase setPage={setPage} data={{}} />
+      </ListSection>
+    </>
+  );
+};
+
+/** LIST ITEM */
 const SMSItem = (props: ISMSItemProps) => {
   const {
     index,
