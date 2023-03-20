@@ -9,7 +9,7 @@ interface IDetailTextInputRow {
     content?: string;
     disabled?: boolean;
     required?: boolean;
-    type?: "textarea" | "text";
+    type?: "textarea" | "text" | "number";
     name?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     containerWidthRatio?: number;

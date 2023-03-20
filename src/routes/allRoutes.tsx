@@ -57,6 +57,7 @@ import { CounselingHistoryDetail } from "src/pages/Counseling/CounselingHistoryD
 import OperateNotificationTalkDetail from "src/pages/Operate/OperateNotificationTalkDetail";
 import OperateSMSDetail from "src/pages/Operate/OperateSMSDetail";
 import ChargerStationAdd from "src/pages/Charger/ChargerStationAdd";
+import ChargerAdd from "src/pages/Charger/ChargerAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -77,6 +78,10 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/charger",
     element: <Charger />,
+  },
+  {
+    path: "/charger/add",
+    element: <ChargerAdd />,
   },
   {
     path: "/charger/charger/detail/:id",
