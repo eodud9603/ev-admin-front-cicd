@@ -56,6 +56,7 @@ import InstallChargerDetail from "src/pages/Operate/InstallChargerDetail";
 import { CounselingHistoryDetail } from "src/pages/Counseling/CounselingHistoryDetail";
 import OperateNotificationTalkDetail from "src/pages/Operate/OperateNotificationTalkDetail";
 import OperateSMSDetail from "src/pages/Operate/OperateSMSDetail";
+import ChargerStationAdd from "src/pages/Charger/ChargerStationAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -64,6 +65,10 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/chargerStation",
     element: <ChargingStation />,
+  },
+  {
+    path: "/charger/chargerStation/add",
+    element: <ChargerStationAdd />,
   },
   {
     path: "/charger/chargerStation/detail/:id",
