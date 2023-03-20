@@ -208,17 +208,13 @@ const OperatorCounselorDetail = () => {
 
         <DetailBottomButton
           containerClassName={"my-5"}
-          editDisabled={disabled}
+          rightButtonTitle={disabled ? "수정" : "저장"}
           listHandler={() => {
             navigate("/operator/counselor");
           }}
-          editHandler={() => {
-            setDisabled(false);
-          }}
-          saveHandler={() => {
-            /** @TODO 저장로직 추가 */
-
-            setDisabled(true);
+          rightButtonHandler={() => {
+            /** @TODO disabled에 따라 수정 or 저장 로직 실행 */
+            setDisabled((prev) => !prev);
           }}
         />
       </BodyBase>

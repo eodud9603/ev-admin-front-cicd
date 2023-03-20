@@ -876,12 +876,12 @@ const ChargerStationAdd = () => {
         </div>
 
         <DetailBottomButton
-          editDisabled={false}
           containerClassName={"my-5"}
+          rightButtonTitle={"등록"}
           listHandler={() => {
             navigate("/charger/chargerStation");
           }}
-          saveHandler={save}
+          rightButtonHandler={save}
         />
       </BodyBase>
 

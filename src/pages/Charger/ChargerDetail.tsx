@@ -810,6 +810,7 @@ const ChargerDetail = () => {
 
         <DetailBottomButton
           containerClassName={"my-5"}
+          rightButtonTitle={disabled ? "수정" : "저장"}
           listHandler={() => {
             /* 수정모드 상태에서 목록 버튼 클릭 */
             if (!disabled) {
@@ -819,14 +820,14 @@ const ChargerDetail = () => {
 
             navigate("/charger/charger");
           }}
-          editDisabled={disabled}
-          editHandler={() => setDisabled(false)}
-          saveHandler={() => {
-            /** @TODO 저장 로직 추가 필요 */
+          rightButtonHandler={() => {
+            if (!disabled) {
+              /** @TODO 저장 로직 추가 필요 */
+              /* 저장 성공시 완료모달 오픈 */
+              setIsEditComplete(true);
+            }
 
-            /* 저장 성공 */
-            setDisabled(true);
-            setIsEditComplete(true);
+            setDisabled((prev) => !prev);
           }}
         />
       </BodyBase>
