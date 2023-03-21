@@ -20,10 +20,11 @@ export const CK_EDITOR_CONFIGS = {
         // {name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt' ]},
         // {name: 'forms', items: [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
     ],
+    /** @TODO 서버 api url 기입 * 없을 시, 업로드 불가 */
     filebrowserUploadUrl: '/files/upload/ck?type=Files',
     filebrowserImageUploadUrl: '/files/upload/ck?type=Images',
     filebrowserUploadMethod: 'xhr',
-
+    // https://evioc-dev.humaxcharger.com/files/upload/ck?type=Files&responseType=json
     removePlugins: 'cloudservices,easyimage,image,exportpdf',
     extraPlugins: 'youtube, emoji'
     // extraPlugins: 'emoji'
