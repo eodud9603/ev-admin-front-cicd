@@ -25,6 +25,7 @@ import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton"
 import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import useInputs from "src/hooks/useInputs";
+import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -45,6 +46,8 @@ const ChargerAdd = () => {
   const [isCompleteComplete, setIsCompleteComplete] = useState(false);
   /* 등록취소 모달 */
   const [isCompleteCancel, setIsCompleteCancel] = useState(false);
+  /* 충전소검색 모달 */
+  const [isStationSearchModal, setIsStationSearchModal] = useState(false);
 
   const {
     chargerStationName,
@@ -247,7 +250,9 @@ const ChargerAdd = () => {
                       label={"충전소 검색"}
                       outline
                       color={"turu"}
-                      onClick={() => {}}
+                      onClick={() => {
+                        setIsStationSearchModal(true);
+                      }}
                     />
                   </DetailGroupCol>
                 </DetailContentCol>
@@ -1078,6 +1083,13 @@ const ChargerAdd = () => {
         contents={
           "입력된 충전기 정보가 저장되지 않습니다.\n신규 등록을 취소하시겠습니까?"
         }
+      />
+      <StationSearchModal
+        isOpen={isStationSearchModal}
+        onClose={() => {
+          setIsStationSearchModal((prev) => !prev);
+        }}
+        size={"xl"}
       />
     </ContainerBase>
   );

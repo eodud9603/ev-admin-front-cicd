@@ -24,6 +24,7 @@ import styled from "styled-components";
 import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
 import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
+import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 
 const ChargerDetail = () => {
   const [tabList, setTabList] = useState([
@@ -41,6 +42,8 @@ const ChargerDetail = () => {
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
   const [isEditCancel, setIsEditCancel] = useState(false);
+  /* 충전소검색 모달 */
+  const [isStationSearchModal, setIsStationSearchModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -139,6 +142,9 @@ const ChargerDetail = () => {
                       label={"충전소 검색"}
                       outline
                       color={disabled ? "secondary" : "turu"}
+                      onClick={() => {
+                        setIsStationSearchModal(true);
+                      }}
                     />
                   </DetailGroupCol>
                 </DetailContentCol>
@@ -853,6 +859,13 @@ const ChargerDetail = () => {
         contents={
           "수정된 충전기 정보가 저장되지 않습니다.\n수정을 취소하시겠습니까?"
         }
+      />
+      <StationSearchModal
+        isOpen={isStationSearchModal}
+        onClose={() => {
+          setIsStationSearchModal((prev) => !prev);
+        }}
+        size={"xl"}
       />
     </ContainerBase>
   );

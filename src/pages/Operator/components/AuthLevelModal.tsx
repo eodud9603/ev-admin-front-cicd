@@ -1,5 +1,5 @@
 import React from "react";
-import { Label, ModalBody, ModalFooter, Row } from "reactstrap";
+import { Label, ModalBody, ModalFooter } from "reactstrap";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import ModalBase from "src/components/Common/Modal/ModalBase";
 import { ROLE_TABLE_LIST } from "src/constants/list";
@@ -11,10 +11,11 @@ interface IAuthLevelModalProps {
   type?: "WRITE" | "READ";
   isOpen: boolean;
   onClose: () => void;
+  role?: { label: string; value: string };
 }
 
 const AuthLevelModal = (props: IAuthLevelModalProps) => {
-  const { type = "READ", isOpen, onClose } = props;
+  const { type = "READ", isOpen, onClose, role } = props;
 
   const title = type === "WRITE" ? "권한등록" : "권한등록 내역";
 
@@ -26,7 +27,7 @@ const AuthLevelModal = (props: IAuthLevelModalProps) => {
       >
         <Label className={"mt-4 mb-3 font-size-14 text-secondary"}>
           <span className={"me-1 font-size-16 text-black fw-bold"}>목록</span>
-          <span>(권한등급 : 최고 관리자)</span>
+          <span>(권한등급 : {role?.label ?? "미지정"})</span>
         </Label>
         <RoleHeaderItem />
         {ROLE_TABLE_LIST.map((props, index) => (

@@ -300,6 +300,7 @@ const OperatorAccountDetail = () => {
         onClose={() => {
           setAuthModalOpen(false);
         }}
+        role={roleList.find((role) => role.checked === true)}
       />
     </ContainerBase>
   );
