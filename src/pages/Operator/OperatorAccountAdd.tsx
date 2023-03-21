@@ -66,7 +66,7 @@ const OperatorAccountAdd = () => {
     // agencyGroup,
     password,
     /* radio */
-    // roleLevel,
+    roleLevel,
     tel,
     mobileTel,
     department,
@@ -201,6 +201,10 @@ const OperatorAccountAdd = () => {
               label={"권한등록"}
               color={"secondary"}
               onClick={() => {
+                if (!roleLevel) {
+                  /** @TODO 권한등급 우선 선택 필요 > 메세지 표시 추가 필요 */
+                  return;
+                }
                 setAuthModalOpen(true);
               }}
             />
@@ -290,6 +294,7 @@ const OperatorAccountAdd = () => {
         onClose={() => {
           setAuthModalOpen(false);
         }}
+        role={roleList.find((role) => role.value === roleLevel)}
       />
     </ContainerBase>
   );
