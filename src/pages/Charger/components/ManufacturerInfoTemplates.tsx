@@ -67,6 +67,7 @@ export const ManufacturerBasicInfoTab = ({
               onChange={() => {}}
             />
             <div style={{ flex: 3 }}>
+              호
               {!disabled && (
                 <ButtonBase
                   className={"width-110"}
@@ -100,8 +101,6 @@ export const ManufacturerBasicInfoTab = ({
   );
 };
 
-// interface ManufacturerFirmwareInfoTab extends IManufacturerInfoTemplates {}
-
 export const ManufacturerFirmwareInfoTab = ({
   type,
 }: IManufacturerInfoTemplates) => {
@@ -111,12 +110,25 @@ export const ManufacturerFirmwareInfoTab = ({
     <>
       <DetailRow>
         <DetailLabelCol sm={2}>모델명</DetailLabelCol>
-        <DetailContentCol></DetailContentCol>
-        <DetailLabelCol sm={2}>모델 이미지</DetailLabelCol>
         <DetailContentCol>
-          <u role={"button"} className={"text-turu"}>
-            등록된 펌웨어 파일명
-          </u>
+          <TextInputBase name={"model"} value={"1"} disabled />
+        </DetailContentCol>
+        <DetailLabelCol sm={2}>모델 이미지</DetailLabelCol>
+        <DetailContentCol className={"py-0"}>
+          {type === "DETAIL" ? (
+            <u role={"button"} className={"text-turu"}>
+              등록된 펌웨어 파일명
+            </u>
+          ) : (
+            <div
+              className={"d-flex justify-content-between align-items-center"}
+            >
+              <span className={"text-secondary text-opacity-25"}>
+                충전기 모델 이미지를 등록해주세요.
+              </span>
+              <ButtonBase label={"업로드"} outline={true} color={"turu"} />
+            </div>
+          )}
         </DetailContentCol>
       </DetailRow>
       <DetailTextInputRow
@@ -133,13 +145,27 @@ export const ManufacturerFirmwareInfoTab = ({
       <DetailRow>
         <DetailLabelCol sm={2}>현재 펌웨어 파일</DetailLabelCol>
         <DetailContentCol>
-          <u role={"button"} className={"text-turu"}>
-            등록된 펌웨어 파일명
-          </u>
+          {type === "DETAIL" ? (
+            <u role={"button"} className={"text-turu"}>
+              등록된 펌웨어 파일명
+            </u>
+          ) : (
+            <div
+              className={"d-flex justify-content-between align-items-center"}
+            >
+              <span className={"text-secondary text-opacity-25"}>
+                펌웨어 파일을 등록해주세요.
+              </span>
+              <ButtonBase label={"업로드"} outline={true} color={"turu"} />
+            </div>
+          )}
         </DetailContentCol>
       </DetailRow>
-      <div role={"button"} className={"text-turu px-3 mt-3"}>
+      <div role={"button"} className={"text-turu px-3 my-3"}>
         + 충전기 펌웨어 정보 추가
+      </div>
+      <div role={"button"} className={"text-secondary px-3 my-3"}>
+        - 등록 정보 삭제
       </div>
     </>
   );

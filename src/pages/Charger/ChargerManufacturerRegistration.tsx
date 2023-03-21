@@ -57,9 +57,9 @@ export const ChargerManufacturerRegistration = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 제조사 관리", href: "" },
-            { label: "충전기 제조사 상세", href: "" },
+            { label: "충전기 제조사 신규 등록", href: "" },
           ]}
-          title={"충전기 제조사 상세"}
+          title={"충전기 제조사 신규 등록"}
         />
         <InfoSection className={"mt-3"}>
           <div
