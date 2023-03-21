@@ -18,7 +18,13 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import useInputs from "src/hooks/useInputs";
 import AddButton from "src/pages/Operator/components/AddButton";
 
-const groupItems = [{ label: "선택", value: "1" }];
+const groupItems = [
+  { label: "선택", value: "" },
+  {
+    label: "소속그룹1",
+    value: "1",
+  },
+];
 
 const OperatorCounselorAdd = () => {
   const [tabList, setTabList] = useState([
@@ -30,6 +36,8 @@ const OperatorCounselorAdd = () => {
     name,
     id,
     password,
+    /* dropdown */
+    // agencyGroup,
     agency,
     cti,
     acd,
@@ -39,10 +47,12 @@ const OperatorCounselorAdd = () => {
     addressDetail,
     etc,
     onChange,
+    onChangeSingle,
   } = useInputs({
     name: "",
     id: "",
     password: "",
+    agencyGroup: "",
     agency: "",
     cti: "",
     acd: "",
@@ -128,7 +138,12 @@ const OperatorCounselorAdd = () => {
         <DetailRow>
           <DetailLabelCol sm={2}>소속 그룹</DetailLabelCol>
           <DetailContentCol>
-            <DropdownBase menuItems={groupItems} />
+            <DropdownBase
+              menuItems={groupItems}
+              onClickDropdownItem={(label, value) => {
+                onChangeSingle({ agencyGroup: value });
+              }}
+            />
           </DetailContentCol>
           <DetailLabelCol sm={2}>비밀번호</DetailLabelCol>
           <DetailContentCol>

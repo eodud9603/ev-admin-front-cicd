@@ -2,19 +2,19 @@ import React from "react";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 
 interface IDetailBottomButtonProps {
+  rightButtonTitle: string;
+
   listHandler?: () => void;
-  editHandler?: () => void;
-  saveHandler?: () => void;
-  editDisabled?: boolean;
+  rightButtonHandler?: () => void;
   containerClassName?: string;
 }
 
 const DetailBottomButton = (props: IDetailBottomButtonProps) => {
   const {
+    rightButtonTitle = "",
+
     listHandler,
-    editHandler,
-    saveHandler,
-    editDisabled = false,
+    rightButtonHandler,
     containerClassName = "",
   } = props;
 
@@ -33,9 +33,9 @@ const DetailBottomButton = (props: IDetailBottomButtonProps) => {
       />
       <ButtonBase
         className={"width-110 ms-2"}
-        label={!editDisabled ? "저장" : "수정"}
+        label={rightButtonTitle}
         color={"turu"}
-        onClick={!editDisabled ? saveHandler : editHandler}
+        onClick={rightButtonHandler}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { Row } from "reactstrap";
+import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import {
   DetailContentCol,
@@ -99,36 +99,24 @@ const ChargerContractDetail = () => {
 
         <p className={"mt-3 mb-2 font-size-20 text-dark fw-bold"}>기본정보</p>
         <Row className={"mb-4"}>
-          <DetailRow>
-            <DetailLabelCol sm={2}>계약장소명</DetailLabelCol>
-            <DetailContentCol>
-              <TextInputBase
-                name={"계약장소명"}
-                bsSize={"lg"}
-                disabled={disabled}
-                value={"입력 내용 노출"}
-                onChange={() => {}}
-              />
-            </DetailContentCol>
-            <DetailLabelCol sm={2}>환경부 연동여부</DetailLabelCol>
-            <DetailContentCol>
-              <RadioGroup
-                name={"환경부 연동여부"}
-                list={[
-                  {
-                    label: "연동",
-                    checked: true,
-                    disabled,
-                  },
-                  {
-                    label: "미연동",
-                    disabled,
-                  },
-                ]}
-                onChange={() => {}}
-              />
-            </DetailContentCol>
-          </DetailRow>
+          <DetailTextInputRow
+            rows={[
+              {
+                disabled,
+                titleWidthRatio: 4,
+                title: "계약장소명",
+                content: "입력 내용 노출",
+                onChange: () => {},
+              },
+              {
+                disabled,
+                titleWidthRatio: 4,
+                title: "계약자명",
+                content: "입력 내용 노출",
+                onChange: () => {},
+              },
+            ]}
+          />
 
           <DetailRow>
             <DetailLabelCol sm={2}>계약여부</DetailLabelCol>
@@ -150,6 +138,27 @@ const ChargerContractDetail = () => {
                   {
                     label: "해지",
                     value: "3",
+                    disabled,
+                  },
+                ]}
+                onChange={() => {}}
+              />
+            </DetailContentCol>
+          </DetailRow>
+
+          <DetailRow>
+            <DetailLabelCol sm={2}>환경부 연동여부</DetailLabelCol>
+            <DetailContentCol>
+              <RadioGroup
+                name={"환경부 연동여부"}
+                list={[
+                  {
+                    label: "연동",
+                    checked: true,
+                    disabled,
+                  },
+                  {
+                    label: "미연동",
                     disabled,
                   },
                 ]}
@@ -185,26 +194,7 @@ const ChargerContractDetail = () => {
                 />
               </div>
             </DetailContentCol>
-            <DetailLabelCol sm={2}>사용여부</DetailLabelCol>
-            <DetailContentCol>
-              <RadioGroup
-                name={"사용여부"}
-                list={[
-                  {
-                    label: "사용",
-                    value: "1",
-                    checked: true,
-                    disabled,
-                  },
-                  {
-                    label: "미사용",
-                    value: "2",
-                    disabled,
-                  },
-                ]}
-                onChange={() => {}}
-              />
-            </DetailContentCol>
+            <Col sm={6} />
           </DetailRow>
 
           <DetailRow>
@@ -393,6 +383,7 @@ const ChargerContractDetail = () => {
 
         <DetailBottomButton
           containerClassName={"my-5"}
+          rightButtonTitle={disabled ? "수정" : "저장"}
           listHandler={() => {
             /* 수정모드 상태에서 목록 버튼 클릭 */
             if (!disabled) {
@@ -402,14 +393,14 @@ const ChargerContractDetail = () => {
 
             navigate("/charger/contract");
           }}
-          editDisabled={disabled}
-          editHandler={() => setDisabled(false)}
-          saveHandler={() => {
-            /**  @TODO 저장 로직 추가 필요 */
+          rightButtonHandler={() => {
+            if (!disabled) {
+              /** @TODO 저장 로직 추가 필요 */
+              /* 저장 성공시 완료모달 오픈 */
+              setIsEditComplete(true);
+            }
 
-            /* 저장 성공 */
-            setDisabled(true);
-            setIsEditComplete(true);
+            setDisabled((prev) => !prev);
           }}
         />
       </BodyBase>

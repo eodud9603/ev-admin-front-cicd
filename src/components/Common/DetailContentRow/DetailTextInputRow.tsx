@@ -9,7 +9,7 @@ interface IDetailTextInputRow {
     content?: string;
     disabled?: boolean;
     required?: boolean;
-    type?: "textarea" | "text";
+    type?: "textarea" | "text" | "number";
     name?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     containerWidthRatio?: number;
@@ -56,7 +56,7 @@ export const DetailTextInputRow = (props: IDetailTextInputRow) => {
                         "border-1 border-secondary border-opacity-50"
                       : ""
                   }`}
-                  placeholder={item.placeholder}
+                  placeholder={item.placeholder ?? "입력해주세요"}
                   type={item?.type ?? "text"}
                   name={item?.name}
                   value={item?.content}

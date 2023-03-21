@@ -213,7 +213,13 @@ const Charger = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
-              <ButtonBase label={"신규 등록"} color={"turu"} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  navigate("/charger/add");
+                }}
+              />
               <ButtonBase
                 label={"일괄 제어"}
                 outline={true}

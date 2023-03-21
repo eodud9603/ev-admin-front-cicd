@@ -15,9 +15,16 @@ import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
+import useInputs from "src/hooks/useInputs";
 import DetailBottomButton from "../Charger/components/DetailBottomButton";
 
-const groupItems = [{ label: "선택", value: "1" }];
+const groupItems = [
+  { label: "선택", value: "" },
+  {
+    label: "소속그룹1",
+    value: "1",
+  },
+];
 
 const OperatorCounselorDetail = () => {
   const [tabList, setTabList] = useState([
@@ -27,6 +34,35 @@ const OperatorCounselorDetail = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 수정 비활성화 */
   const [disabled, setDisabled] = useState(true);
+  const {
+    name,
+    id,
+    password,
+    // agencyGroup,
+    agency,
+    cti,
+    acd,
+    extension,
+    zipCode,
+    address,
+    addressDetail,
+    etc,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    name: "강상담",
+    id: "KKS@humaxev.com",
+    password: "1234",
+    agencyGroup: "",
+    agency: "입력 정보 노출",
+    cti: "입력 정보 노출",
+    acd: "입력 정보 노출",
+    extension: "입력 정보 노출",
+    zipCode: "우편번호 노출",
+    address: "검색된 주소 정보 노출",
+    addressDetail: "입력한 상세 주소 정보 노출",
+    etc: "입력 정보 노출",
+  });
 
   const navigate = useNavigate();
 
@@ -79,13 +115,17 @@ const OperatorCounselorDetail = () => {
             {
               titleWidthRatio: 4,
               title: "상담사명",
-              content: "강상담",
+              name: "name",
+              content: name,
+              onChange,
               disabled,
             },
             {
               titleWidthRatio: 4,
               title: "상담사 ID",
-              content: "KKS@humaxev.com",
+              name: "id",
+              content: id,
+              onChange,
               disabled,
             },
           ]}
@@ -93,7 +133,13 @@ const OperatorCounselorDetail = () => {
         <DetailRow>
           <DetailLabelCol sm={2}>소속 그룹</DetailLabelCol>
           <DetailContentCol>
-            <DropdownBase disabled={disabled} menuItems={groupItems} />
+            <DropdownBase
+              disabled={disabled}
+              menuItems={groupItems}
+              onClickDropdownItem={(label, value) => {
+                onChangeSingle({ agencyGroup: value });
+              }}
+            />
           </DetailContentCol>
           <DetailLabelCol sm={2}>비밀번호</DetailLabelCol>
           <DetailContentCol>
@@ -102,8 +148,8 @@ const OperatorCounselorDetail = () => {
               bsSize={"lg"}
               name={"password"}
               type={"password"}
-              value={"1234"}
-              onChange={() => {}}
+              value={password}
+              onChange={onChange}
             />
           </DetailContentCol>
         </DetailRow>
@@ -113,9 +159,9 @@ const OperatorCounselorDetail = () => {
             <TextInputBase
               disabled={disabled}
               bsSize={"lg"}
-              name={"agencyName"}
-              value={"입력 정보 노출"}
-              onChange={() => {}}
+              name={"agency"}
+              value={agency}
+              onChange={onChange}
             />
           </DetailContentCol>
           <DetailLabelCol sm={2}>소프트폰</DetailLabelCol>
@@ -127,8 +173,8 @@ const OperatorCounselorDetail = () => {
               disabled={disabled}
               bsSize={"lg"}
               name={"cti"}
-              value={"입력 정보 노출"}
-              onChange={() => {}}
+              value={cti}
+              onChange={onChange}
             />
             <span>ACD</span>
             <TextInputBase
@@ -136,17 +182,17 @@ const OperatorCounselorDetail = () => {
               disabled={disabled}
               bsSize={"lg"}
               name={"acd"}
-              value={"입력 정보 노출"}
-              onChange={() => {}}
+              value={acd}
+              onChange={onChange}
             />
             <span>내선</span>
             <TextInputBase
               inputstyle={{ flex: 1 }}
               disabled={disabled}
               bsSize={"lg"}
-              name={"내선"}
-              value={"입력 정보 노출"}
-              onChange={() => {}}
+              name={"extension"}
+              value={extension}
+              onChange={onChange}
             />
           </DetailContentCol>
         </DetailRow>
@@ -160,9 +206,9 @@ const OperatorCounselorDetail = () => {
                 bsSize={"lg"}
                 disabled={true}
                 className={"mb-4"}
-                name={"우편번호"}
-                value={"우편번호 노출"}
-                onChange={() => {}}
+                name={"zipCode"}
+                value={zipCode}
+                onChange={onChange}
               />
               <div style={{ flex: 3 }}>
                 {!disabled && (
@@ -180,16 +226,16 @@ const OperatorCounselorDetail = () => {
               <TextInputBase
                 bsSize={"lg"}
                 disabled={true}
-                name={"주소"}
-                value={"검색된 주소 정보 노출"}
-                onChange={() => {}}
+                name={"address"}
+                value={address}
+                onChange={onChange}
               />
               <TextInputBase
                 bsSize={"lg"}
                 disabled={disabled}
-                name={"상세주소"}
-                value={"입력한 상세 주소 정보 노출"}
-                onChange={() => {}}
+                name={"addressDetail"}
+                value={addressDetail}
+                onChange={onChange}
               />
             </div>
           </DetailContentCol>
@@ -200,7 +246,9 @@ const OperatorCounselorDetail = () => {
             {
               titleWidthRatio: 2,
               title: "비고",
-              content: "입력 정보 노출",
+              name: "etc",
+              content: etc,
+              onChange,
               disabled,
             },
           ]}
@@ -208,17 +256,13 @@ const OperatorCounselorDetail = () => {
 
         <DetailBottomButton
           containerClassName={"my-5"}
-          editDisabled={disabled}
+          rightButtonTitle={disabled ? "수정" : "저장"}
           listHandler={() => {
             navigate("/operator/counselor");
           }}
-          editHandler={() => {
-            setDisabled(false);
-          }}
-          saveHandler={() => {
-            /** @TODO 저장로직 추가 */
-
-            setDisabled(true);
+          rightButtonHandler={() => {
+            /** @TODO disabled에 따라 수정 or 저장 로직 실행 */
+            setDisabled((prev) => !prev);
           }}
         />
       </BodyBase>

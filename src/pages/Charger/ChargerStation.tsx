@@ -13,11 +13,7 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import {
-  COUNT_FILTER_LIST,
-  DEMOLITION_FILTER_LIST,
-  OPERATOR_FILTER_LIST,
-} from "src/constants/list";
+import { COUNT_FILTER_LIST, OPERATOR_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
 
 /* 주소(지역) 필터 */
@@ -31,6 +27,12 @@ const addressList = [
   {
     menuItems: [{ label: "동,읍", value: "1" }],
   },
+];
+
+/* 사용여부 필터 */
+const useList = [
+  { label: "Y", value: "Y" },
+  { label: "N", value: "N" },
 ];
 
 /* 검색어 필터 */
@@ -63,7 +65,7 @@ const tableHeader = [
   { label: "주소" },
   { label: "급/완속(기)" },
   { label: "개방여부" },
-  { label: "철거여부" },
+  { label: "사용여부" },
   { label: "등록일" },
 ];
 
@@ -79,7 +81,7 @@ const chargingStationList = [
     fast: "3",
     slow: "2",
     isOpen: "완전",
-    isClosure: "N",
+    isUse: "N",
     date: "YYYY.MM.DD",
   },
   {
@@ -92,7 +94,7 @@ const chargingStationList = [
     fast: "3",
     slow: "2",
     isOpen: "완전",
-    isClosure: "N",
+    isUse: "N",
     date: "YYYY.MM.DD",
   },
 ];
@@ -178,11 +180,7 @@ const ChargingStationManagement = () => {
               />
             </Col>
             <Col md={5}>
-              <RadioGroup
-                title={"철거여부"}
-                name={"demolitionGroup"}
-                list={DEMOLITION_FILTER_LIST}
-              />
+              <RadioGroup title={"사용여부"} name={"useList"} list={useList} />
             </Col>
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
@@ -213,7 +211,13 @@ const ChargingStationManagement = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
-              <ButtonBase label={"신규 등록"} color={"turu"} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  navigate("/charger/chargerStation/add");
+                }}
+              />
               <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
             </div>
           </div>
@@ -234,7 +238,7 @@ const ChargingStationManagement = () => {
                         fast,
                         slow,
                         isOpen,
-                        isClosure,
+                        isUse,
                         date,
                       },
                       index
@@ -263,7 +267,7 @@ const ChargingStationManagement = () => {
                           {fast} / {slow}
                         </td>
                         <td>{isOpen ? "완전" : "X"}</td>
-                        <td>{isClosure}</td>
+                        <td>{isUse}</td>
                         <td>{date}</td>
                       </tr>
                     )

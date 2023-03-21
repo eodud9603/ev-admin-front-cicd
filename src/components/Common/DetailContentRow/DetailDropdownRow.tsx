@@ -12,6 +12,7 @@ interface IDetailDropdownRow {
         value: string;
         setData?: Dispatch<SetStateAction<{ label: string; value: string }>>;
       }>;
+      onClickDropdownItem?: (label: string, value: string) => void;
     }>;
     disabled?: boolean;
     type?: "textarea" | "text";

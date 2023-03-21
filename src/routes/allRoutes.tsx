@@ -58,6 +58,8 @@ import OperateNotificationTalkDetail from "src/pages/Operate/OperateNotification
 import OperateSMSDetail from "src/pages/Operate/OperateSMSDetail";
 import { ChargerTroubleDetail } from "src/pages/Charger/ChargerTroubleDetail";
 import { ChargerTroubleRegistration } from "src/pages/Charger/ChargerTroubleRegistration";
+import ChargerStationAdd from "src/pages/Charger/ChargerStationAdd";
+import ChargerAdd from "src/pages/Charger/ChargerAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -68,12 +70,20 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargingStation />,
   },
   {
+    path: "/charger/chargerStation/add",
+    element: <ChargerStationAdd />,
+  },
+  {
     path: "/charger/chargerStation/detail/:id",
     element: <ChargerStationDetail />,
   },
   {
     path: "/charger/charger",
     element: <Charger />,
+  },
+  {
+    path: "/charger/add",
+    element: <ChargerAdd />,
   },
   {
     path: "/charger/charger/detail/:id",

@@ -23,7 +23,7 @@ import useInputs from "src/hooks/useInputs";
 
 /** 소속그룹 목록 */
 const groupItems = [
-  { label: "선택", value: "0" },
+  { label: "선택", value: "" },
   { label: "휴맥스EV", value: "1" },
 ];
 
@@ -59,16 +59,38 @@ const OperatorAccountAdd = () => {
     { label: "계정 관리" },
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const { name, id, password, tel, mobileTel, department, etc, onChange } =
-    useInputs({
-      name: "",
-      id: "",
-      password: "",
-      tel: "",
-      mobileTel: "",
-      department: "",
-      etc: "",
-    });
+  const {
+    name,
+    id,
+    /* dropdown */
+    // agencyGroup,
+    password,
+    /* radio */
+    // roleLevel,
+    tel,
+    mobileTel,
+    department,
+    /* radio */
+    // accountStatus,
+    // mobileAccess,
+    // externalAccess,
+    etc,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    name: "",
+    id: "",
+    agencyGroup: "",
+    password: "",
+    roleLevel: "",
+    tel: "",
+    mobileTel: "",
+    department: "",
+    accountStatus: "",
+    mobileAccess: "",
+    externalAccess: "",
+    etc: "",
+  });
   /* 권한등급 모달 */
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
@@ -141,7 +163,12 @@ const OperatorAccountAdd = () => {
         <DetailRow>
           <DetailLabelCol sm={2}>소속 그룹</DetailLabelCol>
           <DetailContentCol>
-            <DropdownBase menuItems={groupItems} />
+            <DropdownBase
+              menuItems={groupItems}
+              onClickDropdownItem={(_, value) => {
+                onChangeSingle({ agencyGroup: value });
+              }}
+            />
           </DetailContentCol>
           <DetailLabelCol sm={2}>비밀번호</DetailLabelCol>
           <DetailContentCol>
@@ -161,7 +188,11 @@ const OperatorAccountAdd = () => {
         <DetailRow>
           <DetailLabelCol sm={2}>권한등급</DetailLabelCol>
           <DetailContentCol>
-            <RadioGroup name={"roleLevel"} list={roleList} />
+            <RadioGroup
+              list={roleList}
+              name={"roleLevel"}
+              onChange={onChange}
+            />
           </DetailContentCol>
           <DetailLabelCol sm={2}>권한등록</DetailLabelCol>
           <DetailContentCol>
@@ -199,28 +230,34 @@ const OperatorAccountAdd = () => {
           <DetailLabelCol sm={2}>부서</DetailLabelCol>
           <DetailContentCol>
             <TextInputBase
-              name={"department"}
               bsSize={"lg"}
+              name={"department"}
               value={department}
               onChange={onChange}
             />
           </DetailContentCol>
           <DetailLabelCol sm={2}>계정상태</DetailLabelCol>
           <DetailContentCol>
-            <RadioGroup name={"accountStatus"} list={accountStatusList} />
+            <RadioGroup
+              list={accountStatusList}
+              name={"accountStatus"}
+              onChange={onChange}
+            />
           </DetailContentCol>
         </DetailRow>
         <DetailTextRadioRow
           rows={[
             {
-              name: "mobileAccess",
               title: "모바일 접속 허용 여부",
               list: radioList,
+              name: "mobileAccess",
+              onChange,
             },
             {
-              name: "externalAccess",
               title: "외부 접속 허용 여부",
               list: radioList,
+              name: "externalAccess",
+              onChange,
             },
           ]}
         />
