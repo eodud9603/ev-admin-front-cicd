@@ -12,6 +12,7 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
 import { TableBase } from "src/components/Common/Table/TableBase";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -48,14 +49,48 @@ const tableHeader = [
   { label: "수정일" },
 ];
 
+const data = [
+  {
+    manufacturerSeq: 1,
+    manufacturerId: "애플망고 02",
+    manufacturerName: "(주)애플망고",
+    code: "A",
+    charger: "김애플",
+    chargerPhone: "000-0000-0000",
+    representNumber: "000-000-0000",
+    address: "경기도 성남시 분당구 황새울로 216휴맥스빌리지",
+    updateDt: "YYYY.MM.DD",
+  },
+  {
+    manufacturerSeq: 2,
+    manufacturerId: "애플망고 01",
+    manufacturerName: "(주)애플망고",
+    code: "A",
+    charger: "강애플",
+    chargerPhone: "000-0000-0000",
+    representNumber: "000-000-0000",
+    address: "경기도 성남시 분당구 황새울로 216휴맥스빌리지",
+    updateDt: "YYYY.MM.DD",
+  },
+];
+
 export const ChargerManufacturer = () => {
+  const nav = useNavigate();
+  const { pathname } = useLocation();
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState("0");
   const [text, setText] = useState("");
 
+  const moveToRegister = () => {
+    nav(`${pathname}/registration`);
+  };
+  const moveToDetail = (id: number) => {
+    nav(`${pathname}/detail/${id}`);
+  };
+
   return (
     <ContainerBase>
-      <HeaderBase></HeaderBase>
+      <HeaderBase />
       <TabGroup
         list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
         selectedIndex={selected}
@@ -114,12 +149,41 @@ export const ChargerManufacturer = () => {
                   2023-04-01 14:51기준
                 </span>
                 <DropdownBase menuItems={dropdownData} />
-                <ButtonBase label={"신규 등록"} color={"turu"} />
+                <ButtonBase
+                  label={"신규 등록"}
+                  color={"turu"}
+                  onClick={moveToRegister}
+                />
                 <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
               </div>
             </Col>
           </Row>
-          <TableBase tableHeader={tableHeader}></TableBase>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {data.length > 0 &&
+                data.map((e, i) => (
+                  <tr key={i}>
+                    <td>{}</td>
+                    <td>
+                      <u
+                        className={"text-turu"}
+                        role={"button"}
+                        onClick={() => moveToDetail(e.manufacturerSeq)}
+                      >
+                        {e.manufacturerId}
+                      </u>
+                    </td>
+                    <td>{e.manufacturerName}</td>
+                    <td>{e.code}</td>
+                    <td>{e.charger}</td>
+                    <td>{e.chargerPhone}</td>
+                    <td>{e.representNumber}</td>
+                    <td>{e.address}</td>
+                    <td>{e.updateDt}</td>
+                  </tr>
+                ))}
+            </>
+          </TableBase>
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
