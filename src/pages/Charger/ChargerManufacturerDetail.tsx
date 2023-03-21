@@ -61,7 +61,7 @@ export const ChargerManufacturerDetail = () => {
           ]}
           title={"충전기 제조사 상세"}
         />
-        <BasicInfoSection className={"mt-3"}>
+        <InfoSection className={"mt-3"}>
           <div
             className={"d-flex justify-content-between mb-2 align-items-center"}
           >
@@ -91,11 +91,21 @@ export const ChargerManufacturerDetail = () => {
               <ManufacturerFirmwareInfoTab />
             )}
           </TabSection>
-        </BasicInfoSection>
+        </InfoSection>
+        <div className={"d-flex justify-content-center mt-5"}>
+          <ButtonBase label={"목록"} outline={true} className={"w-xs"} />
+          <ButtonBase
+            label={"삭제"}
+            color={"turu"}
+            outline={true}
+            className={"mx-3 w-xs"}
+          />
+          <ButtonBase label={"수정"} color={"turu"} className={"w-xs"} />
+        </div>
       </BodyBase>
     </ContainerBase>
   );
 };
 
-const BasicInfoSection = styled.section``;
+const InfoSection = styled.section``;
 const TabSection = styled.section``;
