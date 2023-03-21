@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -48,6 +49,7 @@ const tableHeader = [
 /* 임시 목록 데이터 */
 const noticeList: Omit<IListItemProps, "index">[] = [
   {
+    id: "1",
     title: "개인정보 처리방침 변경 안내",
     upload: "전체",
     writer: "홍길동",
@@ -56,6 +58,7 @@ const noticeList: Omit<IListItemProps, "index">[] = [
     isDelete: "N",
   },
   {
+    id: "2",
     title: "개인정보 처리방침 변경 안내",
     upload: "IOS",
     writer: "홍길동",
@@ -71,6 +74,7 @@ interface IListRefProps {
   onChange: (bool: boolean) => void;
 }
 interface IListItemProps {
+  id: string;
   index: number;
   title: string;
   upload: string;
@@ -237,10 +241,17 @@ export default OperateNotice;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
+const HoverTr = styled.tr`
+  :hover {
+    cursor: pointer;
+  }
+`;
 
 const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
-  const { index, title, upload, writer, view, date, isDelete } = props;
+  const { id, index, title, upload, writer, view, date, isDelete } = props;
   const [checked, setChecked] = useState(false);
+
+  const navigate = useNavigate();
 
   const onChangeCheck = () => {
     setChecked((prev) => !prev);
@@ -257,7 +268,11 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
   );
 
   return (
-    <tr key={index}>
+    <HoverTr
+      onClick={() => {
+        navigate(`/operate/notice/detail/${id}`);
+      }}
+    >
       <td>
         <CheckBoxBase
           name={`announcement-${index}`}
@@ -273,6 +288,6 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
       <td>{view}</td>
       <td>{date}</td>
       <td>{isDelete}</td>
-    </tr>
+    </HoverTr>
   );
 });

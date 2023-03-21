@@ -61,6 +61,7 @@ import { ChargerTroubleRegistration } from "src/pages/Charger/ChargerTroubleRegi
 import ChargerStationAdd from "src/pages/Charger/ChargerStationAdd";
 import ChargerAdd from "src/pages/Charger/ChargerAdd";
 import { ChargerManufacturerDetail } from "src/pages/Charger/ChargerManufacturerDetail";
+import OperateNoticeDetail from "src/pages/Operate/OperateNoticeDetail";
 import { ChargerManufacturerRegistration } from "src/pages/Charger/ChargerManufacturerRegistration";
 
 const userRoutes: Array<RouteProps> = [
@@ -137,6 +138,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/member/contract", element: <MemberContract /> },
 
   { path: "/operate/notice", element: <OperateNotice /> },
+  { path: "/operate/notice/detail/:id", element: <OperateNoticeDetail /> },
   { path: "/operate/qna", element: <OperateQnA /> },
   { path: "/operate/faq", element: <OperateFAQ /> },
   { path: "/operate/corporateNotice", element: <CorporateNotice /> },
