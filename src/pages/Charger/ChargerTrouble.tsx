@@ -14,6 +14,7 @@ import SearchTextInput from "src/components/Common/Filter/component/SearchTextIn
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -43,7 +44,12 @@ const dropdownGroupSearch = [
 
 const dropdownGroupSort = [
   {
-    menuItems: [{ label: "시,도", value: "1" }],
+    menuItems: [
+      { label: "기본", value: "1" },
+      { label: "충전소명", value: "1" },
+      { label: "충전소ID", value: "1" },
+      { label: "등록일", value: "1" },
+    ],
   },
 ];
 const operatorRadio = [{ label: "전체" }, { label: "HEV" }, { label: "JEV" }];
@@ -60,7 +66,7 @@ const tableHeader = [
   { label: "구분" },
   { label: "충전소명" },
   { label: "충전소ID" },
-  { label: "충전기 번호" },
+  { label: "충전기ID" },
   { label: "고장 부위1" },
   { label: "고장 부위2" },
   { label: "처리자ID(처리자명)" },
@@ -70,11 +76,42 @@ const tableHeader = [
   { label: "등록자" },
   { label: "등록일" },
 ];
+const data = [
+  {
+    troubleSeq: 1,
+    area: "서울",
+    division: "HEV",
+    stationName: "휴맥스 카플랫 전용 A",
+    stationId: "충전소 ID 노출",
+    chargerId: "충전기 ID 노출",
+    trouble1: "고장부위11",
+    trouble2: "고장부위22",
+    employeeId: "hong",
+    employeeName: "홍길동",
+    receiptDt: "YYYY.MM.DD",
+    processingYn: "접수",
+    precessingDt: "YYYY.MM.DD 00:00",
+    operatorId: "admin",
+    operatorName: "운영자",
+    register: "박길동",
+    createDt: "YYYY.MM.DD",
+  },
+];
 
 export const ChargerTrouble = () => {
+  const nav = useNavigate();
+  const { pathname } = useLocation();
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState("0");
   const [text, setText] = useState("");
+
+  const moveToDetail = (id: number) => {
+    nav(`${pathname}/detail/${id}`);
+  };
+
+  const moveToRegistration = () => {
+    nav(`${pathname}/registration`);
+  };
 
   return (
     <ContainerBase>
@@ -97,7 +134,7 @@ export const ChargerTrouble = () => {
 
         <Separator />
         <FilterSection className={"py-4"}>
-          <Row>
+          <Row className={"mb-3"}>
             <Col md={6}>
               <DropboxGroup
                 label={"지역"}
@@ -164,12 +201,54 @@ export const ChargerTrouble = () => {
                   2023-04-01 14:51기준
                 </span>
                 <DropdownBase menuItems={dropdownData} />
-                <ButtonBase label={"신규 등록"} color={"turu"} />
+                <ButtonBase
+                  label={"신규 등록"}
+                  color={"turu"}
+                  onClick={moveToRegistration}
+                />
                 <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
               </div>
             </Col>
           </Row>
-          <TableBase tableHeader={tableHeader}></TableBase>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {data.length > 0 &&
+                data.map((e, i) => (
+                  <tr key={i}>
+                    <td>{}</td>
+                    <td>{e.area}</td>
+                    <td>{e.division}</td>
+                    <td>
+                      <u
+                        role={"button"}
+                        className={"text-turu"}
+                        onClick={() => moveToDetail(e.troubleSeq)}
+                      >
+                        {e.stationName}
+                      </u>
+                    </td>
+                    <td>{e.stationId}</td>
+                    <td>{e.chargerId}</td>
+                    <td>{e.trouble1}</td>
+                    <td>{e.trouble2}</td>
+                    <td>
+                      {e.employeeId}({e.employeeName})
+                    </td>
+                    <td>
+                      {e.processingYn}({e.receiptDt})
+                    </td>
+                    <td>
+                      {e.processingYn}({e.precessingDt})
+                    </td>
+                    <td>
+                      {e.operatorId}({e.operatorName})
+                    </td>
+                    <td>{e.register}</td>
+                    <td>{e.createDt}</td>
+                  </tr>
+                ))}
+            </>
+          </TableBase>
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
@@ -181,3 +260,8 @@ const ListSection = styled.section``;
 const FilterSection = styled.section``;
 const AmountInfo = styled.span``;
 const Separator = styled.hr``;
+// const HoverSpan = styled.span`
+//   :hover {
+//     po
+//   }
+// `

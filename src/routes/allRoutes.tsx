@@ -56,6 +56,8 @@ import InstallChargerDetail from "src/pages/Operate/InstallChargerDetail";
 import { CounselingHistoryDetail } from "src/pages/Counseling/CounselingHistoryDetail";
 import OperateNotificationTalkDetail from "src/pages/Operate/OperateNotificationTalkDetail";
 import OperateSMSDetail from "src/pages/Operate/OperateSMSDetail";
+import { ChargerTroubleDetail } from "src/pages/Charger/ChargerTroubleDetail";
+import { ChargerTroubleRegistration } from "src/pages/Charger/ChargerTroubleRegistration";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -90,6 +92,11 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargerContractDetail />,
   },
   { path: "/charger/trouble", element: <ChargerTrouble /> },
+  { path: "/charger/trouble/detail/:id", element: <ChargerTroubleDetail /> },
+  {
+    path: "/charger/trouble/registration",
+    element: <ChargerTroubleRegistration />,
+  },
   { path: "/charger/manufacturer", element: <ChargerManufacturer /> },
   { path: "/charger/operator", element: <ChargerOperator /> },
 
