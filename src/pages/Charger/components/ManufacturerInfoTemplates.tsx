@@ -9,8 +9,15 @@ import TextInputBase from "src/components/Common/Input/TextInputBase";
 import { Col, Row } from "reactstrap";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 
-let disabled = true;
-export const ManufacturerBasicInfoTab = () => {
+interface IManufacturerInfoTemplates {
+  type: "ADD" | "DETAIL" | "UPDATE";
+}
+
+export const ManufacturerBasicInfoTab = ({
+  type,
+}: IManufacturerInfoTemplates) => {
+  const disabled = type === "DETAIL";
+
   return (
     <>
       <DetailTextInputRow
@@ -93,7 +100,13 @@ export const ManufacturerBasicInfoTab = () => {
   );
 };
 
-export const ManufacturerFirmwareInfoTab = () => {
+// interface ManufacturerFirmwareInfoTab extends IManufacturerInfoTemplates {}
+
+export const ManufacturerFirmwareInfoTab = ({
+  type,
+}: IManufacturerInfoTemplates) => {
+  const disabled = type === "DETAIL";
+
   return (
     <>
       <DetailRow>
@@ -125,6 +138,9 @@ export const ManufacturerFirmwareInfoTab = () => {
           </u>
         </DetailContentCol>
       </DetailRow>
+      <div role={"button"} className={"text-turu px-3 mt-3"}>
+        + 충전기 펌웨어 정보 추가
+      </div>
     </>
   );
 };

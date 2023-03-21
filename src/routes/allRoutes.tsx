@@ -61,6 +61,7 @@ import { ChargerTroubleRegistration } from "src/pages/Charger/ChargerTroubleRegi
 import ChargerStationAdd from "src/pages/Charger/ChargerStationAdd";
 import ChargerAdd from "src/pages/Charger/ChargerAdd";
 import { ChargerManufacturerDetail } from "src/pages/Charger/ChargerManufacturerDetail";
+import { ChargerManufacturerRegistration } from "src/pages/Charger/ChargerManufacturerRegistration";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -109,6 +110,10 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargerTroubleRegistration />,
   },
   { path: "/charger/manufacturer", element: <ChargerManufacturer /> },
+  {
+    path: "/charger/manufacturer/registration",
+    element: <ChargerManufacturerRegistration />,
+  },
   {
     path: "/charger/manufacturer/detail/:id",
     element: <ChargerManufacturerDetail />,

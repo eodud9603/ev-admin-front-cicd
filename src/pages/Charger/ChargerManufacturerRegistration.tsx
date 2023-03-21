@@ -13,7 +13,7 @@ import {
 } from "src/pages/Charger/components/ManufacturerInfoTemplates";
 
 type tabType = "BASIC" | "FIRMWARE";
-export const ChargerManufacturerDetail = () => {
+export const ChargerManufacturerRegistration = () => {
   const [tabList, setTabList] = useState([
     { label: "공지사항" },
     { label: "충전기 제조사 관리" },
@@ -21,7 +21,6 @@ export const ChargerManufacturerDetail = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
 
   const [tab, setTab] = useState<tabType>("BASIC");
-  const [type, setType] = useState<"DETAIL" | "UPDATE">("DETAIL");
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
   };
@@ -87,9 +86,9 @@ export const ChargerManufacturerDetail = () => {
 
           <TabSection>
             {tab === "BASIC" ? (
-              <ManufacturerBasicInfoTab type={type} />
+              <ManufacturerBasicInfoTab type={"ADD"} />
             ) : (
-              <ManufacturerFirmwareInfoTab type={type} />
+              <ManufacturerFirmwareInfoTab type={"ADD"} />
             )}
           </TabSection>
         </InfoSection>
@@ -100,8 +99,14 @@ export const ChargerManufacturerDetail = () => {
             color={"turu"}
             outline={true}
             className={"mx-3 w-xs"}
+            disabled={true}
           />
-          <ButtonBase label={"수정"} color={"turu"} className={"w-xs"} />
+          <ButtonBase
+            label={"수정"}
+            color={"turu"}
+            className={"w-xs"}
+            disabled={true}
+          />
         </div>
       </BodyBase>
     </ContainerBase>
