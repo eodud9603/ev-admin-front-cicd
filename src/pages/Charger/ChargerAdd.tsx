@@ -54,6 +54,10 @@ const ChargerAdd = () => {
     /* dropdown */
     // installType,
     // chargerVolume,
+    /* 듀얼형 */
+    dualType,
+    dualCh1,
+    dualCh2,
     envVersion,
     companyType,
     useStatus,
@@ -111,6 +115,10 @@ const ChargerAdd = () => {
     chargerType: "",
     installType: "",
     chargerVolume: "",
+    /* 듀얼형 */
+    dualType: "",
+    dualCh1: "",
+    dualCh2: "",
     envVersion: "",
     companyType: "",
     useStatus: "",
@@ -345,17 +353,45 @@ const ChargerAdd = () => {
                       name={"듀얼형"}
                       label={"듀얼형"}
                       value={"1"}
-                      onChange={() => {}}
+                      onChange={() => {
+                        onChangeSingle({
+                          dualType: dualType === "1" ? "" : "1",
+                          dualCh2: dualType === "1" ? "" : dualCh2,
+                        });
+                      }}
                     />
                     <DropdownBase
                       menuItems={[
+                        DefaultDropdownData,
                         {
                           label: "CH1",
                           value: "1",
                         },
                       ]}
-                      onClickDropdownItem={() => {}}
+                      onClickDropdownItem={(_, value) => {
+                        onChangeSingle({
+                          dualCh1: value,
+                        });
+                      }}
                     />
+                    <>
+                      {dualType === "1" && (
+                        <DropdownBase
+                          menuItems={[
+                            DefaultDropdownData,
+                            {
+                              label: "CH2",
+                              value: "1",
+                            },
+                          ]}
+                          onClickDropdownItem={(_, value) => {
+                            onChangeSingle({
+                              dualCh2: value,
+                            });
+                          }}
+                        />
+                      )}
+                    </>
                   </DetailGroupCol>
                 </DetailContentCol>
                 <DetailLabelCol sm={2}>환경변수버전</DetailLabelCol>
