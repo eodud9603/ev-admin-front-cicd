@@ -49,15 +49,19 @@ export const DELETE_FILTER_LIST = [
 export const UPLOAD_FILTER_LIST = [
   {
     label: "전체",
+    value: "1"
   },
   {
     label: "IOS",
+    value: "2"
   },
   {
     label: "AOS",
+    value: "3"
   },
   {
     label: "WEB",
+    value: "4"
   },
 ];
 
