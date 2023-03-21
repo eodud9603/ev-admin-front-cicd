@@ -17,6 +17,7 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
+import useInputs from "src/hooks/useInputs";
 import DetailBottomButton from "../Charger/components/DetailBottomButton";
 import AuthLevelModal from "./components/AuthLevelModal";
 
@@ -30,6 +31,38 @@ const OperatorAccountDetail = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 수정 비활성화 */
   const [disabled, setDisabled] = useState(true);
+  const {
+    name,
+    id,
+    /* dropdown */
+    // agencyGroup,
+    password,
+    /* radio */
+    roleLevel,
+    tel,
+    mobileTel,
+    department,
+    /* radio */
+    accountStatus,
+    mobileAccess,
+    externalAccess,
+    etc,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    name: "이팀장",
+    id: "K05@humaxev.com",
+    agencyGroup: "1",
+    password: "1234",
+    roleLevel: "1",
+    tel: "0000-0000",
+    mobileTel: "000-0000-0000",
+    department: "서비스 운영팀",
+    accountStatus: "1",
+    mobileAccess: "Y",
+    externalAccess: "Y",
+    etc: "입력 정보 노출",
+  });
   /* 권한등급 모달 */
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
@@ -38,7 +71,6 @@ const OperatorAccountDetail = () => {
     {
       label: "Y",
       value: "Y",
-      checked: true,
       disabled,
     },
     {
@@ -50,16 +82,16 @@ const OperatorAccountDetail = () => {
 
   /** 계정등급 라디오 목록 */
   const roleList = [
-    { label: "최고 관리자", value: "1", checked: true, disabled },
-    { label: "일반 관리자", value: "2", disabled },
-    { label: "관계사", value: "3", disabled },
-    { label: "제조사", value: "4", disabled },
+    { label: "최고 관리자", value: "1", checked: roleLevel === "1", disabled },
+    { label: "일반 관리자", value: "2", checked: roleLevel === "2", disabled },
+    { label: "관계사", value: "3", checked: roleLevel === "3", disabled },
+    { label: "제조사", value: "4", checked: roleLevel === "4", disabled },
   ];
 
   /** 계정상태 라디오 목록 */
   const accountStatusList = [
-    { label: "정상", value: "1", checked: true, disabled },
-    { label: "차단", value: "2", disabled },
+    { label: "정상", value: "1", checked: accountStatus === "1", disabled },
+    { label: "차단", value: "2", checked: accountStatus === "2", disabled },
   ];
 
   const navigate = useNavigate();
@@ -113,13 +145,17 @@ const OperatorAccountDetail = () => {
             {
               titleWidthRatio: 4,
               title: "운영자명",
-              content: "이팀장",
+              name: "name",
+              content: name,
+              onChange,
               disabled,
             },
             {
               titleWidthRatio: 4,
               title: "계정 ID",
-              content: "K05@humaxev.com",
+              name: "id",
+              content: id,
+              onChange,
               disabled,
             },
           ]}
@@ -127,7 +163,13 @@ const OperatorAccountDetail = () => {
         <DetailRow>
           <DetailLabelCol sm={2}>소속 그룹</DetailLabelCol>
           <DetailContentCol>
-            <DropdownBase disabled={disabled} menuItems={groupItems} />
+            <DropdownBase
+              disabled={disabled}
+              menuItems={groupItems}
+              onClickDropdownItem={(_, value) => {
+                onChangeSingle({ agencyGroup: value });
+              }}
+            />
           </DetailContentCol>
           <DetailLabelCol sm={2}>비밀번호</DetailLabelCol>
           <DetailContentCol>
@@ -136,8 +178,8 @@ const OperatorAccountDetail = () => {
               bsSize={"lg"}
               name={"password"}
               type={"password"}
-              value={"1234"}
-              onChange={() => {}}
+              value={password}
+              onChange={onChange}
             />
           </DetailContentCol>
         </DetailRow>
@@ -145,7 +187,11 @@ const OperatorAccountDetail = () => {
         <DetailRow>
           <DetailLabelCol sm={2}>권한등급</DetailLabelCol>
           <DetailContentCol>
-            <RadioGroup name={"roleLevel"} list={roleList} />
+            <RadioGroup
+              list={roleList}
+              name={"roleLevel"}
+              onChange={onChange}
+            />
           </DetailContentCol>
           <DetailLabelCol sm={2}>권한등록</DetailLabelCol>
           <DetailContentCol>
@@ -165,13 +211,17 @@ const OperatorAccountDetail = () => {
             {
               titleWidthRatio: 4,
               title: "전화번호",
-              content: "0000-0000",
+              name: "tel",
+              content: tel,
+              onChange,
               disabled,
             },
             {
               titleWidthRatio: 4,
               title: "휴대전화 번호",
-              content: "000-0000-0000",
+              name: "mobileTel",
+              content: mobileTel,
+              onChange,
               disabled,
             },
           ]}
@@ -180,27 +230,41 @@ const OperatorAccountDetail = () => {
           <DetailLabelCol sm={2}>부서</DetailLabelCol>
           <DetailContentCol>
             <TextInputBase
-              name={"department"}
               bsSize={"lg"}
               disabled={disabled}
-              value={"서비스 운영팀"}
-              onChange={() => {}}
+              name={"department"}
+              value={department}
+              onChange={onChange}
             />
           </DetailContentCol>
           <DetailLabelCol sm={2}>계정상태</DetailLabelCol>
           <DetailContentCol>
-            <RadioGroup name={"accountStatus"} list={accountStatusList} />
+            <RadioGroup
+              list={accountStatusList}
+              name={"accountStatus"}
+              onChange={onChange}
+            />
           </DetailContentCol>
         </DetailRow>
         <DetailTextRadioRow
           rows={[
             {
               title: "모바일 접속 허용 여부",
-              list: radioList,
+              list: radioList.map((item) => ({
+                ...item,
+                checked: mobileAccess === item.value,
+              })),
+              name: "mobileAccess",
+              onChange,
             },
             {
               title: "외부 접속 허용 여부",
-              list: radioList,
+              list: radioList.map((item) => ({
+                ...item,
+                checked: externalAccess === item.value,
+              })),
+              name: "externalAccess",
+              onChange,
             },
           ]}
         />
@@ -210,7 +274,9 @@ const OperatorAccountDetail = () => {
             {
               titleWidthRatio: 2,
               title: "비고",
-              content: "입력 정보 노출",
+              name: "etc",
+              content: etc,
+              onChange,
               disabled,
             },
           ]}
