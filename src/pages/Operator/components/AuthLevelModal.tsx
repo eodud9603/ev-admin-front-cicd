@@ -1,5 +1,5 @@
 import React from "react";
-import { Label, ModalBody, ModalFooter, Row } from "reactstrap";
+import { Label, ModalBody, ModalFooter } from "reactstrap";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import ModalBase from "src/components/Common/Modal/ModalBase";
 import { ROLE_TABLE_LIST } from "src/constants/list";
