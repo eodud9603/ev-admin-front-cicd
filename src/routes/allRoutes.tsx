@@ -74,6 +74,8 @@ import EvNewsDetail from "src/pages/Operate/EvNewsDetail";
 import EvNewsAdd from "src/pages/Operate/EvNewsAdd";
 import OperatePopupDetail from "src/pages/Operate/OperatePopupDetail";
 import OperatePopupAdd from "src/pages/Operate/OperatePopupAdd";
+import OperatePolicyDetail from "src/pages/Operate/OperatePolicyDetail";
+import OperatePolicyAdd from "src/pages/Operate/OperatePolicyAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -181,6 +183,8 @@ const userRoutes: Array<RouteProps> = [
   },
   { path: "/operate/evModel", element: <EvModel /> },
   { path: "/operate/policy", element: <OperatePolicy /> },
+  { path: "/operate/policy/add", element: <OperatePolicyAdd /> },
+  { path: "/operate/policy/detail/:id", element: <OperatePolicyDetail /> },
   { path: "/operate/talk", element: <OperateNotificationTalk /> },
   {
     path: "/operate/talk/detail/:id",
