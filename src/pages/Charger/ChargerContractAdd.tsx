@@ -49,8 +49,6 @@ const ChargerContractAdd = () => {
   const {
     contractPlace,
     contractName,
-    contractStatus,
-    syncEnvironment,
     envChargerId,
     contractStartDate,
     contractEndDate,
