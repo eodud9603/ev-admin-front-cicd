@@ -13,6 +13,7 @@ interface IRadioGroupProps {
   }[];
 
   title?: string;
+  require?: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
 
@@ -24,6 +25,7 @@ const RadioGroup = (props: IRadioGroupProps) => {
     /* optional */
     title = "",
     onChange,
+    require,
     /* rest */
     ...rest
   } = props;
@@ -31,7 +33,10 @@ const RadioGroup = (props: IRadioGroupProps) => {
   return (
     <>
       {Boolean(title) && (
-        <Label className={"fw-bold m-0 w-xs me-3"}>{title}</Label>
+        <Label className={"fw-bold m-0 w-xs me-3"}>
+          {title}
+          {require && <span className={"text-danger mx-2"}>*</span>}
+        </Label>
       )}
       {list.map(({ label, disabled, value, checked }, index) => (
         <RadioBase

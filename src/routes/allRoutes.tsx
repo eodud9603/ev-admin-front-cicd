@@ -81,6 +81,8 @@ import OperatePolicyDetail from "src/pages/Operate/OperatePolicyDetail";
 import OperatePolicyAdd from "src/pages/Operate/OperatePolicyAdd";
 import EventDetail from "src/pages/Operate/EventDetail";
 import EventAdd from "src/pages/Operate/EventAdd";
+import { PaymentInChargingRegistration } from "src/pages/Payment/PaymentInChargingRegistration";
+import { PaymentInChargingDetail } from "src/pages/Payment/PaymentInChargingDetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -225,6 +227,14 @@ const userRoutes: Array<RouteProps> = [
   { path: "/counseling/management", element: <CounselingManagement /> },
 
   { path: "/payment/charging", element: <PaymentInCharging /> },
+  {
+    path: "/payment/charging/detail/:id",
+    element: <PaymentInChargingDetail />,
+  },
+  {
+    path: "/payment/charging/registration",
+    element: <PaymentInChargingRegistration />,
+  },
   { path: "/payment/kepco", element: <PaymentInKepco /> },
   { path: "/payment/roaming", element: <PaymentInRoaming /> },
 ];

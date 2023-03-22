@@ -325,7 +325,7 @@ export const Playground = (props: any) => {
               </SubMenu>
               <SubMenu label="요금 관리" icon={<Global />}>
                 <MenuItem component={<Link to={"/payment/charging"} />}>
-                  충전 요금제 관리압
+                  충전 요금제 관리
                 </MenuItem>
                 <MenuItem component={<Link to={"/payment/kepco"} />}>
                   한전 요금제 관리
