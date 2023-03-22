@@ -14,7 +14,7 @@ import { UPLOAD_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 
 const OperateFAQDetail = () => {
-  const [tabList, setTabList] = useState([{ label: "공지사항" }]);
+  const [tabList, setTabList] = useState([{ label: "FAQ" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [disabled, setDisabled] = useState(true);
 
@@ -79,7 +79,7 @@ const OperateFAQDetail = () => {
           list={[
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
-            { label: "공지사항", href: "" },
+            { label: "FAQ", href: "" },
             { label: "FAQ 상세", href: "" },
           ]}
         />

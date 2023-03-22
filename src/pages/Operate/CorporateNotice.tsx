@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -49,6 +50,7 @@ const tableHeader = [
 /* 임시 목록 데이터 */
 const noticeList: Omit<IListItemProps, "index">[] = [
   {
+    id: "1",
     title: "개인정보 처리방침 변경 안내",
     corporateName: "휴맥스",
     upload: "전체",
@@ -58,6 +60,7 @@ const noticeList: Omit<IListItemProps, "index">[] = [
     isDelete: "N",
   },
   {
+    id: "2",
     title: "개인정보 처리방침 변경 안내",
     corporateName: "휴맥스",
     upload: "IOS",
@@ -74,6 +77,7 @@ interface IListRefProps {
   onChange: (bool: boolean) => void;
 }
 interface IListItemProps {
+  id: string;
   index: number;
   title: string;
   corporateName: string;
@@ -90,6 +94,8 @@ const CorporateNotice = () => {
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
   const listRef = useRef<IListRefProps[]>([]);
+
+  const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -195,7 +201,13 @@ const CorporateNotice = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
-              <ButtonBase label={"신규 등록"} color={"turu"} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  navigate("/operate/corporateNotice/add");
+                }}
+              />
               <ButtonBase
                 label={"선택 삭제"}
                 outline={true}
@@ -214,7 +226,7 @@ const CorporateNotice = () => {
                       ref={(ref: IListRefProps) =>
                         (listRef.current[index] = ref)
                       }
-                      key={index}
+                      key={notice.id}
                       index={index}
                       {...notice}
                     />
@@ -241,11 +253,27 @@ export default CorporateNotice;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
+const HoverTr = styled.tr`
+  :hover {
+    cursor: pointer;
+  }
+`;
 
 const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
-  const { index, title, corporateName, upload, writer, view, date, isDelete } =
-    props;
+  const {
+    id,
+    index,
+    title,
+    corporateName,
+    upload,
+    writer,
+    view,
+    date,
+    isDelete,
+  } = props;
   const [checked, setChecked] = useState(false);
+
+  const navigate = useNavigate();
 
   const onChangeCheck = () => {
     setChecked((prev) => !prev);
@@ -262,8 +290,12 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
   );
 
   return (
-    <tr key={index}>
-      <td>
+    <HoverTr
+      onClick={() => {
+        navigate(`/operate/corporateNotice/Detail/${id}`);
+      }}
+    >
+      <td onClick={(e) => e.stopPropagation()}>
         <CheckBoxBase
           name={`announcement-${index}`}
           label={""}
@@ -279,6 +311,6 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
       <td>{view}</td>
       <td>{date}</td>
       <td>{isDelete}</td>
-    </tr>
+    </HoverTr>
   );
 });

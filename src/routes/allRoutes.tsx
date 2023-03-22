@@ -68,6 +68,8 @@ import { ChargerOperatorRegistration } from "src/pages/Charger/ChargerOperatorRe
 import OperateNoticeAdd from "src/pages/Operate/OperateNoticeAdd";
 import OperateFAQDetail from "src/pages/Operate/OperateFAQDetail";
 import OperateFAQAdd from "src/pages/Operate/OperateFAQAdd";
+import CorporateNoticeDetail from "src/pages/Operate/CorporateNoticeDetail";
+import CorporateNoticeAdd from "src/pages/Operate/CorporateNoticeAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -155,6 +157,11 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/faq/add", element: <OperateFAQAdd /> },
   { path: "/operate/faq/detail/:id", element: <OperateFAQDetail /> },
   { path: "/operate/corporateNotice", element: <CorporateNotice /> },
+  { path: "/operate/corporateNotice/add", element: <CorporateNoticeAdd /> },
+  {
+    path: "/operate/corporateNotice/detail/:id",
+    element: <CorporateNoticeDetail />,
+  },
   { path: "/operate/corporateQna", element: <CorporateQnA /> },
   { path: "/operate/event", element: <Event /> },
   { path: "/operate/evNews", element: <EvNews /> },

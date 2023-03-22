@@ -3,7 +3,6 @@ import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import EditorBase from "src/components/Common/Editor/EditorBase";
-import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
@@ -13,14 +12,15 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { UPLOAD_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 
-const OperateFAQAdd = () => {
-  const [tabList, setTabList] = useState([{ label: "FAQ" }]);
+const CorporateNoticeAdd = () => {
+  const [tabList, setTabList] = useState([{ label: "법인 공지사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
   const {
     date,
     deleteStatus,
     writer,
+    corporateName,
     uploadTarget,
     title,
     attachmentList,
@@ -30,7 +30,8 @@ const OperateFAQAdd = () => {
     date: "",
     deleteStatus: "",
     writer: "",
-    category: "",
+    views: "",
+    corporateName: "",
     uploadTarget: "",
     title: "",
     contents: "",
@@ -74,21 +75,23 @@ const OperateFAQAdd = () => {
           list={[
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
-            { label: "FAQ", href: "" },
-            { label: "FAQ 등록", href: "" },
+            { label: "법인 공지사항", href: "/operate/corporateNotice" },
+            { label: "법인 공지사항 등록", href: "" },
           ]}
         />
         <div
           className={"mb-4 d-flex align-items-center justify-content-between"}
         >
-          <h3 className={"m-0 font-size-24"}>FAQ 등록</h3>
-          <ButtonBase
-            label={"저장하기"}
-            color={"turu"}
-            onClick={() => {
-              /** @TODO 저장(수정) 로직 추가 */
-            }}
-          />
+          <h3 className={"m-0 font-size-24"}>법인 공지사항 등록</h3>
+          <div className={"d-flex gap-2"}>
+            <ButtonBase
+              label={"저장하기"}
+              color={"turu"}
+              onClick={() => {
+                /** @TODO 저장(수정) 로직 추가 */
+              }}
+            />
+          </div>
         </div>
 
         <Row
@@ -141,7 +144,7 @@ const OperateFAQAdd = () => {
           <Col className={"font-size-14 fw-semibold"} sm={1}>
             작성자
           </Col>
-          <Col className={"d-flex gap-5"} sm={3}>
+          <Col className={"d-flex gap-5"} sm={2}>
             <TextInputBase
               className={"d-flex"}
               name={"writer"}
@@ -151,33 +154,17 @@ const OperateFAQAdd = () => {
               placeholder={"자동기입"}
             />
           </Col>
-          <Col sm={1}>
-            <DropboxGroup
-              label={"카테고리"}
-              dropdownItems={[
-                {
-                  onClickDropdownItem: (_, value) => {
-                    onChangeSingle({ category: value });
-                  },
-                  menuItems: [
-                    {
-                      label: "선택",
-                      value: "",
-                    },
-                    {
-                      label: "가입 승인",
-                      value: "1",
-                    },
-                    {
-                      label: "기타",
-                      value: "2",
-                    },
-                  ],
-                },
-              ]}
+          <Col className={"font-size-14 fw-semibold"} sm={1}>
+            법인명
+          </Col>
+          <Col sm={2}>
+            <TextInputBase
+              name={"corporateName"}
+              value={corporateName}
+              onChange={onChange}
             />
           </Col>
-          <Col sm={3} />
+          <Col sm={2} />
           <Col className={"font-size-14 fw-semibold"} sm={1}>
             업로드 대상
           </Col>
@@ -213,4 +200,4 @@ const OperateFAQAdd = () => {
   );
 };
 
-export default OperateFAQAdd;
+export default CorporateNoticeAdd;
