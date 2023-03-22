@@ -80,12 +80,29 @@ export const TableBase = (props: ITableBase) => {
   );
 };
 
+// const TableWrapper = styled(Table)`
+//   vertical-align: middle;
+//   white-space: nowrap;
+// `;
+// const TableHeader = styled.th`
+//   max-width: 130px;
+//   display: table-cell;
+//   vertical-align: middle;
+// `;
+
 const TableWrapper = styled(Table)`
   vertical-align: middle;
   white-space: nowrap;
 `;
 const TableHeader = styled.th`
-  max-width: 130px;
   display: table-cell;
   vertical-align: middle;
+
+  resize: horizontal;
+  overflow: hidden;
+
+  :after {
+    content: "";
+    cursor: col-resize;
+  }
 `;
