@@ -63,6 +63,8 @@ import ChargerAdd from "src/pages/Charger/ChargerAdd";
 import { ChargerManufacturerDetail } from "src/pages/Charger/ChargerManufacturerDetail";
 import OperateNoticeDetail from "src/pages/Operate/OperateNoticeDetail";
 import { ChargerManufacturerRegistration } from "src/pages/Charger/ChargerManufacturerRegistration";
+import { ChargerOperatorDetail } from "src/pages/Charger/ChargerOperatorDetail";
+import { ChargerOperatorRegistration } from "src/pages/Charger/ChargerOperatorRegistration";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -120,6 +122,11 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargerManufacturerDetail />,
   },
   { path: "/charger/operator", element: <ChargerOperator /> },
+  { path: "/charger/operator/detail/:id", element: <ChargerOperatorDetail /> },
+  {
+    path: "/charger/operator/registration",
+    element: <ChargerOperatorRegistration />,
+  },
 
   { path: "/member/normal", element: <MemberNormal /> },
   { path: "/member/normal/detail/:id", element: <MemberNormalDetail /> },

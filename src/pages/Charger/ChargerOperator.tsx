@@ -5,15 +5,16 @@ import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import styled from "styled-components";
-import { Col, Row, Table } from "reactstrap";
+import { Col, Row } from "reactstrap";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
-import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
+import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -40,6 +41,7 @@ const applyRadio = [{ label: "전체" }, { label: "활용" }, { label: "미활�
 const contractRadio = [{ label: "전체" }, { label: "Y" }, { label: "N" }];
 
 const tableHeader = [
+  { label: "checkbox" },
   { label: "번호", sort: () => {} },
   { label: "활용여부" },
   { label: "운영사 ID" },
@@ -51,14 +53,48 @@ const tableHeader = [
   { label: "등록일" },
 ];
 
+const data = [
+  {
+    operatorSeq: 1,
+    useYn: "Y",
+    operatorId: "운영사 ID",
+    operatorName: "운영사명",
+    companyId: "한전기관 아이디",
+    companyAuthKey: "인증키",
+    contractYn: "Y",
+    representNumber: "0000-000",
+    createDt: "YYYY.MM.DD",
+  },
+  {
+    operatorSeq: 2,
+    useYn: "N",
+    operatorId: "운영사 ID",
+    operatorName: "운영사명",
+    companyId: "한전기관 아이디",
+    companyAuthKey: "인증키",
+    contractYn: "Y",
+    representNumber: "0000-000",
+    createDt: "YYYY.MM.DD",
+  },
+];
+
 export const ChargerOperator = () => {
+  const nav = useNavigate();
+  const { pathname } = useLocation();
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState("0");
   const [text, setText] = useState("");
 
+  const moveToRegistration = () => {
+    nav(`${pathname}/registration`);
+  };
+  const moveToDetail = (id: number) => {
+    nav(`${pathname}/detail/${id}`);
+  };
+
   return (
     <ContainerBase>
-      <HeaderBase></HeaderBase>
+      <HeaderBase />
       <TabGroup
         list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
         selectedIndex={selected}
@@ -131,12 +167,49 @@ export const ChargerOperator = () => {
                   2023-04-01 14:51기준
                 </span>
                 <DropdownBase menuItems={dropdownData} />
-                <ButtonBase label={"신규 등록"} color={"turu"} />
+                <ButtonBase
+                  label={"활용상태 전환"}
+                  color={"turu"}
+                  disabled={true}
+                />
+                <ButtonBase
+                  label={"신규 등록"}
+                  color={"turu"}
+                  onClick={moveToRegistration}
+                />
                 <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
               </div>
             </Col>
           </Row>
-          <TableBase tableHeader={tableHeader}></TableBase>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {data.length > 0 &&
+                data.map((e, i) => (
+                  <tr key={i}>
+                    <td>
+                      <CheckBoxBase name={"check"} label={""} />
+                    </td>
+                    <td>{}</td>
+                    <td>{e.useYn}</td>
+                    <td>
+                      <u
+                        role={"button"}
+                        className={"text-turu"}
+                        onClick={() => moveToDetail(e.operatorSeq)}
+                      >
+                        {e.operatorId}
+                      </u>
+                    </td>
+                    <td>{e.operatorName}</td>
+                    <td>{e.companyId}</td>
+                    <td>{e.companyAuthKey}</td>
+                    <td>{e.contractYn}</td>
+                    <td>{e.representNumber}</td>
+                    <td>{e.createDt}</td>
+                  </tr>
+                ))}
+            </>
+          </TableBase>
         </ListSection>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
