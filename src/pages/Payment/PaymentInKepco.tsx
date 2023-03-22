@@ -42,9 +42,12 @@ const applyRadio = [
   { label: "종료" },
 ];
 
+const voltageRadio = [{ label: "전체" }, { label: "고압" }, { label: "저압" }];
+
 const tableHeader = [
   { label: "번호" },
   { label: "요금제ID" },
+  { label: "전압" },
   { label: "요금제명" },
   { label: "총 적용 수" },
   { label: "적용 대상 충전소명" },
@@ -59,6 +62,7 @@ const data = [
   {
     paymentSeq: 1,
     paymentId: "NN",
+    voltage: "고압",
     paymentName: "요금제명",
     applyNum: "3",
     applyStationName: "A충전소, B충전소, C충전소",
@@ -73,7 +77,7 @@ export const PaymentInKepco = () => {
   const nav = useNavigate();
   const [tabList, setTabList] = useState([
     { label: "공지사항" },
-    { label: "충전 요금제 관리" },
+    { label: "한전 요금제 관리" },
   ]);
 
   const { pathname } = useLocation();
@@ -123,9 +127,9 @@ export const PaymentInKepco = () => {
           list={[
             { label: "홈", href: "" },
             { label: "요금 관리", href: "" },
-            { label: "충전 요금제 관리", href: "" },
+            { label: "한전 요금제 관리", href: "" },
           ]}
-          title={"충전 요금제 관리"}
+          title={"한전 요금제 관리"}
         />
         <FilterSection className={"py-4"}>
           <Row>
@@ -156,6 +160,13 @@ export const PaymentInKepco = () => {
                 className={"me-2"}
               />
             </Col>
+            <Col className={"d-flex align-items-center"}>
+              <RadioGroup
+                title={"전압구분"}
+                name={"radioGroup2"}
+                list={voltageRadio}
+              />
+            </Col>
           </Row>
           {/*  */}
         </FilterSection>
@@ -165,7 +176,7 @@ export const PaymentInKepco = () => {
           <Row className={"mb-4"}>
             <Col>
               <AmountInfo className={"text-size-13 fw-bold"}>
-                총 <AmountInfo className={"text-turu"}>0건</AmountInfo>의 충전
+                총 <AmountInfo className={"text-turu"}>0건</AmountInfo>의 한전
                 요금제 정보가 있습니다.
               </AmountInfo>
             </Col>
@@ -199,6 +210,7 @@ export const PaymentInKepco = () => {
                         {e.paymentId}
                       </u>
                     </td>
+                    <td>{e.voltage}</td>
                     <td>{e.paymentName}</td>
                     <td>{e.applyNum}</td>
                     <td>{e.applyStationName}</td>
