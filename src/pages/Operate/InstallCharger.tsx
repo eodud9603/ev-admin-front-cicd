@@ -227,7 +227,13 @@ const InstallCharger = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
-              <ButtonBase label={"신규 등록"} color={"turu"} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  navigate("/operate/installCharger/add");
+                }}
+              />
               <ButtonBase
                 label={"선택 삭제"}
                 outline={true}
@@ -319,7 +325,7 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
 
   return (
     <HoverTr key={index} onClick={rowClickHandler}>
-      <td>
+      <td onClick={(e) => e.stopPropagation()}>
         <CheckBoxBase
           name={`announcement-${index}`}
           label={""}
