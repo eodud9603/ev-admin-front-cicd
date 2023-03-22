@@ -14,12 +14,11 @@ import { UPLOAD_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 
 const OperateFAQAdd = () => {
-  const [tabList, setTabList] = useState([{ label: "공지사항" }]);
+  const [tabList, setTabList] = useState([{ label: "FAQ" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
   const {
     date,
-    deleteStatus,
     writer,
     uploadTarget,
     title,
@@ -28,7 +27,6 @@ const OperateFAQAdd = () => {
     onChangeSingle,
   } = useInputs({
     date: "",
-    deleteStatus: "",
     writer: "",
     category: "",
     uploadTarget: "",
@@ -74,7 +72,7 @@ const OperateFAQAdd = () => {
           list={[
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
-            { label: "공지사항", href: "" },
+            { label: "FAQ", href: "" },
             { label: "FAQ 등록", href: "" },
           ]}
         />
@@ -109,28 +107,7 @@ const OperateFAQAdd = () => {
               placeholder={"자동기입"}
             />
           </Col>
-          <Col sm={4} />
-          <Col className={"font-size-14 fw-semibold"} sm={1}>
-            삭제여부
-          </Col>
-          <Col sm={3}>
-            <RadioGroup
-              name={"deleteStatus"}
-              list={[
-                {
-                  label: "Y",
-                  value: "Y",
-                  checked: deleteStatus === "Y",
-                },
-                {
-                  label: "N",
-                  value: "N",
-                  checked: deleteStatus === "N",
-                },
-              ]}
-              onChange={onChange}
-            />
-          </Col>
+          <Col sm={8} />
         </Row>
         <Row
           className={
