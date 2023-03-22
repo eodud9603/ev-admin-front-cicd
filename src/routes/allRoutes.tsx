@@ -82,6 +82,7 @@ import OperatePolicyAdd from "src/pages/Operate/OperatePolicyAdd";
 import EventDetail from "src/pages/Operate/EventDetail";
 import EventAdd from "src/pages/Operate/EventAdd";
 import InstallChargerAdd from "src/pages/Operate/InstallChargerAdd";
+import OperateQnADetail from "src/pages/Operate/OperateQnADetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -165,6 +166,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/notice/add", element: <OperateNoticeAdd /> },
   { path: "/operate/notice/detail/:id", element: <OperateNoticeDetail /> },
   { path: "/operate/qna", element: <OperateQnA /> },
+  { path: "/operate/qna/detail/:id", element: <OperateQnADetail /> },
   { path: "/operate/faq", element: <OperateFAQ /> },
   { path: "/operate/faq/add", element: <OperateFAQAdd /> },
   { path: "/operate/faq/detail/:id", element: <OperateFAQDetail /> },

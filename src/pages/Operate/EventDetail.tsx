@@ -256,14 +256,7 @@ const EventDetail = () => {
                     style={{ height: 100 }}
                     className={"d-inline-block position-relative"}
                   >
-                    <img
-                      style={{
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                      className={"rounded"}
-                      src={src}
-                    />
+                    <BannerImage className={"rounded"} src={src} />
 
                     <Icon
                       className={
@@ -317,11 +310,17 @@ const EventDetail = () => {
 
 export default EventDetail;
 
+const BannerImage = styled.img`
+  height: 100%;
+  object-fit: cover;
+`;
+
 const AddImage = styled.div`
   :hover {
     cursor: pointer;
   }
 `;
+
 const Icon = styled.i`
   :hover {
     cursor: pointer;

@@ -10,13 +10,14 @@ import EditorRow from "src/components/Common/Editor/EditorRow";
 const EditorHeader = (props: IEditorHeaderProps) => {
   const {
     /* optional props */
+    className = "",
     label = "제목",
     /* input props */
     ...rest
   } = props;
 
   return (
-    <EditorRow className={"d-flex align-items-end"}>
+    <EditorRow className={"d-flex align-items-end " + className}>
       <EditorTitleCol>
         <Label className={"font-size-16 fw-semibold "} htmlFor={label}>
           {label}
