@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
+import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
@@ -57,7 +64,35 @@ const tableHeader = [
 ];
 
 /* 임시 목록 데이터 */
-const faqList: unknown[] = [];
+const faqList = [
+  {
+    id: "1",
+    category: "가입 승인",
+    title: "개인정보 처리방침 변경 안내",
+    uploadTarget: "전체",
+    writer: "홍길동",
+    views: 15,
+    date: "2022.01.07",
+    deleteStatus: "N",
+  },
+];
+
+interface IListRefProps {
+  data: IListItemProps;
+  checked: boolean;
+  onChange: (bool: boolean) => void;
+}
+interface IListItemProps {
+  index: number;
+  id: string;
+  category: string;
+  title: string;
+  uploadTarget: string;
+  writer: string;
+  views: number;
+  date: string;
+  deleteStatus: string;
+}
 
 const OperateFAQ = () => {
   const [tabList, setTabList] = useState([{ label: "FAQ" }]);
@@ -66,6 +101,9 @@ const OperateFAQ = () => {
   const [page, setPage] = useState(1);
   /* 카테고리 모달 */
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const listRef = useRef<IListRefProps[]>([]);
+
+  const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -86,6 +124,19 @@ const OperateFAQ = () => {
     }
 
     setTabList(tempList);
+  };
+
+  /** 선택항목 삭제 */
+  const deleteHandler = () => {
+    const checkedList = [];
+    for (const item of listRef.current) {
+      const { checked, data } = item;
+
+      if (checked) {
+        checkedList.push(data);
+        item.onChange(false);
+      }
+    }
   };
 
   return (
@@ -171,6 +222,19 @@ const OperateFAQ = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  navigate("/operate/faq/add");
+                }}
+              />
+              <ButtonBase
+                label={"선택 삭제"}
+                outline={true}
+                color={"turu"}
+                onClick={deleteHandler}
+              />
             </div>
           </div>
 
@@ -178,18 +242,15 @@ const OperateFAQ = () => {
             <TableBase tableHeader={tableHeader}>
               <>
                 {faqList.length > 0 ? (
-                  faqList.map((faq, index) => (
-                    <tr key={index}>
-                      <td></td>
-                      <td>{index + 1}</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
+                  faqList.map((props, index) => (
+                    <TableRow
+                      ref={(ref: IListRefProps) =>
+                        (listRef.current[index] = ref)
+                      }
+                      key={props.id}
+                      index={index}
+                      {...props}
+                    />
                   ))
                 ) : (
                   <tr>
@@ -221,3 +282,64 @@ export default OperateFAQ;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
+const HoverTr = styled.tr`
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
+  const {
+    id,
+    index,
+    category,
+    title,
+    uploadTarget,
+    writer,
+    views,
+    date,
+    deleteStatus,
+  } = props;
+  const [checked, setChecked] = useState(false);
+
+  const navigate = useNavigate();
+
+  const onChangeCheck: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    setChecked((prev) => !prev);
+  };
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      data: props,
+      checked,
+      onChange: (bool: boolean) => setChecked(bool),
+    }),
+    [props, checked]
+  );
+
+  return (
+    <HoverTr
+      onClick={() => {
+        navigate(`/operate/faq/detail/${id}`);
+      }}
+    >
+      <td onClick={(e) => e.stopPropagation()}>
+        <CheckBoxBase
+          name={`announcement-${index}`}
+          label={""}
+          checked={checked}
+          onChange={onChangeCheck}
+        />
+      </td>
+      <td>{index + 1}</td>
+      <td>{category}</td>
+      <td>{title}</td>
+      <td>{uploadTarget}</td>
+      <td>{writer}</td>
+      <td>{views}</td>
+      <td>{date}</td>
+      <td>{deleteStatus}</td>
+    </HoverTr>
+  );
+});
