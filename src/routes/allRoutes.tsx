@@ -83,6 +83,8 @@ import EventDetail from "src/pages/Operate/EventDetail";
 import EventAdd from "src/pages/Operate/EventAdd";
 import { PaymentInChargingRegistration } from "src/pages/Payment/PaymentInChargingRegistration";
 import { PaymentInChargingDetail } from "src/pages/Payment/PaymentInChargingDetail";
+import InstallChargerAdd from "src/pages/Operate/InstallChargerAdd";
+import OperateQnADetail from "src/pages/Operate/OperateQnADetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -166,6 +168,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/notice/add", element: <OperateNoticeAdd /> },
   { path: "/operate/notice/detail/:id", element: <OperateNoticeDetail /> },
   { path: "/operate/qna", element: <OperateQnA /> },
+  { path: "/operate/qna/detail/:id", element: <OperateQnADetail /> },
   { path: "/operate/faq", element: <OperateFAQ /> },
   { path: "/operate/faq/add", element: <OperateFAQAdd /> },
   { path: "/operate/faq/detail/:id", element: <OperateFAQDetail /> },
@@ -186,6 +189,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/popup/add", element: <OperatePopupAdd /> },
   { path: "/operate/popup/detail/:id", element: <OperatePopupDetail /> },
   { path: "/operate/installCharger", element: <InstallCharger /> },
+  { path: "/operate/installCharger/add", element: <InstallChargerAdd /> },
   {
     path: "/operate/installCharger/detail/:id",
     element: <InstallChargerDetail />,

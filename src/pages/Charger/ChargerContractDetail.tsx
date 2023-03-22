@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { Col, Row } from "reactstrap";
+import { Col, Input, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import {
   DetailContentCol,
@@ -22,6 +22,7 @@ import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton"
 import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
+import useInputs from "src/hooks/useInputs";
 
 const ChargerContractDetail = () => {
   const [tabList, setTabList] = useState([
@@ -35,6 +36,54 @@ const ChargerContractDetail = () => {
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
   const [isEditCancel, setIsEditCancel] = useState(false);
+  const {
+    contractPlace,
+    contractName,
+    contractStatus,
+    syncEnvironment,
+    envChargerId,
+    contractStartDate,
+    contractEndDate,
+    placeManagerName,
+    placeManagerTel,
+    business,
+    businessMangerName,
+    businessMangerTel,
+    contractContents,
+    contractSigningDate,
+    grantAgency,
+    grantYear,
+    grantPrice,
+    receiptDate,
+    businessPrice,
+    constructionPrice,
+    safetyManagement,
+    onChange,
+  } = useInputs({
+    contractPlace: "입력 내용 노출",
+    contractName: "입력 내용 노출",
+    contractStatus: "1",
+    syncEnvironment: "1",
+    envChargerId: "입력 내용 노출",
+    contractStartDate: "2022-01-07",
+    contractEndDate: "2024-01-07",
+    placeManagerName: "홍길동",
+    placeManagerTel: "000-0000-0000",
+    business: "입력 내용 노출",
+    businessMangerName: "홍길동",
+    businessMangerTel: "000-0000-0000",
+    contractContents: "입력 내용 노출",
+    contractSigningDate: "2022-01-07",
+    grantAgency: "입력 내용 노출",
+    grantYear: "입력 내용 노출",
+    grantPrice: "입력 내용 노출",
+    receiptDate: "2022-01-07",
+    businessPrice: "입력 내용 노출",
+    constructionPrice: "입력 내용 노출",
+    safetyManagement: "입력 내용 노출",
+  });
+  /* 계약서 파일 */
+  const [file, setFile] = useState<FileList | null>(null);
 
   /* 주소(지역) 필터 */
   const addressList = [
@@ -91,7 +140,7 @@ const ChargerContractDetail = () => {
           list={[
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
-            { label: "충전기 계약 관리", href: "" },
+            { label: "충전기 계약 관리", href: "/charger/contract" },
             { label: "충전소 계약 상세", href: "" },
           ]}
           title={"충전소 계약 상세"}
@@ -105,15 +154,17 @@ const ChargerContractDetail = () => {
                 disabled,
                 titleWidthRatio: 4,
                 title: "계약장소명",
-                content: "입력 내용 노출",
-                onChange: () => {},
+                name: "contractPlace",
+                content: contractPlace,
+                onChange,
               },
               {
                 disabled,
                 titleWidthRatio: 4,
                 title: "계약자명",
-                content: "입력 내용 노출",
-                onChange: () => {},
+                name: "contractName",
+                content: contractName,
+                onChange,
               },
             ]}
           />
@@ -122,26 +173,28 @@ const ChargerContractDetail = () => {
             <DetailLabelCol sm={2}>계약여부</DetailLabelCol>
             <DetailContentCol>
               <RadioGroup
-                name={"계약여부"}
+                name={"contractStatus"}
                 list={[
                   {
                     label: "계약",
-                    checked: true,
                     value: "1",
+                    checked: contractStatus === "1",
                     disabled,
                   },
                   {
                     label: "해지대기",
                     value: "2",
+                    checked: contractStatus === "2",
                     disabled,
                   },
                   {
                     label: "해지",
                     value: "3",
+                    checked: contractStatus === "3",
                     disabled,
                   },
                 ]}
-                onChange={() => {}}
+                onChange={onChange}
               />
             </DetailContentCol>
           </DetailRow>
@@ -150,29 +203,32 @@ const ChargerContractDetail = () => {
             <DetailLabelCol sm={2}>환경부 연동여부</DetailLabelCol>
             <DetailContentCol>
               <RadioGroup
-                name={"환경부 연동여부"}
+                name={"syncEnvironment"}
                 list={[
                   {
                     label: "연동",
-                    checked: true,
+                    value: "1",
+                    checked: syncEnvironment === "1",
                     disabled,
                   },
                   {
                     label: "미연동",
+                    value: "2",
+                    checked: syncEnvironment === "2",
                     disabled,
                   },
                 ]}
-                onChange={() => {}}
+                onChange={onChange}
               />
             </DetailContentCol>
             <DetailLabelCol sm={2}>환경부 충전소 ID</DetailLabelCol>
             <DetailContentCol>
               <TextInputBase
-                name={"환경부 충전소 ID"}
                 bsSize={"lg"}
                 disabled={disabled}
-                value={"입력 내용 노출"}
-                onChange={() => {}}
+                name={"envChargerId"}
+                value={envChargerId}
+                onChange={onChange}
               />
             </DetailContentCol>
           </DetailRow>
@@ -183,14 +239,20 @@ const ChargerContractDetail = () => {
               <div className={"input-group d-flex align-items-center w-auto"}>
                 <input
                   type={"date"}
-                  disabled={disabled}
                   className={"form-control w-xs"}
+                  disabled={disabled}
+                  name={"contractStartDate"}
+                  value={contractStartDate}
+                  onChange={onChange}
                 />
                 <div className={"px-2 text-center"}>~</div>
                 <input
                   type={"date"}
-                  disabled={disabled}
                   className={"form-control w-xs"}
+                  disabled={disabled}
+                  name={"contractEndDate"}
+                  value={contractEndDate}
+                  onChange={onChange}
                 />
               </div>
             </DetailContentCol>
@@ -208,20 +270,20 @@ const ChargerContractDetail = () => {
               <DetailGroupCol className={"gap-3"}>
                 <TextInputBase
                   className={"width-100"}
-                  name={"장소 담당자명"}
                   bsSize={"lg"}
                   disabled={disabled}
-                  value={"홍길동"}
-                  onChange={() => {}}
+                  name={"placeManagerName"}
+                  value={placeManagerName}
+                  onChange={onChange}
                 />
                 <div className={"font-size-14"}>연락처</div>
                 <TextInputBase
                   inputstyle={{ flex: 1 }}
-                  name={"장소 담당자 연락처"}
                   bsSize={"lg"}
                   disabled={disabled}
-                  value={"000-0000-0000"}
-                  onChange={() => {}}
+                  name={"placeManagerTel"}
+                  value={placeManagerTel}
+                  onChange={onChange}
                 />
               </DetailGroupCol>
             </DetailContentCol>
@@ -231,11 +293,11 @@ const ChargerContractDetail = () => {
             <DetailLabelCol sm={2}>영업업체</DetailLabelCol>
             <DetailContentCol>
               <TextInputBase
-                name={"영업업체"}
                 bsSize={"lg"}
                 disabled={disabled}
-                value={"입력 내용 노출"}
-                onChange={() => {}}
+                name={"business"}
+                value={business}
+                onChange={onChange}
               />
             </DetailContentCol>
 
@@ -244,20 +306,20 @@ const ChargerContractDetail = () => {
               <DetailGroupCol className={"gap-3"}>
                 <TextInputBase
                   className={"width-100"}
-                  name={"영업 담당자명"}
                   bsSize={"lg"}
                   disabled={disabled}
-                  value={"홍길동"}
-                  onChange={() => {}}
+                  name={"businessMangerName"}
+                  value={businessMangerName}
+                  onChange={onChange}
                 />
                 <div className={"font-size-14"}>연락처</div>
                 <TextInputBase
                   inputstyle={{ flex: 1 }}
-                  name={"영업 담당자 연락처"}
                   bsSize={"lg"}
                   disabled={disabled}
-                  value={"000-0000-0000"}
-                  onChange={() => {}}
+                  name={"businessMangerTel"}
+                  value={businessMangerTel}
+                  onChange={onChange}
                 />
               </DetailGroupCol>
             </DetailContentCol>
@@ -269,8 +331,9 @@ const ChargerContractDetail = () => {
                 titleWidthRatio: 2,
                 disabled,
                 title: "계약 조건 내용",
-                content: "입력 내용 노출",
-                onChange: () => {},
+                name: "contractContents",
+                content: contractContents,
+                onChange,
               },
             ]}
           />
@@ -281,7 +344,21 @@ const ChargerContractDetail = () => {
               className={"d-flex align-items-center justify-content-between"}
             >
               <Hover className={"font-size-14 text-turu"} onClick={() => {}}>
-                <u>{"업로드한 계약서 파일명 01.pdf"}</u>
+                <u>{file?.item(0)?.name}</u>
+                <Input
+                  className={"visually-hidden"}
+                  type={"file"}
+                  id={"contractFile"}
+                  name={"contractFile"}
+                  accept={"*"}
+                  onChange={(e) => {
+                    if (!e.target.files) {
+                      return;
+                    }
+
+                    setFile(e.target.files);
+                  }}
+                />
               </Hover>
 
               <>
@@ -293,6 +370,7 @@ const ChargerContractDetail = () => {
                     color={"turu"}
                     onClick={() => {
                       /** @TODO 업로드 기능 추가 */
+                      document.getElementById("contractFile")?.click();
                     }}
                   />
                 )}
@@ -303,8 +381,11 @@ const ChargerContractDetail = () => {
             <DetailContentCol>
               <input
                 type={"date"}
-                disabled={disabled}
                 className={"form-control w-xs"}
+                disabled={disabled}
+                name={"contractSigningDate"}
+                value={contractSigningDate}
+                onChange={onChange}
               />
             </DetailContentCol>
           </DetailRow>
@@ -315,15 +396,17 @@ const ChargerContractDetail = () => {
                 titleWidthRatio: 4,
                 disabled,
                 title: "보조금 기관",
-                content: "입력 내용 노출",
-                onChange: () => {},
+                name: "grantAgency",
+                content: grantAgency,
+                onChange,
               },
               {
                 titleWidthRatio: 4,
                 disabled,
                 title: "보조금 연도",
-                content: "입력 내용 노출",
-                onChange: () => {},
+                name: "grantYear",
+                content: grantYear,
+                onChange,
               },
             ]}
           />
@@ -332,19 +415,22 @@ const ChargerContractDetail = () => {
             <DetailLabelCol sm={2}>보조 금액</DetailLabelCol>
             <DetailContentCol>
               <TextInputBase
-                name={"보조 금액"}
                 bsSize={"lg"}
                 disabled={disabled}
-                value={"입력 내용 노출"}
-                onChange={() => {}}
+                name={"grantPrice"}
+                value={grantPrice}
+                onChange={onChange}
               />
             </DetailContentCol>
             <DetailLabelCol sm={2}>수령일</DetailLabelCol>
             <DetailContentCol>
               <input
                 type={"date"}
-                disabled={disabled}
                 className={"form-control w-xs"}
+                disabled={disabled}
+                name={"receiptDate"}
+                value={receiptDate}
+                onChange={onChange}
               />
             </DetailContentCol>
           </DetailRow>
@@ -355,15 +441,19 @@ const ChargerContractDetail = () => {
                 titleWidthRatio: 4,
                 disabled,
                 title: "영업비",
-                content: "입력 내용 노출",
-                onChange: () => {},
+                name: "businessPrice",
+                content: businessPrice,
+                placeholder: "입력해주세요.",
+                onChange,
               },
               {
                 titleWidthRatio: 4,
                 disabled,
                 title: "공사비",
-                content: "입력 내용 노출",
-                onChange: () => {},
+                name: "constructionPrice",
+                content: constructionPrice,
+                placeholder: "입력해주세요.",
+                onChange,
               },
             ]}
           />
@@ -374,8 +464,10 @@ const ChargerContractDetail = () => {
                 titleWidthRatio: 2,
                 disabled,
                 title: "전기 안전관리",
-                content: "입력 내용 노출",
-                onChange: () => {},
+                name: "safetyManagement",
+                content: safetyManagement,
+                placeholder: "입력해주세요.",
+                onChange,
               },
             ]}
           />

@@ -1,12 +1,14 @@
 import { CKEditorEventHandler, CKEditorEventPayload } from "ckeditor4-react";
 
 export interface IEditorHeaderProps {
+  className?: string
   label?: string;
   /* input props */
   name?: string;
   value?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   disabled?: boolean
+
 }
 
 export interface IEditorBodyProps {

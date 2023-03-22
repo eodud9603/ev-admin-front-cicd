@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Col, Input, ModalBody, ModalFooter, Row } from "reactstrap";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import {
@@ -12,7 +12,9 @@ import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGrou
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import ModalBase from "src/components/Common/Modal/ModalBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
+import useImages from "src/hooks/useImages";
 import useInputs from "src/hooks/useInputs";
+import styled from "styled-components";
 
 export interface IEvModelModalProps {
   type: "EDIT" | "REGISTRATION";
@@ -66,31 +68,11 @@ const EvModelModal = (props: IEvModelModalProps) => {
     regName: data?.manager ?? "",
     regDate: data?.regDate ?? "",
   });
-  const [images, setImages] = useState<{ file: File; src: string }[]>([]);
-
-  const uploadHandler: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (!e.target.files) {
-      return;
-    }
-
-    const uploadImages = Array.from(e.target.files);
-    const images: { file: File; src: string }[] = [];
-    for (const image of uploadImages) {
-      const src = URL.createObjectURL(image);
-      images.push({ file: image, src });
-    }
-    setImages((prev) => [...prev, ...images]);
-  };
-
-  const confirm = () => {
-    !!confirmHandler && confirmHandler();
-
-    onClose();
-  };
+  const { images, upload, remove, reset: resetImages } = useImages([]);
 
   const clear = () => {
     reset();
-    setImages([]);
+    resetImages();
   };
 
   return (
@@ -253,7 +235,7 @@ const EvModelModal = (props: IEvModelModalProps) => {
               id={"images"}
               name={"images"}
               accept={"image/*"}
-              onChange={uploadHandler}
+              onChange={upload}
             />
           </DetailLabelCol>
 
@@ -268,10 +250,20 @@ const EvModelModal = (props: IEvModelModalProps) => {
             />
           </DetailLabelCol>
         </DetailRow>
-        {images.map((image) => (
+        {images.map((image, index) => (
           <Row key={image.src} className={"m-0 py-4 border-top border-2"}>
-            <Col sm={12}>
+            <Col className={"position-relative"} sm={12}>
               <img width={"100%"} src={image.src} alt={image.file.name} />
+
+              <Icon
+                className={
+                  "position-absolute top-0 start-100 translate-middle " +
+                  "font-size-24 mdi mdi-close"
+                }
+                onClick={() => {
+                  remove(index);
+                }}
+              />
             </Col>
           </Row>
         ))}
@@ -281,7 +273,7 @@ const EvModelModal = (props: IEvModelModalProps) => {
         <ButtonBase
           label={isEditMode ? "수정" : "등록"}
           color={"turu"}
-          onClick={confirm}
+          onClick={confirmHandler}
         />
       </ModalFooter>
     </ModalBase>
@@ -289,3 +281,9 @@ const EvModelModal = (props: IEvModelModalProps) => {
 };
 
 export default EvModelModal;
+
+const Icon = styled.i`
+  :hover {
+    cursor: pointer;
+  }
+`;
