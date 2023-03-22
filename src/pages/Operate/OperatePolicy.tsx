@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
+import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
@@ -36,13 +43,39 @@ const tableHeader = [
 ];
 
 /* 임시 목록 데이터 */
-const policyList: unknown[] = [];
+const policyList = [
+  {
+    id: "1",
+    title: "개인정보 취급 방침",
+    writer: "백민규",
+    version: "1",
+    regDate: "2022.01.07",
+  },
+];
+
+interface IListRefProps {
+  data: IListItemProps;
+  checked: boolean;
+  onChange: (bool: boolean) => void;
+}
+interface IListItemProps {
+  index: number;
+  id: string;
+  title: string;
+  writer: string;
+  version: string;
+  regDate: string;
+}
 
 const OperatePolicy = () => {
   const [tabList, setTabList] = useState([{ label: "정책 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+
+  const navigate = useNavigate();
+
+  const listRef = useRef<IListRefProps[]>([]);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -63,6 +96,19 @@ const OperatePolicy = () => {
     }
 
     setTabList(tempList);
+  };
+
+  /** 선택항목 삭제 */
+  const deleteHandler = () => {
+    const checkedList = [];
+    for (const item of listRef.current) {
+      const { checked, data } = item;
+
+      if (checked) {
+        checkedList.push(data);
+        item.onChange(false);
+      }
+    }
   };
 
   return (
@@ -128,8 +174,19 @@ const OperatePolicy = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
-              <ButtonBase label={"신규 등록"} color={"turu"} />
-              <ButtonBase label={"선택 삭제"} outline={true} color={"turu"} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  navigate("/operate/policy/add");
+                }}
+              />
+              <ButtonBase
+                label={"선택 삭제"}
+                outline={true}
+                color={"turu"}
+                onClick={deleteHandler}
+              />
             </div>
           </div>
 
@@ -138,14 +195,14 @@ const OperatePolicy = () => {
               <>
                 {policyList.length > 0 ? (
                   policyList.map((policy, index) => (
-                    <tr key={index}>
-                      <td></td>
-                      <td>{index + 1}</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
+                    <TableRow
+                      ref={(ref: IListRefProps) =>
+                        (listRef.current[index] = ref)
+                      }
+                      key={policy.id}
+                      index={index}
+                      {...policy}
+                    />
                   ))
                 ) : (
                   <tr>
@@ -169,3 +226,51 @@ export default OperatePolicy;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
+const HoverTr = styled.tr`
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
+  const { id, index, title, writer, version, regDate } = props;
+  const [checked, setChecked] = useState(false);
+
+  const navigate = useNavigate();
+
+  const onChangeCheck = () => {
+    setChecked((prev) => !prev);
+  };
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      data: props,
+      checked,
+      onChange: (bool: boolean) => setChecked(bool),
+    }),
+    [props, checked]
+  );
+
+  return (
+    <HoverTr
+      onClick={() => {
+        navigate(`/operate/policy/detail/${id}`);
+      }}
+    >
+      <td onClick={(e) => e.stopPropagation()}>
+        <CheckBoxBase
+          name={`announcement-${index}`}
+          label={""}
+          checked={checked}
+          onChange={onChangeCheck}
+        />
+      </td>
+      <td>{index + 1}</td>
+      <td>{title}</td>
+      <td>{writer}</td>
+      <td>{version}</td>
+      <td>{regDate}</td>
+    </HoverTr>
+  );
+});

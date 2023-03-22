@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -78,6 +79,7 @@ const tableHeader = [
 /* 임시 목록 데이터 */
 const popupList: Omit<IListItemProps, "index">[] = [
   {
+    id: "1",
     category: "공지사항 팝업",
     title: "개인정보 처리방침 변경 안내",
     popupDate: "2022.01.07 ~ 2022.02.06",
@@ -88,6 +90,7 @@ const popupList: Omit<IListItemProps, "index">[] = [
     progress: "진행",
   },
   {
+    id: "2",
     category: "이벤트 팝업",
     title: "개인정보 처리방침 변경 안내",
     popupDate: "2022.01.07 ~ 2022.02.06",
@@ -105,6 +108,7 @@ interface IListRefProps {
   onChange: (bool: boolean) => void;
 }
 interface IListItemProps {
+  id: string;
   index: number;
   category: string;
   title: string;
@@ -124,6 +128,8 @@ const OperatePopup = () => {
   const listRef = useRef<IListRefProps[]>([]);
   /* 카테고리 모달 */
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -248,7 +254,13 @@ const OperatePopup = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
-              <ButtonBase label={"신규 등록"} color={"turu"} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  navigate("/operate/popup/add");
+                }}
+              />
               <ButtonBase
                 label={"선택 삭제"}
                 outline={true}
@@ -267,7 +279,7 @@ const OperatePopup = () => {
                       ref={(ref: IListRefProps) =>
                         (listRef.current[index] = ref)
                       }
-                      key={index}
+                      key={popup.id}
                       index={index}
                       {...popup}
                     />
@@ -302,9 +314,15 @@ export default OperatePopup;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
+const HoverTr = styled.tr`
+  :hover {
+    cursor: pointer;
+  }
+`;
 
 const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
   const {
+    id,
     index,
     category,
     title,
@@ -316,6 +334,8 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
     progress,
   } = props;
   const [checked, setChecked] = useState(false);
+
+  const navigate = useNavigate();
 
   const onChangeCheck = () => {
     setChecked((prev) => !prev);
@@ -332,8 +352,12 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
   );
 
   return (
-    <tr key={index}>
-      <td>
+    <HoverTr
+      onClick={() => {
+        navigate(`/operate/popup/detail/${id}`);
+      }}
+    >
+      <td onClick={(e) => e.stopPropagation()}>
         <CheckBoxBase
           name={`announcement-${index}`}
           label={""}
@@ -350,6 +374,6 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
       <td>{view}</td>
       <td>{date}</td>
       <td>{progress}</td>
-    </tr>
+    </HoverTr>
   );
 });
