@@ -72,6 +72,8 @@ import CorporateNoticeDetail from "src/pages/Operate/CorporateNoticeDetail";
 import CorporateNoticeAdd from "src/pages/Operate/CorporateNoticeAdd";
 import EvNewsDetail from "src/pages/Operate/EvNewsDetail";
 import EvNewsAdd from "src/pages/Operate/EvNewsAdd";
+import OperatePopupDetail from "src/pages/Operate/OperatePopupDetail";
+import OperatePopupAdd from "src/pages/Operate/OperatePopupAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -170,6 +172,8 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/evNews/add", element: <EvNewsAdd /> },
   { path: "/operate/evNews/detail/:id", element: <EvNewsDetail /> },
   { path: "/operate/popup", element: <OperatePopup /> },
+  { path: "/operate/popup/add", element: <OperatePopupAdd /> },
+  { path: "/operate/popup/detail/:id", element: <OperatePopupDetail /> },
   { path: "/operate/installCharger", element: <InstallCharger /> },
   {
     path: "/operate/installCharger/detail/:id",
