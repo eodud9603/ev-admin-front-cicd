@@ -79,6 +79,8 @@ import OperatePopupDetail from "src/pages/Operate/OperatePopupDetail";
 import OperatePopupAdd from "src/pages/Operate/OperatePopupAdd";
 import OperatePolicyDetail from "src/pages/Operate/OperatePolicyDetail";
 import OperatePolicyAdd from "src/pages/Operate/OperatePolicyAdd";
+import EventDetail from "src/pages/Operate/EventDetail";
+import EventAdd from "src/pages/Operate/EventAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -173,6 +175,8 @@ const userRoutes: Array<RouteProps> = [
   },
   { path: "/operate/corporateQna", element: <CorporateQnA /> },
   { path: "/operate/event", element: <Event /> },
+  { path: "/operate/event/add", element: <EventAdd /> },
+  { path: "/operate/event/detail/:id", element: <EventDetail /> },
   { path: "/operate/evNews", element: <EvNews /> },
   { path: "/operate/evNews/add", element: <EvNewsAdd /> },
   { path: "/operate/evNews/detail/:id", element: <EvNewsDetail /> },

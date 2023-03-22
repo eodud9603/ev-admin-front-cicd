@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -60,6 +61,7 @@ const tableHeader = [
 /* 임시 목록 데이터 */
 const eventList: Omit<IListItemProps, "index">[] = [
   {
+    id: "1",
     title: "개인정보 처리방침 변경 안내",
     eventDate: "2022.01.07 ~ 2022.02.06",
     upload: "전체",
@@ -69,6 +71,7 @@ const eventList: Omit<IListItemProps, "index">[] = [
     progress: "예정",
   },
   {
+    id: "2",
     title: "개인정보 처리방침 변경 안내",
     eventDate: "2022.01.07 ~ 2022.02.06",
     upload: "IOS",
@@ -86,6 +89,7 @@ interface IListRefProps {
 }
 interface IListItemProps {
   index: number;
+  id: string;
   title: string;
   eventDate: string;
   upload: string;
@@ -101,6 +105,8 @@ const Event = () => {
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
   const listRef = useRef<IListRefProps[]>([]);
+
+  const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -212,7 +218,13 @@ const Event = () => {
                 2023-04-01 14:51기준
               </span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
-              <ButtonBase label={"신규 등록"} color={"turu"} />
+              <ButtonBase
+                label={"신규 등록"}
+                color={"turu"}
+                onClick={() => {
+                  navigate("/operate/event/add");
+                }}
+              />
               <ButtonBase
                 label={"선택 삭제"}
                 outline={true}
@@ -231,7 +243,7 @@ const Event = () => {
                       ref={(ref: IListRefProps) =>
                         (listRef.current[index] = ref)
                       }
-                      key={index}
+                      key={event.id}
                       index={index}
                       {...event}
                     />
@@ -258,11 +270,18 @@ export default Event;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
+const HoverTr = styled.tr`
+  :hover {
+    cursor: pointer;
+  }
+`;
 
 const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
-  const { index, title, eventDate, upload, writer, view, date, progress } =
+  const { id, index, title, eventDate, upload, writer, view, date, progress } =
     props;
   const [checked, setChecked] = useState(false);
+
+  const navigate = useNavigate();
 
   const onChangeCheck = () => {
     setChecked((prev) => !prev);
@@ -279,8 +298,12 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
   );
 
   return (
-    <tr key={index}>
-      <td>
+    <HoverTr
+      onClick={() => {
+        navigate(`/operate/event/detail/${id}`);
+      }}
+    >
+      <td onClick={(e) => e.stopPropagation()}>
         <CheckBoxBase
           name={`announcement-${index}`}
           label={""}
@@ -296,6 +319,6 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
       <td>{view}</td>
       <td>{date}</td>
       <td>{progress}</td>
-    </tr>
+    </HoverTr>
   );
 });
