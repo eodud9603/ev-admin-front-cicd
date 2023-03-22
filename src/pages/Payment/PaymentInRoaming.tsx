@@ -35,6 +35,8 @@ const dropdownGroupSort = [
   },
 ];
 
+const contractRadio = [{ label: "전체" }, { label: "Y" }, { label: "N" }];
+
 const applyRadio = [
   { label: "전체" },
   { label: "예정" },
@@ -42,42 +44,42 @@ const applyRadio = [
   { label: "종료" },
 ];
 
-const voltageRadio = [{ label: "전체" }, { label: "고압" }, { label: "저압" }];
-
 const tableHeader = [
   { label: "번호" },
   { label: "요금제ID" },
-  { label: "전압" },
-  { label: "요금제명" },
-  { label: "총 적용 수" },
-  { label: "적용 대상 충전소명" },
+  { label: "운영사명" },
+  { label: "도매가(원)" },
+  { label: "소마가(원)" },
+  { label: "계약여부" },
   { label: "적용상태" },
   { label: "적용일" },
   { label: "종료일" },
-  { label: "수정일시" },
-  { label: "등록일시" },
+  { label: "수정일시(수정자)" },
+  { label: "편집" },
 ];
 
 const data = [
   {
     paymentSeq: 1,
     paymentId: "NN",
-    voltage: "고압",
-    paymentName: "요금제명",
-    applyNum: "3",
-    applyStationName: "A충전소, B충전소, C충전소",
+    companyName: "서비스 운영사",
+    wholePriceFast: "1000",
+    wholePriceSlow: "500",
+    retailPriceFast: "900",
+    retailPriceSlow: "400",
+    contractStatus: "Y",
     applyStatus: "예정",
     applyDt: "YYYY.MM.DD",
     endDt: "YYYY.MM.DD",
+    updater: "홍길동",
     updateDt: "YYYY.MM.DD 00:00:00",
-    registrationDt: "YYYY.MM.DD 00:00:00",
   },
 ];
 export const PaymentInRoaming = () => {
   const nav = useNavigate();
   const [tabList, setTabList] = useState([
     { label: "공지사항" },
-    { label: "한전 요금제 관리" },
+    { label: "로밍 요금제 관리" },
   ]);
 
   const { pathname } = useLocation();
@@ -127,9 +129,9 @@ export const PaymentInRoaming = () => {
           list={[
             { label: "홈", href: "" },
             { label: "요금 관리", href: "" },
-            { label: "한전 요금제 관리", href: "" },
+            { label: "로밍 요금제 관리", href: "" },
           ]}
-          title={"한전 요금제 관리"}
+          title={"로밍 요금제 관리"}
         />
         <FilterSection className={"py-4"}>
           <Row>
@@ -146,9 +148,9 @@ export const PaymentInRoaming = () => {
             </Col>
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
-                title={"적용상태"}
+                title={"계약여부"}
                 name={"radioGroup1"}
-                list={applyRadio}
+                list={contractRadio}
               />
             </Col>
           </Row>
@@ -162,9 +164,9 @@ export const PaymentInRoaming = () => {
             </Col>
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
-                title={"전압구분"}
+                title={"적용상태"}
                 name={"radioGroup2"}
-                list={voltageRadio}
+                list={applyRadio}
               />
             </Col>
           </Row>
@@ -176,7 +178,7 @@ export const PaymentInRoaming = () => {
           <Row className={"mb-4"}>
             <Col>
               <AmountInfo className={"text-size-13 fw-bold"}>
-                총 <AmountInfo className={"text-turu"}>0건</AmountInfo>의 한전
+                총 <AmountInfo className={"text-turu"}>0건</AmountInfo>의 로밍
                 요금제 정보가 있습니다.
               </AmountInfo>
             </Col>
@@ -210,15 +212,33 @@ export const PaymentInRoaming = () => {
                         {e.paymentId}
                       </u>
                     </td>
-                    <td>{e.voltage}</td>
-                    <td>{e.paymentName}</td>
-                    <td>{e.applyNum}</td>
-                    <td>{e.applyStationName}</td>
+                    <td>{e.companyName}</td>
+                    <td>
+                      <span>완속 : {e.wholePriceSlow}</span>
+                      <br />
+                      <span>급속 : {e.wholePriceFast}</span>
+                    </td>
+                    <td>
+                      <span>완속 : {e.retailPriceSlow}</span>
+                      <br />
+                      <span>급속 : {e.retailPriceFast}</span>
+                    </td>
+                    <td>{e.contractStatus}</td>
                     <td>{e.applyStatus}</td>
                     <td>{e.applyDt}</td>
                     <td>{e.endDt}</td>
-                    <td>{e.updateDt}</td>
-                    <td>{e.registrationDt}</td>
+                    <td>
+                      {e.updateDt}
+                      <br />
+                      {e.updater}
+                    </td>
+                    <td>
+                      <ButtonBase
+                        label={"수정"}
+                        outline={true}
+                        color={"turu"}
+                      />
+                    </td>
                   </tr>
                 ))}
             </>
