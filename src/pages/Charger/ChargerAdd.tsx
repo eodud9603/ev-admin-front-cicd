@@ -54,49 +54,22 @@ const ChargerAdd = () => {
     chargerId,
     chargerAssetNumber,
     chargerType,
-    /* dropdown */
-    // installType,
-    // chargerVolume,
     /* 듀얼형 */
     dualType,
-    dualCh1,
     dualCh2,
     envVersion,
-    companyType,
-    useStatus,
-    /* dropdown */
-    // consignmentName,
     manufacturerName,
-    /* dropdown */
-    // manufacturerModel,
-    installStatus,
-    /* dropdown */
-    // connectorType,
-    breakdownStatus,
-    /* dropdown */
-    // chargerStatus,
-    paymentTerminalStatus,
-    /* dropdown */
-    // pg,
-    // interlockingStandard,
     rapidTime,
     unusedCycle,
     chargingCycle,
-    syncEnvironment,
-    syncKEPCO,
-    rechargeAppAvailable,
     contractPrice,
-    syncQR,
-    reservationAvailable,
     significant,
-    installationCategory,
     installer,
     installationYear,
     installationMonth,
     serverDomain,
     serverPort,
     chargerSN,
-    installationTR,
     chargerFirmware,
     currentChargerFirmware,
     modemNumber,
@@ -145,7 +118,7 @@ const ChargerAdd = () => {
     syncQR: "",
     reservationAvailable: "",
     significant: "",
-    /* 설치정보 */
+    /* 계약정보 */
     installationCategory: "",
     installer: "",
     installationYear: "",
@@ -240,6 +213,7 @@ const ChargerAdd = () => {
                     <TextInputBase
                       inputstyle={{ flex: 1 }}
                       bsSize={"lg"}
+                      disabled={true}
                       name={"chargerStationName"}
                       value={chargerStationName}
                       onChange={onChange}
@@ -285,17 +259,14 @@ const ChargerAdd = () => {
                       {
                         label: "급속",
                         value: "1",
-                        checked: chargerType === "1",
                       },
                       {
                         label: "완속",
                         value: "2",
-                        checked: chargerType === "2",
                       },
                       {
                         label: "과금형 콘센트",
                         value: "3",
-                        checked: chargerType === "3",
                       },
                     ]}
                     onChange={(e) => {
@@ -419,12 +390,10 @@ const ChargerAdd = () => {
                       {
                         label: "자사",
                         value: "1",
-                        checked: companyType === "1",
                       },
                       {
                         label: "위탁사",
                         value: "2",
-                        checked: companyType === "2",
                       },
                     ],
                     onChange,
@@ -436,17 +405,14 @@ const ChargerAdd = () => {
                       {
                         label: "사용",
                         value: "1",
-                        checked: useStatus === "1",
                       },
                       {
                         label: "미사용",
                         value: "2",
-                        checked: useStatus === "2",
                       },
                       {
                         label: "전용",
                         value: "3",
-                        checked: useStatus === "3",
                       },
                     ],
                     onChange,
@@ -512,22 +478,18 @@ const ChargerAdd = () => {
                       {
                         label: "정상",
                         value: "1",
-                        checked: installStatus === "1",
                       },
                       {
                         label: "수리중",
                         value: "2",
-                        checked: installStatus === "2",
                       },
                       {
                         label: "철거",
                         value: "3",
-                        checked: installStatus === "3",
                       },
                       {
                         label: "철거예정",
                         value: "4",
-                        checked: installStatus === "4",
                       },
                     ]}
                     onChange={onChange}
@@ -559,12 +521,10 @@ const ChargerAdd = () => {
                       {
                         label: "정상",
                         value: "1",
-                        checked: breakdownStatus === "1",
                       },
                       {
                         label: "고장",
                         value: "2",
-                        checked: breakdownStatus === "2",
                       },
                     ]}
                     onChange={onChange}
@@ -596,12 +556,10 @@ const ChargerAdd = () => {
                       {
                         label: "Y",
                         value: "1",
-                        checked: paymentTerminalStatus === "1",
                       },
                       {
                         label: "N",
                         value: "2",
-                        checked: paymentTerminalStatus === "2",
                       },
                     ]}
                     onChange={onChange}
@@ -680,12 +638,10 @@ const ChargerAdd = () => {
                       {
                         label: "연동",
                         value: "1",
-                        checked: syncEnvironment === "1",
                       },
                       {
                         label: "미연동",
                         value: "2",
-                        checked: syncEnvironment === "2",
                       },
                     ],
                     onChange,
@@ -697,12 +653,10 @@ const ChargerAdd = () => {
                       {
                         label: "연동",
                         value: "1",
-                        checked: syncKEPCO === "1",
                       },
                       {
                         label: "미연동",
                         value: "2",
-                        checked: syncKEPCO === "2",
                       },
                     ],
                     onChange,
@@ -719,12 +673,10 @@ const ChargerAdd = () => {
                       {
                         label: "Y",
                         value: "1",
-                        checked: rechargeAppAvailable === "1",
                       },
                       {
                         label: "N",
                         value: "2",
-                        checked: rechargeAppAvailable === "2",
                       },
                     ]}
                     onChange={onChange}
@@ -750,22 +702,18 @@ const ChargerAdd = () => {
                       {
                         label: "없음",
                         value: "1",
-                        checked: syncQR === "1",
                       },
                       {
                         label: "카카오",
                         value: "2",
-                        checked: syncQR === "2",
                       },
                       {
                         label: "티맵",
                         value: "3",
-                        checked: syncQR === "3",
                       },
                       {
                         label: "현대 E-PIT",
                         value: "4",
-                        checked: syncQR === "4",
                       },
                     ],
                     onChange,
@@ -777,17 +725,14 @@ const ChargerAdd = () => {
                       {
                         label: "비예약",
                         value: "1",
-                        checked: reservationAvailable === "1",
                       },
                       {
                         label: "예약",
                         value: "2",
-                        checked: reservationAvailable === "2",
                       },
                       {
                         label: "시범",
                         value: "3",
-                        checked: reservationAvailable === "3",
                       },
                     ],
                     onChange,
@@ -831,22 +776,18 @@ const ChargerAdd = () => {
                       {
                         label: "자체",
                         value: "1",
-                        checked: installationCategory === "1",
                       },
                       {
                         label: "보조금",
                         value: "2",
-                        checked: installationCategory === "2",
                       },
                       {
                         label: "납품",
                         value: "3",
-                        checked: installationCategory === "3",
                       },
                       {
                         label: "위탁",
                         value: "4",
-                        checked: installationCategory === "4",
                       },
                     ]}
                     onChange={onChange}
@@ -923,12 +864,10 @@ const ChargerAdd = () => {
                       {
                         label: "Y",
                         value: "1",
-                        checked: installationTR === "1",
                       },
                       {
                         label: "N",
                         value: "2",
-                        checked: installationTR === "2",
                       },
                     ]}
                     onChange={onChange}

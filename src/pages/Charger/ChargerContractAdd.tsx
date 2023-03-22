@@ -50,6 +50,8 @@ const ChargerContractAdd = () => {
     contractPlace,
     contractName,
     envChargerId,
+    contractStartDate,
+    contractEndDate,
     placeManagerName,
     placeManagerTel,
     business,
@@ -68,7 +70,11 @@ const ChargerContractAdd = () => {
   } = useInputs({
     contractPlace: "",
     contractName: "",
+    contractStatus: "",
+    syncEnvironment: "",
     envChargerId: "",
+    contractStartDate: "",
+    contractEndDate: "",
     placeManagerName: "",
     placeManagerTel: "",
     business: "",
@@ -159,7 +165,7 @@ const ChargerContractAdd = () => {
             <DetailLabelCol sm={2}>계약여부</DetailLabelCol>
             <DetailContentCol>
               <RadioGroup
-                name={"계약여부"}
+                name={"contractStatus"}
                 list={[
                   {
                     label: "계약",
@@ -174,7 +180,7 @@ const ChargerContractAdd = () => {
                     value: "3",
                   },
                 ]}
-                onChange={() => {}}
+                onChange={onChange}
               />
             </DetailContentCol>
           </DetailRow>
@@ -183,16 +189,18 @@ const ChargerContractAdd = () => {
             <DetailLabelCol sm={2}>환경부 연동여부</DetailLabelCol>
             <DetailContentCol>
               <RadioGroup
-                name={"환경부 연동여부"}
+                name={"syncEnvironment"}
                 list={[
                   {
                     label: "연동",
+                    value: "1",
                   },
                   {
                     label: "미연동",
+                    value: "2",
                   },
                 ]}
-                onChange={() => {}}
+                onChange={onChange}
               />
             </DetailContentCol>
             <DetailLabelCol sm={2}>환경부 충전소 ID</DetailLabelCol>
@@ -210,9 +218,21 @@ const ChargerContractAdd = () => {
             <DetailLabelCol sm={2}>계약기간</DetailLabelCol>
             <DetailContentCol>
               <div className={"input-group d-flex align-items-center w-auto"}>
-                <input type={"date"} className={"form-control w-xs"} />
+                <input
+                  type={"date"}
+                  name={"contractStartDate"}
+                  className={"form-control w-xs"}
+                  value={contractStartDate}
+                  onChange={onChange}
+                />
                 <div className={"px-2 text-center"}>~</div>
-                <input type={"date"} className={"form-control w-xs"} />
+                <input
+                  type={"date"}
+                  name={"contractEndDate"}
+                  className={"form-control w-xs"}
+                  value={contractEndDate}
+                  onChange={onChange}
+                />
               </div>
             </DetailContentCol>
             <Col sm={6} />
