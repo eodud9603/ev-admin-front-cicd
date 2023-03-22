@@ -64,6 +64,8 @@ import { ChargerManufacturerDetail } from "src/pages/Charger/ChargerManufacturer
 import OperateNoticeDetail from "src/pages/Operate/OperateNoticeDetail";
 import { ChargerManufacturerRegistration } from "src/pages/Charger/ChargerManufacturerRegistration";
 import OperateNoticeAdd from "src/pages/Operate/OperateNoticeAdd";
+import OperateFAQDetail from "src/pages/Operate/OperateFAQDetail";
+import OperateFAQAdd from "src/pages/Operate/OperateFAQAdd";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -143,6 +145,8 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/notice/detail/:id", element: <OperateNoticeDetail /> },
   { path: "/operate/qna", element: <OperateQnA /> },
   { path: "/operate/faq", element: <OperateFAQ /> },
+  { path: "/operate/faq/add", element: <OperateFAQAdd /> },
+  { path: "/operate/faq/detail/:id", element: <OperateFAQDetail /> },
   { path: "/operate/corporateNotice", element: <CorporateNotice /> },
   { path: "/operate/corporateQna", element: <CorporateQnA /> },
   { path: "/operate/event", element: <Event /> },

@@ -3,6 +3,7 @@ import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import EditorBase from "src/components/Common/Editor/EditorBase";
+import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
@@ -12,7 +13,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { UPLOAD_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 
-const OperateNoticeDetail = () => {
+const OperateFAQDetail = () => {
   const [tabList, setTabList] = useState([{ label: "공지사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [disabled, setDisabled] = useState(true);
@@ -34,6 +35,7 @@ const OperateNoticeDetail = () => {
     deleteStatus: "Y",
     writer: "홍길동",
     views: "1",
+    category: "1",
     uploadTarget: "1",
     title: "개인정보 처리 방침 변경 안내",
     contents: initContents,
@@ -78,13 +80,13 @@ const OperateNoticeDetail = () => {
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
             { label: "공지사항", href: "" },
-            { label: "공지사항 상세", href: "" },
+            { label: "FAQ 상세", href: "" },
           ]}
         />
         <div
           className={"mb-4 d-flex align-items-center justify-content-between"}
         >
-          <h3 className={"m-0 font-size-24"}>공지사항 상세</h3>
+          <h3 className={"m-0 font-size-24"}>FAQ 상세</h3>
           <div className={"d-flex gap-2"}>
             {disabled && <ButtonBase label={"삭제"} color={"dark"} />}
             <ButtonBase
@@ -171,7 +173,30 @@ const OperateNoticeDetail = () => {
               />
             </div>
           </Col>
-          <Col sm={4} />
+          <Col sm={1}>
+            <DropboxGroup
+              label={"카테고리"}
+              dropdownItems={[
+                {
+                  disabled,
+                  onClickDropdownItem: (_, value) => {
+                    onChangeSingle({ category: value });
+                  },
+                  menuItems: [
+                    {
+                      label: "가입 승인",
+                      value: "1",
+                    },
+                    {
+                      label: "기타",
+                      value: "2",
+                    },
+                  ],
+                },
+              ]}
+            />
+          </Col>
+          <Col sm={3} />
           <Col className={"font-size-14 fw-semibold"} sm={1}>
             업로드 대상
           </Col>
@@ -210,4 +235,4 @@ const OperateNoticeDetail = () => {
   );
 };
 
-export default OperateNoticeDetail;
+export default OperateFAQDetail;

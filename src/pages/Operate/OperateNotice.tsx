@@ -281,7 +281,7 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
         navigate(`/operate/notice/detail/${id}`);
       }}
     >
-      <td>
+      <td onClick={(e) => e.stopPropagation()}>
         <CheckBoxBase
           name={`announcement-${index}`}
           label={""}
