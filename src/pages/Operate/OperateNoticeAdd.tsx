@@ -12,32 +12,27 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { UPLOAD_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 
-const OperateNoticeDetail = () => {
+const OperateNoticeAdd = () => {
   const [tabList, setTabList] = useState([{ label: "공지사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const [disabled, setDisabled] = useState(true);
 
-  const initContents =
-    "<pre>안녕하세요! 모빌리티로 통하는 세상 트루입니다.</pre>";
   const {
     date,
     deleteStatus,
     writer,
-    views,
     uploadTarget,
     title,
     attachmentList,
     onChange,
     onChangeSingle,
   } = useInputs({
-    date: "2022-11-31 12:00:00",
-    deleteStatus: "Y",
-    writer: "홍길동",
-    views: "1",
-    uploadTarget: "1",
-    title: "개인정보 처리 방침 변경 안내",
-    contents: initContents,
-    attachmentList: [{ name: "2023.01.07 개인정보 처리 방침.pdf" }],
+    date: "",
+    deleteStatus: "",
+    writer: "",
+    uploadTarget: "",
+    title: "",
+    contents: "",
+    attachmentList: [],
   });
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -78,24 +73,19 @@ const OperateNoticeDetail = () => {
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
             { label: "공지사항", href: "" },
-            { label: "공지사항 상세", href: "" },
+            { label: "공지사항 등록", href: "" },
           ]}
         />
         <div
           className={"mb-4 d-flex align-items-center justify-content-between"}
         >
-          <h3 className={"m-0 font-size-24"}>공지사항 상세</h3>
+          <h3 className={"m-0 font-size-24"}>공지사항 등록</h3>
           <div className={"d-flex gap-2"}>
-            {disabled && <ButtonBase label={"삭제"} color={"dark"} />}
             <ButtonBase
-              label={disabled ? "수정하기" : "저장하기"}
+              label={"저장하기"}
               color={"turu"}
               onClick={() => {
-                if (!disabled) {
-                  /** @TODO 저장(수정) 로직 추가 */
-                }
-
-                setDisabled((prev) => !prev);
+                /** @TODO 저장(수정) 로직 추가 */
               }}
             />
           </div>
@@ -116,6 +106,7 @@ const OperateNoticeDetail = () => {
               disabled={true}
               value={date}
               onChange={onChange}
+              placeholder={"자동기입"}
             />
           </Col>
           <Col sm={4} />
@@ -130,13 +121,11 @@ const OperateNoticeDetail = () => {
                   label: "Y",
                   value: "Y",
                   checked: deleteStatus === "Y",
-                  disabled,
                 },
                 {
                   label: "N",
                   value: "N",
                   checked: deleteStatus === "N",
-                  disabled,
                 },
               ]}
               onChange={onChange}
@@ -159,17 +148,9 @@ const OperateNoticeDetail = () => {
               disabled={true}
               value={writer}
               onChange={onChange}
+              placeholder={"자동기입"}
             />
-            <div className={"d-flex gap-3 align-items-center"}>
-              <span className={"font-size-14 fw-semibold"}>조회수</span>
-              <TextInputBase
-                inputstyle={{ flex: 1 }}
-                name={"views"}
-                disabled={true}
-                value={views}
-                onChange={onChange}
-              />
-            </div>
+            <Col sm={5} />
           </Col>
           <Col sm={4} />
           <Col className={"font-size-14 fw-semibold"} sm={1}>
@@ -180,7 +161,6 @@ const OperateNoticeDetail = () => {
               name={"uploadTarget"}
               list={UPLOAD_FILTER_LIST.map((radio) => ({
                 ...radio,
-                disabled,
                 checked: uploadTarget === radio.value,
               }))}
               onChange={onChange}
@@ -189,10 +169,8 @@ const OperateNoticeDetail = () => {
         </Row>
 
         <EditorBase
-          disabled={disabled}
           headerProps={{ name: "title", value: title, onChange }}
           bodyProps={{
-            initData: initContents,
             onChange: (e) => {
               onChangeSingle({ contents: e.editor.getData() });
             },
@@ -210,4 +188,4 @@ const OperateNoticeDetail = () => {
   );
 };
 
-export default OperateNoticeDetail;
+export default OperateNoticeAdd;
