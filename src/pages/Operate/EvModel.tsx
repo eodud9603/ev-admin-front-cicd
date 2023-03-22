@@ -325,7 +325,7 @@ const EvModelItem = forwardRef<IEvModelItemRef, IEvModelItemProps>(
 
     return (
       <HoverTr onClick={rowClickHandler}>
-        <td>
+        <td onClick={(e) => e.stopPropagation()}>
           <CheckBoxBase
             label={""}
             name={id}
