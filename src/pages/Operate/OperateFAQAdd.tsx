@@ -19,7 +19,6 @@ const OperateFAQAdd = () => {
 
   const {
     date,
-    deleteStatus,
     writer,
     uploadTarget,
     title,
@@ -28,7 +27,6 @@ const OperateFAQAdd = () => {
     onChangeSingle,
   } = useInputs({
     date: "",
-    deleteStatus: "",
     writer: "",
     category: "",
     uploadTarget: "",
@@ -109,28 +107,7 @@ const OperateFAQAdd = () => {
               placeholder={"자동기입"}
             />
           </Col>
-          <Col sm={4} />
-          <Col className={"font-size-14 fw-semibold"} sm={1}>
-            삭제여부
-          </Col>
-          <Col sm={3}>
-            <RadioGroup
-              name={"deleteStatus"}
-              list={[
-                {
-                  label: "Y",
-                  value: "Y",
-                  checked: deleteStatus === "Y",
-                },
-                {
-                  label: "N",
-                  value: "N",
-                  checked: deleteStatus === "N",
-                },
-              ]}
-              onChange={onChange}
-            />
-          </Col>
+          <Col sm={8} />
         </Row>
         <Row
           className={

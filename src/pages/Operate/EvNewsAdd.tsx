@@ -12,29 +12,18 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { UPLOAD_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 
-const CorporateNoticeAdd = () => {
-  const [tabList, setTabList] = useState([{ label: "법인 공지사항" }]);
+const EvNewsAdd = () => {
+  const [tabList, setTabList] = useState([{ label: "EV 뉴스" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
-  const {
-    date,
-    writer,
-    corporateName,
-    uploadTarget,
-    title,
-    attachmentList,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
-    date: "",
-    writer: "",
-    views: "",
-    corporateName: "",
-    uploadTarget: "",
-    title: "",
-    contents: "",
-    attachmentList: [],
-  });
+  const { date, writer, uploadTarget, title, onChange, onChangeSingle } =
+    useInputs({
+      date: "",
+      writer: "",
+      uploadTarget: "",
+      title: "",
+      contents: "",
+    });
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -73,14 +62,14 @@ const CorporateNoticeAdd = () => {
           list={[
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
-            { label: "법인 공지사항", href: "/operate/corporateNotice" },
-            { label: "법인 공지사항 등록", href: "" },
+            { label: "EV 뉴스", href: "/operate/evNews" },
+            { label: "EV 뉴스 등록", href: "" },
           ]}
         />
         <div
           className={"mb-4 d-flex align-items-center justify-content-between"}
         >
-          <h3 className={"m-0 font-size-24"}>법인 공지사항 등록</h3>
+          <h3 className={"m-0 font-size-24"}>EV 뉴스 등록</h3>
           <div className={"d-flex gap-2"}>
             <ButtonBase
               label={"저장하기"}
@@ -121,7 +110,7 @@ const CorporateNoticeAdd = () => {
           <Col className={"font-size-14 fw-semibold"} sm={1}>
             작성자
           </Col>
-          <Col className={"d-flex gap-5"} sm={2}>
+          <Col className={"d-flex gap-5"} sm={3}>
             <TextInputBase
               className={"d-flex"}
               name={"writer"}
@@ -130,18 +119,9 @@ const CorporateNoticeAdd = () => {
               onChange={onChange}
               placeholder={"자동기입"}
             />
+            <Col sm={5} />
           </Col>
-          <Col className={"font-size-14 fw-semibold"} sm={1}>
-            법인명
-          </Col>
-          <Col sm={2}>
-            <TextInputBase
-              name={"corporateName"}
-              value={corporateName}
-              onChange={onChange}
-            />
-          </Col>
-          <Col sm={2} />
+          <Col sm={4} />
           <Col className={"font-size-14 fw-semibold"} sm={1}>
             업로드 대상
           </Col>
@@ -168,13 +148,11 @@ const CorporateNoticeAdd = () => {
               /* 현재 파일 업로드 불가로 해당 로직 대기 */
             },
           }}
-          footerProps={{
-            attachmentList,
-          }}
+          isAttachments={false}
         />
       </BodyBase>
     </ContainerBase>
   );
 };
 
-export default CorporateNoticeAdd;
+export default EvNewsAdd;
