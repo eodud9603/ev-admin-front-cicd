@@ -15,11 +15,9 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import useInputs from "src/hooks/useInputs";
 import { TextColGroup } from "src/pages/Operate/components/OperateCol";
 
-const InstallChargerDetail = () => {
+const InstallChargerAdd = () => {
   const [tabList, setTabList] = useState([{ label: "충전기 설치 신청 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  /* 수정모드 비활성화 */
-  const [disabled, setDisabled] = useState(true);
   /** @TODO 상세정보 불러오면 initial값 넣어주기 */
   const {
     personalAgreement,
@@ -34,15 +32,15 @@ const InstallChargerDetail = () => {
     onChange,
     onChangeSingle,
   } = useInputs({
-    personalAgreement: "1",
-    application: "1",
-    self: "1",
-    open: "1",
-    contents: "충전기 미작동",
-    managerName: "백민규",
-    telStart: "000",
-    telMiddle: "0000",
-    telEnd: "0000",
+    personalAgreement: "",
+    application: "",
+    self: "",
+    open: "",
+    contents: "",
+    managerName: "",
+    telStart: "",
+    telMiddle: "",
+    telEnd: "",
   });
   const navigate = useNavigate();
 
@@ -84,27 +82,13 @@ const InstallChargerDetail = () => {
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
             { label: "충전기 설치 신청 관리", href: "/operate/installCharger" },
-            { label: "상세", href: "" },
+            { label: "등록", href: "" },
           ]}
         />
         <div className={"d-flex justify-content-between"}>
-          <p className={"font-size-24 fw-semibold"}>
-            충전기 설치 신청 내역 상세
-          </p>
+          <p className={"font-size-24 fw-semibold"}>충전기 설치 신청 등록</p>
           <div>
-            <ButtonBase
-              className={"me-2"}
-              label={"삭제"}
-              onClick={() => {}}
-              color={"dark"}
-            />
-            <ButtonBase
-              label={disabled ? "수정하기" : "저장하기"}
-              onClick={() => {
-                setDisabled((prev) => !prev);
-              }}
-              color={"turu"}
-            />
+            <ButtonBase label={"저장하기"} onClick={() => {}} color={"turu"} />
           </div>
         </div>
 
@@ -124,13 +108,11 @@ const InstallChargerDetail = () => {
             onChange={onChange}
             list={[
               {
-                disabled,
                 label: "동의",
                 value: "1",
                 checked: personalAgreement === "1",
               },
               {
-                disabled,
                 label: "미동의",
                 value: "2",
                 checked: personalAgreement === "2",
@@ -146,7 +128,6 @@ const InstallChargerDetail = () => {
             <TextColGroup title={"신청일"}>YYYY.MM.DD</TextColGroup>
             <TextColGroup title={"신청 상태"}>
               <DropdownBase
-                disabled={disabled}
                 menuItems={[
                   {
                     label: "신청",
@@ -170,7 +151,6 @@ const InstallChargerDetail = () => {
             <TextColGroup title={"주차면 수"}>30</TextColGroup>
             <TextColGroup title={"자가 여부"}>
               <DropdownBase
-                disabled={disabled}
                 menuItems={[
                   {
                     label: "자가",
@@ -184,7 +164,6 @@ const InstallChargerDetail = () => {
             </TextColGroup>
             <TextColGroup title={"개방 여부"}>
               <DropdownBase
-                disabled={disabled}
                 menuItems={[
                   {
                     label: "완전 개방",
@@ -217,7 +196,6 @@ const InstallChargerDetail = () => {
               {
                 titleWidthRatio: 1,
                 title: "신청 상세 내용",
-                disabled,
                 type: "textarea",
                 name: "contents",
                 content: contents,
@@ -241,24 +219,24 @@ const InstallChargerDetail = () => {
             </TextColGroup>
             <TextColGroup title={"연락처"} sm={5} className={"gap-3"}>
               <TextInputBase
-                disabled={disabled}
                 name={"telStart"}
                 value={telStart}
                 onChange={onChange}
+                placeholder={"000"}
               />
               <span>-</span>
               <TextInputBase
-                disabled={disabled}
                 name={"telMiddle"}
                 value={telMiddle}
                 onChange={onChange}
+                placeholder={"0000"}
               />
               <span>-</span>
               <TextInputBase
-                disabled={disabled}
                 name={"telEnd"}
                 value={telEnd}
                 onChange={onChange}
+                placeholder={"0000"}
               />
             </TextColGroup>
             <TextColGroup title={"확인일"}>YYYY.MM.DD</TextColGroup>
@@ -281,4 +259,4 @@ const InstallChargerDetail = () => {
   );
 };
 
-export default InstallChargerDetail;
+export default InstallChargerAdd;
