@@ -72,6 +72,9 @@ import CorporateNoticeDetail from "src/pages/Operate/CorporateNoticeDetail";
 import CorporateNoticeAdd from "src/pages/Operate/CorporateNoticeAdd";
 import EvNewsDetail from "src/pages/Operate/EvNewsDetail";
 import EvNewsAdd from "src/pages/Operate/EvNewsAdd";
+import { PaymentInRoaming } from "src/pages/Payment/PaymentInRoaming";
+import { PaymentInKepco } from "src/pages/Payment/PaymentInKepco";
+import { PaymentInCharging } from "src/pages/Payment/PaymentInCharging";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -208,6 +211,10 @@ const userRoutes: Array<RouteProps> = [
     element: <CounselingHistoryDetail />,
   },
   { path: "/counseling/management", element: <CounselingManagement /> },
+
+  { path: "/payment/charging", element: <PaymentInCharging /> },
+  { path: "/payment/kepco", element: <PaymentInKepco /> },
+  { path: "/payment/roaming", element: <PaymentInRoaming /> },
 ];
 
 const authRoutes: Array<RouteProps> = [

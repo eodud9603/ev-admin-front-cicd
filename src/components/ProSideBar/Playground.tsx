@@ -323,6 +323,17 @@ export const Playground = (props: any) => {
                   권한 관리
                 </MenuItem>
               </SubMenu>
+              <SubMenu label="요금 관리" icon={<Global />}>
+                <MenuItem component={<Link to={"/payment/charging"} />}>
+                  충전 요금제 관리
+                </MenuItem>
+                <MenuItem component={<Link to={"/payment/kepco"} />}>
+                  한전 요금제 관리
+                </MenuItem>
+                <MenuItem component={<Link to={"/payment/roaming"} />}>
+                  로밍 요금제 관리
+                </MenuItem>
+              </SubMenu>
 
               <SubMenu label="Components" icon={<Diamond />}>
                 <MenuItem> Grid</MenuItem>
