@@ -19,6 +19,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
+import { AddStationModal } from "src/pages/Payment/components/AddStationModal";
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
   { label: "20개씩 보기", value: "2" },
@@ -47,6 +48,8 @@ export const PaymentInChargingRegistration = () => {
     { label: "공지사항" },
     { label: "충전 요금제 관리" },
   ]);
+
+  const [feeName, setFeeName] = useState("");
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
   const [addStationModal, setAddStationModal] = useState(false);
@@ -111,7 +114,11 @@ export const PaymentInChargingRegistration = () => {
               </span>
             </DetailLabelCol>
             <DetailContentCol>
-              <TextInputBase name={"paymentName"} value={"1"} />
+              <TextInputBase
+                name={"paymentName"}
+                value={feeName}
+                onChange={(e) => setFeeName(e.target.value)}
+              />
             </DetailContentCol>
             <DetailLabelCol sm={2}>
               <span>
@@ -177,6 +184,10 @@ export const PaymentInChargingRegistration = () => {
           <ButtonBase label={"저장"} color={"turu"} className={"w-xs"} />
         </div>
       </BodyBase>
+      <AddStationModal
+        isOpen={addStationModal}
+        onClose={handleAddStationModal}
+      />
     </ContainerBase>
   );
 };

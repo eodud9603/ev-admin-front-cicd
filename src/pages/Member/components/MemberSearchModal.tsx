@@ -89,7 +89,7 @@ export const MemberSearchModal = (props: IMemberSearchModal) => {
   );
 };
 export const ModalContainer = styled.section`
-  padding: 15px;
+  padding: 30px;
 `;
 const FilterSection = styled.section``;
 const ListSection = styled.section``;
