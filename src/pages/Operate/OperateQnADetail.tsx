@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col } from "reactstrap";
+import { Col, Input } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import {
@@ -13,6 +13,7 @@ import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
+import useImages from "src/hooks/useImages";
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
@@ -32,7 +33,7 @@ const OperateQnADetail = () => {
     answerName,
     title,
     contents,
-    images,
+    questionImages,
   } = useInputs({
     regDate: "2022-11-31 12:00:00",
     category: "가입 승인",
@@ -43,7 +44,7 @@ const OperateQnADetail = () => {
     answerName: "백민규",
     title: "개인정보 처리 방침 변경 안내",
     contents: "안녕하세요! 문의드립니다.",
-    images: [
+    questionImages: [
       {
         src: "https://t1.daumcdn.net/cfile/tistory/24283C3858F778CA2E",
       },
@@ -53,6 +54,7 @@ const OperateQnADetail = () => {
   const { answerContent, onChange } = useInputs({
     answerContent: "안녕하세요! 모빌리티로 통하는 세상 트루입니다.",
   });
+  const { images: answerImages, upload, remove } = useImages([]);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -246,14 +248,9 @@ const OperateQnADetail = () => {
         <EditorRow className={"pb-3"}>
           <EditorTitleCol>이미지</EditorTitleCol>
           <EditorContentCol className={"d-flex gap-2"}>
-            {images.length > 0 ? (
-              images.map((image, index) => (
-                <Image
-                  key={index}
-                  className={"rounded"}
-                  src={image.src}
-                  onClick={() => {}}
-                />
+            {questionImages.length > 0 ? (
+              questionImages.map((image, index) => (
+                <Image key={index} className={"rounded"} src={image.src} />
               ))
             ) : (
               <EmptyImage
@@ -269,7 +266,7 @@ const OperateQnADetail = () => {
           </EditorContentCol>
         </EditorRow>
 
-        <EditorRow className={"pb-3"}>
+        <EditorRow className={"border-bottom-0 pb-3"}>
           <EditorTitleCol>답변 내용</EditorTitleCol>
           <EditorContentCol>
             <TextInputBase
@@ -284,6 +281,58 @@ const OperateQnADetail = () => {
             />
           </EditorContentCol>
         </EditorRow>
+        <EditorRow className={"pb-3"}>
+          <EditorTitleCol>이미지</EditorTitleCol>
+          <EditorContentCol className={"d-flex flex-wrap gap-4"}>
+            <>
+              {answerImages.length > 0
+                ? answerImages.map((image, index) => (
+                    <div
+                      key={index}
+                      style={{ height: 100 }}
+                      className={"d-flex position-relative flex-wrap"}
+                    >
+                      <Image className={"rounded"} src={image.src} />
+
+                      <Icon
+                        className={
+                          "position-absolute top-0 start-100 " +
+                          "translate-middle font-size-24 mdi mdi-close"
+                        }
+                        onClick={() => {
+                          remove(index);
+                        }}
+                      />
+                    </div>
+                  ))
+                : null}
+              <EmptyImage
+                className={
+                  "d-flex justify-content-center align-items-center " +
+                  "bg-light bg-opacity-50 rounded " +
+                  "font-size-14 fw-normal"
+                }
+                onClick={() => {
+                  if (!disabled) {
+                    document.getElementById("images")?.click();
+                  }
+                }}
+              >
+                {answerImages.length === 0 ? "없음" : "추가"}
+              </EmptyImage>
+
+              <Input
+                className={"visually-hidden"}
+                multiple
+                type={"file"}
+                id={"images"}
+                name={"images"}
+                accept={"image/*"}
+                onChange={upload}
+              />
+            </>
+          </EditorContentCol>
+        </EditorRow>
       </BodyBase>
     </ContainerBase>
   );
@@ -295,8 +344,16 @@ const Image = styled.img`
   height: 100px;
   object-fit: cover;
 `;
-
+const Icon = styled.i`
+  :hover {
+    cursor: pointer;
+  }
+`;
 const EmptyImage = styled.div`
   width: 100px;
   height: 100px;
+
+  :hover {
+    cursor: pointer;
+  }
 `;

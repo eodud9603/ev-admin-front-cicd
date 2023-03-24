@@ -236,7 +236,7 @@ const OperateNotice = () => {
             <Col md={5} />
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
-            <Col sm={12}>
+            <Col>
               <DropboxGroup
                 label={"정렬 기준"}
                 dropdownItems={[
