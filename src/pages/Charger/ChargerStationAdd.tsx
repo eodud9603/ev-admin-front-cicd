@@ -26,7 +26,7 @@ import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
 import { DetailDropdownRow } from "src/components/Common/DetailContentRow/DetailDropdownRow";
-import DetailValidCheckModal from "./components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 
 const ChargerStationAdd = () => {
   const [tabList, setTabList] = useState([
@@ -45,18 +45,12 @@ const ChargerStationAdd = () => {
     chargerStationName,
     chargerStationId,
     chargerStationLocation,
-    serviceProvider,
-    useStatus,
     directInput,
     businessName,
-    openStatus,
     fast,
     slow,
     outletName,
     outletCount,
-    exposedStatus,
-    receivingMethod,
-    separation,
     customerNumber,
     meter,
     optionalFee,
@@ -76,7 +70,6 @@ const ChargerStationAdd = () => {
     holidayEndDate,
     saturdayStartDate,
     saturdayEndDate,
-    parkingFeeStatus,
     parkingFeeDetail,
     locationX,
     locationY,
@@ -89,7 +82,7 @@ const ChargerStationAdd = () => {
     chargerStationLocation: "",
     serviceProvider: "1",
     useStatus: "",
-    business: "0" /* 위탁사업자 > dropdown */,
+    business: "" /* 위탁사업자 > dropdown */,
     directInput: "0" /* 위탁사업자 > 직접입력 체크여부 */,
     businessName: "" /* 위탁사업자 > 직접입력값(businessName) */,
     openStatus: "",
@@ -202,7 +195,7 @@ const ChargerStationAdd = () => {
           list={[
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
-            { label: "충전소 관리", href: "" },
+            { label: "충전소 관리", href: "/charger/chargerStation" },
             { label: "충전소 신규 등록", href: "" },
           ]}
           title={"충전소 신규 등록"}
@@ -270,12 +263,10 @@ const ChargerStationAdd = () => {
                             {
                               label: "HEV",
                               value: "1",
-                              checked: serviceProvider === "1",
                             },
                             {
                               label: "JEV",
                               value: "2",
-                              checked: serviceProvider === "2",
                             },
                           ]}
                           onChange={onChange}
@@ -291,12 +282,10 @@ const ChargerStationAdd = () => {
                             {
                               label: "사용",
                               value: "1",
-                              checked: useStatus === "1",
                             },
                             {
                               label: "미사용",
                               value: "2",
-                              checked: useStatus === "2",
                             },
                           ]}
                           onChange={onChange}
@@ -354,12 +343,10 @@ const ChargerStationAdd = () => {
                             {
                               label: "완전",
                               value: "1",
-                              checked: openStatus === "1",
                             },
                             {
                               label: "부분",
                               value: "2",
-                              checked: openStatus === "2",
                             },
                           ]}
                           onChange={onChange}
@@ -438,12 +425,10 @@ const ChargerStationAdd = () => {
                             {
                               label: "노출",
                               value: "1",
-                              checked: exposedStatus === "1",
                             },
                             {
                               label: "미노출",
                               value: "2",
-                              checked: exposedStatus === "2",
                             },
                           ]}
                           onChange={onChange}
@@ -460,12 +445,10 @@ const ChargerStationAdd = () => {
                           {
                             label: "자중",
                             value: "1",
-                            checked: receivingMethod === "1",
                           },
                           {
                             label: "가공",
                             value: "2",
-                            checked: receivingMethod === "2",
                           },
                         ],
                         onChange,
@@ -477,12 +460,10 @@ const ChargerStationAdd = () => {
                           {
                             label: "모자",
                             value: "1",
-                            checked: separation === "1",
                           },
                           {
                             label: "자가",
                             value: "2",
-                            checked: separation === "2",
                           },
                         ],
                         onChange,
@@ -736,17 +717,14 @@ const ChargerStationAdd = () => {
                           {
                             label: "미확인",
                             value: "1",
-                            checked: parkingFeeStatus === "1",
                           },
                           {
                             label: "유",
                             value: "2",
-                            checked: parkingFeeStatus === "2",
                           },
                           {
                             label: "무",
                             value: "3",
-                            checked: parkingFeeStatus === "3",
                           },
                         ]}
                         onChange={onChange}

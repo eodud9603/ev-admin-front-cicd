@@ -1,6 +1,6 @@
 import React from "react";
 import { Col, Row } from "reactstrap";
-import RadioBase from "../Radio/RadioBase";
+import RadioBase from "src/components/Common/Radio/RadioBase";
 
 interface IDetailTextRadioRow {
   rows: Array<{

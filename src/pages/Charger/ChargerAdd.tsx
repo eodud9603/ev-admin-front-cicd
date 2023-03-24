@@ -1007,6 +1007,9 @@ const ChargerAdd = () => {
         onClose={() => {
           setIsCompleteComplete((prev) => !prev);
         }}
+        onClosed={() => {
+          navigate("/charger/charger");
+        }}
         title={"신규 충전기 등록 완료"}
         contents={"충전기 정보가 등록되었습니다."}
       />

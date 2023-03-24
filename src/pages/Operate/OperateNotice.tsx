@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useCallback,
   useImperativeHandle,
   useRef,
   useState,
@@ -11,6 +12,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
+import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
@@ -24,29 +26,55 @@ import {
   DELETE_FILTER_LIST,
   UPLOAD_FILTER_LIST,
 } from "src/constants/list";
+import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
+import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 
-/* 검색어 필터 */
+/** 검색어 필터 */
 const searchList = [
-  { label: "전체", value: "1" },
-  { label: "제목", value: "2" },
-  { label: "내용", value: "3" },
-  { label: "작성자", value: "4" },
+  { label: "전체", value: "" },
+  { label: "제목", value: "1" },
+  { label: "내용", value: "2" },
+  { label: "작성자", value: "3" },
 ];
 
-/* 목록 헤더 */
+/** 정렬 필터 */
+const sortList = [
+  {
+    label: "기본",
+    value: "",
+  },
+  {
+    label: "번호",
+    value: "1",
+  },
+  {
+    label: "제목",
+    value: "2",
+  },
+  {
+    label: "작성자",
+    value: "3",
+  },
+  {
+    label: "조회 수",
+    value: "4",
+  },
+];
+
+/** 목록 헤더 */
 const tableHeader = [
   { label: "선택" },
-  { label: "번호", sort: () => {} },
+  { label: "번호" },
   { label: "제목" },
-  { label: "업로드 대상", sort: () => {} },
-  { label: "작성자", sort: () => {} },
-  { label: "조회수", sort: () => {} },
-  { label: "작성일", sort: () => {} },
-  { label: "삭제 여부", sort: () => {} },
+  { label: "업로드 대상" },
+  { label: "작성자" },
+  { label: "조회수" },
+  { label: "작성일" },
+  { label: "삭제 여부" },
 ];
 
-/* 임시 목록 데이터 */
+/** 임시 목록 데이터 */
 const noticeList: Omit<IListItemProps, "index">[] = [
   {
     id: "1",
@@ -87,8 +115,28 @@ interface IListItemProps {
 const OperateNotice = () => {
   const [tabList, setTabList] = useState([{ label: "공지사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const [text, setText] = useState("");
+  const [isActive, setIsActive] = useState(false);
   const [page, setPage] = useState(1);
+  const {
+    // startDate,
+    // endDate,
+    deleteStatus,
+    uploadTarget,
+    searchText,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    startDate: "",
+    endDate: "",
+    deleteStatus: "",
+    uploadTarget: "",
+    searchRange: "",
+    searchText: "",
+    sort: "",
+  });
+  /* 등록확인 모달 */
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
   const listRef = useRef<IListRefProps[]>([]);
 
   const navigate = useNavigate();
@@ -116,6 +164,8 @@ const OperateNotice = () => {
 
   /** 선택항목 삭제 */
   const deleteHandler = () => {
+    setIsActive(false);
+
     const checkedList = [];
     for (const item of listRef.current) {
       const { checked, data } = item;
@@ -126,6 +176,27 @@ const OperateNotice = () => {
       }
     }
   };
+
+  /** 선택삭제 버튼 활성화 여부 업데이트 */
+  const onChangeActive = useCallback((currentItemChecked: boolean) => {
+    let isActive = currentItemChecked;
+    if (!isActive) {
+      const checkCount = listRef.current.reduce((acc, cur) => {
+        if (cur.checked) {
+          acc += 1;
+        }
+
+        return acc;
+      }, 0);
+
+      /* 체크된 목록이 있으면, 선택삭제 버튼 활성화 (ref을 사용하여 1개 보다 커야 체크된 것이 있음) */
+      if (checkCount > 1) {
+        isActive = true;
+      }
+    }
+
+    setIsActive(isActive);
+  }, []);
 
   return (
     <ContainerBase>
@@ -156,15 +227,23 @@ const OperateNotice = () => {
             <Col md={4}>
               <RadioGroup
                 title={"삭제 여부"}
-                name={"deleteGroup"}
-                list={DELETE_FILTER_LIST}
+                name={"deleteStatus"}
+                list={DELETE_FILTER_LIST.map((status) => ({
+                  ...status,
+                  checked: deleteStatus === status.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
             <Col md={4}>
               <RadioGroup
                 title={"업로드 대상"}
-                name={"uploadGroup"}
-                list={UPLOAD_FILTER_LIST}
+                name={"uploadTarget"}
+                list={UPLOAD_FILTER_LIST.map((target) => ({
+                  ...target,
+                  checked: uploadTarget === target.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -172,14 +251,32 @@ const OperateNotice = () => {
             <Col md={7}>
               <SearchTextInput
                 title={"검색어"}
-                name={"searchText"}
-                menuItems={searchList}
                 placeholder={"검색어를 입력해주세요."}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                menuItems={searchList}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ searchRange: value });
+                }}
+                name={"searchText"}
+                value={searchText}
+                onChange={onChange}
               />
             </Col>
             <Col md={5} />
+          </Row>
+          <Row className={"mt-3 d-flex align-items-center"}>
+            <Col>
+              <DropboxGroup
+                label={"정렬 기준"}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ sort: value });
+                    },
+                    menuItems: sortList,
+                  },
+                ]}
+              />
+            </Col>
           </Row>
         </SearchSection>
 
@@ -205,10 +302,13 @@ const OperateNotice = () => {
                 }}
               />
               <ButtonBase
+                disabled={!isActive}
                 label={"선택 삭제"}
-                outline={true}
-                color={"turu"}
-                onClick={deleteHandler}
+                outline={isActive}
+                color={isActive ? "turu" : "secondary"}
+                onClick={() => {
+                  setDeleteModalOpen(true);
+                }}
               />
             </div>
           </div>
@@ -224,6 +324,7 @@ const OperateNotice = () => {
                       }
                       key={index}
                       index={index}
+                      onChangeActive={onChangeActive}
                       {...notice}
                     />
                   ))
@@ -241,6 +342,33 @@ const OperateNotice = () => {
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
       </BodyBase>
+
+      <OperateTextModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen((prev) => !prev);
+        }}
+        title={"공지사항 삭제"}
+        contents={
+          "삭제 후 고객에게 해당 공지사항이 표시되지 않습니다.\n삭제하시겠습니까?"
+        }
+        buttons={[
+          {
+            label: "아니요",
+            color: "secondary",
+          },
+          {
+            label: "삭제",
+            color: "turu",
+            onClick: () => {
+              /** @TODO 저장 로직 추가 */
+
+              deleteHandler();
+              setDeleteModalOpen((prev) => !prev);
+            },
+          },
+        ]}
+      />
     </ContainerBase>
   );
 };
@@ -255,13 +383,28 @@ const HoverTr = styled.tr`
   }
 `;
 
-const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
-  const { id, index, title, upload, writer, view, date, isDelete } = props;
+const TableRow = forwardRef<
+  IListRefProps,
+  IListItemProps & { onChangeActive: (currentItemChecked: boolean) => void }
+>((props, ref) => {
+  const {
+    id,
+    index,
+    title,
+    upload,
+    writer,
+    view,
+    date,
+    isDelete,
+    onChangeActive,
+  } = props;
   const [checked, setChecked] = useState(false);
 
   const navigate = useNavigate();
 
   const onChangeCheck = () => {
+    onChangeActive(!checked);
+
     setChecked((prev) => !prev);
   };
 

@@ -17,7 +17,7 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
-import AuthLevelModal from "./components/AuthLevelModal";
+import AuthLevelModal from "src/pages/Operator/components/AuthLevelModal";
 import AddButton from "src/pages/Operator/components/AddButton";
 import useInputs from "src/hooks/useInputs";
 
@@ -172,7 +172,12 @@ const OperatorAccountAdd = () => {
           </DetailContentCol>
           <DetailLabelCol sm={2}>비밀번호</DetailLabelCol>
           <DetailContentCol>
-            <Form>
+            <Form
+              /* 비밀번호 input에서 enter 클릭시, submit 리로드 액션 block */
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+            >
               <TextInputBase
                 bsSize={"lg"}
                 name={"password"}

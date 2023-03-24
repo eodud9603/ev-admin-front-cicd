@@ -19,43 +19,52 @@ import {
   CATEGORY_LIST,
   COUNT_FILTER_LIST,
 } from "src/constants/list";
+import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
-import CategoryModal from "./components/CategoryModal";
+import CategoryModal from "src/pages/Operate/components/CategoryModal";
 
 /* 검색어 필터 */
 const searchList = [
-  { label: "전체", value: "1" },
-  { label: "제목", value: "2" },
-  { label: "회원명", value: "3" },
-  { label: "회원 ID", value: "4" },
-  { label: "답변자", value: "5" },
+  { label: "전체", value: "" },
+  { label: "제목", value: "1" },
+  { label: "회원명", value: "2" },
+  { label: "회원 ID", value: "3" },
+  { label: "답변자", value: "4" },
 ];
 
 /* 카테고리 필터 */
 const categoryList = [
   {
     menuItems: [
-      { label: "전체", value: "1" },
-      { label: "가입 승인", value: "2" },
-      { label: "결제 카드", value: "3" },
-      { label: "충전기 예약", value: "4" },
-      { label: "충전기 사용", value: "5" },
-      { label: "기타", value: "6" },
+      { label: "전체", value: "" },
+      { label: "가입 승인", value: "1" },
+      { label: "결제 카드", value: "2" },
+      { label: "충전기 예약", value: "3" },
+      { label: "충전기 사용", value: "4" },
+      { label: "기타", value: "5" },
     ],
+  },
+];
+
+/** 정렬 필터 */
+const sortList = [
+  {
+    label: "기본",
+    value: "",
   },
 ];
 
 /* 목록 헤더 */
 const tableHeader = [
-  { label: "번호", sort: () => {} },
-  { label: "카테고리", sort: () => {} },
-  { label: "제목", sort: () => {} },
-  { label: "회원명", sort: () => {} },
-  { label: "회원 ID", sort: () => {} },
-  { label: "등록 일시", sort: () => {} },
-  { label: "답변자", sort: () => {} },
-  { label: "답변 일시", sort: () => {} },
-  { label: "상태", sort: () => {} },
+  { label: "번호" },
+  { label: "카테고리" },
+  { label: "제목" },
+  { label: "회원명" },
+  { label: "회원 ID" },
+  { label: "등록 일시" },
+  { label: "답변자" },
+  { label: "답변 일시" },
+  { label: "상태" },
 ];
 
 /* 임시 목록 데이터 */
@@ -87,8 +96,15 @@ const qnaList = [
 const OperateQnA = () => {
   const [tabList, setTabList] = useState([{ label: "Q&A" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+
+  const { answerStatus, searchText, onChange, onChangeSingle } = useInputs({
+    answerStatus: "",
+    searchRange: "",
+    searchText: "",
+    sort: "",
+  });
+
   /* 카테고리 모달 */
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
@@ -150,8 +166,12 @@ const OperateQnA = () => {
             <Col md={4}>
               <RadioGroup
                 title={"답변 상태"}
-                name={"statusGroup"}
-                list={ANSWER_STATUS_FILTER_LIST}
+                name={"answerStatus"}
+                list={ANSWER_STATUS_FILTER_LIST.map((status) => ({
+                  ...status,
+                  checked: answerStatus === status.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -159,11 +179,14 @@ const OperateQnA = () => {
             <Col md={8}>
               <SearchTextInput
                 title={"검색어"}
-                name={"searchText"}
                 menuItems={searchList}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ searchRange: value });
+                }}
                 placeholder={"검색어를 입력해주세요."}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                name={"searchText"}
+                value={searchText}
+                onChange={onChange}
               />
             </Col>
             <Col className={"d-flex"} md={4}>
@@ -178,6 +201,22 @@ const OperateQnA = () => {
                 onClick={() => {
                   setIsCategoryModalOpen(true);
                 }}
+              />
+            </Col>
+          </Row>
+
+          <Row className={"mt-3 d-flex align-items-center"}>
+            <Col>
+              <DropboxGroup
+                label={"정렬 기준"}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ sort: value });
+                    },
+                    menuItems: sortList,
+                  },
+                ]}
               />
             </Col>
           </Row>

@@ -17,8 +17,8 @@ import useImages from "src/hooks/useImages";
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
-const OperateQnADetail = () => {
-  const [tabList, setTabList] = useState([{ label: "Q&A" }]);
+const CorporateQnADetail = () => {
+  const [tabList, setTabList] = useState([{ label: "법인 문의사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 수정 비활성화 여부 */
   const [disabled, setDisabled] = useState(true);
@@ -26,8 +26,8 @@ const OperateQnADetail = () => {
   const {
     regDate,
     category,
-    userName,
-    userId,
+    corporateName,
+    corporateId,
     answerDate,
     answerStatus,
     answerName,
@@ -37,12 +37,12 @@ const OperateQnADetail = () => {
   } = useInputs({
     regDate: "2022-11-31 12:00:00",
     category: "가입 승인",
-    userName: "홍길동",
-    userId: "EV123456",
+    corporateName: "홍길동",
+    corporateId: "EV123456",
     answerDate: "2022-11-31 12:00:00",
     answerStatus: "답변 완료",
     answerName: "백민규",
-    title: "개인정보 처리 방침 변경 안내",
+    title: "가입 승인이 안됩니다",
     contents: "안녕하세요! 문의드립니다.",
     questionImages: [
       {
@@ -93,14 +93,14 @@ const OperateQnADetail = () => {
           list={[
             { label: "홈", href: "" },
             { label: "서비스 운영 관리", href: "" },
-            { label: "Q&A", href: "/operate/qna" },
-            { label: "Q&A 상세", href: "" },
+            { label: "법인 문의사항", href: "/operate/corporateQnA" },
+            { label: "상세", href: "" },
           ]}
         />
         <div
           className={"mb-4 d-flex align-items-center justify-content-between"}
         >
-          <h3 className={"m-0 font-size-24"}>Q&A 상세</h3>
+          <h3 className={"m-0 font-size-24"}>법인 문의사항 상세</h3>
           <div className={"d-flex gap-2"}>
             <ButtonBase
               label={disabled ? "수정하기" : "저장하기"}
@@ -153,13 +153,13 @@ const OperateQnADetail = () => {
             className={"d-flex align-items-center gap-3"}
             sm={2}
           >
-            <span>회원명</span>
+            <span>법인명</span>
             <TextInputBase
               inputstyle={{ flex: 1 }}
               disabled={true}
               bsSize={"lg"}
-              name={"userName"}
-              value={userName}
+              name={"corporateName"}
+              value={corporateName}
             />
           </EditorContentCol>
 
@@ -167,13 +167,13 @@ const OperateQnADetail = () => {
             className={"d-flex align-items-center gap-3"}
             sm={2}
           >
-            <span>회원 ID</span>
+            <span>법인 ID</span>
             <TextInputBase
               inputstyle={{ flex: 1 }}
               disabled={true}
               bsSize={"lg"}
-              name={"userId"}
-              value={userId}
+              name={"corporateId"}
+              value={corporateId}
             />
           </EditorContentCol>
         </EditorRow>
@@ -340,7 +340,7 @@ const OperateQnADetail = () => {
   );
 };
 
-export default OperateQnADetail;
+export default CorporateQnADetail;
 
 const Image = styled.img`
   height: 100px;

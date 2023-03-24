@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { Label } from "reactstrap";
+import { Form, Label } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import {
@@ -16,7 +16,7 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import useInputs from "src/hooks/useInputs";
-import DetailBottomButton from "../Charger/components/DetailBottomButton";
+import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
 
 const groupItems = [
   { label: "선택", value: "" },
@@ -143,14 +143,22 @@ const OperatorCounselorDetail = () => {
           </DetailContentCol>
           <DetailLabelCol sm={2}>비밀번호</DetailLabelCol>
           <DetailContentCol>
-            <TextInputBase
-              disabled={disabled}
-              bsSize={"lg"}
-              name={"password"}
-              type={"password"}
-              value={password}
-              onChange={onChange}
-            />
+            <Form
+              /* 비밀번호 input에서 enter 클릭시, submit 리로드 액션 block */
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <TextInputBase
+                autoComplete={"off"}
+                disabled={disabled}
+                bsSize={"lg"}
+                name={"password"}
+                type={"password"}
+                value={password}
+                onChange={onChange}
+              />
+            </Form>
           </DetailContentCol>
         </DetailRow>
         <DetailRow>

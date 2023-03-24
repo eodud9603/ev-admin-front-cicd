@@ -99,17 +99,103 @@ const ChargerStationDetail = () => {
   const [isOperateDrop, setIsOperateDrop] = useState(true);
   /* 계약정보 drop */
   const [isContractDrop, setIsContractDrop] = useState(true);
-  /* 위탁사업자 직접입력 체크여부 */
-  const { directInput, businessName, onChange, onChangeSingle } = useInputs({
-    directInput: "0",
-    businessName: "",
-  });
+
   /* 전역 disabled 처리 */
   const [disabled, setDisabled] = useState(true);
   /* 수정완료 모달 */
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
   const [isEditCancel, setIsEditCancel] = useState(false);
+
+  const {
+    chargerStationName,
+    chargerStationId,
+    chargerStationLocation,
+    serviceProvider,
+    useStatus,
+    /* 위탁사업자 직접입력 체크여부 */
+    directInput,
+    businessName,
+    openStatus,
+    fast,
+    slow,
+    outletName,
+    outletCount,
+    exposedStatus,
+    receivingMethod,
+    separation,
+    customerNumber,
+    meter,
+    optionalFee,
+    businessOffice,
+    payment,
+    entryDate,
+    chargerLocation,
+    streetAddr,
+    zipCode,
+    addr,
+    addrDetail,
+    significant,
+    nonRechargeable,
+    weekdayStartDate,
+    weekdayEndDate,
+    holidayStartDate,
+    holidayEndDate,
+    saturdayStartDate,
+    saturdayEndDate,
+    parkingFeeStatus,
+    parkingFeeDetail,
+    locationX,
+    locationY,
+    contractNumber,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    /* 기본정보 */
+    chargerStationName: "휴맥스 카플랫 전용 A",
+    chargerStationId: "KEP0000000020",
+    chargerStationLocation: "입력 내용 노출",
+    serviceProvider: "1",
+    useStatus: "1",
+    business: "" /* 위탁사업자 > dropdown */,
+    directInput: "0" /* 위탁사업자 > 직접입력 체크여부 */,
+    businessName: "선택 내용 노출" /* 위탁사업자 > 직접입력값(businessName) */,
+    openStatus: "1",
+    fast: "3",
+    slow: "2",
+    outletName: "3kw 콘센트",
+    outletCount: "3",
+    exposedStatus: "1",
+    receivingMethod: "1",
+    separation: "1",
+    customerNumber: "선택 내용 노출",
+    meter: "선택 내용 노출",
+    optionalFee: "선택 내용 노출",
+    businessOffice: "선택 내용 노출",
+    payment: "선택 내용 노출",
+    entryDate: "2022-01-07",
+    chargerLocation: "선택 내용 노출",
+    streetAddr: "선택 내용 노출",
+    zipCode: "우편번호 노출",
+    addr: "검색된 주소 정보 노출",
+    addrDetail: "입력한 상세 주소 정보 노출",
+    significant: "선택 내용 노출",
+    nonRechargeable: "차량A,차량B",
+    /* 운영정보 */
+    weekdayStartDate: "00:00",
+    weekdayEndDate: "00:00",
+    holidayStartDate: "00:00",
+    holidayEndDate: "00:00",
+    saturdayStartDate: "00:00",
+    saturdayEndDate: "00:00",
+    parkingFeeStatus: "1",
+    parkingFeeDetail: "입력한 내용 노출",
+    /* 지도 좌표 */
+    locationX: "27.3196853051",
+    locationY: "127.3196853051",
+    /* 계약정보 */
+    contractNumber: "계약번호 노출",
+  });
 
   const navigate = useNavigate();
 
@@ -176,6 +262,9 @@ const ChargerStationDetail = () => {
               label={"충전기 등록"}
               color={"turu"}
               outline
+              onClick={() => {
+                navigate("/charger/add");
+              }}
             />
           </div>
 
@@ -190,14 +279,18 @@ const ChargerStationDetail = () => {
                         titleWidthRatio: 4,
                         title: "충전소명",
                         required: true,
-                        content: "휴맥스 카플랫 전용 A",
                         disabled,
+                        name: "chargerStationName",
+                        content: chargerStationName,
+                        onChange,
                       },
                       {
                         titleWidthRatio: 4,
                         title: "충전소ID",
-                        content: "KEP0000000020",
                         disabled,
+                        name: "chargerStationId",
+                        content: chargerStationId,
+                        onChange,
                       },
                     ]}
                   />
@@ -207,8 +300,10 @@ const ChargerStationDetail = () => {
                       {
                         titleWidthRatio: 2,
                         title: "충전소 위치",
-                        content: "입력 내용 노출",
                         disabled,
+                        name: "chargerStationLocation",
+                        content: chargerStationLocation,
+                        onChange,
                       },
                     ]}
                   />
@@ -218,20 +313,22 @@ const ChargerStationDetail = () => {
                       <DetailLabelCol sm={4}>충전서비스사업자</DetailLabelCol>
                       <DetailContentCol>
                         <RadioGroup
-                          name={"provider"}
+                          name={"serviceProvider"}
                           list={[
                             {
+                              disabled,
                               label: "HEV",
                               value: "1",
-                              checked: true,
-                              disabled,
+                              checked: serviceProvider === "1",
                             },
                             {
+                              disabled,
                               label: "JEV",
                               value: "2",
-                              disabled,
+                              checked: serviceProvider === "2",
                             },
                           ]}
+                          onChange={onChange}
                         />
                       </DetailContentCol>
                     </DetailGroupCol>
@@ -242,17 +339,19 @@ const ChargerStationDetail = () => {
                           name={"useStatus"}
                           list={[
                             {
+                              disabled,
                               label: "사용",
                               value: "1",
-                              checked: true,
-                              disabled,
+                              checked: useStatus === "1",
                             },
                             {
+                              disabled,
                               label: "미사용",
                               value: "2",
-                              disabled,
+                              checked: useStatus === "2",
                             },
                           ]}
+                          onChange={onChange}
                         />
                       </DetailContentCol>
                     </DetailGroupCol>
@@ -273,6 +372,9 @@ const ChargerStationDetail = () => {
                             menuItems={[
                               { label: "선택 내용 노출", value: "1" },
                             ]}
+                            onClickDropdownItem={(_, value) => {
+                              onChangeSingle({ business: value });
+                            }}
                           />
                         ) : (
                           <TextInputBase
@@ -301,11 +403,22 @@ const ChargerStationDetail = () => {
                       <DetailLabelCol sm={4}>개방여부</DetailLabelCol>
                       <DetailContentCol>
                         <RadioGroup
-                          name={"개방여부"}
+                          name={"openStatus"}
                           list={[
-                            { label: "완전", disabled, checked: true },
-                            { label: "부분", disabled },
+                            {
+                              disabled,
+                              label: "완전",
+                              value: "1",
+                              checked: openStatus === "1",
+                            },
+                            {
+                              disabled,
+                              label: "부분",
+                              value: "2",
+                              checked: openStatus === "2",
+                            },
                           ]}
+                          onChange={onChange}
                         />
                       </DetailContentCol>
                     </DetailGroupCol>
@@ -319,10 +432,12 @@ const ChargerStationDetail = () => {
                       >
                         <TextInputBase
                           bsSize={"lg"}
-                          name={"fastCharger"}
                           disabled={disabled}
-                          value={"1"}
-                          onChange={() => {}}
+                          type={"number"}
+                          placeholder={"숫자만 입력해주세요"}
+                          name={"fast"}
+                          value={fast}
+                          onChange={onChange}
                         />
                         <span>기</span>
                       </DetailContentCol>
@@ -334,10 +449,12 @@ const ChargerStationDetail = () => {
                       >
                         <TextInputBase
                           bsSize={"lg"}
-                          name={"slowCharger"}
                           disabled={disabled}
-                          value={"0"}
-                          onChange={() => {}}
+                          type={"number"}
+                          placeholder={"숫자만 입력해주세요"}
+                          name={"slow"}
+                          value={slow}
+                          onChange={onChange}
                         />
                         <span>기</span>
                       </DetailContentCol>
@@ -352,17 +469,20 @@ const ChargerStationDetail = () => {
                       >
                         <TextInputBase
                           bsSize={"lg"}
-                          name={"과금형"}
                           disabled={disabled}
-                          value={"3kw 콘센트"}
-                          onChange={() => {}}
+                          placeholder={"입력해주세요 (ex. 3kw 콘센트)"}
+                          name={"outletName"}
+                          value={outletName}
+                          onChange={onChange}
                         />
                         <TextInputBase
                           bsSize={"lg"}
-                          name={"과금형_기"}
                           disabled={disabled}
-                          value={"3"}
-                          onChange={() => {}}
+                          type={"number"}
+                          placeholder={"개수"}
+                          name={"outletCount"}
+                          value={outletCount}
+                          onChange={onChange}
                         />
                         <span>기</span>
                       </DetailContentCol>
@@ -371,16 +491,22 @@ const ChargerStationDetail = () => {
                       <DetailLabelCol sm={4}>충전소 노출여부</DetailLabelCol>
                       <DetailContentCol>
                         <RadioGroup
-                          name={"충전소 노출여부"}
+                          name={"exposedStatus"}
                           list={[
                             {
                               disabled,
-                              checked: true,
                               label: "노출",
                               value: "1",
+                              checked: exposedStatus === "1",
                             },
-                            { disabled, label: "미노출", value: "2" },
+                            {
+                              disabled,
+                              label: "미노출",
+                              value: "2",
+                              checked: exposedStatus === "2",
+                            },
                           ]}
+                          onChange={onChange}
                         />
                       </DetailContentCol>
                     </DetailGroupCol>
@@ -390,27 +516,41 @@ const ChargerStationDetail = () => {
                     rows={[
                       {
                         title: "수전방식",
+                        name: "receivingMethod",
                         list: [
                           {
                             disabled,
-                            checked: true,
                             label: "자중",
                             value: "1",
+                            checked: receivingMethod === "1",
                           },
-                          { disabled, label: "가공", value: "2" },
+                          {
+                            disabled,
+                            label: "가공",
+                            value: "2",
+                            checked: receivingMethod === "2",
+                          },
                         ],
+                        onChange,
                       },
                       {
                         title: "모자분리여부",
+                        name: "separation",
                         list: [
                           {
                             disabled,
-                            checked: true,
                             label: "모자",
                             value: "1",
+                            checked: separation === "1",
                           },
-                          { disabled, label: "자가", value: "2" },
+                          {
+                            disabled,
+                            label: "자가",
+                            value: "2",
+                            checked: separation === "2",
+                          },
                         ],
+                        onChange,
                       },
                     ]}
                   />
@@ -418,16 +558,21 @@ const ChargerStationDetail = () => {
                   <DetailTextInputRow
                     rows={[
                       {
+                        disabled,
                         titleWidthRatio: 4,
                         title: "한전고객번호",
-                        disabled,
-                        content: "입력 내용 노출",
+                        name: "customerNumber",
+                        content: customerNumber,
+                        onChange,
                       },
                       {
+                        disabled,
                         titleWidthRatio: 4,
                         title: "계량기 번호",
-                        disabled,
-                        content: "입력 내용 노출",
+                        name: "meter",
+                        content: meter,
+                        onChange,
+                        placeholder: "최대 1개 입력 가능합니다",
                       },
                     ]}
                   />
@@ -435,16 +580,20 @@ const ChargerStationDetail = () => {
                   <DetailTextInputRow
                     rows={[
                       {
+                        disabled,
                         titleWidthRatio: 4,
                         title: "한전선택요금",
-                        disabled,
-                        content: "입력 내용 노출",
+                        name: "optionalFee",
+                        content: optionalFee,
+                        onChange,
                       },
                       {
+                        disabled,
                         titleWidthRatio: 4,
                         title: "해당 한전영업소",
-                        disabled,
-                        content: "입력 내용 노출",
+                        name: "businessOffice",
+                        content: businessOffice,
+                        onChange,
                       },
                     ]}
                   />
@@ -455,10 +604,10 @@ const ChargerStationDetail = () => {
                       <DetailContentCol>
                         <TextInputBase
                           bsSize={"lg"}
-                          name={"한전불입금"}
                           disabled={disabled}
-                          value={"입력 내용 노출"}
-                          onChange={() => {}}
+                          name={"payment"}
+                          value={payment}
+                          onChange={onChange}
                         />
                       </DetailContentCol>
                     </DetailGroupCol>
@@ -469,6 +618,9 @@ const ChargerStationDetail = () => {
                           type={"date"}
                           className={"form-control w-xs"}
                           disabled={disabled}
+                          name={"entryDate"}
+                          value={entryDate}
+                          onChange={onChange}
                         />
                       </DetailContentCol>
                     </DetailGroupCol>
@@ -477,10 +629,12 @@ const ChargerStationDetail = () => {
                   <DetailTextInputRow
                     rows={[
                       {
+                        disabled,
                         titleWidthRatio: 2,
                         title: "충전기 위치",
-                        disabled,
-                        content: "입력 내용 노출",
+                        name: "chargerLocation",
+                        content: chargerLocation,
+                        onChange,
                       },
                     ]}
                   />
@@ -488,10 +642,12 @@ const ChargerStationDetail = () => {
                   <DetailTextInputRow
                     rows={[
                       {
+                        disabled,
                         titleWidthRatio: 2,
                         title: "도로명 주소",
-                        disabled,
-                        content: "입력 내용 노출",
+                        name: "streetAddr",
+                        content: streetAddr,
+                        onChange,
                       },
                     ]}
                   />
@@ -502,13 +658,14 @@ const ChargerStationDetail = () => {
                       <DetailContentCol>
                         <div className={"d-flex gap-4"}>
                           <TextInputBase
+                            disabled={true}
                             inputstyle={{ flex: 1 }}
                             bsSize={"lg"}
-                            disabled={true}
                             className={"mb-4"}
-                            name={"우편번호"}
-                            value={"우편번호 노출"}
-                            onChange={() => {}}
+                            placeholder={""}
+                            name={"zipCode"}
+                            value={zipCode}
+                            onChange={onChange}
                           />
                           <div style={{ flex: 3 }}>
                             {!disabled && (
@@ -524,18 +681,20 @@ const ChargerStationDetail = () => {
                         </div>
                         <div className={"d-flex gap-4"}>
                           <TextInputBase
-                            bsSize={"lg"}
                             disabled={true}
-                            name={"주소"}
-                            value={"검색된 주소 정보 노출"}
-                            onChange={() => {}}
+                            bsSize={"lg"}
+                            placeholder={""}
+                            name={"addr"}
+                            value={addr}
+                            onChange={onChange}
                           />
                           <TextInputBase
                             bsSize={"lg"}
                             disabled={disabled}
-                            name={"상세주소"}
-                            value={"입력한 상세 주소 정보 노출"}
-                            onChange={() => {}}
+                            placeholder={"상세 주소를 입력해주세요"}
+                            name={"addrDetail"}
+                            value={addrDetail}
+                            onChange={onChange}
                           />
                         </div>
                       </DetailContentCol>
@@ -545,10 +704,12 @@ const ChargerStationDetail = () => {
                   <DetailTextInputRow
                     rows={[
                       {
+                        disabled,
                         titleWidthRatio: 2,
                         title: "충전소 특이사항",
-                        disabled,
-                        content: "입력 내용 노출",
+                        name: "significant",
+                        content: significant,
+                        onChange,
                       },
                     ]}
                   />
@@ -556,10 +717,14 @@ const ChargerStationDetail = () => {
                   <DetailTextInputRow
                     rows={[
                       {
+                        disabled,
                         titleWidthRatio: 2,
                         title: "충전불가 차량",
-                        disabled,
-                        content: "차량A, 차량B",
+                        name: "nonRechargeable",
+                        content: nonRechargeable,
+                        onChange,
+                        placeholder:
+                          "‘,’로 구분해 작성해주세요 (ex. 차량명A, 차량명B)",
                       },
                     ]}
                   />
@@ -581,48 +746,66 @@ const ChargerStationDetail = () => {
                   <DetailTextInputRow
                     rows={[
                       {
+                        disabled,
                         titleWidthRatio: 4,
                         title: "운영시작시간(평일)",
-                        disabled,
-                        content: "00:00",
+                        name: "weekdayStartDate",
+                        content: weekdayStartDate,
+                        onChange,
+                        placeholder: "00:00 형식으로 입력해주세요",
                       },
                       {
+                        disabled,
                         titleWidthRatio: 4,
                         title: "운영종료시간(평일)",
-                        disabled,
-                        content: "00:00",
+                        name: "weekdayEndDate",
+                        content: weekdayEndDate,
+                        onChange,
+                        placeholder: "00:00 형식으로 입력해주세요",
                       },
                     ]}
                   />
                   <DetailTextInputRow
                     rows={[
                       {
+                        disabled,
                         titleWidthRatio: 4,
                         title: "운영시작시간(휴일)",
-                        disabled,
-                        content: "00:00",
+                        name: "holidayStartDate",
+                        content: holidayStartDate,
+                        onChange,
+                        placeholder: "00:00 형식으로 입력해주세요",
                       },
                       {
+                        disabled,
                         titleWidthRatio: 4,
                         title: "운영종료시간(휴일)",
-                        disabled,
-                        content: "00:00",
+                        name: "holidayEndDate",
+                        content: holidayEndDate,
+                        onChange,
+                        placeholder: "00:00 형식으로 입력해주세요",
                       },
                     ]}
                   />
                   <DetailTextInputRow
                     rows={[
                       {
+                        disabled,
                         titleWidthRatio: 4,
                         title: "운영시작시간(토)",
-                        disabled,
-                        content: "00:00",
+                        name: "saturdayStartDate",
+                        content: saturdayStartDate,
+                        onChange,
+                        placeholder: "00:00 형식으로 입력해주세요",
                       },
                       {
+                        disabled,
                         titleWidthRatio: 4,
                         title: "운영종료시간(토)",
-                        disabled,
-                        content: "00:00",
+                        name: "saturdayEndDate",
+                        content: saturdayEndDate,
+                        onChange,
+                        placeholder: "00:00 형식으로 입력해주세요",
                       },
                     ]}
                   />
@@ -631,25 +814,28 @@ const ChargerStationDetail = () => {
                     <DetailLabelCol sm={2}>주차비 여부</DetailLabelCol>
                     <DetailContentCol>
                       <RadioGroup
-                        name={"parkingPriceStatus"}
+                        name={"parkingFeeStatus"}
                         list={[
                           {
+                            disabled,
                             label: "미확인",
                             value: "1",
-                            checked: true,
-                            disabled,
+                            checked: parkingFeeStatus === "1",
                           },
                           {
+                            disabled,
                             label: "유",
                             value: "2",
-                            disabled,
+                            checked: parkingFeeStatus === "2",
                           },
                           {
+                            disabled,
                             label: "무",
                             value: "3",
-                            disabled,
+                            checked: parkingFeeStatus === "3",
                           },
                         ]}
+                        onChange={onChange}
                       />
                     </DetailContentCol>
                     <DetailLabelCol sm={2}>주차비 상세</DetailLabelCol>
@@ -657,9 +843,9 @@ const ChargerStationDetail = () => {
                       <TextInputBase
                         bsSize={"lg"}
                         disabled={disabled}
-                        name={"parkingPriceDetail"}
-                        value={"입력 내용 노출"}
-                        onChange={() => {}}
+                        name={"parkingFeeDetail"}
+                        value={parkingFeeDetail}
+                        onChange={onChange}
                       />
                     </DetailContentCol>
                   </DetailRow>
@@ -683,8 +869,9 @@ const ChargerStationDetail = () => {
                       {
                         titleWidthRatio: 4,
                         title: "계약번호",
-                        content: "계약번호",
-                        disabled,
+                        name: "contractNumber",
+                        content: contractNumber,
+                        disabled: true,
                         children: (
                           <ButtonBase
                             label={"계약 상세"}
@@ -740,9 +927,10 @@ const ChargerStationDetail = () => {
                       "border border-1 border-secondary border-opacity-50"
                     }
                     disabled={disabled}
-                    name={"x"}
-                    value={"37.3196853051"}
-                    onChange={() => {}}
+                    placeholder={"위치선택, 직접입력"}
+                    name={"locationX"}
+                    value={locationX}
+                    onChange={onChange}
                   />
                 </Col>
                 <Col
@@ -757,9 +945,10 @@ const ChargerStationDetail = () => {
                       "border border-1 border-secondary border-opacity-50"
                     }
                     disabled={disabled}
-                    name={"y"}
-                    value={"127.3196853051"}
-                    onChange={() => {}}
+                    placeholder={"위치선택, 직접입력"}
+                    name={"locationY"}
+                    value={locationY}
+                    onChange={onChange}
                   />
                 </Col>
               </Row>

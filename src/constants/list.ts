@@ -3,19 +3,24 @@
 export const COUNT_FILTER_LIST = [
     { label: "10개씩 보기", value: "1" },
     { label: "20개씩 보기", value: "2" },
-    { label: "50개씩 보기", value: "3" },
+    { label: "30개씩 보기", value: "3" },
+    { label: "50개씩 보기", value: "4" },
+    { label: "100개씩 보기", value: "5" },
   ];
 
 /** 운영사 필터 */
 export const OPERATOR_FILTER_LIST  = [
   {
     label: "전체",
+    value: ""
   },
   {
     label: "HEV",
+    value: "1"
   },
   {
     label: "JEV",
+    value: "2"
   },
 ];
 
@@ -23,12 +28,15 @@ export const OPERATOR_FILTER_LIST  = [
 export const DEMOLITION_FILTER_LIST  = [
   {
     label: "전체",
+    value: ""
   },
   {
     label: "철거",
+    value: "1"
   },
   {
     label: "철거예정",
+    value: "2"
   },
 ];
 
@@ -36,12 +44,15 @@ export const DEMOLITION_FILTER_LIST  = [
 export const DELETE_FILTER_LIST = [
   {
     label: "전체",
+    value: "",
   },
   {
     label: "Y",
+    value: "Y",
   },
   {
     label: "N",
+    value: "N",
   },
 ];
 
@@ -49,19 +60,19 @@ export const DELETE_FILTER_LIST = [
 export const UPLOAD_FILTER_LIST = [
   {
     label: "전체",
-    value: "1"
+    value: ""
   },
   {
     label: "IOS",
-    value: "2"
+    value: "1"
   },
   {
     label: "AOS",
-    value: "3"
+    value: "2"
   },
   {
     label: "WEB",
-    value: "4"
+    value: "3"
   },
 ];
 
@@ -69,12 +80,15 @@ export const UPLOAD_FILTER_LIST = [
 export const ANSWER_STATUS_FILTER_LIST = [
   {
     label: "전체",
+    value: ""
   },
   {
     label: "완료",
+    value: "1"
   },
   {
     label: "대기",
+    value: "2"
   },
 ];
 

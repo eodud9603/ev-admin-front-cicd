@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -11,10 +12,15 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { UPLOAD_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
+import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 
 const OperateNoticeAdd = () => {
   const [tabList, setTabList] = useState([{ label: "공지사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
+  /* 등록확인 모달 */
+  const [addModalOpen, setAddModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const {
     date,
@@ -83,7 +89,7 @@ const OperateNoticeAdd = () => {
               label={"저장하기"}
               color={"turu"}
               onClick={() => {
-                /** @TODO 저장(수정) 로직 추가 */
+                setAddModalOpen(true);
               }}
             />
           </div>
@@ -161,6 +167,31 @@ const OperateNoticeAdd = () => {
           }}
         />
       </BodyBase>
+
+      <OperateTextModal
+        isOpen={addModalOpen}
+        onClose={() => {
+          setAddModalOpen((prev) => !prev);
+        }}
+        title={"공지사항 작성"}
+        contents={"저장 후 사용자에게 즉시 노출됩니다.\n저장하시겠습니까?"}
+        buttons={[
+          {
+            label: "아니요",
+            color: "secondary",
+          },
+          {
+            label: "저장",
+            color: "turu",
+            onClick: () => {
+              /** @TODO 저장 로직 추가 */
+
+              setAddModalOpen((prev) => !prev);
+              navigate("/operate/notice");
+            },
+          },
+        ]}
+      />
     </ContainerBase>
   );
 };

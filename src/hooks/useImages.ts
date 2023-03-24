@@ -32,6 +32,11 @@ const useImages = (list: IImageItemProps[]) => {
   /** 이미지 단일 삭제 */
   const remove = useCallback(
     (index: number) => {
+      const isNumber = !isNaN(index);
+      if(!isNumber) {
+        return;
+      }
+
       const imageList = [...images];
       imageList.splice(index, 1);
 
