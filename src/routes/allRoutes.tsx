@@ -85,6 +85,7 @@ import { PaymentInChargingRegistration } from "src/pages/Payment/PaymentInChargi
 import { PaymentInChargingDetail } from "src/pages/Payment/PaymentInChargingDetail";
 import InstallChargerAdd from "src/pages/Operate/InstallChargerAdd";
 import OperateQnADetail from "src/pages/Operate/OperateQnADetail";
+import CorporateQnADetail from "src/pages/Operate/CorporateQnADetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -178,7 +179,8 @@ const userRoutes: Array<RouteProps> = [
     path: "/operate/corporateNotice/detail/:id",
     element: <CorporateNoticeDetail />,
   },
-  { path: "/operate/corporateQna", element: <CorporateQnA /> },
+  { path: "/operate/corporateQnA", element: <CorporateQnA /> },
+  { path: "/operate/corporateQnA/detail/:id", element: <CorporateQnADetail /> },
   { path: "/operate/event", element: <Event /> },
   { path: "/operate/event/add", element: <EventAdd /> },
   { path: "/operate/event/detail/:id", element: <EventDetail /> },

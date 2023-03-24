@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -58,6 +59,7 @@ const tableHeader = [
 /* 임시 목록 데이터 */
 const qnaList = [
   {
+    id: "1",
     category: "가입 승인",
     title: "가입 승인이 안됩니다.",
     corporateName: "휴맥스",
@@ -68,6 +70,7 @@ const qnaList = [
     status: "답변대기",
   },
   {
+    id: "2",
     category: "결제 카드",
     title: "카드 결제가 왜 안될까요?",
     corporateName: "휴맥스",
@@ -84,6 +87,8 @@ const CorporateQnA = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+
+  const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -192,6 +197,7 @@ const CorporateQnA = () => {
                   qnaList.map(
                     (
                       {
+                        id,
                         category,
                         title,
                         corporateName,
@@ -203,7 +209,12 @@ const CorporateQnA = () => {
                       },
                       index
                     ) => (
-                      <tr key={index}>
+                      <HoverTr
+                        key={id}
+                        onClick={() => {
+                          navigate(`/operate/corporateQnA/detail/${id}`);
+                        }}
+                      >
                         <td>{index + 1}</td>
                         <td>{category}</td>
                         <td>{title}</td>
@@ -213,7 +224,7 @@ const CorporateQnA = () => {
                         <td>{answerName}</td>
                         <td>{answerDate}</td>
                         <td>{status}</td>
-                      </tr>
+                      </HoverTr>
                     )
                   )
                 ) : (
@@ -238,3 +249,8 @@ export default CorporateQnA;
 
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
+const HoverTr = styled.tr`
+  :hover {
+    cursor: pointer;
+  }
+`;
