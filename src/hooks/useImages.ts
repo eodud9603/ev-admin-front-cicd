@@ -29,6 +29,35 @@ const useImages = (list: IImageItemProps[]) => {
     []
   );
 
+  /** drag and drop block (새창으로 파일 열리는 것 방지) */
+  const dropBlock :React.DragEventHandler<HTMLDivElement> = useCallback((e) => {
+    e.nativeEvent.preventDefault();
+  }, []);
+
+  /** drag and drop하여 이미지 파일 추가 */
+  const drop:React.DragEventHandler<HTMLDivElement> = useCallback((e) => {
+    e.nativeEvent.preventDefault();
+
+    const files = e?.nativeEvent.dataTransfer?.files;
+    if(!files) {
+      return;
+    }
+
+    const uploadImages = Array.from(files);
+    const imageList: IImageItemProps[] = [];
+    for (const image of uploadImages) {
+      /** 이미지 타입 여부 체크 */
+      const isImageType = image.type.includes("image");
+      if(!isImageType) {
+        continue;
+      }
+
+      const src = URL.createObjectURL(image);
+      imageList.push({ file: image, src });
+    }
+    setImages((prev) => [...prev, ...imageList]);
+  }, []);
+
   /** 이미지 단일 삭제 */
   const remove = useCallback(
     (index: number) => {
@@ -46,11 +75,13 @@ const useImages = (list: IImageItemProps[]) => {
   );
 
   /** 이미지 데이터 초기화 */
-  const reset = useCallback(() => setImages([]), []);
+  const reset = useCallback(() => setImages(list), [list]);
 
   return {
     images,
     upload,
+    dropBlock,
+    drop,
     remove,
     reset,
   };

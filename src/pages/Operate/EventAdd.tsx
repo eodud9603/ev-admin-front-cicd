@@ -28,9 +28,7 @@ const EventAdd = () => {
     date,
     startDate,
     endDate,
-    progressStatus,
     writer,
-    views,
     uploadTarget,
     title,
     attachmentList,
@@ -50,7 +48,7 @@ const EventAdd = () => {
     attachmentList: [],
   });
   /* 배너 이미지 */
-  const { images, upload, remove } = useImages([]);
+  const { images, upload, drop, remove } = useImages([]);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -199,7 +197,10 @@ const EventAdd = () => {
         {/* 배너 이미지 */}
         <EditorRow className={"pb-2"}>
           <EditorTitleCol>배너 이미지</EditorTitleCol>
-          <EditorContentCol>
+          <EditorContentCol
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={drop}
+          >
             <>
               {images.map(({ src }, index) => (
                 <div className={"mb-3"} key={src}>

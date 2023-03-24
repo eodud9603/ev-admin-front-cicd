@@ -53,7 +53,7 @@ const EventDetail = () => {
     attachmentList: [{ name: "2023.01.07 개인정보 처리 방침.pdf" }],
   });
   /* 배너 이미지 */
-  const { images, upload, remove } = useImages([]);
+  const { images, upload, drop, dropBlock, remove } = useImages([]);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -248,7 +248,10 @@ const EventDetail = () => {
         {/* 배너 이미지 */}
         <EditorRow className={"pb-2"}>
           <EditorTitleCol>배너 이미지</EditorTitleCol>
-          <EditorContentCol>
+          <EditorContentCol
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={disabled ? dropBlock : drop}
+          >
             <>
               {images.map(({ src }, index) => (
                 <div className={"mb-3"} key={src}>
@@ -258,15 +261,17 @@ const EventDetail = () => {
                   >
                     <BannerImage className={"rounded"} src={src} />
 
-                    <Icon
-                      className={
-                        "position-absolute top-0 start-100 translate-middle " +
-                        "font-size-24 mdi mdi-close"
-                      }
-                      onClick={() => {
-                        remove(index);
-                      }}
-                    />
+                    {!disabled && (
+                      <Icon
+                        className={
+                          "position-absolute top-0 start-100 " +
+                          "translate-middle font-size-24 mdi mdi-close"
+                        }
+                        onClick={() => {
+                          remove(index);
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
               ))}

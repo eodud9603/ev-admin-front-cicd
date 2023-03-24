@@ -5,6 +5,9 @@ interface ITextColProps {
   sm?: number;
   className?: string;
   children?: string | React.ReactElement | React.ReactElement[];
+
+  onDragOver?: React.DragEventHandler<HTMLDivElement>;
+  onDrop?: React.DragEventHandler<HTMLDivElement>;
 }
 
 export const TextLabelCol = (props: ITextColProps) => {
@@ -25,7 +28,7 @@ export const TextLabelCol = (props: ITextColProps) => {
 };
 
 export const TextContentCol = (props: ITextColProps) => {
-  const { sm, className = "", children } = props;
+  const { sm, className = "", children, onDragOver, onDrop } = props;
 
   return (
     <Col
@@ -35,6 +38,8 @@ export const TextContentCol = (props: ITextColProps) => {
         "border-top border-bottom border-2 border-light " +
         className
       }
+      onDragOver={onDragOver}
+      onDrop={onDrop}
     >
       {children}
     </Col>
@@ -47,13 +52,15 @@ export const TextColGroup = (props: {
   sm?: number;
   className?: string;
   children?: string | React.ReactElement | React.ReactElement[];
+  onDragOver?: React.DragEventHandler<HTMLDivElement>;
+  onDrop?: React.DragEventHandler<HTMLDivElement>;
 }) => {
-  const { title = "", labelSm, sm, className = "", children } = props;
+  const { title = "", labelSm, sm, className = "", children, ...rest } = props;
 
   return (
     <>
       <TextLabelCol sm={labelSm}>{title}</TextLabelCol>
-      <TextContentCol sm={sm} className={className}>
+      <TextContentCol sm={sm} className={className} {...rest}>
         {children}
       </TextContentCol>
     </>
