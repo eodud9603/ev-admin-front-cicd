@@ -187,7 +187,7 @@ export const PaymentInKepco = () => {
                 </span>
                 <DropdownBase menuItems={dropdownData} />
                 <ButtonBase
-                  label={"신규 등록"}
+                  label={"요금표 등록"}
                   color={"turu"}
                   onClick={moveToRegistration}
                 />

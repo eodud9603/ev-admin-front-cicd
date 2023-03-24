@@ -86,6 +86,7 @@ import { PaymentInChargingDetail } from "src/pages/Payment/PaymentInChargingDeta
 import InstallChargerAdd from "src/pages/Operate/InstallChargerAdd";
 import OperateQnADetail from "src/pages/Operate/OperateQnADetail";
 import CorporateQnADetail from "src/pages/Operate/CorporateQnADetail";
+import { PaymentInKepcoRegistration } from "src/pages/Payment/components/PaymentInKepcoRegistration";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -242,6 +243,10 @@ const userRoutes: Array<RouteProps> = [
     element: <PaymentInChargingRegistration />,
   },
   { path: "/payment/kepco", element: <PaymentInKepco /> },
+  {
+    path: "/payment/kepco/registration",
+    element: <PaymentInKepcoRegistration />,
+  },
   { path: "/payment/roaming", element: <PaymentInRoaming /> },
 ];
 
