@@ -463,11 +463,12 @@ const ChargerContractAdd = () => {
           <ButtonBase
             className={"width-110 ms-2"}
             label={"등록"}
-            disabled={true}
             /** @TODO disabled에 따른 코드 추후 추가 */
             // color={false ? "turu" : "secondary"}
-            color={"secondary"}
-            onClick={() => {}}
+            color={"turu"}
+            onClick={() => {
+              setIsAddComplete(true);
+            }}
           />
         </div>
       </BodyBase>
@@ -476,6 +477,9 @@ const ChargerContractAdd = () => {
         isOpen={isAddComplete}
         onClose={() => {
           setIsAddComplete((prev) => !prev);
+        }}
+        onClosed={() => {
+          navigate("/charger/contract");
         }}
         title={"신규 충전소 계약 정보 등록 완료"}
         contents={"충전소 계약  정보가 등록되었습니다."}
