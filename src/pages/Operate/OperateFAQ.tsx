@@ -304,7 +304,7 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
 
   const navigate = useNavigate();
 
-  const onChangeCheck: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+  const onChangeCheck: React.ChangeEventHandler<HTMLInputElement> = () => {
     setChecked((prev) => !prev);
   };
 

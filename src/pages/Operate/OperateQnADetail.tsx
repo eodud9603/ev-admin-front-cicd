@@ -54,7 +54,13 @@ const OperateQnADetail = () => {
   const { answerContent, onChange } = useInputs({
     answerContent: "안녕하세요! 모빌리티로 통하는 세상 트루입니다.",
   });
-  const { images: answerImages, upload, remove } = useImages([]);
+  const {
+    images: answerImages,
+    upload,
+    drop,
+    dropBlock,
+    remove,
+  } = useImages([]);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -283,7 +289,11 @@ const OperateQnADetail = () => {
         </EditorRow>
         <EditorRow className={"pb-3"}>
           <EditorTitleCol>이미지</EditorTitleCol>
-          <EditorContentCol className={"d-flex flex-wrap gap-4"}>
+          <EditorContentCol
+            className={"d-flex flex-wrap gap-4"}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={disabled ? dropBlock : drop}
+          >
             <>
               {answerImages.length > 0
                 ? answerImages.map((image, index) => (
@@ -294,17 +304,17 @@ const OperateQnADetail = () => {
                     >
                       <Image className={"rounded"} src={image.src} />
 
-                      <Icon
-                        className={
-                          "position-absolute top-0 start-100 " +
-                          "translate-middle font-size-24 mdi mdi-close"
-                        }
-                        onClick={() => {
-                          if (!disabled) {
-                            remove(index);
+                      {!disabled && (
+                        <Icon
+                          className={
+                            "position-absolute top-0 start-100 " +
+                            "translate-middle font-size-24 mdi mdi-close"
                           }
-                        }}
-                      />
+                          onClick={() => {
+                            remove(index);
+                          }}
+                        />
+                      )}
                     </div>
                   ))
                 : null}

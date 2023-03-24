@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { Col, Row } from "reactstrap";
+import { Col, Input, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
@@ -12,8 +12,10 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
+import useImages from "src/hooks/useImages";
 import useInputs from "src/hooks/useInputs";
 import { TextColGroup } from "src/pages/Operate/components/OperateCol";
+import styled from "styled-components";
 
 const InstallChargerAdd = () => {
   const [tabList, setTabList] = useState([{ label: "충전기 설치 신청 관리" }]);
@@ -42,6 +44,7 @@ const InstallChargerAdd = () => {
     telMiddle: "",
     telEnd: "",
   });
+  const { images, upload, drop, dropBlock, remove } = useImages([]);
   const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -86,7 +89,9 @@ const InstallChargerAdd = () => {
           ]}
         />
         <div className={"d-flex justify-content-between"}>
-          <p className={"font-size-24 fw-semibold"}>충전기 설치 신청 등록</p>
+          <p className={"font-size-24 fw-semibold"}>
+            충전기 설치 신청 내역 등록
+          </p>
           <div>
             <ButtonBase label={"저장하기"} onClick={() => {}} color={"turu"} />
           </div>
@@ -241,6 +246,58 @@ const InstallChargerAdd = () => {
             </TextColGroup>
             <TextColGroup title={"확인일"}>YYYY.MM.DD</TextColGroup>
           </Row>
+          <Row className={"m-0"}>
+            <TextColGroup
+              labelSm={2}
+              title={"현장 사진"}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={drop}
+            >
+              {images.length === 0 ? (
+                <AddImage
+                  className={
+                    "d-flex justify-content-center align-items-center " +
+                    "bg-light bg-opacity-50 rounded"
+                  }
+                  onClick={() => {
+                    document.getElementById("images")?.click();
+                  }}
+                >
+                  현장 상태가 잘 드러나 있는 이미지 (jpeg, jpg, gif, png)를
+                  등록해주세요.
+                </AddImage>
+              ) : (
+                <PictureContainer className={"position-relative"}>
+                  <Picture
+                    width={"100%"}
+                    className={"rounded"}
+                    src={images[0].src}
+                    alt={images[0].file.name}
+                  />
+
+                  <Icon
+                    className={
+                      "position-absolute top-0 start-100 translate-middle " +
+                      "font-size-24 mdi mdi-close"
+                    }
+                    onClick={() => {
+                      remove(0);
+                    }}
+                  />
+                </PictureContainer>
+              )}
+
+              <Input
+                className={"visually-hidden"}
+                multiple={false}
+                type={"file"}
+                id={"images"}
+                name={"images"}
+                accept={"image/*"}
+                onChange={upload}
+              />
+            </TextColGroup>
+          </Row>
         </section>
 
         <div className={"my-5 d-flex justify-content-center"}>
@@ -260,3 +317,23 @@ const InstallChargerAdd = () => {
 };
 
 export default InstallChargerAdd;
+
+const AddImage = styled.div`
+  width: 100%;
+  height: 427px;
+
+  :hover {
+    cursor: pointer;
+  }
+`;
+const PictureContainer = styled.div`
+  min-height: 427px;
+`;
+const Picture = styled.img`
+  object-fit: cover;
+`;
+const Icon = styled.i`
+  :hover {
+    cursor: pointer;
+  }
+`;
