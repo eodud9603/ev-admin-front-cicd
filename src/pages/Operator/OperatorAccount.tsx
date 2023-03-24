@@ -13,18 +13,22 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
+import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
 /* 계정상태 필터 */
 const statusList = [
   {
     label: "전체",
+    value: "",
   },
   {
     label: "정상",
+    value: "1",
   },
   {
     label: "차단",
+    value: "2",
   },
 ];
 
@@ -94,8 +98,13 @@ const OperatorAccount = () => {
     { label: "공지사항" },
     { label: "계정 관리" },
   ]);
-  const [text, setText] = useState("");
   const [selectedIndex, setSelectedIndex] = useState("0");
+  const { searchRange, searchText, accountStatus, onChange, onChangeSingle } =
+    useInputs({
+      searchRange: "1",
+      searchText: "",
+      accountStatus: "",
+    });
   const [page, setPage] = useState(1);
 
   const navigate = useNavigate();
@@ -149,16 +158,25 @@ const OperatorAccount = () => {
                 title={"검색어"}
                 name={"searchText"}
                 menuItems={searchList}
-                placeholder={"운영자명을 입력해주세요."}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ searchRange: value });
+                }}
+                placeholder={`${
+                  searchRange === "1" ? "운영자명을" : "운영자 ID를"
+                } 입력해주세요.`}
+                value={searchText}
+                onChange={onChange}
               />
             </Col>
             <Col md={5}>
               <RadioGroup
                 title={"계정상태"}
-                name={"statusGroup"}
-                list={statusList}
+                name={"accountStatus"}
+                list={statusList.map((status) => ({
+                  ...status,
+                  checked: accountStatus === status.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
