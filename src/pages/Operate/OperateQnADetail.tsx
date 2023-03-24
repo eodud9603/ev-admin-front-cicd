@@ -300,7 +300,9 @@ const OperateQnADetail = () => {
                           "translate-middle font-size-24 mdi mdi-close"
                         }
                         onClick={() => {
-                          remove(index);
+                          if (!disabled) {
+                            remove(index);
+                          }
                         }}
                       />
                     </div>
