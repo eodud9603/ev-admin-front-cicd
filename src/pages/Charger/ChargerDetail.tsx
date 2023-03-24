@@ -857,21 +857,25 @@ const ChargerDetail = () => {
                     name={"installationCategory"}
                     list={[
                       {
+                        disabled,
                         label: "자체",
                         value: "1",
                         checked: installationCategory === "1",
                       },
                       {
+                        disabled,
                         label: "보조금",
                         value: "2",
                         checked: installationCategory === "2",
                       },
                       {
+                        disabled,
                         label: "납품",
                         value: "3",
                         checked: installationCategory === "3",
                       },
                       {
+                        disabled,
                         label: "위탁",
                         value: "4",
                         checked: installationCategory === "4",
