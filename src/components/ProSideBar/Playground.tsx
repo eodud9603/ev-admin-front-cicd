@@ -240,7 +240,7 @@ export const Playground = (props: any) => {
                   법인 공지사항
                 </MenuItem>
 
-                <MenuItem component={<Link to={"/operate/corporateQna"} />}>
+                <MenuItem component={<Link to={"/operate/corporateQnA"} />}>
                   법인 문의사항
                 </MenuItem>
                 <MenuItem component={<Link to={"/operate/event"} />}>
