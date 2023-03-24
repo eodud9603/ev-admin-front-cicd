@@ -23,9 +23,6 @@ const InstallChargerAdd = () => {
   /** @TODO 상세정보 불러오면 initial값 넣어주기 */
   const {
     personalAgreement,
-    application,
-    self,
-    open,
     contents,
     managerName,
     telStart,
@@ -44,7 +41,7 @@ const InstallChargerAdd = () => {
     telMiddle: "",
     telEnd: "",
   });
-  const { images, upload, drop, dropBlock, remove } = useImages([]);
+  const { images, upload, drop, reset } = useImages([]);
   const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -280,9 +277,7 @@ const InstallChargerAdd = () => {
                       "position-absolute top-0 start-100 translate-middle " +
                       "font-size-24 mdi mdi-close"
                     }
-                    onClick={() => {
-                      remove(0);
-                    }}
+                    onClick={reset}
                   />
                 </PictureContainer>
               )}

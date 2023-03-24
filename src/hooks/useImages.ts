@@ -75,7 +75,7 @@ const useImages = (list: IImageItemProps[]) => {
   );
 
   /** 이미지 데이터 초기화 */
-  const reset = useCallback(() => setImages([]), []);
+  const reset = useCallback(() => setImages(list), [list]);
 
   return {
     images,
