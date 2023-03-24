@@ -6,7 +6,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import { ModalBody } from "reactstrap";
-import DetailCompleteModal from "./DetailCompleteModal";
+import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
 
 interface IAlarmAddMemberModal {
   isOpen: boolean;

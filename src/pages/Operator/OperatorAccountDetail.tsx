@@ -18,8 +18,8 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import useInputs from "src/hooks/useInputs";
-import DetailBottomButton from "../Charger/components/DetailBottomButton";
-import AuthLevelModal from "./components/AuthLevelModal";
+import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
+import AuthLevelModal from "src/pages/Operator/components/AuthLevelModal";
 
 const groupItems = [{ label: "휴맥스EV", value: "1" }];
 

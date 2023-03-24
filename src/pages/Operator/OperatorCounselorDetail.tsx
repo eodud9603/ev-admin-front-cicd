@@ -16,7 +16,7 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import useInputs from "src/hooks/useInputs";
-import DetailBottomButton from "../Charger/components/DetailBottomButton";
+import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
 
 const groupItems = [
   { label: "선택", value: "" },

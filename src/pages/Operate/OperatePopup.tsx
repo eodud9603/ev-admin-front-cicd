@@ -26,7 +26,7 @@ import {
   UPLOAD_FILTER_LIST,
 } from "src/constants/list";
 import styled from "styled-components";
-import CategoryModal from "./components/CategoryModal";
+import CategoryModal from "src/pages/Operate/components/CategoryModal";
 
 /* 진행 여부 필터 */
 const progressList = [

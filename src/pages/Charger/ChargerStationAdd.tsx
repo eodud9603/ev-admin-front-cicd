@@ -26,7 +26,7 @@ import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
 import { DetailDropdownRow } from "src/components/Common/DetailContentRow/DetailDropdownRow";
-import DetailValidCheckModal from "./components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 
 const ChargerStationAdd = () => {
   const [tabList, setTabList] = useState([

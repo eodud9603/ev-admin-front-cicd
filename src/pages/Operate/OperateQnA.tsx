@@ -21,7 +21,7 @@ import {
 } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
-import CategoryModal from "./components/CategoryModal";
+import CategoryModal from "src/pages/Operate/components/CategoryModal";
 
 /* 검색어 필터 */
 const searchList = [

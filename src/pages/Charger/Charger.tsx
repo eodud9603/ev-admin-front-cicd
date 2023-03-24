@@ -19,8 +19,8 @@ import {
   OPERATOR_FILTER_LIST,
 } from "src/constants/list";
 import styled from "styled-components";
-import BatchControlModal from "./components/BatchControlModal";
-import SingleControlModal from "./components/SingleControlModal";
+import BatchControlModal from "src/pages/Charger/components/BatchControlModal";
+import SingleControlModal from "src/pages/Charger/components/SingleControlModal";
 
 /* 주소(지역) 필터 */
 const addressList = [
