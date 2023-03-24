@@ -11,6 +11,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
+import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
@@ -24,29 +25,54 @@ import {
   DELETE_FILTER_LIST,
   UPLOAD_FILTER_LIST,
 } from "src/constants/list";
+import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
-/* 검색어 필터 */
+/** 검색어 필터 */
 const searchList = [
-  { label: "전체", value: "1" },
-  { label: "제목", value: "2" },
-  { label: "내용", value: "3" },
-  { label: "작성자", value: "4" },
+  { label: "전체", value: "" },
+  { label: "제목", value: "1" },
+  { label: "내용", value: "2" },
+  { label: "작성자", value: "3" },
 ];
 
-/* 목록 헤더 */
+/** 정렬 필터 */
+const sortList = [
+  {
+    label: "기본",
+    value: "",
+  },
+  {
+    label: "번호",
+    value: "1",
+  },
+  {
+    label: "제목",
+    value: "2",
+  },
+  {
+    label: "작성자",
+    value: "3",
+  },
+  {
+    label: "조회 수",
+    value: "4",
+  },
+];
+
+/** 목록 헤더 */
 const tableHeader = [
   { label: "선택" },
-  { label: "번호", sort: () => {} },
+  { label: "번호" },
   { label: "제목" },
-  { label: "업로드 대상", sort: () => {} },
-  { label: "작성자", sort: () => {} },
-  { label: "조회수", sort: () => {} },
-  { label: "작성일", sort: () => {} },
-  { label: "삭제 여부", sort: () => {} },
+  { label: "업로드 대상" },
+  { label: "작성자" },
+  { label: "조회수" },
+  { label: "작성일" },
+  { label: "삭제 여부" },
 ];
 
-/* 임시 목록 데이터 */
+/** 임시 목록 데이터 */
 const noticeList: Omit<IListItemProps, "index">[] = [
   {
     id: "1",
@@ -87,8 +113,25 @@ interface IListItemProps {
 const OperateNotice = () => {
   const [tabList, setTabList] = useState([{ label: "공지사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+  const {
+    // startDate,
+    // endDate,
+    deleteStatus,
+    uploadTarget,
+    searchText,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    startDate: "",
+    endDate: "",
+    deleteStatus: "",
+    uploadTarget: "",
+    searchRange: "",
+    searchText: "",
+    sort: "",
+  });
+
   const listRef = useRef<IListRefProps[]>([]);
 
   const navigate = useNavigate();
@@ -156,15 +199,23 @@ const OperateNotice = () => {
             <Col md={4}>
               <RadioGroup
                 title={"삭제 여부"}
-                name={"deleteGroup"}
-                list={DELETE_FILTER_LIST}
+                name={"deleteStatus"}
+                list={DELETE_FILTER_LIST.map((status) => ({
+                  ...status,
+                  checked: deleteStatus === status.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
             <Col md={4}>
               <RadioGroup
                 title={"업로드 대상"}
-                name={"uploadGroup"}
-                list={UPLOAD_FILTER_LIST}
+                name={"uploadTarget"}
+                list={UPLOAD_FILTER_LIST.map((target) => ({
+                  ...target,
+                  checked: uploadTarget === target.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -172,14 +223,32 @@ const OperateNotice = () => {
             <Col md={7}>
               <SearchTextInput
                 title={"검색어"}
-                name={"searchText"}
-                menuItems={searchList}
                 placeholder={"검색어를 입력해주세요."}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                menuItems={searchList}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ searchRange: value });
+                }}
+                name={"searchText"}
+                value={searchText}
+                onChange={onChange}
               />
             </Col>
             <Col md={5} />
+          </Row>
+          <Row className={"mt-3 d-flex align-items-center"}>
+            <Col sm={12}>
+              <DropboxGroup
+                label={"정렬 기준"}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ sort: value });
+                    },
+                    menuItems: sortList,
+                  },
+                ]}
+              />
+            </Col>
           </Row>
         </SearchSection>
 
