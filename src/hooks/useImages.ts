@@ -25,6 +25,8 @@ const useImages = (list: IImageItemProps[]) => {
         imageList.push({ file: image, src });
       }
       setImages((prev) => [...prev, ...imageList]);
+      /* 파일 업로드 -> 제거 -> 같은 파일 재업로드 시, onChange동작이 없으므로, value값을 초기화하여 onChange event가 동작하도록 해당 코드 추가 */
+      e.target.value = "";
     },
     []
   );
