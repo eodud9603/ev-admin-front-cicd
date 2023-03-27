@@ -99,12 +99,19 @@ const OperatorAccount = () => {
     { label: "계정 관리" },
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const { searchRange, searchText, accountStatus, onChange, onChangeSingle } =
-    useInputs({
-      searchRange: "1",
-      searchText: "",
-      accountStatus: "",
-    });
+  const {
+    searchRange,
+    searchText,
+    accountStatus,
+    count,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    searchRange: "1",
+    searchText: "",
+    accountStatus: "",
+    count: "1",
+  });
   const [page, setPage] = useState(1);
 
   const navigate = useNavigate();
@@ -195,7 +202,12 @@ const OperatorAccount = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <DropdownBase
+                menuItems={COUNT_FILTER_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ count: value });
+                }}
+              />
               <ButtonBase
                 label={"신규 등록"}
                 color={"turu"}

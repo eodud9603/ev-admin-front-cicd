@@ -56,10 +56,12 @@ const OperatorAccount = () => {
     { label: "상담사 정보 관리" },
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const { searchRange, searchText, onChange, onChangeSingle } = useInputs({
-    searchRange: "1",
-    searchText: "",
-  });
+  const { searchRange, searchText, count, onChange, onChangeSingle } =
+    useInputs({
+      searchRange: "1",
+      searchText: "",
+      count: "1",
+    });
   const [page, setPage] = useState(1);
 
   const navigate = useNavigate();
@@ -139,7 +141,14 @@ const OperatorAccount = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <DropdownBase
+                menuItems={COUNT_FILTER_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({
+                    count: value,
+                  });
+                }}
+              />
               <ButtonBase
                 label={"신규 등록"}
                 color={"turu"}
