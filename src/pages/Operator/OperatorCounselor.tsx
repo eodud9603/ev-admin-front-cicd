@@ -56,12 +56,11 @@ const OperatorAccount = () => {
     { label: "상담사 정보 관리" },
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const { searchRange, searchText, count, onChange, onChangeSingle } =
-    useInputs({
-      searchRange: "1",
-      searchText: "",
-      count: "1",
-    });
+  const { searchRange, searchText, onChange, onChangeSingle } = useInputs({
+    searchRange: "1",
+    searchText: "",
+    count: "1",
+  });
   const [page, setPage] = useState(1);
 
   const navigate = useNavigate();

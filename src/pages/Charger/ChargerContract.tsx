@@ -145,7 +145,6 @@ const ChargerContract = () => {
     searchRange,
     searchText,
     useStatus,
-    count,
     onChange,
     onChangeSingle,
   } = useInputs({

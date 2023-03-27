@@ -99,19 +99,13 @@ const OperatorAccount = () => {
     { label: "계정 관리" },
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const {
-    searchRange,
-    searchText,
-    accountStatus,
-    count,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
-    searchRange: "1",
-    searchText: "",
-    accountStatus: "",
-    count: "1",
-  });
+  const { searchRange, searchText, accountStatus, onChange, onChangeSingle } =
+    useInputs({
+      searchRange: "1",
+      searchText: "",
+      accountStatus: "",
+      count: "1",
+    });
   const [page, setPage] = useState(1);
 
   const navigate = useNavigate();
