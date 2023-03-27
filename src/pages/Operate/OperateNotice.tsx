@@ -45,20 +45,12 @@ const sortList = [
     value: "",
   },
   {
-    label: "번호",
+    label: "작성일",
     value: "1",
   },
   {
-    label: "제목",
-    value: "2",
-  },
-  {
-    label: "작성자",
-    value: "3",
-  },
-  {
     label: "조회 수",
-    value: "4",
+    value: "2",
   },
 ];
 
@@ -117,6 +109,8 @@ const OperateNotice = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 선택삭제 버튼 활성화 여부 */
   const [isActive, setIsActive] = useState(false);
+  /* 선택삭제 모달 */
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const {
     // startDate,
@@ -135,8 +129,6 @@ const OperateNotice = () => {
     searchText: "",
     sort: "",
   });
-  /* 선택삭제 모달 */
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const listRef = useRef<IListRefProps[]>([]);
 
