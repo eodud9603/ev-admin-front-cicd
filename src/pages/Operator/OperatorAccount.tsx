@@ -104,6 +104,7 @@ const OperatorAccount = () => {
       searchRange: "1",
       searchText: "",
       accountStatus: "",
+      count: "1",
     });
   const [page, setPage] = useState(1);
 
@@ -156,14 +157,14 @@ const OperatorAccount = () => {
             <Col md={7}>
               <SearchTextInput
                 title={"검색어"}
-                name={"searchText"}
+                placeholder={`${
+                  searchRange === "1" ? "운영자명을" : "운영자 ID를"
+                } 입력해주세요.`}
                 menuItems={searchList}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
-                placeholder={`${
-                  searchRange === "1" ? "운영자명을" : "운영자 ID를"
-                } 입력해주세요.`}
+                name={"searchText"}
                 value={searchText}
                 onChange={onChange}
               />
@@ -195,7 +196,12 @@ const OperatorAccount = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <DropdownBase
+                menuItems={COUNT_FILTER_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ count: value });
+                }}
+              />
               <ButtonBase
                 label={"신규 등록"}
                 color={"turu"}
