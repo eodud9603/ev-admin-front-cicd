@@ -14,18 +14,19 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
+import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
 /* 주소(지역) 필터 */
 const addressList = [
   {
-    menuItems: [{ label: "시,도", value: "1" }],
+    menuItems: [{ label: "시,도", value: "" }],
   },
   {
-    menuItems: [{ label: "구,군", value: "1" }],
+    menuItems: [{ label: "구,군", value: "" }],
   },
   {
-    menuItems: [{ label: "동,읍", value: "1" }],
+    menuItems: [{ label: "동,읍", value: "" }],
   },
 ];
 
@@ -33,15 +34,19 @@ const addressList = [
 const contractFilterList = [
   {
     label: "전체",
+    value: "",
   },
   {
     label: "계약",
+    value: "1",
   },
   {
     label: "해지대기",
+    value: "2",
   },
   {
     label: "해지",
+    value: "3",
   },
 ];
 
@@ -49,30 +54,29 @@ const contractFilterList = [
 const useList = [
   {
     label: "전체",
+    value: "",
   },
   {
     label: "사용",
+    value: "1",
   },
   {
     label: "미사용",
+    value: "2",
   },
 ];
 
 /* 검색어 필터 */
 const searchList = [
-  { label: "계약장소명", value: "1" },
-  { label: "충전소 ID", value: "2" },
-  { label: "영업업체", value: "3" },
+  { label: "계약장소명", placeholderKeyword: "계약장소명을", value: "1" },
+  { label: "충전소 ID", placeholderKeyword: "충전소 ID를", value: "2" },
+  { label: "영업업체", placeholderKeyword: "영업업체를", value: "3" },
 ];
 
 /* 정렬기준 */
 const sortList = [
-  {
-    menuItems: [
-      { label: "기본", value: "1" },
-      { label: "계약 체결일", value: "2" },
-    ],
-  },
+  { label: "기본", value: "" },
+  { label: "계약 체결일", value: "1" },
 ];
 
 /* 목록 헤더 */
@@ -133,9 +137,28 @@ const ChargerContract = () => {
     { label: "공지사항" },
     { label: "충전소 계약 관리" },
   ]);
-  const [text, setText] = useState("");
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
+
+  const {
+    contractStatus,
+    searchRange,
+    searchText,
+    useStatus,
+    count,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    contractStatus: "",
+    searchRange: "1",
+    searchText: "",
+    useStatus: "",
+    sort: "",
+    count: "1",
+  });
+  const placeholderKeyword =
+    searchList.find((search) => searchRange === search.value)
+      ?.placeholderKeyword ?? "";
 
   const navigate = useNavigate();
 
@@ -193,8 +216,12 @@ const ChargerContract = () => {
             <Col md={5}>
               <RadioGroup
                 title={"계약여부"}
-                name={"contractGroup"}
-                list={contractFilterList}
+                name={"contractStatus"}
+                list={contractFilterList.map((contract) => ({
+                  ...contract,
+                  checked: contractStatus === contract.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -203,21 +230,39 @@ const ChargerContract = () => {
               <SearchTextInput
                 title={"검색어"}
                 name={"searchText"}
-                placeholder={"계약장소명을 입력해주세요."}
+                placeholder={`${placeholderKeyword} 입력해주세요.`}
                 menuItems={searchList}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ searchRange: value });
+                }}
+                value={searchText}
+                onChange={onChange}
               />
             </Col>
             <Col md={5}>
-              <RadioGroup title={"사용여부"} name={"useGroup"} list={useList} />
+              <RadioGroup
+                title={"사용여부"}
+                name={"useStatus"}
+                list={useList.map((use) => ({
+                  ...use,
+                  checked: useStatus === use.value,
+                }))}
+                onChange={onChange}
+              />
             </Col>
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col>
               <DropboxGroup
                 label={"정렬기준"}
-                dropdownItems={sortList}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ sort: value });
+                    },
+                    menuItems: sortList,
+                  },
+                ]}
                 className={"me-2"}
               />
             </Col>
@@ -237,7 +282,12 @@ const ChargerContract = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <DropdownBase
+                menuItems={COUNT_FILTER_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ count: value });
+                }}
+              />
               <ButtonBase
                 label={"신규 등록"}
                 color={"turu"}
