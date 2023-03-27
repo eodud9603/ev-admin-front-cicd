@@ -277,6 +277,9 @@ const SMSList = (props: { navigate: NavigateFunction }) => {
               title={"검색어"}
               placeholder={"검색어를 입력해주세요."}
               menuItems={searchList}
+              onClickDropdownItem={(_, value) => {
+                onChangeSingle({ searchRange: value });
+              }}
               name={"searchText"}
               value={searchText}
               onChange={onChange}
