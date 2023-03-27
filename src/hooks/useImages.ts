@@ -69,7 +69,9 @@ const useImages = (list: IImageItemProps[]) => {
       }
 
       const imageList = [...images];
-      imageList.splice(index, 1);
+      /* 생성한 기존 URL을 폐기 (메모리 누수 방지) */
+      const [deleteImage] = imageList.splice(index, 1);
+      URL.revokeObjectURL(deleteImage.src);
 
       setImages(imageList);
     },
@@ -77,7 +79,14 @@ const useImages = (list: IImageItemProps[]) => {
   );
 
   /** 이미지 데이터 초기화 */
-  const reset = useCallback(() => setImages(list), [list]);
+  const reset = useCallback(() => {
+    /* 생성한 기존 URL을 폐기 (메모리 누수 방지) */
+    for(const image of images) {
+      URL.revokeObjectURL(image.src);
+    }
+
+    setImages(list);
+  }, [images, list]);
 
   return {
     images,
