@@ -21,20 +21,25 @@ import {
 } from "src/constants/list";
 import styled from "styled-components";
 import SendMessage from "src/pages/Operate/components/SendMessage";
+import useInputs from "src/hooks/useInputs";
 
 /* 진행 여부 필터 */
 const progressList = [
   {
     label: "전체",
+    value: "",
   },
   {
     label: "요청",
+    value: "1",
   },
   {
     label: "성공",
+    value: "2",
   },
   {
     label: "실패",
+    value: "3",
   },
 ];
 
@@ -42,31 +47,31 @@ const progressList = [
 const searchList = [{ label: "전체", value: "1" }];
 
 /* 분류 필터 */
-const classificationList = [
-  {
-    menuItems: [{ label: "전체", value: "1" }],
-  },
-];
+const classificationList = [{ label: "전체", value: "" }];
 
 /* 카테고리 필터 */
-const categoryList = [
+const categoryList = [{ label: "전체", value: "" }];
+
+/** 정렬 필터 */
+const sortList = [
   {
-    menuItems: [{ label: "전체", value: "1" }],
+    label: "기본",
+    value: "",
   },
 ];
 
 /* 목록 헤더 */
 const tableHeader = [
-  { label: "번호", sort: () => {} },
-  { label: "충전소명", sort: () => {} },
-  { label: "충전기 ID", sort: () => {} },
-  { label: "충전기 CH", sort: () => {} },
-  { label: "단말기 번호", sort: () => {} },
-  { label: "명령어", sort: () => {} },
-  { label: "제어 요청자", sort: () => {} },
-  { label: "제어 요청일", sort: () => {} },
-  { label: "제어 완료일", sort: () => {} },
-  { label: "제어 상태", sort: () => {} },
+  { label: "번호" },
+  { label: "충전소명" },
+  { label: "충전기 ID" },
+  { label: "충전기 CH" },
+  { label: "단말기 번호" },
+  { label: "명령어" },
+  { label: "제어 요청자" },
+  { label: "제어 요청일" },
+  { label: "제어 완료일" },
+  { label: "제어 상태" },
 ];
 
 /* 임시 목록 데이터 */
@@ -211,8 +216,17 @@ interface ISMSItemProps {
 const SMSList = (props: { navigate: NavigateFunction }) => {
   const { navigate } = props;
 
-  const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+
+  const { progressStatus, searchText, onChange, onChangeSingle } = useInputs({
+    progressStatus: "",
+    classification: "",
+    searchRange: "",
+    searchText: "",
+    category: "",
+    sort: "",
+    count: "1",
+  });
 
   return (
     <>
@@ -225,8 +239,12 @@ const SMSList = (props: { navigate: NavigateFunction }) => {
           <Col md={4}>
             <RadioGroup
               title={"진행 여부"}
-              name={"progressGroup"}
-              list={progressList}
+              name={"progressStatus"}
+              list={progressList.map((data) => ({
+                ...data,
+                checked: progressStatus === data.value,
+              }))}
+              onChange={onChange}
             />
           </Col>
         </Row>
@@ -238,7 +256,16 @@ const SMSList = (props: { navigate: NavigateFunction }) => {
           <Col className={"d-flex"} md={4}>
             <DropboxGroup
               label={"분류"}
-              dropdownItems={classificationList}
+              dropdownItems={[
+                {
+                  onClickDropdownItem: (_, value) => {
+                    onChangeSingle({
+                      classification: value,
+                    });
+                  },
+                  menuItems: classificationList,
+                },
+              ]}
               className={"me-2 w-xs"}
             />
             <ButtonBase label={"추가"} color={"dark"} />
@@ -248,20 +275,48 @@ const SMSList = (props: { navigate: NavigateFunction }) => {
           <Col md={8}>
             <SearchTextInput
               title={"검색어"}
-              name={"searchText"}
-              menuItems={searchList}
               placeholder={"검색어를 입력해주세요."}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
+              menuItems={searchList}
+              onClickDropdownItem={(_, value) => {
+                onChangeSingle({ searchRange: value });
+              }}
+              name={"searchText"}
+              value={searchText}
+              onChange={onChange}
             />
           </Col>
           <Col className={"d-flex"} md={4}>
             <DropboxGroup
               label={"카테고리"}
-              dropdownItems={categoryList}
+              dropdownItems={[
+                {
+                  onClickDropdownItem: (_, value) => {
+                    onChangeSingle({
+                      category: value,
+                    });
+                  },
+                  menuItems: categoryList,
+                },
+              ]}
               className={"me-2 w-xs"}
             />
             <ButtonBase label={"추가"} color={"dark"} />
+          </Col>
+        </Row>
+
+        <Row className={"mt-3 d-flex align-items-center"}>
+          <Col>
+            <DropboxGroup
+              label={"정렬 기준"}
+              dropdownItems={[
+                {
+                  onClickDropdownItem: (_, value) => {
+                    onChangeSingle({ sort: value });
+                  },
+                  menuItems: sortList,
+                },
+              ]}
+            />
           </Col>
         </Row>
       </SearchSection>
@@ -278,7 +333,14 @@ const SMSList = (props: { navigate: NavigateFunction }) => {
             <span className={"font-size-10 text-muted"}>
               2023-04-01 14:51기준
             </span>
-            <DropdownBase menuItems={COUNT_FILTER_LIST} />
+            <DropdownBase
+              menuItems={COUNT_FILTER_LIST}
+              onClickDropdownItem={(_, value) => {
+                onChangeSingle({
+                  count: value,
+                });
+              }}
+            />
           </div>
         </div>
 

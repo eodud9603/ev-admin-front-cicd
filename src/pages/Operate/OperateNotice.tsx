@@ -115,6 +115,7 @@ interface IListItemProps {
 const OperateNotice = () => {
   const [tabList, setTabList] = useState([{ label: "공지사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
+  /* 선택삭제 버튼 활성화 여부 */
   const [isActive, setIsActive] = useState(false);
   const [page, setPage] = useState(1);
   const {
@@ -134,7 +135,7 @@ const OperateNotice = () => {
     searchText: "",
     sort: "",
   });
-  /* 등록확인 모달 */
+  /* 선택삭제 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const listRef = useRef<IListRefProps[]>([]);

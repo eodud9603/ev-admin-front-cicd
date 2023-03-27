@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useCallback,
   useImperativeHandle,
   useRef,
   useState,
@@ -21,21 +22,32 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST, DELETE_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
 import CodeModal from "src/pages/Operate/components/CodeModal";
+import useInputs from "src/hooks/useInputs";
+import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
+import OperateTextModal from "./components/OperateTextModal";
 
 /* 검색어 필터 */
-const searchList = [{ label: "전체", value: "1" }];
+const searchList = [{ label: "전체", value: "" }];
+
+/** 정렬 필터 */
+const sortList = [
+  {
+    label: "기본",
+    value: "",
+  },
+];
 
 /* 목록 헤더 */
 const tableHeader = [
   { label: "선택" },
-  { label: "번호", sort: () => {} },
-  { label: "그룹코드", sort: () => {} },
-  { label: "그룹코드명", sort: () => {} },
-  { label: "내용", sort: () => {} },
-  { label: "등록자", sort: () => {} },
-  { label: "등록일", sort: () => {} },
-  { label: "하위코드 관리", sort: () => {} },
-  { label: "삭제 여부", sort: () => {} },
+  { label: "번호" },
+  { label: "그룹코드" },
+  { label: "그룹코드명" },
+  { label: "내용" },
+  { label: "등록자" },
+  { label: "등록일" },
+  { label: "하위코드 관리" },
+  { label: "삭제 여부" },
 ];
 
 /* 임시 목록 데이터 */
@@ -72,14 +84,26 @@ interface IListItemProps {
 const OperateCode = () => {
   const [tabList, setTabList] = useState([{ label: "코드 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const [text, setText] = useState("");
   const [page, setPage] = useState(1);
-  const listRef = useRef<IListRefProps[]>([]);
   /* 코드관리 모달 */
   const [codeModal, setCodeModal] = useState({
     isOpen: false,
     data: {} as IListItemProps,
   });
+  /* 선택삭제 버튼 활성화 여부 */
+  const [isActive, setIsActive] = useState(false);
+  /* 선택삭제 모달 */
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const { deleteStatus, searchText, onChange, onChangeSingle } = useInputs({
+    deleteStatus: "",
+    searchRange: "",
+    searchText: "",
+    sort: "",
+    count: "1",
+  });
+
+  const listRef = useRef<IListRefProps[]>([]);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);
@@ -104,6 +128,8 @@ const OperateCode = () => {
 
   /** 선택항목 삭제 */
   const deleteHandler = () => {
+    setIsActive(false);
+
     const checkedList = [];
     for (const item of listRef.current) {
       const { checked, data } = item;
@@ -114,6 +140,27 @@ const OperateCode = () => {
       }
     }
   };
+
+  /** 선택삭제 버튼 활성화 여부 업데이트 */
+  const onChangeActive = useCallback((currentItemChecked: boolean) => {
+    let isActive = currentItemChecked;
+    if (!isActive) {
+      const checkCount = listRef.current.reduce((acc, cur) => {
+        if (cur.checked) {
+          acc += 1;
+        }
+
+        return acc;
+      }, 0);
+
+      /* 체크된 목록이 있으면, 선택삭제 버튼 활성화 (ref을 사용하여 1개 보다 커야 체크된 것이 있음) */
+      if (checkCount > 1) {
+        isActive = true;
+      }
+    }
+
+    setIsActive(isActive);
+  }, []);
 
   return (
     <ContainerBase>
@@ -145,8 +192,12 @@ const OperateCode = () => {
             <Col md={4}>
               <RadioGroup
                 title={"삭제 여부"}
-                name={"deleteGroup"}
-                list={DELETE_FILTER_LIST}
+                name={"deleteStatus"}
+                list={DELETE_FILTER_LIST.map((data) => ({
+                  ...data,
+                  checked: deleteStatus === data.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -154,14 +205,33 @@ const OperateCode = () => {
             <Col md={7}>
               <SearchTextInput
                 title={"검색어"}
-                name={"searchText"}
-                menuItems={searchList}
                 placeholder={"검색어를 입력해주세요."}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                menuItems={searchList}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ searchRange: value });
+                }}
+                name={"searchText"}
+                value={searchText}
+                onChange={onChange}
               />
             </Col>
             <Col md={5} />
+          </Row>
+
+          <Row className={"mt-3 d-flex align-items-center"}>
+            <Col>
+              <DropboxGroup
+                label={"정렬 기준"}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ sort: value });
+                    },
+                    menuItems: sortList,
+                  },
+                ]}
+              />
+            </Col>
           </Row>
         </SearchSection>
 
@@ -178,13 +248,21 @@ const OperateCode = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <DropdownBase
+                menuItems={COUNT_FILTER_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ count: value });
+                }}
+              />
               <ButtonBase label={"신규 등록"} color={"turu"} />
               <ButtonBase
+                disabled={!isActive}
                 label={"선택 삭제"}
-                outline={true}
-                color={"turu"}
-                onClick={deleteHandler}
+                outline={isActive}
+                color={isActive ? "turu" : "secondary"}
+                onClick={() => {
+                  setDeleteModalOpen(true);
+                }}
               />
             </div>
           </div>
@@ -201,6 +279,7 @@ const OperateCode = () => {
                       key={index}
                       index={index}
                       setCodeModal={setCodeModal}
+                      onChangeActive={onChangeActive}
                       {...code}
                     />
                   ))
@@ -225,6 +304,30 @@ const OperateCode = () => {
           setCodeModal((prev) => ({ ...prev, isOpen: false }));
         }}
       />
+      <OperateTextModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen((prev) => !prev);
+        }}
+        title={"코드 삭제"}
+        contents={"해당 코드를 삭제하시겠습니까?"}
+        buttons={[
+          {
+            label: "아니요",
+            color: "secondary",
+          },
+          {
+            label: "삭제",
+            color: "turu",
+            onClick: () => {
+              /** @TODO 저장 로직 추가 */
+
+              deleteHandler();
+              setDeleteModalOpen((prev) => !prev);
+            },
+          },
+        ]}
+      />
     </ContainerBase>
   );
 };
@@ -234,7 +337,10 @@ export default OperateCode;
 const SearchSection = styled.section``;
 const ListSection = styled.section``;
 
-const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
+const TableRow = forwardRef<
+  IListRefProps,
+  IListItemProps & { onChangeActive: (currentItemChecked: boolean) => void }
+>((props, ref) => {
   const {
     index,
     groupCode,
@@ -245,10 +351,13 @@ const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
     isDelete,
 
     setCodeModal,
+    onChangeActive,
   } = props;
   const [checked, setChecked] = useState(false);
 
   const onChangeCheck = () => {
+    onChangeActive(!checked);
+
     setChecked((prev) => !prev);
   };
 

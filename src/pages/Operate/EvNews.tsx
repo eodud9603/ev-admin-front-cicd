@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useCallback,
   useImperativeHandle,
   useRef,
   useState,
@@ -11,6 +12,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
+import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
@@ -24,25 +26,35 @@ import {
   DELETE_FILTER_LIST,
   UPLOAD_FILTER_LIST,
 } from "src/constants/list";
+import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
+import OperateTextModal from "./components/OperateTextModal";
 
 /* 검색어 필터 */
 const searchList = [
-  { label: "전체", value: "1" },
-  { label: "제목", value: "2" },
-  { label: "작성자", value: "3" },
+  { label: "전체", value: "" },
+  { label: "제목", value: "1" },
+  { label: "작성자", value: "2" },
+];
+
+/** 정렬 필터 */
+const sortList = [
+  {
+    label: "기본",
+    value: "",
+  },
 ];
 
 /* 목록 헤더 */
 const tableHeader = [
   { label: "선택" },
-  { label: "번호", sort: () => {} },
+  { label: "번호" },
   { label: "제목" },
-  { label: "업로드 대상", sort: () => {} },
-  { label: "작성자", sort: () => {} },
-  { label: "조회수", sort: () => {} },
-  { label: "작성일", sort: () => {} },
-  { label: "삭제 여부", sort: () => {} },
+  { label: "업로드 대상" },
+  { label: "작성자" },
+  { label: "조회수" },
+  { label: "작성일" },
+  { label: "삭제 여부" },
 ];
 
 /* 임시 목록 데이터 */
@@ -86,9 +98,23 @@ interface IListItemProps {
 const EvNews = () => {
   const [tabList, setTabList] = useState([{ label: "EV 뉴스" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+  /* 선택삭제 버튼 활성화 여부 */
+  const [isActive, setIsActive] = useState(false);
+  /* 선택삭제 모달 */
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
   const listRef = useRef<IListRefProps[]>([]);
+
+  const { deleteStatus, uploadTarget, searchText, onChange, onChangeSingle } =
+    useInputs({
+      deleteStatus: "",
+      uploadTarget: "",
+      searchRange: "",
+      searchText: "",
+      sort: "",
+      count: "1",
+    });
 
   const navigate = useNavigate();
 
@@ -115,6 +141,8 @@ const EvNews = () => {
 
   /** 선택항목 삭제 */
   const deleteHandler = () => {
+    setIsActive(false);
+
     const checkedList = [];
     for (const item of listRef.current) {
       const { checked, data } = item;
@@ -125,6 +153,27 @@ const EvNews = () => {
       }
     }
   };
+
+  /** 선택삭제 버튼 활성화 여부 업데이트 */
+  const onChangeActive = useCallback((currentItemChecked: boolean) => {
+    let isActive = currentItemChecked;
+    if (!isActive) {
+      const checkCount = listRef.current.reduce((acc, cur) => {
+        if (cur.checked) {
+          acc += 1;
+        }
+
+        return acc;
+      }, 0);
+
+      /* 체크된 목록이 있으면, 선택삭제 버튼 활성화 (ref을 사용하여 1개 보다 커야 체크된 것이 있음) */
+      if (checkCount > 1) {
+        isActive = true;
+      }
+    }
+
+    setIsActive(isActive);
+  }, []);
 
   return (
     <ContainerBase>
@@ -155,15 +204,23 @@ const EvNews = () => {
             <Col md={4}>
               <RadioGroup
                 title={"삭제 여부"}
-                name={"deleteGroup"}
-                list={DELETE_FILTER_LIST}
+                name={"deleteStatus"}
+                list={DELETE_FILTER_LIST.map((data) => ({
+                  ...data,
+                  checked: deleteStatus === data.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
             <Col md={4}>
               <RadioGroup
                 title={"업로드 대상"}
-                name={"uploadGroup"}
-                list={UPLOAD_FILTER_LIST}
+                name={"uploadTarget"}
+                list={UPLOAD_FILTER_LIST.map((data) => ({
+                  ...data,
+                  checked: uploadTarget === data.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -171,14 +228,33 @@ const EvNews = () => {
             <Col md={7}>
               <SearchTextInput
                 title={"검색어"}
-                name={"searchText"}
-                menuItems={searchList}
                 placeholder={"검색어를 입력해주세요."}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                menuItems={searchList}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ searchRange: value });
+                }}
+                name={"searchText"}
+                value={searchText}
+                onChange={onChange}
               />
             </Col>
             <Col md={5} />
+          </Row>
+
+          <Row className={"mt-3 d-flex align-items-center"}>
+            <Col>
+              <DropboxGroup
+                label={"정렬 기준"}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ sort: value });
+                    },
+                    menuItems: sortList,
+                  },
+                ]}
+              />
+            </Col>
           </Row>
         </SearchSection>
 
@@ -195,7 +271,12 @@ const EvNews = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <DropdownBase
+                menuItems={COUNT_FILTER_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ count: value });
+                }}
+              />
               <ButtonBase
                 label={"신규 등록"}
                 color={"turu"}
@@ -204,10 +285,13 @@ const EvNews = () => {
                 }}
               />
               <ButtonBase
+                disabled={!isActive}
                 label={"선택 삭제"}
-                outline={true}
-                color={"turu"}
-                onClick={deleteHandler}
+                outline={isActive}
+                color={isActive ? "turu" : "secondary"}
+                onClick={() => {
+                  setDeleteModalOpen(true);
+                }}
               />
             </div>
           </div>
@@ -223,6 +307,7 @@ const EvNews = () => {
                       }
                       key={news.id}
                       index={index}
+                      onChangeActive={onChangeActive}
                       {...news}
                     />
                   ))
@@ -240,6 +325,33 @@ const EvNews = () => {
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
       </BodyBase>
+
+      <OperateTextModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen((prev) => !prev);
+        }}
+        title={"EV 뉴스 삭제"}
+        contents={
+          "삭제 후 고객에게 해당 EV 뉴스가 표시되지 않습니다.\n삭제하시겠습니까?"
+        }
+        buttons={[
+          {
+            label: "아니요",
+            color: "secondary",
+          },
+          {
+            label: "삭제",
+            color: "turu",
+            onClick: () => {
+              /** @TODO 저장 로직 추가 */
+
+              deleteHandler();
+              setDeleteModalOpen((prev) => !prev);
+            },
+          },
+        ]}
+      />
     </ContainerBase>
   );
 };
@@ -254,13 +366,28 @@ const HoverTr = styled.tr`
   }
 `;
 
-const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
-  const { id, index, title, upload, writer, view, date, isDelete } = props;
+const TableRow = forwardRef<
+  IListRefProps,
+  IListItemProps & { onChangeActive: (currentItemChecked: boolean) => void }
+>((props, ref) => {
+  const {
+    id,
+    index,
+    title,
+    upload,
+    writer,
+    view,
+    date,
+    isDelete,
+    onChangeActive,
+  } = props;
   const [checked, setChecked] = useState(false);
 
   const navigate = useNavigate();
 
   const onChangeCheck = () => {
+    onChangeActive(!checked);
+
     setChecked((prev) => !prev);
   };
 
