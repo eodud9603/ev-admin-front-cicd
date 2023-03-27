@@ -157,14 +157,14 @@ const OperatorAccount = () => {
             <Col md={7}>
               <SearchTextInput
                 title={"검색어"}
-                name={"searchText"}
+                placeholder={`${
+                  searchRange === "1" ? "운영자명을" : "운영자 ID를"
+                } 입력해주세요.`}
                 menuItems={searchList}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
-                placeholder={`${
-                  searchRange === "1" ? "운영자명을" : "운영자 ID를"
-                } 입력해주세요.`}
+                name={"searchText"}
                 value={searchText}
                 onChange={onChange}
               />

@@ -228,12 +228,12 @@ const ChargerContract = () => {
             <Col md={7}>
               <SearchTextInput
                 title={"검색어"}
-                name={"searchText"}
                 placeholder={`${placeholderKeyword} 입력해주세요.`}
                 menuItems={searchList}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
+                name={"searchText"}
                 value={searchText}
                 onChange={onChange}
               />
@@ -253,6 +253,7 @@ const ChargerContract = () => {
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col>
               <DropboxGroup
+                className={"me-2"}
                 label={"정렬기준"}
                 dropdownItems={[
                   {
@@ -262,7 +263,6 @@ const ChargerContract = () => {
                     menuItems: sortList,
                   },
                 ]}
-                className={"me-2"}
               />
             </Col>
           </Row>

@@ -194,11 +194,11 @@ const Charger = () => {
               <SearchTextInput
                 title={"검색어"}
                 placeholder={`${searchKeyword} 입력해주세요`}
-                name={"searchText"}
                 menuItems={searchList}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
+                name={"searchText"}
                 value={searchText}
                 onChange={onChange}
               />
@@ -218,6 +218,7 @@ const Charger = () => {
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col>
               <DropboxGroup
+                className={"me-2"}
                 label={"정렬기준"}
                 dropdownItems={[
                   {
@@ -227,7 +228,6 @@ const Charger = () => {
                     menuItems: sortList,
                   },
                 ]}
-                className={"me-2"}
               />
             </Col>
           </Row>
