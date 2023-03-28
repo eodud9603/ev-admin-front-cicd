@@ -90,6 +90,7 @@ import { PaymentInKepcoRegistration } from "src/pages/Payment/components/Payment
 import ChargerControl from "src/pages/ChargeMonitoring/ChargerControl";
 import IndividualSettlement from "src/pages/Sales/IndividualSettlement";
 import TotalSettlement from "src/pages/Sales/TotalSettlement";
+import BillingHistory from "src/pages/Sales/BillingHistory";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -241,6 +242,7 @@ const userRoutes: Array<RouteProps> = [
 
   { path: "/sales/individualSettlement", element: <IndividualSettlement /> },
   { path: "/sales/totalSettlement", element: <TotalSettlement /> },
+  { path: "/sales/billingHistory", element: <BillingHistory /> },
 
   {
     path: "/payment/charging/detail/:id",

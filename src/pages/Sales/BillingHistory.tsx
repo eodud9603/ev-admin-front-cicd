@@ -16,7 +16,7 @@ import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
-const PAGE_NAME = "합산 정산 내역";
+const PAGE_NAME = "요금 청구 내역";
 
 /** 년 목록 (임시) */
 const yearList = [
@@ -49,19 +49,23 @@ const searchList = [
   { label: "회원 ID", value: "2" },
 ];
 
-/** 회원구분 목록 */
-const userTypeList = [
+/** 청구구분 목록 */
+const claimTypeList = [
   {
     label: "전체",
     value: "",
   },
   {
-    label: "회원",
+    label: "청구 전",
     value: "1",
   },
   {
-    label: "비회원",
+    label: "결제 성공",
     value: "2",
+  },
+  {
+    label: "결제 실패",
+    value: "3",
   },
 ];
 
@@ -97,27 +101,39 @@ const tableHeader = [
   },
   {
     label: "과금대상(연)",
-  },
-  {
-    label: "과금대상(월)",
-  },
-  {
-    label: "합산 충전량(kwh)",
     sort: () => {},
   },
   {
-    label: "합산금액(원)",
+    label: "과금대상(월)",
+    sort: () => {},
   },
   {
-    label: "조정금액(원)",
+    label: "청구 대상 금액(원)",
+    sort: () => {},
   },
   {
-    label: "변동금액(원)",
+    label: "청구 대상 조정 금액(원)",
+    sort: () => {},
+  },
+  {
+    label: "청구여부",
+  },
+  {
+    label: "청구타입",
+  },
+  {
+    label: "청구결과",
+  },
+  {
+    label: "청구일시",
+  },
+  {
+    label: "결과 메세지",
   },
 ];
 
 /** 임시 데이터 */
-const settlementList = [
+const billingHistoryList = [
   {
     id: "1",
     settlementType: "미정산",
@@ -125,25 +141,28 @@ const settlementList = [
     userId: "회원 ID 노출",
     billingYear: "2023",
     billingMonth: "01",
-    totalChargingAmount: 54.12,
-    totalAmount: 15103,
-    adjustmentAmount: 300,
-    variableAmount: -14803,
+    billingAmount: 300,
+    billingAdjustmentAmount: 300,
+    isClaim: "요청 완료",
+    claimType: "카드",
+    claimResult: "실패",
+    claimDate: "YYYY.MM.DD",
+    resultMessage: "카드 결제 성공",
   },
 ];
 
-const TotalSettlement = () => {
+const BillingHistory = () => {
   const [tabList, setTabList] = useState([{ label: PAGE_NAME }]);
   const [page, setPage] = useState(1);
 
-  const { searchText, userType, settlementType, onChange, onChangeSingle } =
+  const { searchText, claimType, settlementType, onChange, onChangeSingle } =
     useInputs({
       billingYear: "",
       billingMonth: "",
       settlementType: "",
       searchRange: "",
       searchText: "",
-      userType: "",
+      claimType: "",
       count: "1",
     });
 
@@ -219,11 +238,11 @@ const TotalSettlement = () => {
             </Col>
             <Col md={4}>
               <RadioGroup
-                title={"회원구분"}
-                name={"userType"}
-                list={userTypeList.map((data) => ({
+                title={"청구구분"}
+                name={"claimType"}
+                list={claimTypeList.map((data) => ({
                   ...data,
-                  checked: userType === data.value,
+                  checked: claimType === data.value,
                 }))}
                 onChange={onChange}
               />
@@ -235,8 +254,9 @@ const TotalSettlement = () => {
           className={"d-flex align-items-center justify-content-between mb-4"}
         >
           <span className={"font-size-13 fw-bold"}>
-            총 <span className={"text-turu"}>{settlementList.length}개</span>의
-            합산 정산 내역이 있습니다.
+            총{" "}
+            <span className={"text-turu"}>{billingHistoryList.length}개</span>의
+            요금 청구 내역이 있습니다.
           </span>
 
           <div className={"d-flex align-items-center gap-3"}>
@@ -257,35 +277,44 @@ const TotalSettlement = () => {
 
         <TableBase tableHeader={tableHeader}>
           <>
-            {settlementList.length > 0 ? (
-              settlementList.map((settlement, index) => (
-                <tr key={settlement.id}>
+            {billingHistoryList.length > 0 ? (
+              billingHistoryList.map((billing, index) => (
+                <tr key={billing.id}>
                   <td>{index + 1}</td>
                   <td>
                     <ButtonBase
                       className={"w-xs rounded-5 py-1"}
-                      label={settlement.settlementType}
+                      label={billing.settlementType}
                       color={"danger"}
                     />
                   </td>
                   <td>
                     <HoverSpan className={"text-turu"}>
-                      <u>{settlement.userName}</u>
+                      <u>{billing.userName}</u>
                     </HoverSpan>
                   </td>
-                  <td>{settlement.userId}</td>
-                  <td>{settlement.billingYear}</td>
-                  <td>{settlement.billingMonth}</td>
-                  <td>{settlement.totalChargingAmount}</td>
-                  <td>{settlement.totalAmount}</td>
-                  <td>{settlement.adjustmentAmount}</td>
-                  <td>{settlement.variableAmount}</td>
+                  <td>{billing.userId}</td>
+                  <td>{billing.billingYear}</td>
+                  <td>{billing.billingMonth}</td>
+                  <td>{billing.billingAmount}</td>
+                  <td>{billing.billingAdjustmentAmount}</td>
+                  <td>{billing.isClaim}</td>
+                  <td>{billing.claimType}</td>
+                  <td>
+                    <ButtonBase
+                      className={"w-xs rounded-5 py-1"}
+                      label={billing.claimResult}
+                      color={"danger"}
+                    />
+                  </td>
+                  <td>{billing.claimDate}</td>
+                  <td>{billing.resultMessage}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={10} className={"py-5 text-center text"}>
-                  합산 정산 내역이 없습니다.
+                <td colSpan={13} className={"py-5 text-center text"}>
+                  요금 청구 내역이 없습니다.
                 </td>
               </tr>
             )}
@@ -297,7 +326,7 @@ const TotalSettlement = () => {
   );
 };
 
-export default TotalSettlement;
+export default BillingHistory;
 
 const HoverSpan = styled.span`
   :hover {
