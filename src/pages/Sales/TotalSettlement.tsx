@@ -3,7 +3,7 @@ import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
-import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
+import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
@@ -17,6 +17,30 @@ import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
 const PAGE_NAME = "합산 정산 내역";
+
+/** 년 목록 (임시) */
+const yearList = [
+  {
+    label: "전체",
+    value: "",
+  },
+  ...new Array(12).fill(undefined).map((_, index) => ({
+    label: `${new Date().getFullYear() - index}`,
+    value: `${new Date().getFullYear() - index}`,
+  })),
+];
+
+/** 월 목록 (임시) */
+const monthList = [
+  {
+    label: "전체",
+    value: "",
+  },
+  ...new Array(12).fill(undefined).map((_, index) => ({
+    label: `${index + 1}`,
+    value: `${index + 1}`,
+  })),
+];
 
 /** 검색어 필터 */
 const searchList = [
@@ -114,6 +138,8 @@ const TotalSettlement = () => {
 
   const { searchText, userType, settlementType, onChange, onChangeSingle } =
     useInputs({
+      billingYear: "",
+      billingMonth: "",
       settlementType: "",
       searchRange: "",
       searchText: "",
@@ -140,14 +166,28 @@ const TotalSettlement = () => {
         {/* 검색 */}
         <section className={"d-flex flex-column gap-3"}>
           <Row className={"mt-4 pt-4 d-flex align-items-center border-top"}>
-            <Col md={8}>
-              <DateGroup
-                label={"조회기간"}
-                buttonState={[
-                  { label: "7일" },
-                  { label: "1개월" },
-                  { label: "3개월" },
-                  { label: "전체" },
+            <Col md={8} className={"d-flex align-items-center"}>
+              <DropboxGroup
+                className={"me-3"}
+                label={"과금대상(연)"}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ billingYear: value });
+                    },
+                    menuItems: yearList,
+                  },
+                ]}
+              />
+              <DropboxGroup
+                label={"과금대상(월)"}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ billingMonth: value });
+                    },
+                    menuItems: monthList,
+                  },
                 ]}
               />
             </Col>
