@@ -343,7 +343,11 @@ export const Playground = (props: any) => {
                 </MenuItem>
               </SubMenu>
               <SubMenu label="매출 모니터링" icon={<Global />}>
-                <MenuItem>개별 정산 내역</MenuItem>
+                <MenuItem
+                  component={<Link to={"/sales/individualSettlement"} />}
+                >
+                  개별 정산 내역
+                </MenuItem>
                 <MenuItem>합산 정산 내역</MenuItem>
                 <MenuItem>요금 청구 내역</MenuItem>
                 <MenuItem>총 매출</MenuItem>
