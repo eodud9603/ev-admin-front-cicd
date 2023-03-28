@@ -18,42 +18,47 @@ import {
   ANSWER_STATUS_FILTER_LIST,
   COUNT_FILTER_LIST,
 } from "src/constants/list";
+import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
 /* 검색어 필터 */
 const searchList = [
-  { label: "전체", value: "1" },
-  { label: "제목", value: "2" },
-  { label: "법인명", value: "4" },
+  { label: "전체", value: "" },
+  { label: "제목", value: "1" },
+  { label: "법인명", value: "2" },
   { label: "회원명", value: "3" },
-  { label: "답변자", value: "5" },
+  { label: "답변자", value: "4" },
 ];
 
 /* 카테고리 필터 */
 const categoryList = [
+  { label: "전체", value: "" },
+  { label: "가입 승인", value: "1" },
+  { label: "결제 카드", value: "2" },
+  { label: "충전기 예약", value: "3" },
+  { label: "충전기 사용", value: "4" },
+  { label: "기타", value: "5" },
+];
+
+/** 정렬 필터 */
+const sortList = [
   {
-    menuItems: [
-      { label: "전체", value: "1" },
-      { label: "가입 승인", value: "2" },
-      { label: "결제 카드", value: "3" },
-      { label: "충전기 예약", value: "4" },
-      { label: "충전기 사용", value: "5" },
-      { label: "기타", value: "6" },
-    ],
+    label: "기본",
+    value: "",
   },
 ];
 
 /* 목록 헤더 */
 const tableHeader = [
-  { label: "번호", sort: () => {} },
-  { label: "카테고리", sort: () => {} },
-  { label: "제목", sort: () => {} },
-  { label: "법인명", sort: () => {} },
-  { label: "회원명", sort: () => {} },
-  { label: "등록 일시", sort: () => {} },
-  { label: "답변자", sort: () => {} },
-  { label: "답변 일시", sort: () => {} },
-  { label: "상태", sort: () => {} },
+  { label: "번호" },
+  { label: "카테고리" },
+  { label: "제목" },
+  { label: "법인명" },
+  { label: "회원명" },
+  { label: "등록 일시" },
+  { label: "답변자" },
+  { label: "답변 일시" },
+  { label: "상태" },
 ];
 
 /* 임시 목록 데이터 */
@@ -85,8 +90,16 @@ const qnaList = [
 const CorporateQnA = () => {
   const [tabList, setTabList] = useState([{ label: "법인 문의사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+
+  const { answerStatus, searchText, onChange, onChangeSingle } = useInputs({
+    answerStatus: "",
+    searchRange: "",
+    searchText: "",
+    category: "",
+    sort: "",
+    count: "1",
+  });
 
   const navigate = useNavigate();
 
@@ -146,8 +159,12 @@ const CorporateQnA = () => {
             <Col md={4}>
               <RadioGroup
                 title={"답변 상태"}
-                name={"statusGroup"}
-                list={ANSWER_STATUS_FILTER_LIST}
+                name={"answerStatus"}
+                list={ANSWER_STATUS_FILTER_LIST.map((data) => ({
+                  ...data,
+                  checked: answerStatus === data.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -155,20 +172,46 @@ const CorporateQnA = () => {
             <Col md={8}>
               <SearchTextInput
                 title={"검색어"}
-                name={"searchText"}
-                menuItems={searchList}
                 placeholder={"검색어를 입력해주세요."}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                menuItems={searchList}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ searchRange: value });
+                }}
+                name={"searchText"}
+                value={searchText}
+                onChange={onChange}
               />
             </Col>
             <Col className={"d-flex"} md={4}>
               <DropboxGroup
                 label={"카테고리"}
-                dropdownItems={categoryList}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ category: value });
+                    },
+                    menuItems: categoryList,
+                  },
+                ]}
                 className={"me-2 w-xs"}
               />
               <ButtonBase label={"추가"} color={"dark"} />
+            </Col>
+          </Row>
+
+          <Row className={"mt-3 d-flex align-items-center"}>
+            <Col>
+              <DropboxGroup
+                label={"정렬 기준"}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ sort: "" });
+                    },
+                    menuItems: sortList,
+                  },
+                ]}
+              />
             </Col>
           </Row>
         </SearchSection>
@@ -186,57 +229,60 @@ const CorporateQnA = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <DropdownBase
+                menuItems={COUNT_FILTER_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ count: value });
+                }}
+              />
             </div>
           </div>
 
-          <div className={"table-responsive"}>
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {qnaList.length > 0 ? (
-                  qnaList.map(
-                    (
-                      {
-                        id,
-                        category,
-                        title,
-                        corporateName,
-                        userName,
-                        regDate,
-                        answerName,
-                        answerDate,
-                        status,
-                      },
-                      index
-                    ) => (
-                      <HoverTr
-                        key={id}
-                        onClick={() => {
-                          navigate(`/operate/corporateQnA/detail/${id}`);
-                        }}
-                      >
-                        <td>{index + 1}</td>
-                        <td>{category}</td>
-                        <td>{title}</td>
-                        <td>{corporateName}</td>
-                        <td>{userName}</td>
-                        <td>{regDate}</td>
-                        <td>{answerName}</td>
-                        <td>{answerDate}</td>
-                        <td>{status}</td>
-                      </HoverTr>
-                    )
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {qnaList.length > 0 ? (
+                qnaList.map(
+                  (
+                    {
+                      id,
+                      category,
+                      title,
+                      corporateName,
+                      userName,
+                      regDate,
+                      answerName,
+                      answerDate,
+                      status,
+                    },
+                    index
+                  ) => (
+                    <HoverTr
+                      key={id}
+                      onClick={() => {
+                        navigate(`/operate/corporateQnA/detail/${id}`);
+                      }}
+                    >
+                      <td>{index + 1}</td>
+                      <td>{category}</td>
+                      <td>{title}</td>
+                      <td>{corporateName}</td>
+                      <td>{userName}</td>
+                      <td>{regDate}</td>
+                      <td>{answerName}</td>
+                      <td>{answerDate}</td>
+                      <td>{status}</td>
+                    </HoverTr>
                   )
-                ) : (
-                  <tr>
-                    <td colSpan={9} className={"py-5 text-center text"}>
-                      등록된 문의사항이 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+                )
+              ) : (
+                <tr>
+                  <td colSpan={9} className={"py-5 text-center text"}>
+                    등록된 문의사항이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

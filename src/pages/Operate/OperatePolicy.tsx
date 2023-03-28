@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useCallback,
   useImperativeHandle,
   useRef,
   useState,
@@ -20,26 +21,38 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
+import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
+import OperateTextModal from "./components/OperateTextModal";
 
 /* 검색어 필터 */
-const searchList = [{ label: "전체", value: "1" }];
+const searchList = [{ label: "전체", value: "" }];
 
 /* 버전 필터 */
 const versionList = [
+  { label: "전체", value: "" },
   {
-    menuItems: [{ label: "1", value: "1" }],
+    label: "1",
+    value: "1",
+  },
+];
+
+/** 정렬 필터 */
+const sortList = [
+  {
+    label: "기본",
+    value: "",
   },
 ];
 
 /* 목록 헤더 */
 const tableHeader = [
   { label: "선택" },
-  { label: "번호", sort: () => {} },
-  { label: "제목", sort: () => {} },
-  { label: "작성자", sort: () => {} },
-  { label: "Ver.", sort: () => {} },
-  { label: "등록일", sort: () => {} },
+  { label: "번호" },
+  { label: "제목" },
+  { label: "작성자" },
+  { label: "Ver." },
+  { label: "등록일" },
 ];
 
 /* 임시 목록 데이터 */
@@ -70,8 +83,19 @@ interface IListItemProps {
 const OperatePolicy = () => {
   const [tabList, setTabList] = useState([{ label: "정책 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const [text, setText] = useState("");
   const [page, setPage] = useState(1);
+  /* 선택삭제 버튼 활성화 여부 */
+  const [isActive, setIsActive] = useState(false);
+  /* 선택삭제 모달 */
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const { searchText, onChange, onChangeSingle } = useInputs({
+    searchRange: "",
+    searchText: "",
+    version: "",
+    sort: "",
+    count: "1",
+  });
 
   const navigate = useNavigate();
 
@@ -97,9 +121,10 @@ const OperatePolicy = () => {
 
     setTabList(tempList);
   };
-
   /** 선택항목 삭제 */
   const deleteHandler = () => {
+    setIsActive(false);
+
     const checkedList = [];
     for (const item of listRef.current) {
       const { checked, data } = item;
@@ -110,6 +135,27 @@ const OperatePolicy = () => {
       }
     }
   };
+
+  /** 선택삭제 버튼 활성화 여부 업데이트 */
+  const onChangeActive = useCallback((currentItemChecked: boolean) => {
+    let isActive = currentItemChecked;
+    if (!isActive) {
+      const checkCount = listRef.current.reduce((acc, cur) => {
+        if (cur.checked) {
+          acc += 1;
+        }
+
+        return acc;
+      }, 0);
+
+      /* 체크된 목록이 있으면, 선택삭제 버튼 활성화 (ref을 사용하여 1개 보다 커야 체크된 것이 있음) */
+      if (checkCount > 1) {
+        isActive = true;
+      }
+    }
+
+    setIsActive(isActive);
+  }, []);
 
   return (
     <ContainerBase>
@@ -143,18 +189,48 @@ const OperatePolicy = () => {
             <Col md={8}>
               <SearchTextInput
                 title={"검색어"}
-                name={"searchText"}
-                menuItems={searchList}
                 placeholder={"검색어를 입력해주세요."}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                menuItems={searchList}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({
+                    searchRange: value,
+                  });
+                }}
+                name={"searchText"}
+                value={searchText}
+                onChange={onChange}
               />
             </Col>
             <Col className={"d-flex"} md={4}>
               <DropboxGroup
                 label={"Ver."}
-                dropdownItems={versionList}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({
+                        version: value,
+                      });
+                    },
+                    menuItems: versionList,
+                  },
+                ]}
                 className={"me-2 w-xs"}
+              />
+            </Col>
+          </Row>
+
+          <Row className={"mt-3 d-flex align-items-center"}>
+            <Col>
+              <DropboxGroup
+                label={"정렬 기준"}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ sort: value });
+                    },
+                    menuItems: sortList,
+                  },
+                ]}
               />
             </Col>
           </Row>
@@ -173,7 +249,14 @@ const OperatePolicy = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <DropdownBase
+                menuItems={COUNT_FILTER_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({
+                    count: value,
+                  });
+                }}
+              />
               <ButtonBase
                 label={"신규 등록"}
                 color={"turu"}
@@ -182,42 +265,69 @@ const OperatePolicy = () => {
                 }}
               />
               <ButtonBase
+                disabled={!isActive}
                 label={"선택 삭제"}
-                outline={true}
-                color={"turu"}
-                onClick={deleteHandler}
+                outline={isActive}
+                color={isActive ? "turu" : "secondary"}
+                onClick={() => {
+                  setDeleteModalOpen(true);
+                }}
               />
             </div>
           </div>
 
-          <div className={"table-responsive"}>
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {policyList.length > 0 ? (
-                  policyList.map((policy, index) => (
-                    <TableRow
-                      ref={(ref: IListRefProps) =>
-                        (listRef.current[index] = ref)
-                      }
-                      key={policy.id}
-                      index={index}
-                      {...policy}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={6} className={"py-5 text-center text"}>
-                      등록된 정책이 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {policyList.length > 0 ? (
+                policyList.map((policy, index) => (
+                  <TableRow
+                    ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
+                    key={policy.id}
+                    index={index}
+                    onChangeActive={onChangeActive}
+                    {...policy}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className={"py-5 text-center text"}>
+                    등록된 정책이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
       </BodyBase>
+
+      <OperateTextModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen((prev) => !prev);
+        }}
+        title={"정책 삭제"}
+        contents={
+          "삭제 후 고객에게 해당 정책이 표시되지 않습니다.\n삭제하시겠습니까?"
+        }
+        buttons={[
+          {
+            label: "아니요",
+            color: "secondary",
+          },
+          {
+            label: "삭제",
+            color: "turu",
+            onClick: () => {
+              /** @TODO 저장 로직 추가 */
+
+              deleteHandler();
+              setDeleteModalOpen((prev) => !prev);
+            },
+          },
+        ]}
+      />
     </ContainerBase>
   );
 };
@@ -232,13 +342,18 @@ const HoverTr = styled.tr`
   }
 `;
 
-const TableRow = forwardRef<IListRefProps, IListItemProps>((props, ref) => {
-  const { id, index, title, writer, version, regDate } = props;
+const TableRow = forwardRef<
+  IListRefProps,
+  IListItemProps & { onChangeActive: (currentItemChecked: boolean) => void }
+>((props, ref) => {
+  const { id, index, title, writer, version, regDate, onChangeActive } = props;
   const [checked, setChecked] = useState(false);
 
   const navigate = useNavigate();
 
   const onChangeCheck = () => {
+    onChangeActive(!checked);
+
     setChecked((prev) => !prev);
   };
 

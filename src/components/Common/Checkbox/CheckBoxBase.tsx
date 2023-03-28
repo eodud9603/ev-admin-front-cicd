@@ -1,5 +1,6 @@
 import React from "react";
 import { FormGroup, Input, Label } from "reactstrap";
+import styled from "styled-components";
 
 interface ICheckBoxBaseProps {
   name: string;
@@ -19,7 +20,7 @@ const CheckBoxBase = (props: ICheckBoxBaseProps) => {
     label = "label 텍스트",
     /* optional */
     id,
-    disabled,
+    disabled = false,
     checked,
     value,
     onChange,
@@ -30,7 +31,12 @@ const CheckBoxBase = (props: ICheckBoxBaseProps) => {
   const shareId = id ?? name;
 
   return (
-    <FormGroup className={"form-check-turu"} check inline disabled={disabled}>
+    <FormGroupBase
+      className={"form-check-turu"}
+      check
+      inline
+      disabled={disabled}
+    >
       <Input
         id={shareId}
         type={"checkbox"}
@@ -49,8 +55,14 @@ const CheckBoxBase = (props: ICheckBoxBaseProps) => {
       >
         {label}
       </Label>
-    </FormGroup>
+    </FormGroupBase>
   );
 };
 
 export default CheckBoxBase;
+
+const FormGroupBase = styled(FormGroup)<{ disabled: boolean }>`
+  :hover {
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  }
+`;

@@ -14,45 +14,43 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST, OPERATOR_FILTER_LIST } from "src/constants/list";
+import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
 /* 주소(지역) 필터 */
 const addressList = [
   {
-    menuItems: [{ label: "시,도", value: "1" }],
+    menuItems: [{ label: "시,도", value: "" }],
   },
   {
-    menuItems: [{ label: "구,군", value: "1" }],
+    menuItems: [{ label: "구,군", value: "" }],
   },
   {
-    menuItems: [{ label: "동,읍", value: "1" }],
+    menuItems: [{ label: "동,읍", value: "" }],
   },
 ];
 
 /* 사용여부 필터 */
 const useList = [
-  { label: "Y", value: "Y" },
-  { label: "N", value: "N" },
+  { label: "전체", value: "" },
+  { label: "Y", value: "1" },
+  { label: "N", value: "2" },
 ];
 
 /* 검색어 필터 */
 const searchList = [
-  { label: "충전소명", value: "1" },
-  { label: "충전소 ID", value: "2" },
-  { label: "주소", value: "3" },
+  { label: "충전소명", placeholderKeyword: "충전소명을", value: "1" },
+  { label: "충전소 ID", placeholderKeyword: "충전소 ID를", value: "2" },
+  { label: "주소", placeholderKeyword: "주소를", value: "3" },
 ];
 
 /* 정렬기준 */
 const sortList = [
-  {
-    menuItems: [
-      { label: "기본", value: "1" },
-      { label: "충전소명", value: "2" },
-      { label: "충전소 ID", value: "3" },
-      { label: "급/완속(기)", value: "4" },
-      { label: "등록일", value: "5" },
-    ],
-  },
+  { label: "기본", value: "1" },
+  { label: "충전소명", value: "2" },
+  { label: "충전소 ID", value: "3" },
+  { label: "급/완속(기)", value: "4" },
+  { label: "등록일", value: "5" },
 ];
 
 /* 목록 헤더 */
@@ -104,9 +102,27 @@ const ChargingStationManagement = () => {
     { label: "공지사항" },
     { label: "충전소 관리" },
   ]);
-  const [text, setText] = useState("");
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
+
+  const {
+    operator,
+    searchRange,
+    searchText,
+    useStatus,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    operator: "",
+    searchRange: "1",
+    searchText: "",
+    useStatus: "",
+    sort: "",
+    count: "1",
+  });
+  const searchKeyword =
+    searchList.find((data) => searchRange === data.value)?.placeholderKeyword ??
+    "";
 
   const navigate = useNavigate();
 
@@ -164,8 +180,12 @@ const ChargingStationManagement = () => {
             <Col md={5}>
               <RadioGroup
                 title={"운영사"}
-                name={"operatorGroup"}
-                list={OPERATOR_FILTER_LIST}
+                name={"operator"}
+                list={OPERATOR_FILTER_LIST.map((data) => ({
+                  ...data,
+                  checked: operator == data.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -173,22 +193,41 @@ const ChargingStationManagement = () => {
             <Col md={7}>
               <SearchTextInput
                 title={"검색어"}
-                name={"searchText"}
+                placeholder={`${searchKeyword} 입력해주세요`}
                 menuItems={searchList}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ searchRange: value });
+                }}
+                name={"searchText"}
+                value={searchText}
+                onChange={onChange}
               />
             </Col>
             <Col md={5}>
-              <RadioGroup title={"사용여부"} name={"useList"} list={useList} />
+              <RadioGroup
+                title={"사용여부"}
+                name={"useStatus"}
+                list={useList.map((data) => ({
+                  ...data,
+                  checked: useStatus == data.value,
+                }))}
+                onChange={onChange}
+              />
             </Col>
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col>
               <DropboxGroup
-                label={"정렬기준"}
-                dropdownItems={sortList}
                 className={"me-2"}
+                label={"정렬기준"}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ sort: value });
+                    },
+                    menuItems: sortList,
+                  },
+                ]}
               />
             </Col>
           </Row>
@@ -210,7 +249,12 @@ const ChargingStationManagement = () => {
               <span className={"font-size-10 text-muted"}>
                 2023-04-01 14:51기준
               </span>
-              <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <DropdownBase
+                menuItems={COUNT_FILTER_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ count: value });
+                }}
+              />
               <ButtonBase
                 label={"신규 등록"}
                 color={"turu"}
@@ -222,66 +266,62 @@ const ChargingStationManagement = () => {
             </div>
           </div>
 
-          <div className={"table-responsive"}>
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {chargingStationList.length > 0 ? (
-                  chargingStationList.map(
-                    (
-                      {
-                        region,
-                        division,
-                        chargerName,
-                        chargerId,
-                        address,
-                        addressDetail,
-                        fast,
-                        slow,
-                        isOpen,
-                        isUse,
-                        date,
-                      },
-                      index
-                    ) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{region}</td>
-                        <td>{division}</td>
-                        <td>
-                          <HoverSpan
-                            className={"text-turu"}
-                            onClick={() => {
-                              navigate(
-                                `/charger/chargerStation/detail/${index}`
-                              );
-                            }}
-                          >
-                            <u>{chargerName}</u>
-                          </HoverSpan>
-                        </td>
-                        <td>{chargerId}</td>
-                        <td>
-                          {address}, {addressDetail}
-                        </td>
-                        <td>
-                          {fast} / {slow}
-                        </td>
-                        <td>{isOpen ? "완전" : "X"}</td>
-                        <td>{isUse}</td>
-                        <td>{date}</td>
-                      </tr>
-                    )
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {chargingStationList.length > 0 ? (
+                chargingStationList.map(
+                  (
+                    {
+                      region,
+                      division,
+                      chargerName,
+                      chargerId,
+                      address,
+                      addressDetail,
+                      fast,
+                      slow,
+                      isOpen,
+                      isUse,
+                      date,
+                    },
+                    index
+                  ) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{region}</td>
+                      <td>{division}</td>
+                      <td>
+                        <HoverSpan
+                          className={"text-turu"}
+                          onClick={() => {
+                            navigate(`/charger/chargerStation/detail/${index}`);
+                          }}
+                        >
+                          <u>{chargerName}</u>
+                        </HoverSpan>
+                      </td>
+                      <td>{chargerId}</td>
+                      <td>
+                        {address}, {addressDetail}
+                      </td>
+                      <td>
+                        {fast} / {slow}
+                      </td>
+                      <td>{isOpen ? "완전" : "X"}</td>
+                      <td>{isUse}</td>
+                      <td>{date}</td>
+                    </tr>
                   )
-                ) : (
-                  <tr>
-                    <td colSpan={10} className={"py-5 text-center text"}>
-                      등록된 충전소 정보가 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+                )
+              ) : (
+                <tr>
+                  <td colSpan={10} className={"py-5 text-center text"}>
+                    등록된 충전소 정보가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

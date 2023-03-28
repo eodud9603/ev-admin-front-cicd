@@ -25,6 +25,8 @@ const useImages = (list: IImageItemProps[]) => {
         imageList.push({ file: image, src });
       }
       setImages((prev) => [...prev, ...imageList]);
+      /* 파일 업로드 -> 제거 -> 같은 파일 재업로드 시, onChange동작이 없으므로, value값을 초기화하여 onChange event가 동작하도록 해당 코드 추가 */
+      e.target.value = "";
     },
     []
   );
@@ -67,7 +69,9 @@ const useImages = (list: IImageItemProps[]) => {
       }
 
       const imageList = [...images];
-      imageList.splice(index, 1);
+      /* 생성한 기존 URL을 폐기 (메모리 누수 방지) */
+      const [deleteImage] = imageList.splice(index, 1);
+      URL.revokeObjectURL(deleteImage.src);
 
       setImages(imageList);
     },
@@ -75,7 +79,14 @@ const useImages = (list: IImageItemProps[]) => {
   );
 
   /** 이미지 데이터 초기화 */
-  const reset = useCallback(() => setImages(list), [list]);
+  const reset = useCallback(() => {
+    /* 생성한 기존 URL을 폐기 (메모리 누수 방지) */
+    for(const image of images) {
+      URL.revokeObjectURL(image.src);
+    }
+
+    setImages(list);
+  }, [images, list]);
 
   return {
     images,

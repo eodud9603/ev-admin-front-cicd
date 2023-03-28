@@ -1,5 +1,6 @@
 import React from "react";
 import { FormGroup, Input, Label } from "reactstrap";
+import styled from "styled-components";
 
 interface IRadioBaseProps {
   name: string;
@@ -19,7 +20,7 @@ const RadioBase = (props: IRadioBaseProps) => {
     label = "label 텍스트",
     /* optional */
     id,
-    disabled,
+    disabled = false,
     checked,
     value,
     onChange,
@@ -28,7 +29,7 @@ const RadioBase = (props: IRadioBaseProps) => {
   } = props;
 
   return (
-    <FormGroup
+    <FormGroupBase
       className={`form-check-${disabled ? "dark" : "turu"}`}
       check
       inline
@@ -47,8 +48,14 @@ const RadioBase = (props: IRadioBaseProps) => {
       <Label check className={"text-nowrap"} htmlFor={id} disabled={disabled}>
         {label}
       </Label>
-    </FormGroup>
+    </FormGroupBase>
   );
 };
 
 export default RadioBase;
+
+const FormGroupBase = styled(FormGroup)<{ disabled: boolean }>`
+  :hover {
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  }
+`;

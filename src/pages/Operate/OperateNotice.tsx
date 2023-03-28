@@ -45,20 +45,12 @@ const sortList = [
     value: "",
   },
   {
-    label: "번호",
+    label: "작성일",
     value: "1",
   },
   {
-    label: "제목",
-    value: "2",
-  },
-  {
-    label: "작성자",
-    value: "3",
-  },
-  {
     label: "조회 수",
-    value: "4",
+    value: "2",
   },
 ];
 
@@ -115,7 +107,10 @@ interface IListItemProps {
 const OperateNotice = () => {
   const [tabList, setTabList] = useState([{ label: "공지사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
+  /* 선택삭제 버튼 활성화 여부 */
   const [isActive, setIsActive] = useState(false);
+  /* 선택삭제 모달 */
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const {
     // startDate,
@@ -134,8 +129,6 @@ const OperateNotice = () => {
     searchText: "",
     sort: "",
   });
-  /* 등록확인 모달 */
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const listRef = useRef<IListRefProps[]>([]);
 
@@ -313,31 +306,27 @@ const OperateNotice = () => {
             </div>
           </div>
 
-          <div className="table-responsive">
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {noticeList.length > 0 ? (
-                  noticeList.map((notice, index) => (
-                    <TableRow
-                      ref={(ref: IListRefProps) =>
-                        (listRef.current[index] = ref)
-                      }
-                      key={index}
-                      index={index}
-                      onChangeActive={onChangeActive}
-                      {...notice}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={8} className={"py-5 text-center text"}>
-                      등록된 공지사항이 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {noticeList.length > 0 ? (
+                noticeList.map((notice, index) => (
+                  <TableRow
+                    ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
+                    key={index}
+                    index={index}
+                    onChangeActive={onChangeActive}
+                    {...notice}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={8} className={"py-5 text-center text"}>
+                    등록된 공지사항이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
