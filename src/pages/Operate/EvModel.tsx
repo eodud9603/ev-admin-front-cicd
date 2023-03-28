@@ -300,38 +300,36 @@ const EvModel = () => {
             </div>
           </div>
 
-          <div className={"table-responsive"}>
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {modelList.length > 0 ? (
-                  modelList.map((evModel, index) => (
-                    <EvModelItem
-                      ref={(ref: IEvModelItemRef) =>
-                        (itemsRef.current[index] = ref)
-                      }
-                      key={index}
-                      index={index}
-                      rowClickHandler={() => {
-                        setModelModal({
-                          isOpen: true,
-                          type: "EDIT",
-                          data: evModel,
-                        });
-                      }}
-                      onChangeActive={onChangeActive}
-                      {...evModel}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={10} className={"py-5 text-center text"}>
-                      등록된 모델이 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {modelList.length > 0 ? (
+                modelList.map((evModel, index) => (
+                  <EvModelItem
+                    ref={(ref: IEvModelItemRef) =>
+                      (itemsRef.current[index] = ref)
+                    }
+                    key={index}
+                    index={index}
+                    rowClickHandler={() => {
+                      setModelModal({
+                        isOpen: true,
+                        type: "EDIT",
+                        data: evModel,
+                      });
+                    }}
+                    onChangeActive={onChangeActive}
+                    {...evModel}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={10} className={"py-5 text-center text"}>
+                    등록된 모델이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

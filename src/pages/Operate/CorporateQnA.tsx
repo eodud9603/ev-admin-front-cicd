@@ -238,53 +238,51 @@ const CorporateQnA = () => {
             </div>
           </div>
 
-          <div className={"table-responsive"}>
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {qnaList.length > 0 ? (
-                  qnaList.map(
-                    (
-                      {
-                        id,
-                        category,
-                        title,
-                        corporateName,
-                        userName,
-                        regDate,
-                        answerName,
-                        answerDate,
-                        status,
-                      },
-                      index
-                    ) => (
-                      <HoverTr
-                        key={id}
-                        onClick={() => {
-                          navigate(`/operate/corporateQnA/detail/${id}`);
-                        }}
-                      >
-                        <td>{index + 1}</td>
-                        <td>{category}</td>
-                        <td>{title}</td>
-                        <td>{corporateName}</td>
-                        <td>{userName}</td>
-                        <td>{regDate}</td>
-                        <td>{answerName}</td>
-                        <td>{answerDate}</td>
-                        <td>{status}</td>
-                      </HoverTr>
-                    )
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {qnaList.length > 0 ? (
+                qnaList.map(
+                  (
+                    {
+                      id,
+                      category,
+                      title,
+                      corporateName,
+                      userName,
+                      regDate,
+                      answerName,
+                      answerDate,
+                      status,
+                    },
+                    index
+                  ) => (
+                    <HoverTr
+                      key={id}
+                      onClick={() => {
+                        navigate(`/operate/corporateQnA/detail/${id}`);
+                      }}
+                    >
+                      <td>{index + 1}</td>
+                      <td>{category}</td>
+                      <td>{title}</td>
+                      <td>{corporateName}</td>
+                      <td>{userName}</td>
+                      <td>{regDate}</td>
+                      <td>{answerName}</td>
+                      <td>{answerDate}</td>
+                      <td>{status}</td>
+                    </HoverTr>
                   )
-                ) : (
-                  <tr>
-                    <td colSpan={9} className={"py-5 text-center text"}>
-                      등록된 문의사항이 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+                )
+              ) : (
+                <tr>
+                  <td colSpan={9} className={"py-5 text-center text"}>
+                    등록된 문의사항이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

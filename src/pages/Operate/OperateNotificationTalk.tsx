@@ -391,30 +391,28 @@ const TalkList = (props: { navigate: NavigateFunction }) => {
           </div>
         </div>
 
-        <div className="table-responsive">
-          <TableBase tableHeader={tableHeader}>
-            <>
-              {smsList.length > 0 ? (
-                smsList.map((sms, index) => (
-                  <SMSItem
-                    key={index}
-                    index={index}
-                    rowClickHandler={() => {
-                      navigate(`/operate/talk/detail/${sms.id}`);
-                    }}
-                    {...sms}
-                  />
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={11} className={"py-5 text-center text"}>
-                    등록된 발신내역이 없습니다.
-                  </td>
-                </tr>
-              )}
-            </>
-          </TableBase>
-        </div>
+        <TableBase tableHeader={tableHeader}>
+          <>
+            {smsList.length > 0 ? (
+              smsList.map((sms, index) => (
+                <SMSItem
+                  key={index}
+                  index={index}
+                  rowClickHandler={() => {
+                    navigate(`/operate/talk/detail/${sms.id}`);
+                  }}
+                  {...sms}
+                />
+              ))
+            ) : (
+              <tr>
+                <td colSpan={11} className={"py-5 text-center text"}>
+                  등록된 발신내역이 없습니다.
+                </td>
+              </tr>
+            )}
+          </>
+        </TableBase>
 
         <PaginationBase setPage={setPage} data={{}} />
       </ListSection>

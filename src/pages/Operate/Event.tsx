@@ -322,31 +322,27 @@ const Event = () => {
             </div>
           </div>
 
-          <div className="table-responsive">
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {eventList.length > 0 ? (
-                  eventList.map((event, index) => (
-                    <TableRow
-                      ref={(ref: IListRefProps) =>
-                        (listRef.current[index] = ref)
-                      }
-                      key={event.id}
-                      index={index}
-                      onChangeActive={onChangeActive}
-                      {...event}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={9} className={"py-5 text-center text"}>
-                      등록된 이벤트가 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {eventList.length > 0 ? (
+                eventList.map((event, index) => (
+                  <TableRow
+                    ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
+                    key={event.id}
+                    index={index}
+                    onChangeActive={onChangeActive}
+                    {...event}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={9} className={"py-5 text-center text"}>
+                    등록된 이벤트가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

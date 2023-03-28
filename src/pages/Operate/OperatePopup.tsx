@@ -359,31 +359,27 @@ const OperatePopup = () => {
             </div>
           </div>
 
-          <div className="table-responsive">
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {popupList.length > 0 ? (
-                  popupList.map((popup, index) => (
-                    <TableRow
-                      ref={(ref: IListRefProps) =>
-                        (listRef.current[index] = ref)
-                      }
-                      key={popup.id}
-                      index={index}
-                      onChangeActive={onChangeActive}
-                      {...popup}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={10} className={"py-5 text-center text"}>
-                      등록된 팝업이 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {popupList.length > 0 ? (
+                popupList.map((popup, index) => (
+                  <TableRow
+                    ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
+                    key={popup.id}
+                    index={index}
+                    onChangeActive={onChangeActive}
+                    {...popup}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={10} className={"py-5 text-center text"}>
+                    등록된 팝업이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

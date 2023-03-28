@@ -159,58 +159,56 @@ const OperatorAccount = () => {
             </div>
           </div>
 
-          <div className={"table-responsive"}>
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {accountList.length > 0 ? (
-                  accountList.map(
-                    (
-                      {
-                        counselorName,
-                        counselorId,
-                        agency,
-                        cti,
-                        acd,
-                        extension,
-                        tel,
-                        mobileTel,
-                        date,
-                      },
-                      index
-                    ) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <HoverSpan
-                            className={"text-turu"}
-                            onClick={() => {
-                              navigate(`/operator/counselor/detail/${index}`);
-                            }}
-                          >
-                            <u>{counselorName}</u>
-                          </HoverSpan>
-                        </td>
-                        <td>{counselorId}</td>
-                        <td>{agency}</td>
-                        <td>{cti}</td>
-                        <td>{acd}</td>
-                        <td>{extension}</td>
-                        <td>{tel}</td>
-                        <td>{mobileTel}</td>
-                        <td>{date}</td>
-                      </tr>
-                    )
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {accountList.length > 0 ? (
+                accountList.map(
+                  (
+                    {
+                      counselorName,
+                      counselorId,
+                      agency,
+                      cti,
+                      acd,
+                      extension,
+                      tel,
+                      mobileTel,
+                      date,
+                    },
+                    index
+                  ) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>
+                        <HoverSpan
+                          className={"text-turu"}
+                          onClick={() => {
+                            navigate(`/operator/counselor/detail/${index}`);
+                          }}
+                        >
+                          <u>{counselorName}</u>
+                        </HoverSpan>
+                      </td>
+                      <td>{counselorId}</td>
+                      <td>{agency}</td>
+                      <td>{cti}</td>
+                      <td>{acd}</td>
+                      <td>{extension}</td>
+                      <td>{tel}</td>
+                      <td>{mobileTel}</td>
+                      <td>{date}</td>
+                    </tr>
                   )
-                ) : (
-                  <tr>
-                    <td colSpan={10} className={"py-5 text-center text"}>
-                      등록된 계정 정보가 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+                )
+              ) : (
+                <tr>
+                  <td colSpan={10} className={"py-5 text-center text"}>
+                    등록된 계정 정보가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
