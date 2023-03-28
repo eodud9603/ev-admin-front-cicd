@@ -69,6 +69,7 @@ const initMenus = {
   operator: false,
   counseling: false,
   payment: false,
+  sales: false,
 };
 
 // hex to rgba converter
@@ -338,14 +339,35 @@ export const Playground = (props: any) => {
                   권한 관리
                 </MenuItem>
               </SubMenu>
-              <SubMenu label="매출 모니터링" icon={<Global />}>
-                <MenuItem>개별 정산 내역</MenuItem>
-                <MenuItem>합산 정산 내역</MenuItem>
-                <MenuItem>요금 청구 내역</MenuItem>
-                <MenuItem>총 매출</MenuItem>
-                <MenuItem>지역 매출</MenuItem>
-                <MenuItem>충전소 매출</MenuItem>
-                <MenuItem>충전기 매출</MenuItem>
+              <SubMenu
+                label="매출 모니터링"
+                icon={<Global />}
+                open={allOpen.sales}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("sales", isOpen)
+                }
+              >
+                <MenuItem component={<Link to={"/sales/charging"} />}>
+                  개별 정산 내역
+                </MenuItem>
+                <MenuItem component={<Link to={"/sales/charging"} />}>
+                  합산 정산 내역
+                </MenuItem>
+                <MenuItem component={<Link to={"/sales/charging"} />}>
+                  요금 청구 내역
+                </MenuItem>
+                <MenuItem component={<Link to={"/sales/total"} />}>
+                  총 매출
+                </MenuItem>
+                <MenuItem component={<Link to={"/sales/region"} />}>
+                  지역 매출
+                </MenuItem>
+                <MenuItem component={<Link to={"/sales/station"} />}>
+                  충전소 매출
+                </MenuItem>
+                <MenuItem component={<Link to={"/sales/charger"} />}>
+                  충전기 매출
+                </MenuItem>
               </SubMenu>
               <SubMenu
                 label="요금 관리"

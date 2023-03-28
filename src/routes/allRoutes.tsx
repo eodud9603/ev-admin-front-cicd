@@ -87,6 +87,10 @@ import InstallChargerAdd from "src/pages/Operate/InstallChargerAdd";
 import OperateQnADetail from "src/pages/Operate/OperateQnADetail";
 import CorporateQnADetail from "src/pages/Operate/CorporateQnADetail";
 import { PaymentInKepcoRegistration } from "src/pages/Payment/components/PaymentInKepcoRegistration";
+import { SalesTotal } from "src/pages/Sales/SalesTotal";
+import { SalesByRegion } from "src/pages/Sales/SalesByRegion";
+import { SalesByStation } from "src/pages/Sales/SalesByStation";
+import { SalesByCharger } from "src/pages/Sales/SalesByCharger";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -248,6 +252,12 @@ const userRoutes: Array<RouteProps> = [
     element: <PaymentInKepcoRegistration />,
   },
   { path: "/payment/roaming", element: <PaymentInRoaming /> },
+
+  //매출 모니터링
+  { path: "/sales/total", element: <SalesTotal /> },
+  { path: "/sales/region", element: <SalesByRegion /> },
+  { path: "/sales/station", element: <SalesByStation /> },
+  { path: "/sales/charger", element: <SalesByCharger /> },
 ];
 
 const authRoutes: Array<RouteProps> = [
