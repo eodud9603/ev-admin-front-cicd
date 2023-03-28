@@ -348,7 +348,9 @@ export const Playground = (props: any) => {
                 >
                   개별 정산 내역
                 </MenuItem>
-                <MenuItem>합산 정산 내역</MenuItem>
+                <MenuItem component={<Link to={"/sales/totalSettlement"} />}>
+                  합산 정산 내역
+                </MenuItem>
                 <MenuItem>요금 청구 내역</MenuItem>
                 <MenuItem>총 매출</MenuItem>
                 <MenuItem>지역 매출</MenuItem>
