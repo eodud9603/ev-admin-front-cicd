@@ -186,7 +186,11 @@ export const Playground = (props: any) => {
                   eachOpenMenuItem("chargingMonitoring", isOpen)
                 }
               >
-                <MenuItem>충전기 관제</MenuItem>
+                <MenuItem
+                  component={<Link to={"/chargeMonitoring/chargerControl"} />}
+                >
+                  충전기 관제
+                </MenuItem>
               </SubMenu>
               <SubMenu
                 label="충전소 및 충전기 관리"

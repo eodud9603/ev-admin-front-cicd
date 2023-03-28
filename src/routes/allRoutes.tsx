@@ -91,11 +91,13 @@ import { SalesTotal } from "src/pages/Sales/SalesTotal";
 import { SalesByRegion } from "src/pages/Sales/SalesByRegion";
 import { SalesByStation } from "src/pages/Sales/SalesByStation";
 import { SalesByCharger } from "src/pages/Sales/SalesByCharger";
+import ChargerControl from "src/pages/ChargeMonitoring/ChargerControl";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
   { path: "/main/dashboard", element: <MainDashboard />, loader: mainLoader },
   { path: "/example", element: <Example /> },
+  { path: "/chargeMonitoring/chargerControl", element: <ChargerControl /> },
   {
     path: "/charger/chargerStation",
     element: <ChargingStation />,
