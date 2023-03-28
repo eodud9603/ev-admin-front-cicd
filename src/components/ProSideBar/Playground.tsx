@@ -62,12 +62,13 @@ const themes = {
 };
 
 const initMenus = {
-  charger: undefined,
-  member: undefined,
-  operate: undefined,
-  operator: undefined,
-  counseling: undefined,
-  payment: undefined,
+  chargingMonitoring: false,
+  charger: false,
+  member: false,
+  operate: false,
+  operator: false,
+  counseling: false,
+  payment: false,
 };
 
 // hex to rgba converter
@@ -82,7 +83,7 @@ const hexToRgba = (hex: string, alpha: number) => {
 export const Playground = (props: any) => {
   const { collapseSidebar, collapsed } = useProSidebar();
   const [allOpen, setAllOpen] = useState<{
-    [key: string]: boolean | undefined;
+    [key: string]: boolean;
   }>(initMenus);
 
   const [isRTL, setIsRTL] = React.useState<boolean>(false);
@@ -133,8 +134,8 @@ export const Playground = (props: any) => {
     }),
   };
 
-  const eachOpenMenuItem = (menuId: string) => {
-    setAllOpen((prev) => ({ ...prev, [menuId]: undefined }));
+  const eachOpenMenuItem = (menuId: string, isOpen: boolean) => {
+    setAllOpen((prev) => ({ ...prev, [menuId]: isOpen }));
   };
 
   return (
@@ -176,14 +177,23 @@ export const Playground = (props: any) => {
                 icon={<BarChart />}
                 component={<Link to={"/example"} />}
               />
-              <SubMenu label="충전 모니터링" icon={<BarChart />} >
+              <SubMenu
+                label="충전 모니터링"
+                icon={<BarChart />}
+                open={allOpen.chargingMonitoring}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("chargingMonitoring", isOpen)
+                }
+              >
                 <MenuItem>충전기 관제</MenuItem>
               </SubMenu>
               <SubMenu
                 label="충전소 및 충전기 관리"
                 icon={<BarChart />}
                 open={allOpen.charger}
-                onOpenChange={(e: boolean) => !e && eachOpenMenuItem("charger")}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("charger", isOpen)
+                }
               >
                 <MenuItem component={<Link to={"/charger/ChargerStation"} />}>
                   충전소 관리
@@ -208,7 +218,9 @@ export const Playground = (props: any) => {
                 label="운영 관리"
                 icon={<Global />}
                 open={allOpen.operate}
-                onOpenChange={(e: boolean) => !e && eachOpenMenuItem("operate")}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("operate", isOpen)
+                }
               >
                 <MenuItem component={<Link to={"/operate/notice"} />}>
                   공지사항
@@ -261,7 +273,9 @@ export const Playground = (props: any) => {
                 label="회원 및 카드 관리"
                 icon={<Global />}
                 open={allOpen.member}
-                onOpenChange={(e: boolean) => !e && eachOpenMenuItem("member")}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("member", isOpen)
+                }
               >
                 <MenuItem component={<Link to={"/member/normal"} />}>
                   회원 관리
@@ -292,8 +306,8 @@ export const Playground = (props: any) => {
                 label="상담 관리"
                 icon={<InkBottle />}
                 open={allOpen.counseling}
-                onOpenChange={(e: boolean) =>
-                  !e && eachOpenMenuItem("counseling")
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("counseling", isOpen)
                 }
               >
                 <MenuItem component={<Link to={"/counseling/customer"} />}>
@@ -310,8 +324,8 @@ export const Playground = (props: any) => {
                 label="운영자 관리"
                 icon={<Global />}
                 open={allOpen.operator}
-                onOpenChange={(e: boolean) =>
-                  !e && eachOpenMenuItem("operator")
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("operator", isOpen)
                 }
               >
                 <MenuItem component={<Link to={"/operator/account"} />}>
@@ -337,7 +351,9 @@ export const Playground = (props: any) => {
                 label="요금 관리"
                 icon={<Global />}
                 open={allOpen.payment}
-                onOpenChange={(e: boolean) => !e && eachOpenMenuItem("payment")}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("payment", isOpen)
+                }
               >
                 <MenuItem component={<Link to={"/payment/charging"} />}>
                   충전 요금제 관리

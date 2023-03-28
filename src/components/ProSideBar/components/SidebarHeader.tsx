@@ -7,7 +7,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 
 interface ISidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
-  setAllOpen: Dispatch<SetStateAction<{ [key: string]: boolean | undefined }>>;
+  setAllOpen: Dispatch<SetStateAction<{ [key: string]: boolean }>>;
 }
 
 const StyledSidebarHeader = styled.div`
@@ -40,8 +40,8 @@ export const SidebarHeader: React.FC<ISidebarHeaderProps> = ({
   };
   const onClickAllClose = () => {
     setAllOpen((prev) => ({
-      ...Object.keys(prev).reduce((acc: { [key: string]: undefined }, val) => {
-        acc[val] = undefined;
+      ...Object.keys(prev).reduce((acc: { [key: string]: boolean }, val) => {
+        acc[val] = false;
         return acc;
       }, {}),
     }));
