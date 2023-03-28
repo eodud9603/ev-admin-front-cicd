@@ -87,11 +87,13 @@ import InstallChargerAdd from "src/pages/Operate/InstallChargerAdd";
 import OperateQnADetail from "src/pages/Operate/OperateQnADetail";
 import CorporateQnADetail from "src/pages/Operate/CorporateQnADetail";
 import { PaymentInKepcoRegistration } from "src/pages/Payment/components/PaymentInKepcoRegistration";
+import ChargerControl from "src/pages/ChargeMonitoring/ChargerControl";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
   { path: "/main/dashboard", element: <MainDashboard />, loader: mainLoader },
   { path: "/example", element: <Example /> },
+  { path: "/chargeMonitoring/chargerControl", element: <ChargerControl /> },
   {
     path: "/charger/chargerStation",
     element: <ChargingStation />,
