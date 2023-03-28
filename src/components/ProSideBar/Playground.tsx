@@ -18,12 +18,6 @@ import { Calendar } from "./icons/Calendar";
 import { ShoppingCart } from "./icons/ShoppingCart";
 import { Service } from "./icons/Service";
 import { SidebarFooter } from "./components/SidebarFooter";
-import {
-  changelayoutMode,
-  changeSidebarTheme,
-  changeSidebarType,
-} from "src/helpers/store/layout/actions";
-import { useDispatch, useSelector } from "react-redux";
 import Footer from "src/components/Common/Footer/Footer";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -67,6 +61,15 @@ const themes = {
   },
 };
 
+const initMenus = {
+  charger: undefined,
+  member: undefined,
+  operate: undefined,
+  operator: undefined,
+  counseling: undefined,
+  payment: undefined,
+};
+
 // hex to rgba converter
 const hexToRgba = (hex: string, alpha: number) => {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -77,19 +80,14 @@ const hexToRgba = (hex: string, alpha: number) => {
 };
 
 export const Playground = (props: any) => {
-  const { toggleSidebar, collapseSidebar, broken, collapsed } = useProSidebar();
-  const [allOpen, setAllOpen] = useState<boolean | undefined>(undefined);
-
-  const dispatch = useDispatch();
+  const { collapseSidebar, collapsed } = useProSidebar();
+  const [allOpen, setAllOpen] = useState<{
+    [key: string]: boolean | undefined;
+  }>(initMenus);
 
   const [isRTL, setIsRTL] = React.useState<boolean>(false);
   const [hasImage, setHasImage] = React.useState<boolean>(false);
   const [theme, setTheme] = React.useState<Theme>("light");
-
-  // handle on theme change event
-  const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTheme(e.target.checked ? "dark" : "light");
-  };
 
   const handleCollapsed = () => {
     collapseSidebar();
@@ -135,31 +133,8 @@ export const Playground = (props: any) => {
     }),
   };
 
-  const { layoutType, leftSideBarType, layoutMode } = useSelector(
-    (state: any) => ({
-      layoutType: state.Layout.layoutType,
-      layoutMode: state.Layout.layoutMode,
-      leftSideBarType: state.Layout.leftSideBarType,
-    })
-  );
-
-  const toggleMenuCallback = () => {
-    if (leftSideBarType === "lg") {
-      dispatch(changeSidebarType("sm"));
-    } else if (leftSideBarType === "sm") {
-      dispatch(changeSidebarType("lg"));
-    }
-  };
-
-  const onChangeLayoutMode = (value: any) => {
-    if (changelayoutMode) {
-      dispatch(changelayoutMode(value, layoutType));
-      if (value === "dark") {
-        dispatch(changeSidebarTheme("dark"));
-      } else {
-        dispatch(changeSidebarTheme("light"));
-      }
-    }
+  const eachOpenMenuItem = (menuId: string) => {
+    setAllOpen((prev) => ({ ...prev, [menuId]: undefined }));
   };
 
   return (
@@ -188,9 +163,8 @@ export const Playground = (props: any) => {
           }}
         >
           <SidebarHeader
-            onChangeLayoutMode={onChangeLayoutMode}
             style={{
-              marginBottom: "24px",
+              marginBottom: "48px",
               marginTop: "16px",
             }}
             setAllOpen={setAllOpen}
@@ -201,9 +175,13 @@ export const Playground = (props: any) => {
                 label="Components"
                 icon={<BarChart />}
                 component={<Link to={"/example"} />}
-                open={allOpen}
               />
-              <SubMenu label="충전 모니터링" icon={<BarChart />} open={allOpen}>
+              <SubMenu
+                label="충전 모니터링"
+                icon={<BarChart />}
+                open={allOpen.charger}
+                onOpenChange={(e: boolean) => !e && eachOpenMenuItem("charger")}
+              >
                 <MenuItem component={<Link to={"/charger/ChargerStation"} />}>
                   충전소 관리
                 </MenuItem>
@@ -213,10 +191,7 @@ export const Playground = (props: any) => {
                 <MenuItem component={<Link to={"/charger/contract"} />}>
                   충전소 계약 관리
                 </MenuItem>
-                <MenuItem
-                  className={"font-size-18"}
-                  component={<Link to={"/charger/trouble"} />}
-                >
+                <MenuItem component={<Link to={"/charger/trouble"} />}>
                   충전기 고장/파손 관리
                 </MenuItem>
                 <MenuItem component={<Link to={"/charger/manufacturer"} />}>
@@ -226,7 +201,12 @@ export const Playground = (props: any) => {
                   서비스 운영사 관리
                 </MenuItem>
               </SubMenu>
-              <SubMenu label="운영 관리" icon={<Global />}>
+              <SubMenu
+                label="운영 관리"
+                icon={<Global />}
+                open={allOpen.operate}
+                onOpenChange={(e: boolean) => !e && eachOpenMenuItem("operate")}
+              >
                 <MenuItem component={<Link to={"/operate/notice"} />}>
                   공지사항
                 </MenuItem>
@@ -274,7 +254,12 @@ export const Playground = (props: any) => {
                   코드 관리
                 </MenuItem>
               </SubMenu>
-              <SubMenu label="회원 및 카드 관리" icon={<Global />}>
+              <SubMenu
+                label="회원 및 카드 관리"
+                icon={<Global />}
+                open={allOpen.member}
+                onOpenChange={(e: boolean) => !e && eachOpenMenuItem("member")}
+              >
                 <MenuItem component={<Link to={"/member/normal"} />}>
                   회원 관리
                 </MenuItem>
@@ -300,7 +285,14 @@ export const Playground = (props: any) => {
                   법인 계약 관리
                 </MenuItem>
               </SubMenu>
-              <SubMenu label="상담 관리" icon={<InkBottle />}>
+              <SubMenu
+                label="상담 관리"
+                icon={<InkBottle />}
+                open={allOpen.counseling}
+                onOpenChange={(e: boolean) =>
+                  !e && eachOpenMenuItem("counseling")
+                }
+              >
                 <MenuItem component={<Link to={"/counseling/customer"} />}>
                   고객 상담
                 </MenuItem>
@@ -311,7 +303,14 @@ export const Playground = (props: any) => {
                   상담/보상유형 관리
                 </MenuItem>
               </SubMenu>
-              <SubMenu label="운영자 관리" icon={<Global />}>
+              <SubMenu
+                label="운영자 관리"
+                icon={<Global />}
+                open={allOpen.operator}
+                onOpenChange={(e: boolean) =>
+                  !e && eachOpenMenuItem("operator")
+                }
+              >
                 <MenuItem component={<Link to={"/operator/account"} />}>
                   계정 관리
                 </MenuItem>
@@ -322,7 +321,12 @@ export const Playground = (props: any) => {
                   권한 관리
                 </MenuItem>
               </SubMenu>
-              <SubMenu label="요금 관리" icon={<Global />}>
+              <SubMenu
+                label="요금 관리"
+                icon={<Global />}
+                open={allOpen.payment}
+                onOpenChange={(e: boolean) => !e && eachOpenMenuItem("payment")}
+              >
                 <MenuItem component={<Link to={"/payment/charging"} />}>
                   충전 요금제 관리
                 </MenuItem>
