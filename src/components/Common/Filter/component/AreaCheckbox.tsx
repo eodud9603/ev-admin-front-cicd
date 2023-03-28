@@ -8,8 +8,9 @@ import React, {
 import { Col, Row } from "reactstrap";
 import { Checkbox } from "src/components/Common/Checkbox";
 import { AreaCheckType } from "src/components/Common/Filter/SearchFilter";
+import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 
-interface Props {
+interface IProps {
   setCheckboxData: Dispatch<SetStateAction<AreaCheckType>>;
 }
 
@@ -33,7 +34,7 @@ const area = [
   "제주",
 ];
 
-export const AreaCheckbox = (props: Props) => {
+export const AreaCheckbox = (props: IProps) => {
   const { setCheckboxData } = props;
   const [checkbox, setCheckbox] = useState<AreaCheckType>({
     area0: true,
@@ -107,9 +108,9 @@ export const AreaCheckbox = (props: Props) => {
       </Col>
       {area.map((ar, index) => (
         <Col key={index}>
-          <Checkbox
-            id={"area" + index}
-            name={"area" + index}
+          <CheckBoxBase
+            id={`area${index}`}
+            name={`area${index}`}
             value={ar}
             label={ar}
             checked={checkbox[`area${index}`]}
