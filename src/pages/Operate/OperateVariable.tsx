@@ -287,31 +287,27 @@ const OperateVariable = () => {
             </div>
           </div>
 
-          <div className="table-responsive">
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {variableList.length > 0 ? (
-                  variableList.map((code, index) => (
-                    <TableRow
-                      ref={(ref: IListRefProps) =>
-                        (listRef.current[index] = ref)
-                      }
-                      key={index}
-                      index={index}
-                      onChangeActive={onChangeActive}
-                      {...code}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={9} className={"py-5 text-center text"}>
-                      등록된 변수가 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {variableList.length > 0 ? (
+                variableList.map((code, index) => (
+                  <TableRow
+                    ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
+                    key={index}
+                    index={index}
+                    onChangeActive={onChangeActive}
+                    {...code}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={9} className={"py-5 text-center text"}>
+                    등록된 변수가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

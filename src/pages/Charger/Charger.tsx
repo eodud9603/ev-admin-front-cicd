@@ -281,76 +281,74 @@ const Charger = () => {
             </div>
           </div>
 
-          <div className={"table-responsive"}>
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {chargerList.length > 0 ? (
-                  chargerList.map(
-                    (
-                      {
-                        region,
-                        division,
-                        chargerId,
-                        chargerName,
-                        chargerNum,
-                        type,
-                        connector,
-                        status,
-                        communication,
-                        start,
-                        connect,
-                        end,
-                        isClosure,
-                        assetNum,
-                        date,
-                      },
-                      index
-                    ) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{region}</td>
-                        <td>{division}</td>
-                        <td>
-                          <HoverSpan
-                            className={"text-turu"}
-                            onClick={() => {
-                              navigate(`/charger/charger/detail/${index}`);
-                            }}
-                          >
-                            <u>{chargerName}</u>
-                          </HoverSpan>
-                        </td>
-                        <td>{chargerId}</td>
-                        <td>{chargerNum}</td>
-                        <td>{type}</td>
-                        <td>{connector}</td>
-                        <td>
-                          <ButtonBase
-                            className={"w-xs rounded-5 py-1"}
-                            label={status}
-                            color={"success"}
-                          />
-                        </td>
-                        <td>{communication}</td>
-                        <td>{start}</td>
-                        <td>{connect}</td>
-                        <td>{end}</td>
-                        <td>{isClosure}</td>
-                        <td>{assetNum}</td>
-                        <td>{date}</td>
-                      </tr>
-                    )
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {chargerList.length > 0 ? (
+                chargerList.map(
+                  (
+                    {
+                      region,
+                      division,
+                      chargerId,
+                      chargerName,
+                      chargerNum,
+                      type,
+                      connector,
+                      status,
+                      communication,
+                      start,
+                      connect,
+                      end,
+                      isClosure,
+                      assetNum,
+                      date,
+                    },
+                    index
+                  ) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{region}</td>
+                      <td>{division}</td>
+                      <td>
+                        <HoverSpan
+                          className={"text-turu"}
+                          onClick={() => {
+                            navigate(`/charger/charger/detail/${index}`);
+                          }}
+                        >
+                          <u>{chargerName}</u>
+                        </HoverSpan>
+                      </td>
+                      <td>{chargerId}</td>
+                      <td>{chargerNum}</td>
+                      <td>{type}</td>
+                      <td>{connector}</td>
+                      <td>
+                        <ButtonBase
+                          className={"w-xs rounded-5 py-1"}
+                          label={status}
+                          color={"success"}
+                        />
+                      </td>
+                      <td>{communication}</td>
+                      <td>{start}</td>
+                      <td>{connect}</td>
+                      <td>{end}</td>
+                      <td>{isClosure}</td>
+                      <td>{assetNum}</td>
+                      <td>{date}</td>
+                    </tr>
                   )
-                ) : (
-                  <tr>
-                    <td colSpan={16} className={"py-5 text-center text"}>
-                      등록된 충전기 정보가 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+                )
+              ) : (
+                <tr>
+                  <td colSpan={16} className={"py-5 text-center text"}>
+                    등록된 충전기 정보가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

@@ -324,31 +324,27 @@ const InstallCharger = () => {
             </div>
           </div>
 
-          <div className="table-responsive">
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {applicationList.length > 0 ? (
-                  applicationList.map((application, index) => (
-                    <TableRow
-                      ref={(ref: IListRefProps) =>
-                        (listRef.current[index] = ref)
-                      }
-                      key={index}
-                      index={index}
-                      onChangeActive={onChangeActive}
-                      {...application}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={11} className={"py-5 text-center text"}>
-                      등록된 신청이 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {applicationList.length > 0 ? (
+                applicationList.map((application, index) => (
+                  <TableRow
+                    ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
+                    key={index}
+                    index={index}
+                    onChangeActive={onChangeActive}
+                    {...application}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={11} className={"py-5 text-center text"}>
+                    등록된 신청이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

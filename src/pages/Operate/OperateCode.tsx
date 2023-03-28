@@ -267,32 +267,28 @@ const OperateCode = () => {
             </div>
           </div>
 
-          <div className="table-responsive">
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {codeList.length > 0 ? (
-                  codeList.map((code, index) => (
-                    <TableRow
-                      ref={(ref: IListRefProps) =>
-                        (listRef.current[index] = ref)
-                      }
-                      key={index}
-                      index={index}
-                      setCodeModal={setCodeModal}
-                      onChangeActive={onChangeActive}
-                      {...code}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={9} className={"py-5 text-center text"}>
-                      등록된 코드가 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {codeList.length > 0 ? (
+                codeList.map((code, index) => (
+                  <TableRow
+                    ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
+                    key={index}
+                    index={index}
+                    setCodeModal={setCodeModal}
+                    onChangeActive={onChangeActive}
+                    {...code}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={9} className={"py-5 text-center text"}>
+                    등록된 코드가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

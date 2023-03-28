@@ -298,72 +298,70 @@ const ChargerContract = () => {
             </div>
           </div>
 
-          <div className={"table-responsive"}>
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {contractList.length > 0 ? (
-                  contractList.map(
-                    (
-                      {
-                        contractNum,
-                        isUse,
-                        isContract,
-                        contractAddress,
-                        contractAddressDetail,
-                        MinistryId,
-                        AdministrativeAddress,
-                        AdministrativeAddressDetail,
-                        salesCompany,
-                        managerName,
-                        managerTel,
-                        term,
-                        contractDate,
-                        date,
-                      },
-                      index
-                    ) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{contractNum}</td>
-                        <td>{isUse === "Y" ? "사용" : "미사용"}</td>
-                        <td>{isContract}</td>
-                        <td>
-                          <HoverSpan
-                            className={"text-turu"}
-                            onClick={() => {
-                              navigate(`/charger/contract/detail/${index}`);
-                            }}
-                          >
-                            <u>
-                              {contractAddress}, {contractAddressDetail}
-                            </u>
-                          </HoverSpan>
-                        </td>
-                        <td>{MinistryId}</td>
-                        <td>
-                          {AdministrativeAddress}, {AdministrativeAddressDetail}
-                        </td>
-                        <td>{salesCompany}</td>
-                        <td>{managerName}</td>
-                        <td>
-                          <p>{managerTel}</p>
-                        </td>
-                        <td>{term}</td>
-                        <td>{contractDate}</td>
-                        <td>{date}</td>
-                      </tr>
-                    )
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {contractList.length > 0 ? (
+                contractList.map(
+                  (
+                    {
+                      contractNum,
+                      isUse,
+                      isContract,
+                      contractAddress,
+                      contractAddressDetail,
+                      MinistryId,
+                      AdministrativeAddress,
+                      AdministrativeAddressDetail,
+                      salesCompany,
+                      managerName,
+                      managerTel,
+                      term,
+                      contractDate,
+                      date,
+                    },
+                    index
+                  ) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{contractNum}</td>
+                      <td>{isUse === "Y" ? "사용" : "미사용"}</td>
+                      <td>{isContract}</td>
+                      <td>
+                        <HoverSpan
+                          className={"text-turu"}
+                          onClick={() => {
+                            navigate(`/charger/contract/detail/${index}`);
+                          }}
+                        >
+                          <u>
+                            {contractAddress}, {contractAddressDetail}
+                          </u>
+                        </HoverSpan>
+                      </td>
+                      <td>{MinistryId}</td>
+                      <td>
+                        {AdministrativeAddress}, {AdministrativeAddressDetail}
+                      </td>
+                      <td>{salesCompany}</td>
+                      <td>{managerName}</td>
+                      <td>
+                        <p>{managerTel}</p>
+                      </td>
+                      <td>{term}</td>
+                      <td>{contractDate}</td>
+                      <td>{date}</td>
+                    </tr>
                   )
-                ) : (
-                  <tr>
-                    <td colSpan={14} className={"py-5 text-center text"}>
-                      등록된 충전소 계약 정보가 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+                )
+              ) : (
+                <tr>
+                  <td colSpan={14} className={"py-5 text-center text"}>
+                    등록된 충전소 계약 정보가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </section>

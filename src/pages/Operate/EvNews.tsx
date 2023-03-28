@@ -296,31 +296,27 @@ const EvNews = () => {
             </div>
           </div>
 
-          <div className="table-responsive">
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {newsList.length > 0 ? (
-                  newsList.map((news, index) => (
-                    <TableRow
-                      ref={(ref: IListRefProps) =>
-                        (listRef.current[index] = ref)
-                      }
-                      key={news.id}
-                      index={index}
-                      onChangeActive={onChangeActive}
-                      {...news}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={8} className={"py-5 text-center text"}>
-                      등록된 뉴스가 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {newsList.length > 0 ? (
+                newsList.map((news, index) => (
+                  <TableRow
+                    ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
+                    key={news.id}
+                    index={index}
+                    onChangeActive={onChangeActive}
+                    {...news}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={8} className={"py-5 text-center text"}>
+                    등록된 뉴스가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

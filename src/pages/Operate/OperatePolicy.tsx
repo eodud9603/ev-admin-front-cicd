@@ -276,31 +276,27 @@ const OperatePolicy = () => {
             </div>
           </div>
 
-          <div className={"table-responsive"}>
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {policyList.length > 0 ? (
-                  policyList.map((policy, index) => (
-                    <TableRow
-                      ref={(ref: IListRefProps) =>
-                        (listRef.current[index] = ref)
-                      }
-                      key={policy.id}
-                      index={index}
-                      onChangeActive={onChangeActive}
-                      {...policy}
-                    />
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={6} className={"py-5 text-center text"}>
-                      등록된 정책이 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {policyList.length > 0 ? (
+                policyList.map((policy, index) => (
+                  <TableRow
+                    ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
+                    key={policy.id}
+                    index={index}
+                    onChangeActive={onChangeActive}
+                    {...policy}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className={"py-5 text-center text"}>
+                    등록된 정책이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

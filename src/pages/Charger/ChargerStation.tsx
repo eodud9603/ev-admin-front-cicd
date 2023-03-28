@@ -266,66 +266,62 @@ const ChargingStationManagement = () => {
             </div>
           </div>
 
-          <div className={"table-responsive"}>
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {chargingStationList.length > 0 ? (
-                  chargingStationList.map(
-                    (
-                      {
-                        region,
-                        division,
-                        chargerName,
-                        chargerId,
-                        address,
-                        addressDetail,
-                        fast,
-                        slow,
-                        isOpen,
-                        isUse,
-                        date,
-                      },
-                      index
-                    ) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{region}</td>
-                        <td>{division}</td>
-                        <td>
-                          <HoverSpan
-                            className={"text-turu"}
-                            onClick={() => {
-                              navigate(
-                                `/charger/chargerStation/detail/${index}`
-                              );
-                            }}
-                          >
-                            <u>{chargerName}</u>
-                          </HoverSpan>
-                        </td>
-                        <td>{chargerId}</td>
-                        <td>
-                          {address}, {addressDetail}
-                        </td>
-                        <td>
-                          {fast} / {slow}
-                        </td>
-                        <td>{isOpen ? "완전" : "X"}</td>
-                        <td>{isUse}</td>
-                        <td>{date}</td>
-                      </tr>
-                    )
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {chargingStationList.length > 0 ? (
+                chargingStationList.map(
+                  (
+                    {
+                      region,
+                      division,
+                      chargerName,
+                      chargerId,
+                      address,
+                      addressDetail,
+                      fast,
+                      slow,
+                      isOpen,
+                      isUse,
+                      date,
+                    },
+                    index
+                  ) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{region}</td>
+                      <td>{division}</td>
+                      <td>
+                        <HoverSpan
+                          className={"text-turu"}
+                          onClick={() => {
+                            navigate(`/charger/chargerStation/detail/${index}`);
+                          }}
+                        >
+                          <u>{chargerName}</u>
+                        </HoverSpan>
+                      </td>
+                      <td>{chargerId}</td>
+                      <td>
+                        {address}, {addressDetail}
+                      </td>
+                      <td>
+                        {fast} / {slow}
+                      </td>
+                      <td>{isOpen ? "완전" : "X"}</td>
+                      <td>{isUse}</td>
+                      <td>{date}</td>
+                    </tr>
                   )
-                ) : (
-                  <tr>
-                    <td colSpan={10} className={"py-5 text-center text"}>
-                      등록된 충전소 정보가 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+                )
+              ) : (
+                <tr>
+                  <td colSpan={10} className={"py-5 text-center text"}>
+                    등록된 충전소 정보가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>

@@ -213,69 +213,67 @@ const OperatorAccount = () => {
             </div>
           </div>
 
-          <div className={"table-responsive"}>
-            <TableBase tableHeader={tableHeader}>
-              <>
-                {accountList.length > 0 ? (
-                  accountList.map(
-                    (
-                      {
-                        groupName,
-                        operatorName,
-                        operatorId,
-                        manufacturerName,
-                        role,
-                        tel,
-                        department,
-                        mobileAccess,
-                        externalAccess,
-                        isActivate,
-                      },
-                      index
-                    ) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <HoverSpan
-                            className={"text-turu"}
-                            onClick={() => {
-                              /** @TODO 계정 > 그룹명 */
-                            }}
-                          >
-                            <u>{groupName}</u>
-                          </HoverSpan>
-                        </td>
-                        <td>
-                          <HoverSpan
-                            className={"text-turu"}
-                            onClick={() => {
-                              navigate(`/operator/account/detail/${index}`);
-                            }}
-                          >
-                            <u>{operatorName}</u>
-                          </HoverSpan>
-                        </td>
-                        <td>{operatorId}</td>
-                        <td>{manufacturerName}</td>
-                        <td>{role}</td>
-                        <td>{tel}</td>
-                        <td>{department}</td>
-                        <td>{mobileAccess}</td>
-                        <td>{externalAccess}</td>
-                        <td>{isActivate}</td>
-                      </tr>
-                    )
+          <TableBase tableHeader={tableHeader}>
+            <>
+              {accountList.length > 0 ? (
+                accountList.map(
+                  (
+                    {
+                      groupName,
+                      operatorName,
+                      operatorId,
+                      manufacturerName,
+                      role,
+                      tel,
+                      department,
+                      mobileAccess,
+                      externalAccess,
+                      isActivate,
+                    },
+                    index
+                  ) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>
+                        <HoverSpan
+                          className={"text-turu"}
+                          onClick={() => {
+                            /** @TODO 계정 > 그룹명 */
+                          }}
+                        >
+                          <u>{groupName}</u>
+                        </HoverSpan>
+                      </td>
+                      <td>
+                        <HoverSpan
+                          className={"text-turu"}
+                          onClick={() => {
+                            navigate(`/operator/account/detail/${index}`);
+                          }}
+                        >
+                          <u>{operatorName}</u>
+                        </HoverSpan>
+                      </td>
+                      <td>{operatorId}</td>
+                      <td>{manufacturerName}</td>
+                      <td>{role}</td>
+                      <td>{tel}</td>
+                      <td>{department}</td>
+                      <td>{mobileAccess}</td>
+                      <td>{externalAccess}</td>
+                      <td>{isActivate}</td>
+                    </tr>
                   )
-                ) : (
-                  <tr>
-                    <td colSpan={11} className={"py-5 text-center text"}>
-                      등록된 계정 정보가 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </>
-            </TableBase>
-          </div>
+                )
+              ) : (
+                <tr>
+                  <td colSpan={11} className={"py-5 text-center text"}>
+                    등록된 계정 정보가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </>
+          </TableBase>
 
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
