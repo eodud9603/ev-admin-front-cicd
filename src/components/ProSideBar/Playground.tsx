@@ -198,12 +198,19 @@ export const Playground = (props: any) => {
           <div style={{ flex: 1, marginBottom: "100px" }}>
             <Menu menuItemStyles={menuItemStyles}>
               <SubMenu
-                label="Components"
+                label="Example"
                 icon={<BarChart />}
                 component={<Link to={"/example"} />}
                 open={allOpen}
               />
               <SubMenu label="충전 모니터링" icon={<BarChart />} open={allOpen}>
+                <MenuItem>충전기 관제</MenuItem>
+              </SubMenu>
+              <SubMenu
+                label="충전소 및 충전기 관리"
+                icon={<BarChart />}
+                open={allOpen}
+              >
                 <MenuItem component={<Link to={"/charger/ChargerStation"} />}>
                   충전소 관리
                 </MenuItem>
@@ -321,6 +328,15 @@ export const Playground = (props: any) => {
                 <MenuItem component={<Link to={"/operator/role"} />}>
                   권한 관리
                 </MenuItem>
+              </SubMenu>
+              <SubMenu label="매출 모니터링" icon={<Global />} open={allOpen}>
+                <MenuItem>개별 정산 내역</MenuItem>
+                <MenuItem>합산 정산 내역</MenuItem>
+                <MenuItem>요금 청구 내역</MenuItem>
+                <MenuItem>총 매출</MenuItem>
+                <MenuItem>지역 매출</MenuItem>
+                <MenuItem>충전소 매출</MenuItem>
+                <MenuItem>충전기 매출</MenuItem>
               </SubMenu>
               <SubMenu label="요금 관리" icon={<Global />}>
                 <MenuItem component={<Link to={"/payment/charging"} />}>
