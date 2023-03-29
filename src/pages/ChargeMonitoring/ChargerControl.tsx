@@ -263,11 +263,12 @@ const ChargerControl = () => {
           <span className={"font-size-24 fw-semibold"}>지도</span>
 
           {/* 상단 날씨 */}
-          <Weather
+          {/** @TODO 공공기관 api 키 필요 */}
+          {/* <Weather
             iconClassName={"text-turu bx bx-sun"}
             lowest={-2}
             highest={8}
-          ></Weather>
+          ></Weather> */}
           {/* 하단 통계 */}
           <ChargerStatistics
             total={4}
