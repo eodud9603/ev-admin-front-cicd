@@ -83,7 +83,7 @@ const ClusterMapBase = (props: IMapBaseProps) => {
 
     // 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
     const getClickHandler = (seq: number) => {
-      return function (e) {
+      return function () {
         const marker = markerRefs.current[seq];
         const infoWindow = infoWindowRefs.current[seq];
 
@@ -110,7 +110,9 @@ const ClusterMapBase = (props: IMapBaseProps) => {
       naver.maps.Event.addListener(marker, "click", getClickHandler(i));
 
       const infoWindow = new naver.maps.InfoWindow({
-        content: getPopup(chargerStation, getClickHandler(i)),
+        content: getPopup(chargerStation, () => {
+          getClickHandler(i);
+        }),
         disableAnchor: true /* 기본 말풍선 꼬리 활성화 여부 */,
         borderWidth: 0 /* 두께 */,
         pixelOffset: 145 /* 정보창 offset */,
@@ -165,7 +167,7 @@ const getHtmlMarker = (size: number) => {
                        border-radius: 50%; 
                        background-color: #FC6C00; 
                        color: white; 
-                       font-weight: 600
+                       font-weight: 600;
                       ' 
               />`,
     // size: new naver.maps.Size(40, 40),
@@ -173,9 +175,18 @@ const getHtmlMarker = (size: number) => {
   };
 };
 
-const getPopup = (chargerStation: unknown, onClose: () => void) => {
+const getPopup = (
+  chargerStation: {
+    stationName: string;
+    stationId: string;
+    addr: string;
+    addrDetail: string;
+  },
+  onClose: () => void
+) => {
   const testList = new Array(10).fill(undefined);
 
+  /** 테이블 로우 */
   const rows = testList.reduce((acc: string, cur, index) => {
     acc += `
             <tr key="${index}" style="
@@ -209,12 +220,6 @@ const getPopup = (chargerStation: unknown, onClose: () => void) => {
   }, "");
 
   return `
-    <script>
-      function onClose () {
-        alert("1")
-      }
-    </script>
-
     <div style="
         overflow: hidden;
         display: flex; 
@@ -242,12 +247,12 @@ const getPopup = (chargerStation: unknown, onClose: () => void) => {
           font-size: 14px;
           font-weight: 800;
         ">
-          ${chargerStation?.stationName}:
-           <a href="/charger/chargerStation/detail/${chargerStation?.stationId}">
-            ${chargerStation?.stationId}
+          ${chargerStation.stationName}:
+           <a href="/charger/chargerStation/detail/${chargerStation.stationId}">
+            ${chargerStation.stationId}
            </a>
         </p>
-        <button onclick="onClose()">
+        <button onclick="">
           X
         </button>
       </section>
