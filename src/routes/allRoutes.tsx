@@ -92,6 +92,9 @@ import { SalesByRegion } from "src/pages/Sales/SalesByRegion";
 import { SalesByStation } from "src/pages/Sales/SalesByStation";
 import { SalesByCharger } from "src/pages/Sales/SalesByCharger";
 import ChargerControl from "src/pages/ChargeMonitoring/ChargerControl";
+import IndividualSettlement from "src/pages/Sales/IndividualSettlement";
+import TotalSettlement from "src/pages/Sales/TotalSettlement";
+import BillingHistory from "src/pages/Sales/BillingHistory";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -256,6 +259,9 @@ const userRoutes: Array<RouteProps> = [
   { path: "/payment/roaming", element: <PaymentInRoaming /> },
 
   //매출 모니터링
+  { path: "/sales/individualSettlement", element: <IndividualSettlement /> },
+  { path: "/sales/totalSettlement", element: <TotalSettlement /> },
+  { path: "/sales/billingHistory", element: <BillingHistory /> },
   { path: "/sales/total", element: <SalesTotal /> },
   { path: "/sales/region", element: <SalesByRegion /> },
   { path: "/sales/station", element: <SalesByStation /> },
