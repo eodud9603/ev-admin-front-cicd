@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { useMapStore } from "src/store/store";
-import styled from "styled-components";
 
 declare global {
   /** @description lint 설정에 따른 오류 방지 (interface명 I 접두사 이슈) */
@@ -21,7 +20,7 @@ interface IMapBaseProps {
 const { naver } = window;
 
 /**
- * 네이버 지도 공통 컴포넌트
+ * 네이버 지도 단일 마커 표시 공통 컴포넌트
  * @description children을 넣으려면, css > z-index 추가할 것
  */
 const SingleMapBase = (props: IMapBaseProps) => {
