@@ -27,6 +27,8 @@ import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
 import { DetailDropdownRow } from "src/components/Common/DetailContentRow/DetailDropdownRow";
 import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import SingleMapBase from "src/components/Common/Map/SingleMapBase";
+import { useMapStore } from "src/store/store";
 
 const ChargerStationAdd = () => {
   const [tabList, setTabList] = useState([
@@ -71,8 +73,8 @@ const ChargerStationAdd = () => {
     saturdayStartDate,
     saturdayEndDate,
     parkingFeeDetail,
-    locationX,
-    locationY,
+    lat,
+    long,
     onChange,
     onChangeSingle,
   } = useInputs({
@@ -116,8 +118,8 @@ const ChargerStationAdd = () => {
     parkingFeeStatus: "1",
     parkingFeeDetail: "",
     /* 지도 좌표 */
-    locationX: "",
-    locationY: "",
+    lat: "",
+    long: "",
     /* 계약정보 */
     contractNumber: "",
   });
@@ -127,6 +129,8 @@ const ChargerStationAdd = () => {
   const [isValidCheckModalOpen, setIsValidCheckModalOpen] = useState(false);
   /* 등록취소 모달 */
   const [isRegistrationCancel, setIsRegistrationCancel] = useState(false);
+  /* 지도 컨트롤러 */
+  const { setZoom, createMarker } = useMapStore();
 
   const navigate = useNavigate();
 
@@ -161,8 +165,8 @@ const ChargerStationAdd = () => {
     return (
       emptyCheck(chargerStationName) ||
       emptyCheck(chargerStationName) ||
-      emptyCheck(locationX) ||
-      emptyCheck(locationY)
+      emptyCheck(lat) ||
+      emptyCheck(long)
     );
   };
 
@@ -794,20 +798,44 @@ const ChargerStationAdd = () => {
               {/* 지도 */}
               <Row className={"mb-3"}>
                 <Col md={12}>
-                  <TempMap className={"bg-light bg-opacity-100"}>
-                    지도 영역
-                    <MapButtonArea className={"position-absolute"}>
-                      <IconButton
-                        className={"dripicons-location"}
-                        onClick={() => {}}
-                      />
-                      <IconButton className={"bx bx-plus"} onClick={() => {}} />
-                      <IconButton
-                        className={"bx bx-minus"}
-                        onClick={() => {}}
-                      />
-                    </MapButtonArea>
-                  </TempMap>
+                  <MapContainer>
+                    <SingleMapBase
+                      lat={Number(lat)}
+                      long={Number(long)}
+                      onChangeLocation={(changeLat, changeLong) => {
+                        if (
+                          lat !== changeLat.toString() ||
+                          long !== changeLong.toString()
+                        ) {
+                          onChangeSingle({
+                            lat: `${changeLat}`,
+                            long: `${changeLong}`,
+                          });
+                        }
+                      }}
+                    >
+                      <MapButtonArea className={"position-absolute"}>
+                        <IconButton
+                          className={"dripicons-location"}
+                          onClick={() => {
+                            !!createMarker && createMarker();
+                          }}
+                        />
+                        <IconButton
+                          className={"bx bx-plus"}
+                          onClick={() => {
+                            setZoom(1);
+                          }}
+                        />
+                        <IconButton
+                          className={"bx bx-minus"}
+                          onClick={() => {
+                            setZoom(-1);
+                          }}
+                        />
+                      </MapButtonArea>
+                    </SingleMapBase>
+                  </MapContainer>
                 </Col>
               </Row>
               {/* 좌표 */}
@@ -825,8 +853,8 @@ const ChargerStationAdd = () => {
                     }
                     bsSize={"lg"}
                     placeholder={"위치선택, 직접입력"}
-                    name={"locationX"}
-                    value={locationX}
+                    name={"long"}
+                    value={long}
                     onChange={onChange}
                   />
                 </Col>
@@ -843,8 +871,8 @@ const ChargerStationAdd = () => {
                     }
                     bsSize={"lg"}
                     placeholder={"위치선택, 직접입력"}
-                    name={"locationY"}
-                    value={locationY}
+                    name={"lat"}
+                    value={lat}
                     onChange={onChange}
                   />
                 </Col>
@@ -915,6 +943,7 @@ const Icon = styled.i<{ isOpen: boolean }>`
 `;
 
 const MapButtonArea = styled.div`
+  z-index: 1;
   bottom: 10px;
   right: 10px;
 `;
@@ -946,12 +975,9 @@ const IconButton = ({
   );
 };
 
-const TempMap = styled.div`
-  position: relative;
+const MapContainer = styled.div`
+  overflow: hidden;
   display: flex;
   flex: 1;
   height: 251px;
-
-  justify-content: center;
-  align-items: center;
 `;
