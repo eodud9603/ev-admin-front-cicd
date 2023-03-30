@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { MARKER_IMAGE_URL } from "src/constants/marker";
 import { useMapStore } from "src/store/store";
 
 declare global {
@@ -177,7 +178,10 @@ export default SingleMapBase;
 
 /** 임시 충전소 아이콘 */
 const icon = {
-  content:
-    "<img src='https://content.humaxcharger.com/resources/img/marker_able.png' width='22' height='32' alt='충전소 위치' />",
+  content: `<img src="${MARKER_IMAGE_URL.full}" 
+                 width='22' 
+                 height='32' 
+                 alt='충전소 위치' 
+            />`,
   size: new naver.maps.Size(22, 32),
 };

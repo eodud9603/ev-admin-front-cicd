@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { MARKER_IMAGE_URL } from "src/constants/marker";
 import { useMapStore } from "src/store/store";
 import { MarkerClustering } from "./cluster";
 
@@ -19,6 +20,7 @@ interface IMapBaseProps {
     addrDetail: string;
     lat: number;
     long: number;
+    status: string;
   }[];
   children?: React.ReactElement | React.ReactElement[];
 }
@@ -106,7 +108,7 @@ const ClusterMapBase = (props: IMapBaseProps) => {
       );
       const marker = new naver.maps.Marker({
         position,
-        icon,
+        icon: icon(chargerStation.status as keyof typeof MARKER_IMAGE_URL),
       });
       /* 마커 클릭 이벤트 리스너 등록 */
       naver.maps.Event.addListener(marker, "click", getClickHandler(i));
@@ -194,11 +196,14 @@ const ClusterMapBase = (props: IMapBaseProps) => {
 export default ClusterMapBase;
 
 /** 임시 충전소 아이콘 */
-const icon = {
-  content:
-    "<img src='https://content.humaxcharger.com/resources/img/marker_able.png' width='22' height='32' alt='충전소 위치' />",
+const icon = (status: keyof typeof MARKER_IMAGE_URL) => ({
+  content: `<img src="${MARKER_IMAGE_URL[status]}" 
+                 width='22' 
+                 height='32' 
+                 alt='충전소 위치' 
+            />`,
   size: new naver.maps.Size(22, 32),
-};
+});
 
 /** 임시 클러스터 마커 */
 const getHtmlMarker = (size: number) => {

@@ -105,6 +105,7 @@ const markerList = [
     addrDetail: "임시",
     lat: 37.378553955447,
     long: 127.11254077891,
+    status: "full",
   },
   {
     stationId: "KEP0000000020",
@@ -114,6 +115,7 @@ const markerList = [
     addrDetail: "임시",
     lat: 37.378553955447,
     long: 127.21254077891,
+    status: "disabled",
   },
   {
     stationId: "KEP0000000020",
@@ -123,6 +125,7 @@ const markerList = [
     addrDetail: "임시",
     lat: 35.1795543,
     long: 129.0756416,
+    status: "able",
   },
   {
     stationId: "KEP0000000020",
@@ -132,6 +135,7 @@ const markerList = [
     addrDetail: "임시",
     lat: 34.294765,
     long: 126.525143,
+    status: "unknown",
   },
   {
     stationId: "KEP0000000020",
@@ -141,6 +145,7 @@ const markerList = [
     addrDetail: "임시",
     lat: 34.394765,
     long: 126.525143,
+    status: "unknown",
   },
 ];
 
