@@ -106,9 +106,10 @@ const ClusterMapBase = (props: IMapBaseProps) => {
       const marker = new naver.maps.Marker({
         position,
       });
-
+      /* 마커 클릭 이벤트 리스너 등록 */
       naver.maps.Event.addListener(marker, "click", getClickHandler(i));
 
+      /* 마커 > 팝업창 생성 */
       const infoWindow = new naver.maps.InfoWindow({
         content: getPopup(chargerStation),
         disableAnchor: true /* 기본 말풍선 꼬리 활성화 여부 */,
@@ -117,22 +118,52 @@ const ClusterMapBase = (props: IMapBaseProps) => {
         maxWidth: 290 /* 최대 너비 */,
         backgroundColor: "transparent",
       });
+      /** 팝업창 > 버튼 태그 목록 */
+      const buttons = [
+        ...infoWindow.getContentElement().querySelectorAll("button"),
+      ];
 
-      /* 팝업창 닫기 버튼 클릭 이벤트 리스너 */
-      infoWindow
-        .getContentElement()
-        .querySelector("button")
-        .addEventListener("click", getClickHandler(i), false);
+      const [closeButton, previousButton] = buttons.splice(0, 2);
+      const nextButton = buttons.pop();
 
+      // /* 팝업창 닫기 버튼 클릭 이벤트 리스너 등록 */
+      closeButton.addEventListener("click", getClickHandler(i), false);
+      // /* 이전 버튼 클릭 이벤트 리스너 등록 */
+      previousButton.addEventListener(
+        "click",
+        () => {
+          console.log("previous button click");
+        },
+        false
+      );
+      // /* 다음 버튼 클릭 이벤트 리스너 등록 */
+      nextButton.addEventListener(
+        "click",
+        () => {
+          console.log("next button click");
+        },
+        false
+      );
+      /** 페이지 버튼 목록 > 클릭 이벤트 리스너 등록 */
+      for (const pageButton of buttons) {
+        pageButton.addEventListener(
+          "click",
+          (e) => {
+            console.log(e.target.value);
+          },
+          false
+        );
+      }
+
+      /** 마커&팝업창 데이터 추가 */
       infoWindowRefs.current.push(infoWindow);
       markerRefs.current.push(marker);
     }
 
     /* 마커 클러스터링 */
-    // const markerClustering =
     new MarkerClustering({
       minClusterSize: 2,
-      maxZoom: 9,
+      maxZoom: 15,
       map: mapRef.current,
       markers: markerRefs.current,
       disableClickZoom: false,
@@ -175,8 +206,8 @@ const getHtmlMarker = (size: number) => {
                        font-weight: 600;
                       ' 
               />`,
-    // size: new naver.maps.Size(40, 40),
-    // anchor: new naver.maps.Point(20, 20),
+    size: new naver.maps.Size(size, size),
+    anchor: new naver.maps.Point(size / 2, size / 2),
   };
 };
 
@@ -187,17 +218,18 @@ const getPopup = (chargerStation: {
   addrDetail: string;
 }) => {
   /** 임시 목록 */
-  const testList = new Array(10).fill(undefined);
+  const testList = new Array(20).fill(undefined);
   /** 테이블 로우 */
   const rows = testList.reduce((acc: string, cur, index) => {
     acc += `
             <tr key="${index}" style="
               text-align:center;
               border-bottom: 1px solid #BDBDBD;
+              height: 38px;
             ">
               <td>
                 <span>
-                  ${index + 1}
+                  ${index < 9 ? `0${index + 1}` : index + 1}
                 </span>
               </td>
               <td>
@@ -254,8 +286,12 @@ const getPopup = (chargerStation: {
             ${chargerStation.stationId}
            </a>
         </p>
-        <button type="button">
-          X
+        <button type="button" style="
+          border: none;
+          background-color: transparent;
+          font-size: 16px;
+        ">
+          &#x2715
         </button>
       </section>
       <section style="
@@ -286,9 +322,10 @@ const getPopup = (chargerStation: {
               <tr style="
                   background-color: #F6F7F9; 
                   text-align:center; 
+                  height: 41px;
                 ">
                 <th>
-                  <span className="text-danger">
+                  <span>
                     관리번호
                   </span>
                 </th>
@@ -321,14 +358,36 @@ const getPopup = (chargerStation: {
         align-items: center;
         align-self: center;
       ">
-        <button type="button" style="">
-          이전
+        <button type="button" style="
+          width: 35px;
+          height:35px;
+          border: none;
+          background-color: #DCDCDC;
+          border-top-left-radius: 5px;
+          border-bottom-left-radius: 5px;
+          color: #7C7F87;
+        ">
+          <<
         </button>
-        <button type="button" style="">
+        <button type="button" value="1" style="
+          padding: 0px 8px;
+          height: 35px;
+          border: none;
+          background-color: #7C7F87;
+          color: #FFF;
+        ">
           1
         </button>
-        <button type="button" style="">
-          다음
+        <button type="button" style="
+          width: 35px;
+          height:35px;
+          border: none;
+          background-color: #DCDCDC;
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+          color: #7C7F87;
+        ">
+          >>
         </button>
       </div>
     </div>
