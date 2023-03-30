@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { MARKER_IMAGE_URL } from "src/constants/marker";
-import { useMapStore } from "src/store/store";
 import { MarkerClustering } from "./cluster";
 
 interface IMapBaseProps {
@@ -30,10 +29,7 @@ const INIT_MAP_CENTER = {
  */
 const ClusterMapBase = (props: IMapBaseProps) => {
   const { markerList, children } = props;
-  const mapStore = useMapStore();
 
-  /** store ref */
-  const getUseMapStoreRef = useRef(mapStore);
   /** map div ref */
   const mapElement = useRef<HTMLDivElement>(null);
   /** naver map ref */
@@ -61,15 +57,6 @@ const ClusterMapBase = (props: IMapBaseProps) => {
     mapRef.current = map;
   }, []);
 
-  /* map store 초기화 */
-  useEffect(() => {
-    const mapStore = getUseMapStoreRef.current;
-
-    return () => {
-      mapStore.initMap();
-    };
-  }, []);
-
   /* map > 마커, 클러스터 추가 */
   useEffect(() => {
     if (!mapRef.current) {
@@ -79,13 +66,17 @@ const ClusterMapBase = (props: IMapBaseProps) => {
     // 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
     const getClickHandler = (seq: number) => {
       return function () {
+        if (!mapRef.current) {
+          return;
+        }
+
         const marker = markerRefs.current[seq];
         const infoWindow = infoWindowRefs.current[seq];
 
         if (infoWindow.getMap()) {
           infoWindow.close();
         } else {
-          infoWindow.open(mapRef.current!, marker);
+          infoWindow.open(mapRef.current, marker);
         }
       };
     };
@@ -176,6 +167,17 @@ const ClusterMapBase = (props: IMapBaseProps) => {
         clusterMarker.getElement().firstChild.textContent = count;
       },
     });
+
+    return () => {
+      /* 맵 제거하지 않고 맵 위 생성된 마커/팝업창 제거 */
+      for (let i = 0; i < markerRefs.current.length; i++) {
+        markerRefs.current[i].setMap(null);
+        infoWindowRefs.current[i]?.setMap(null);
+      }
+      /* 마커/팝업창 ref 초기화 */
+      markerRefs.current = [];
+      infoWindowRefs.current = [];
+    };
   }, [markerList]);
 
   return (
