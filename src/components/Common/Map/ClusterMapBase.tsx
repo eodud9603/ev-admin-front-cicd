@@ -37,7 +37,7 @@ const ClusterMapBase = (props: IMapBaseProps) => {
   /** naver map markers ref */
   const markerRefs = useRef<naver.maps.Marker[]>([]);
   /** naver map marker click popup ref */
-  const infoWindowRefs = useRef<naver.maps.InfoWindow[]>([]);
+  const infoWindowRef = useRef<naver.maps.InfoWindow | null>(null);
 
   useEffect(() => {
     if (!mapElement.current || !naver) {
@@ -71,15 +71,70 @@ const ClusterMapBase = (props: IMapBaseProps) => {
         }
 
         const marker = markerRefs.current[seq];
-        const infoWindow = infoWindowRefs.current[seq];
+        const infoWindow = infoWindowRef.current;
+        /* 최초 등록한 팝업창 클릭한 충전소 데이터로 내용 변경  */
+        infoWindow?.setContent(getPopup(markerList[seq]));
 
-        if (infoWindow.getMap()) {
+        /** 팝업창 > 버튼 태그 목록 */
+        const buttons = [
+          ...(infoWindow as any).getContentElement().querySelectorAll("button"),
+        ];
+
+        const [closeButton, previousButton] = buttons.splice(0, 2);
+        const nextButton = buttons.pop();
+
+        /* 이벤트 리스너 remove  */
+        const eventRemoveHandler = () => {
+          closeButton.removeEventListener("click", closeHandler, false);
+          previousButton.removeEventListener("click", previousHandler, false);
+          nextButton.removeEventListener("click", nextHandler, false);
+        };
+
+        /* 이벤트 리스너 함수 */
+        const closeHandler = () => {
+          eventRemoveHandler();
+          infoWindow?.close();
+        };
+        const previousHandler = () => {
+          console.log("previous button click");
+        };
+        const nextHandler = () => {
+          console.log("next button click");
+        };
+        const pageHandler = (e: any) => {
+          console.log("click page number: ", e.target.value);
+        };
+
+        /* 이벤트 리스너 등록 */
+        closeButton.addEventListener("click", closeHandler, false);
+        previousButton.addEventListener("click", previousHandler, false);
+        nextButton.addEventListener("click", nextHandler, false);
+        for (const pageButton of buttons) {
+          pageButton.addEventListener("click", pageHandler, false);
+        }
+
+        if (infoWindow?.getMap()) {
+          eventRemoveHandler();
+          /* 팝업창 닫기 */
           infoWindow.close();
         } else {
-          infoWindow.open(mapRef.current, marker);
+          /* 클릭한 마커 기준 > 팝업창 열기 */
+          infoWindow?.open(mapRef.current, marker);
         }
       };
     };
+
+    /* 마커 > 팝업창 생성 */
+    const infoWindow = new naver.maps.InfoWindow({
+      content: "<div />",
+      disableAnchor: true /* 기본 말풍선 꼬리 활성화 여부 */,
+      borderWidth: 0 /* 두께 */,
+      pixelOffset: new naver.maps.Point(145, 15) /* 정보창 offset */,
+      maxWidth: 290 /* 최대 너비 */,
+      backgroundColor: "transparent",
+    });
+    /** 팝업창 데이터 추가 */
+    infoWindowRef.current = infoWindow;
 
     /* 마커 등록 */
     const listCount = markerList.length;
@@ -96,54 +151,7 @@ const ClusterMapBase = (props: IMapBaseProps) => {
       /* 마커 클릭 이벤트 리스너 등록 */
       naver.maps.Event.addListener(marker, "click", getClickHandler(i));
 
-      /* 마커 > 팝업창 생성 */
-      const infoWindow = new naver.maps.InfoWindow({
-        content: getPopup(chargerStation),
-        disableAnchor: true /* 기본 말풍선 꼬리 활성화 여부 */,
-        borderWidth: 0 /* 두께 */,
-        pixelOffset: new naver.maps.Point(145, 15) /* 정보창 offset */,
-        maxWidth: 290 /* 최대 너비 */,
-        backgroundColor: "transparent",
-      });
-      /** 팝업창 > 버튼 태그 목록 */
-      const buttons = [
-        ...(infoWindow as any).getContentElement().querySelectorAll("button"),
-      ];
-
-      const [closeButton, previousButton] = buttons.splice(0, 2);
-      const nextButton = buttons.pop();
-
-      /* 팝업창 닫기 버튼 클릭 이벤트 리스너 등록 */
-      closeButton.addEventListener("click", getClickHandler(i), false);
-      /* 이전 버튼 클릭 이벤트 리스너 등록 */
-      previousButton.addEventListener(
-        "click",
-        () => {
-          console.log("previous button click");
-        },
-        false
-      );
-      /* 다음 버튼 클릭 이벤트 리스너 등록 */
-      nextButton.addEventListener(
-        "click",
-        () => {
-          console.log("next button click");
-        },
-        false
-      );
-      /** 페이지 버튼 목록 > 클릭 이벤트 리스너 등록 */
-      for (const pageButton of buttons) {
-        pageButton.addEventListener(
-          "click",
-          (e: any) => {
-            console.log(e.target.value);
-          },
-          false
-        );
-      }
-
-      /** 마커&팝업창 데이터 추가 */
-      infoWindowRefs.current.push(infoWindow);
+      /** 마커 데이터 추가 */
       markerRefs.current.push(marker);
     }
 
@@ -170,13 +178,13 @@ const ClusterMapBase = (props: IMapBaseProps) => {
 
     return () => {
       /* 맵 제거하지 않고 맵 위 생성된 마커/팝업창 제거 */
+      infoWindowRef.current?.setMap(null);
       for (let i = 0; i < markerRefs.current.length; i++) {
         markerRefs.current[i].setMap(null);
-        infoWindowRefs.current[i]?.setMap(null);
       }
       /* 마커/팝업창 ref 초기화 */
       markerRefs.current = [];
-      infoWindowRefs.current = [];
+      infoWindowRef.current = null;
     };
   }, [markerList]);
 
