@@ -19,6 +19,11 @@ interface IMapBaseProps {
 
 const { naver } = window;
 
+const INIT_MAP_CENTER = {
+  lat: 36.704882,
+  long: 127.917245,
+};
+
 /**
  * 네이버 지도 클러스터 사용 공통 컴포넌트
  * @description children을 넣으려면, css > z-index 추가할 것
@@ -33,11 +38,6 @@ const ClusterMapBase = (props: IMapBaseProps) => {
   const mapElement = useRef<HTMLDivElement>(null);
   /** naver map ref */
   const mapRef = useRef<naver.maps.Map | null>(null);
-  /** naver map center position ref */
-  const mapCenterRef = useRef({
-    lat: 36.704882,
-    long: 127.917245,
-  });
   /** naver map markers ref */
   const markerRefs = useRef<naver.maps.Marker[]>([]);
   /** naver map marker click popup ref */
@@ -48,7 +48,7 @@ const ClusterMapBase = (props: IMapBaseProps) => {
       return;
     }
 
-    const { lat, long } = mapCenterRef.current;
+    const { lat, long } = INIT_MAP_CENTER;
     const location = new naver.maps.LatLng(lat, long);
     const mapOptions = {
       center: location,

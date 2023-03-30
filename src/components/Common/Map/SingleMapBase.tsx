@@ -29,7 +29,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
   /** naver map ref */
   const mapRef = useRef<naver.maps.Map | null>(null);
   /** naver map center position ref */
-  const mapCenterRef = useRef({
+  const initMapCenterRef = useRef({
     lat: lat || 37.378553955447,
     long: long || 127.11254077891,
   });
@@ -41,7 +41,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
       return;
     }
 
-    const { lat, long } = mapCenterRef.current;
+    const { lat, long } = initMapCenterRef.current;
     const location = new naver.maps.LatLng(lat, long);
     const mapOptions = {
       center: location,
@@ -52,21 +52,14 @@ const SingleMapBase = (props: IMapBaseProps) => {
     const map = new naver.maps.Map(mapElement.current, mapOptions);
     mapRef.current = map;
 
-    /* 지도 이벤트 리스너 */
-    naver.maps.Event.addListener(map, "bounds_changed", function () {
-      const { x, y } = map.getCenter();
-
-      mapCenterRef.current = {
-        lat: y,
-        long: x,
-      };
-    });
-
     getUseMapStoreRef.current.setMarker(() => {
-      const { lat, long } = mapCenterRef.current;
-      const position = new naver.maps.LatLng(lat, long);
+      if (!mapRef.current) {
+        return;
+      }
+      const position = mapRef.current.getCenter();
 
-      !!onChangeLocationRef.current && onChangeLocationRef.current(lat, long);
+      !!onChangeLocationRef.current &&
+        onChangeLocationRef.current(position.y, position.x);
 
       /* 마커가 존재할 경우, 마커 위치 이동 */
       if (markerRef.current) {
@@ -85,8 +78,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
 
     /** 지도 init 로드 시, 마커까지 생성 여부 */
     if (isInitMarker) {
-      const { lat, long } = mapCenterRef.current;
-      const position = new naver.maps.LatLng(lat, long);
+      const position = mapRef.current.getCenter();
 
       const marker = new naver.maps.Marker({
         position,
@@ -94,6 +86,8 @@ const SingleMapBase = (props: IMapBaseProps) => {
         map: mapRef.current,
       });
       markerRef.current = marker;
+
+      mapRef.current.setCenter(position);
     }
   }, [isInitMarker]);
 
