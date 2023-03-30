@@ -105,6 +105,7 @@ const ClusterMapBase = (props: IMapBaseProps) => {
       );
       const marker = new naver.maps.Marker({
         position,
+        icon,
       });
       /* 마커 클릭 이벤트 리스너 등록 */
       naver.maps.Event.addListener(marker, "click", getClickHandler(i));
@@ -191,6 +192,14 @@ const ClusterMapBase = (props: IMapBaseProps) => {
 
 export default ClusterMapBase;
 
+/** 임시 충전소 아이콘 */
+const icon = {
+  content:
+    "<img src='https://content.humaxcharger.com/resources/img/marker_able.png' width='22' height='32' alt='충전소 위치' />",
+  size: new naver.maps.Size(22, 32),
+};
+
+/** 임시 클러스터 마커 */
 const getHtmlMarker = (size: number) => {
   return {
     content: `<div 

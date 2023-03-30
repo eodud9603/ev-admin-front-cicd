@@ -84,6 +84,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
       /* 마커 생성 */
       const marker = new naver.maps.Marker({
         position,
+        icon,
         map: mapRef.current,
       });
       markerRef.current = marker;
@@ -96,6 +97,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
 
       const marker = new naver.maps.Marker({
         position,
+        icon,
         map: mapRef.current,
       });
       markerRef.current = marker;
@@ -172,3 +174,10 @@ const SingleMapBase = (props: IMapBaseProps) => {
 };
 
 export default SingleMapBase;
+
+/** 임시 충전소 아이콘 */
+const icon = {
+  content:
+    "<img src='https://content.humaxcharger.com/resources/img/marker_able.png' width='22' height='32' alt='충전소 위치' />",
+  size: new naver.maps.Size(22, 32),
+};
