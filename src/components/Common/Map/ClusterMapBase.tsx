@@ -113,9 +113,9 @@ const ClusterMapBase = (props: IMapBaseProps) => {
       const [closeButton, previousButton] = buttons.splice(0, 2);
       const nextButton = buttons.pop();
 
-      // /* 팝업창 닫기 버튼 클릭 이벤트 리스너 등록 */
+      /* 팝업창 닫기 버튼 클릭 이벤트 리스너 등록 */
       closeButton.addEventListener("click", getClickHandler(i), false);
-      // /* 이전 버튼 클릭 이벤트 리스너 등록 */
+      /* 이전 버튼 클릭 이벤트 리스너 등록 */
       previousButton.addEventListener(
         "click",
         () => {
@@ -123,7 +123,7 @@ const ClusterMapBase = (props: IMapBaseProps) => {
         },
         false
       );
-      // /* 다음 버튼 클릭 이벤트 리스너 등록 */
+      /* 다음 버튼 클릭 이벤트 리스너 등록 */
       nextButton.addEventListener(
         "click",
         () => {
@@ -220,6 +220,7 @@ const getHtmlMarker = (size: number) => {
   };
 };
 
+/** infoWindow content (HTML string) */
 const getPopup = (chargerStation: {
   stationName: string;
   stationId: string;

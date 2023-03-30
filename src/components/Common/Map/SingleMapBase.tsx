@@ -136,7 +136,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
       {children}
 
       {/* 임시 중심좌표 라인 */}
-      <div
+      {/* <div
         style={{
           position: "absolute",
           top: "50%",
@@ -155,7 +155,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
           height: "100%",
           backgroundColor: "red",
         }}
-      />
+      /> */}
     </div>
   );
 };
