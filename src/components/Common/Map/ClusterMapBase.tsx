@@ -40,16 +40,16 @@ const ClusterMapBase = (props: IMapBaseProps) => {
   /** map div ref */
   const mapElement = useRef<HTMLDivElement>(null);
   /** naver map ref */
-  const mapRef = useRef<any>(null);
+  const mapRef = useRef<naver.maps.Map | null>(null);
   /** naver map center position ref */
   const mapCenterRef = useRef({
     lat: 36.704882,
     long: 127.917245,
   });
   /** naver map markers ref */
-  const markerRefs = useRef<any[]>([]);
+  const markerRefs = useRef<naver.maps.Marker[]>([]);
   /** naver map marker click popup ref */
-  const infoWindowRefs = useRef<any[]>([]);
+  const infoWindowRefs = useRef<naver.maps.InfoWindow[]>([]);
 
   useEffect(() => {
     if (!mapElement.current || !naver) {
@@ -93,7 +93,7 @@ const ClusterMapBase = (props: IMapBaseProps) => {
         if (infoWindow.getMap()) {
           infoWindow.close();
         } else {
-          infoWindow.open(mapRef.current, marker);
+          infoWindow.open(mapRef.current!, marker);
         }
       };
     };

@@ -42,7 +42,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
     long: long || 127.11254077891,
   });
   /** 단일 marker ref */
-  const markerRef = useRef<any>(null);
+  const markerRef = useRef<naver.maps.Marker | null>(null);
 
   useEffect(() => {
     if (!mapElement.current || !naver) {
@@ -150,7 +150,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
       {children}
 
       {/* 임시 중심좌표 라인 */}
-      {/* <div
+      <div
         style={{
           position: "absolute",
           top: "50%",
@@ -169,7 +169,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
           height: "100%",
           backgroundColor: "red",
         }}
-      /> */}
+      />
     </div>
   );
 };
