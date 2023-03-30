@@ -110,15 +110,20 @@ const ClusterMapBase = (props: IMapBaseProps) => {
       naver.maps.Event.addListener(marker, "click", getClickHandler(i));
 
       const infoWindow = new naver.maps.InfoWindow({
-        content: getPopup(chargerStation, () => {
-          getClickHandler(i);
-        }),
+        content: getPopup(chargerStation),
         disableAnchor: true /* 기본 말풍선 꼬리 활성화 여부 */,
         borderWidth: 0 /* 두께 */,
         pixelOffset: 145 /* 정보창 offset */,
         maxWidth: 290 /* 최대 너비 */,
         backgroundColor: "transparent",
       });
+
+      /* 팝업창 닫기 버튼 클릭 이벤트 리스너 */
+      infoWindow
+        .getContentElement()
+        .querySelector("button")
+        .addEventListener("click", getClickHandler(i), false);
+
       infoWindowRefs.current.push(infoWindow);
       markerRefs.current.push(marker);
     }
@@ -175,17 +180,14 @@ const getHtmlMarker = (size: number) => {
   };
 };
 
-const getPopup = (
-  chargerStation: {
-    stationName: string;
-    stationId: string;
-    addr: string;
-    addrDetail: string;
-  },
-  onClose: () => void
-) => {
+const getPopup = (chargerStation: {
+  stationName: string;
+  stationId: string;
+  addr: string;
+  addrDetail: string;
+}) => {
+  /** 임시 목록 */
   const testList = new Array(10).fill(undefined);
-
   /** 테이블 로우 */
   const rows = testList.reduce((acc: string, cur, index) => {
     acc += `
@@ -252,7 +254,7 @@ const getPopup = (
             ${chargerStation.stationId}
            </a>
         </p>
-        <button onclick="">
+        <button type="button">
           X
         </button>
       </section>
@@ -275,7 +277,7 @@ const getPopup = (
             font-weight: 800;
             padding: 16px 10px;
           ">
-            주소 ${chargerStation?.addr}, ${chargerStation?.addrDetail}
+            주소 ${chargerStation.addr}, ${chargerStation.addrDetail}
           </p>
           <table style="width: 100%">
             <thead style="
