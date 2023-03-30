@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { MARKER_IMAGE_URL } from "src/constants/marker";
-import { MarkerClustering } from "./cluster";
+import { MarkerClustering } from "src/components/Common/Map/cluster";
 
 interface IMapBaseProps {
   markerList: {
