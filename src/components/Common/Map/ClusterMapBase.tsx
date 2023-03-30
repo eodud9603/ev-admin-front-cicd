@@ -238,7 +238,9 @@ const getPopup = (chargerStation: {
             ">
               <td>
                 <span>
-                  ${index < 9 ? `0${index + 1}` : index + 1}
+                  <a href="/charger/charger/detail/${index}">
+                    ${index < 9 ? `0${index + 1}` : index + 1}
+                  </a>
                 </span>
               </td>
               <td>
