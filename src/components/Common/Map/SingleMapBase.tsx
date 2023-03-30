@@ -2,14 +2,6 @@ import React, { useEffect, useRef } from "react";
 import { MARKER_IMAGE_URL } from "src/constants/marker";
 import { useMapStore } from "src/store/store";
 
-declare global {
-  /** @description lint 설정에 따른 오류 방지 (interface명 I 접두사 이슈) */
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  interface Window {
-    naver: naver.maps.Map;
-  }
-}
-
 interface IMapBaseProps {
   lat?: number;
   long?: number;
@@ -35,7 +27,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
   /** map div ref */
   const mapElement = useRef<HTMLDivElement>(null);
   /** naver map ref */
-  const mapRef = useRef<Window["naver"] | null>(null);
+  const mapRef = useRef<naver.maps.Map | null>(null);
   /** naver map center position ref */
   const mapCenterRef = useRef({
     lat: lat || 37.378553955447,

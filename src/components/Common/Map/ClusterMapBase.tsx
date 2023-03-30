@@ -3,14 +3,6 @@ import { MARKER_IMAGE_URL } from "src/constants/marker";
 import { useMapStore } from "src/store/store";
 import { MarkerClustering } from "./cluster";
 
-declare global {
-  /** @description lint 설정에 따른 오류 방지 (interface명 I 접두사 이슈) */
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  interface Window {
-    naver: naver.maps.Map;
-  }
-}
-
 interface IMapBaseProps {
   markerList: {
     stationId: string;
