@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { useMapStore } from "src/store/store";
-import styled from "styled-components";
 
 declare global {
   /** @description lint 설정에 따른 오류 방지 (interface명 I 접두사 이슈) */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   interface Window {
-    naver: any;
+    naver: naver.maps.Map;
   }
 }
 
@@ -21,7 +20,7 @@ interface IMapBaseProps {
 const { naver } = window;
 
 /**
- * 네이버 지도 공통 컴포넌트
+ * 네이버 지도 단일 마커 표시 공통 컴포넌트
  * @description children을 넣으려면, css > z-index 추가할 것
  */
 const SingleMapBase = (props: IMapBaseProps) => {
@@ -35,7 +34,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
   /** map div ref */
   const mapElement = useRef<HTMLDivElement>(null);
   /** naver map ref */
-  const mapRef = useRef<any>(null);
+  const mapRef = useRef<Window["naver"] | null>(null);
   /** naver map center position ref */
   const mapCenterRef = useRef({
     lat: lat || 37.378553955447,
@@ -62,11 +61,11 @@ const SingleMapBase = (props: IMapBaseProps) => {
 
     /* 지도 이벤트 리스너 */
     naver.maps.Event.addListener(map, "bounds_changed", function () {
-      const { _lat, _lng } = map.getCenter();
+      const { x, y } = map.getCenter();
 
       mapCenterRef.current = {
-        lat: _lat,
-        long: _lng,
+        lat: y,
+        long: x,
       };
     });
 
@@ -85,7 +84,8 @@ const SingleMapBase = (props: IMapBaseProps) => {
       /* 마커 생성 */
       const marker = new naver.maps.Marker({
         position,
-        map: mapRef.current,
+        icon,
+        map: mapRef.current || undefined,
       });
       markerRef.current = marker;
     });
@@ -97,6 +97,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
 
       const marker = new naver.maps.Marker({
         position,
+        icon,
         map: mapRef.current,
       });
       markerRef.current = marker;
@@ -173,3 +174,10 @@ const SingleMapBase = (props: IMapBaseProps) => {
 };
 
 export default SingleMapBase;
+
+/** 임시 충전소 아이콘 */
+const icon = {
+  content:
+    "<img src='https://content.humaxcharger.com/resources/img/marker_able.png' width='22' height='32' alt='충전소 위치' />",
+  size: new naver.maps.Size(22, 32),
+};
