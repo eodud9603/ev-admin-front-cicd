@@ -6,7 +6,7 @@ declare global {
   /** @description lint 설정에 따른 오류 방지 (interface명 I 접두사 이슈) */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   interface Window {
-    naver: any;
+    naver: naver.maps.Map;
   }
 }
 
@@ -76,6 +76,7 @@ const ClusterMapBase = (props: IMapBaseProps) => {
     };
   }, []);
 
+  /* map > 마커, 클러스터 추가 */
   useEffect(() => {
     if (!mapRef.current) {
       return;
@@ -115,13 +116,13 @@ const ClusterMapBase = (props: IMapBaseProps) => {
         content: getPopup(chargerStation),
         disableAnchor: true /* 기본 말풍선 꼬리 활성화 여부 */,
         borderWidth: 0 /* 두께 */,
-        pixelOffset: 145 /* 정보창 offset */,
+        pixelOffset: new naver.maps.Point(145, 15) /* 정보창 offset */,
         maxWidth: 290 /* 최대 너비 */,
         backgroundColor: "transparent",
       });
       /** 팝업창 > 버튼 태그 목록 */
       const buttons = [
-        ...infoWindow.getContentElement().querySelectorAll("button"),
+        ...(infoWindow as any).getContentElement().querySelectorAll("button"),
       ];
 
       const [closeButton, previousButton] = buttons.splice(0, 2);
@@ -149,7 +150,7 @@ const ClusterMapBase = (props: IMapBaseProps) => {
       for (const pageButton of buttons) {
         pageButton.addEventListener(
           "click",
-          (e) => {
+          (e: any) => {
             console.log(e.target.value);
           },
           false

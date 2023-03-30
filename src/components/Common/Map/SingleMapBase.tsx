@@ -5,7 +5,7 @@ declare global {
   /** @description lint 설정에 따른 오류 방지 (interface명 I 접두사 이슈) */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   interface Window {
-    naver: any;
+    naver: naver.maps.Map;
   }
 }
 
@@ -34,7 +34,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
   /** map div ref */
   const mapElement = useRef<HTMLDivElement>(null);
   /** naver map ref */
-  const mapRef = useRef<any>(null);
+  const mapRef = useRef<Window["naver"] | null>(null);
   /** naver map center position ref */
   const mapCenterRef = useRef({
     lat: lat || 37.378553955447,
@@ -61,11 +61,11 @@ const SingleMapBase = (props: IMapBaseProps) => {
 
     /* 지도 이벤트 리스너 */
     naver.maps.Event.addListener(map, "bounds_changed", function () {
-      const { _lat, _lng } = map.getCenter();
+      const { x, y } = map.getCenter();
 
       mapCenterRef.current = {
-        lat: _lat,
-        long: _lng,
+        lat: y,
+        long: x,
       };
     });
 
@@ -85,7 +85,7 @@ const SingleMapBase = (props: IMapBaseProps) => {
       const marker = new naver.maps.Marker({
         position,
         icon,
-        map: mapRef.current,
+        map: mapRef.current || undefined,
       });
       markerRef.current = marker;
     });
