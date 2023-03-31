@@ -37,7 +37,13 @@ const ClusterMapBase = (props: IMapBaseProps) => {
   /** naver map markers ref */
   const markerRefs = useRef<naver.maps.Marker[]>([]);
   /** naver map marker click popup ref */
-  const infoWindowRef = useRef<naver.maps.InfoWindow | null>(null);
+  const infoWindowRef = useRef<{
+    currentSeq?: number;
+    infoWindow: naver.maps.InfoWindow | null;
+  }>({
+    currentSeq: undefined,
+    infoWindow: null,
+  });
 
   useEffect(() => {
     if (!mapElement.current || !naver) {
@@ -71,7 +77,8 @@ const ClusterMapBase = (props: IMapBaseProps) => {
         }
 
         const marker = markerRefs.current[seq];
-        const infoWindow = infoWindowRef.current;
+        const { currentSeq, infoWindow } = infoWindowRef.current;
+        const isSameSeq = currentSeq === seq;
         /* 최초 등록한 팝업창 클릭한 충전소 데이터로 내용 변경  */
         infoWindow?.setContent(getPopup(markerList[seq]));
 
@@ -113,14 +120,22 @@ const ClusterMapBase = (props: IMapBaseProps) => {
           pageButton.addEventListener("click", pageHandler, false);
         }
 
+        /* 맵 위에 팝업창이 표시되는지 여부 */
         if (infoWindow?.getMap()) {
-          eventRemoveHandler();
-          /* 팝업창 닫기 */
-          infoWindow.close();
+          /* 같은 마커 클릭 (팝업창 닫기) */
+          if (isSameSeq) {
+            eventRemoveHandler();
+            infoWindow.close();
+          } else {
+            /* 다른 마커 클릭 (팝업창 열기) */
+            infoWindow?.open(mapRef.current, marker);
+          }
         } else {
           /* 클릭한 마커 기준 > 팝업창 열기 */
           infoWindow?.open(mapRef.current, marker);
         }
+
+        infoWindowRef.current.currentSeq = seq;
       };
     };
 
@@ -134,7 +149,7 @@ const ClusterMapBase = (props: IMapBaseProps) => {
       backgroundColor: "transparent",
     });
     /** 팝업창 데이터 추가 */
-    infoWindowRef.current = infoWindow;
+    infoWindowRef.current.infoWindow = infoWindow;
 
     /* 마커 등록 */
     const listCount = markerList.length;
@@ -178,13 +193,16 @@ const ClusterMapBase = (props: IMapBaseProps) => {
 
     return () => {
       /* 맵 제거하지 않고 맵 위 생성된 마커/팝업창 제거 */
-      infoWindowRef.current?.setMap(null);
+      infoWindowRef.current.infoWindow?.setMap(null);
       for (let i = 0; i < markerRefs.current.length; i++) {
         markerRefs.current[i].setMap(null);
       }
       /* 마커/팝업창 ref 초기화 */
       markerRefs.current = [];
-      infoWindowRef.current = null;
+      infoWindowRef.current = {
+        currentSeq: undefined,
+        infoWindow: null,
+      };
     };
   }, [markerList]);
 
