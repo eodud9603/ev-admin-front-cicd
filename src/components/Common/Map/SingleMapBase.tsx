@@ -41,21 +41,25 @@ const SingleMapBase = (props: IMapBaseProps) => {
       return;
     }
 
-    const { lat, long } = initMapCenterRef.current;
-    const location = new naver.maps.LatLng(lat, long);
-    const mapOptions = {
-      center: location,
-      zoom: 17,
-      zoomControl: false,
-    };
+    if (!mapRef.current) {
+      const { lat, long } = initMapCenterRef.current;
+      const location = new naver.maps.LatLng(lat, long);
+      const mapOptions = {
+        center: location,
+        zoom: 17,
+        zoomControl: false,
+      };
 
-    const map = new naver.maps.Map(mapElement.current, mapOptions);
-    mapRef.current = map;
+      const map = new naver.maps.Map(mapElement.current, mapOptions);
+      mapRef.current = map;
+    }
 
-    getUseMapStoreRef.current.setMarker(() => {
+    /** marker 생생 함수 */
+    const createMarker = () => {
       if (!mapRef.current) {
         return;
       }
+
       const position = mapRef.current.getCenter();
 
       !!onChangeLocationRef.current &&
@@ -74,21 +78,19 @@ const SingleMapBase = (props: IMapBaseProps) => {
         map: mapRef.current || undefined,
       });
       markerRef.current = marker;
-    });
+    };
 
-    /** 지도 init 로드 시, 마커까지 생성 여부 */
+    /** 마커 생성 버튼 클릭 이벤트 저장 */
+    getUseMapStoreRef.current.setMarker(createMarker);
+    /** 지도 init 로드 시, 마커까지 생성 */
     if (isInitMarker) {
-      const position = mapRef.current.getCenter();
-
-      const marker = new naver.maps.Marker({
-        position,
-        icon,
-        map: mapRef.current,
-      });
-      markerRef.current = marker;
-
-      mapRef.current.setCenter(position);
+      createMarker();
     }
+
+    /** @TODO 페이지 새로고침 시, 마커 중심 좌표 버그 임시 수정 */
+    setTimeout(() => {
+      mapRef.current?.autoResize();
+    }, 100);
   }, [isInitMarker]);
 
   /* map store 초기화 */
@@ -132,7 +134,11 @@ const SingleMapBase = (props: IMapBaseProps) => {
   }, [lat, long]);
 
   return (
-    <div ref={mapElement} className={"d-flex flex-grow-1 position-relative"}>
+    <div
+      ref={mapElement}
+      id={"mapDiv"}
+      className={"m-0 p-0 w-100 h-100 position-relative"}
+    >
       {children}
 
       {/* 임시 중심좌표 라인 */}
@@ -167,7 +173,7 @@ const icon = {
   content: `<img src="${MARKER_IMAGE_URL.full}" 
                  width='22' 
                  height='32' 
-                 alt='충전소 위치' 
+                 alt='충전소 위치'
             />`,
   size: new naver.maps.Size(22, 32),
 };
