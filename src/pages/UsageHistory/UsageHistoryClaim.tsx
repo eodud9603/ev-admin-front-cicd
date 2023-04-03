@@ -14,6 +14,7 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import MonthGroup from "src/pages/UsageHistory/components/MonthGroup";
+import { toLocaleString } from "src/utils/toLocaleString";
 import styled from "styled-components";
 
 const PAGE_NAME = "청구 현황";
@@ -168,10 +169,10 @@ const UsageHistoryClaim = () => {
                   <td>{claim.chargerStationName}</td>
                   <td>{claim.claimDate}</td>
                   <td>{claim.count}</td>
-                  <td>{claim.chargeAmount}</td>
-                  <td>{claim.usageAmount}</td>
-                  <td>{claim.discountAmount || "-"}</td>
-                  <td>{claim.billingAmount}</td>
+                  <td>{toLocaleString(claim.chargeAmount)}</td>
+                  <td>{toLocaleString(claim.usageAmount)}</td>
+                  <td>{toLocaleString(claim.discountAmount || "-")}</td>
+                  <td>{toLocaleString(claim.billingAmount)}</td>
                 </HoverTr>
               ))
             ) : (

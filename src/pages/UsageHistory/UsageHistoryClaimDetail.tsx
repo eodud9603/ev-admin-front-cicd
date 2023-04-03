@@ -12,6 +12,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
+import { toLocaleString } from "src/utils/toLocaleString";
 
 const PAGE_NAME = "청구 현황 상세";
 
@@ -129,28 +130,28 @@ const UsageHistoryClaimDetail = () => {
                     titleWidthRatio: 5,
                     disabled,
                     title: "충전량(Kw)",
-                    content: "90",
+                    content: toLocaleString("90"),
                   },
                   {
                     containerWidthRatio: 3,
                     titleWidthRatio: 5,
                     disabled,
                     title: "이용금액",
-                    content: "50000",
+                    content: toLocaleString("50000"),
                   },
                   {
                     containerWidthRatio: 3,
                     titleWidthRatio: 5,
                     disabled,
                     title: "할인금액",
-                    content: "-",
+                    content: toLocaleString("-"),
                   },
                   {
                     containerWidthRatio: 3,
                     titleWidthRatio: 5,
                     disabled,
                     title: "청구금액",
-                    content: "50000",
+                    content: toLocaleString("50000"),
                   },
                 ]}
               />
@@ -189,10 +190,10 @@ const UsageHistoryClaimDetail = () => {
                   <td>{usage.orderId}</td>
                   <td>{usage.chargerStationName}</td>
                   <td>{usage.usageDate}</td>
-                  <td>{usage.chargeAmount}</td>
-                  <td>{usage.usageAmount}</td>
-                  <td>{usage.discountAmount || "-"}</td>
-                  <td>{usage.billingAmount}</td>
+                  <td>{toLocaleString(usage.chargeAmount)}</td>
+                  <td>{toLocaleString(usage.usageAmount)}</td>
+                  <td>{toLocaleString(usage.discountAmount || "-")}</td>
+                  <td>{toLocaleString(usage.billingAmount)}</td>
                 </tr>
               ))
             ) : (
