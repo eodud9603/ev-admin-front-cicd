@@ -236,7 +236,7 @@ const RegularMember = () => {
             "border-top border-bottom border-2"
           }
         >
-          <Row>
+          <Row className={"d-flex align-items-center"}>
             <Col md={8}>
               <DateGroup
                 label={"결제일시"}
@@ -259,7 +259,7 @@ const RegularMember = () => {
               />
             </Col>
           </Row>
-          <Row>
+          <Row className={"d-flex align-items-center"}>
             <Col md={8}>
               <DateGroup label={"취소일시"} />
             </Col>
@@ -275,7 +275,7 @@ const RegularMember = () => {
               />
             </Col>
           </Row>
-          <Row>
+          <Row className={"d-flex align-items-center"}>
             <Col md={8}>
               <SearchTextInput
                 title={"검색어"}
@@ -288,7 +288,7 @@ const RegularMember = () => {
             </Col>
             <Col md={4} />
           </Row>
-          <Row>
+          <Row className={"d-flex align-items-center"}>
             <Col md={4}>
               <DropdownBase
                 label={"정렬기준"}
