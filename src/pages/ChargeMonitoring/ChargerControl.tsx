@@ -9,6 +9,7 @@ import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
+import ClusterMapBase from "src/components/Common/Map/ClusterMapBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
@@ -92,6 +93,60 @@ const tableHeader = [
   { label: "충전기내부온도" },
   { label: "냉각장치여부" },
   { label: "설치 년도" },
+];
+
+/** 임시 마커 목록 */
+const markerList = [
+  {
+    stationId: "KEP0000000020",
+    stationName: "휴맥스 카플랫 전용 A",
+    regionGroupId: "1",
+    addr: "경기도 성남시 분당구 황새울로 216",
+    addrDetail: "임시",
+    lat: 37.378553955447,
+    long: 127.11254077891,
+    status: "full",
+  },
+  {
+    stationId: "KEP0000000020",
+    stationName: "휴맥스 카플랫 전용 B",
+    regionGroupId: "1",
+    addr: "경기도 성남시 분당구 황새울로 216",
+    addrDetail: "임시",
+    lat: 37.378553955447,
+    long: 127.21254077891,
+    status: "disabled",
+  },
+  {
+    stationId: "KEP0000000020",
+    stationName: "부산 카플랫 전용 A",
+    regionGroupId: "2",
+    addr: "부산 주소",
+    addrDetail: "임시",
+    lat: 35.1795543,
+    long: 129.0756416,
+    status: "able",
+  },
+  {
+    stationId: "KEP0000000020",
+    stationName: "땅끝마을 카플랫 전용 A",
+    regionGroupId: "3",
+    addr: "땅끝마을 주소",
+    addrDetail: "임시",
+    lat: 34.294765,
+    long: 126.525143,
+    status: "unknown",
+  },
+  {
+    stationId: "KEP0000000020",
+    stationName: "땅끝마을 카플랫 전용 B",
+    regionGroupId: "3",
+    addr: "땅끝마을 주소",
+    addrDetail: "임시",
+    lat: 34.394765,
+    long: 126.525143,
+    status: "unknown",
+  },
 ];
 
 /** 임시 데이터 */
@@ -254,29 +309,25 @@ const ChargerControl = () => {
         </section>
 
         {/* 지도 */}
-        <TempMap
-          className={
-            "my-4 d-flex align-items-center justify-content-center " +
-            "position-relative bg-light"
-          }
-        >
-          <span className={"font-size-24 fw-semibold"}>지도</span>
-
-          {/* 상단 날씨 */}
-          <Weather
+        <MapContainer className={"my-4"}>
+          <ClusterMapBase markerList={markerList}>
+            {/* 상단 날씨 */}
+            {/** @TODO 공공기관 api 키 필요 */}
+            {/* <Weather
             iconClassName={"text-turu bx bx-sun"}
             lowest={-2}
             highest={8}
-          ></Weather>
-          {/* 하단 통계 */}
-          <ChargerStatistics
-            total={4}
-            communicationProblem={1}
-            rechargeable={1}
-            charging={1}
-            inspection={1}
-          />
-        </TempMap>
+          ></Weather> */}
+            {/* 하단 통계 */}
+            <ChargerStatistics
+              total={5}
+              communicationProblem={1}
+              rechargeable={1}
+              charging={1}
+              inspection={2}
+            />
+          </ClusterMapBase>
+        </MapContainer>
 
         {/* 테이블 */}
         <TableBase tableHeader={tableHeader}>
@@ -365,7 +416,9 @@ const HoverSpan = styled.span`
 `;
 
 /** 지도 영역(임시) */
-const TempMap = styled.div`
+const MapContainer = styled.div`
+  display: flex;
+  flex: 1;
   height: 686px;
 `;
 
@@ -447,7 +500,7 @@ const ChargerStatistics = (props: IChargerStatisticsProps) => {
 
   return (
     <div
-      style={{ maxWidth: "541px" }}
+      style={{ zIndex: 1, maxWidth: "541px" }}
       className={
         "shadow-sm m-4 position-absolute bottom-0 start-0 " +
         "d-flex bg-white font-size-16 fw-bold"

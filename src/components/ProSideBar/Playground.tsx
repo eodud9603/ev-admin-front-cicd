@@ -70,6 +70,8 @@ const initMenus = {
   counseling: false,
   payment: false,
   sales: false,
+  settlement: false,
+  usageHistory: false,
 };
 
 // hex to rgba converter
@@ -376,6 +378,19 @@ export const Playground = (props: any) => {
                 </MenuItem>
               </SubMenu>
               <SubMenu
+                label="정산 관리"
+                icon={<Global />}
+                open={allOpen.settlement}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("settlement", isOpen)
+                }
+              >
+                <MenuItem>정회원 결제 관리</MenuItem>
+                <MenuItem>비회원 결제 관리</MenuItem>
+                <MenuItem>로밍회원 결제 관리</MenuItem>
+                <MenuItem>그룹 정산 관리</MenuItem>
+              </SubMenu>
+              <SubMenu
                 label="요금 관리"
                 icon={<Global />}
                 open={allOpen.payment}
@@ -392,6 +407,17 @@ export const Playground = (props: any) => {
                 <MenuItem component={<Link to={"/payment/roaming"} />}>
                   로밍 요금제 관리
                 </MenuItem>
+              </SubMenu>
+              <SubMenu
+                label="이용 내역 관리"
+                icon={<Global />}
+                open={allOpen.usageHistory}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("usageHistory", isOpen)
+                }
+              >
+                <MenuItem>청구 현황</MenuItem>
+                <MenuItem>로밍 청구 현황</MenuItem>
               </SubMenu>
 
               <SubMenu label="Components" icon={<Diamond />}>
