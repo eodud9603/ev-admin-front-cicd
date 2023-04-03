@@ -40,15 +40,15 @@ const paymentStatusList = [
     value: "",
   },
   {
-    label: "결제 완료",
+    label: "선결제",
     value: "1",
   },
   {
-    label: "취소",
+    label: "결제 완료",
     value: "2",
   },
   {
-    label: "미납",
+    label: "취소",
     value: "3",
   },
 ];
@@ -240,7 +240,7 @@ const NonMember = () => {
           <Row className={"d-flex align-items-center"}>
             <Col md={8}>
               <DateGroup
-                label={"결제일시"}
+                label={"선/재결제 일시"}
                 buttonState={[
                   { label: "7일" },
                   { label: "1개월" },
