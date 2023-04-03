@@ -100,6 +100,7 @@ import UsageHistoryClaim from "src/pages/UsageHistory/UsageHistoryClaim";
 import UsageHistoryRoaming from "src/pages/UsageHistory/UsageHistoryRoaming";
 import UsageHistoryRoamingDetail from "src/pages/UsageHistory/UsageHistoryRoamingDetail";
 import UsageHistoryClaimDetail from "src/pages/UsageHistory/UsageHistoryClaimDetail";
+import RegularMember from "src/pages/Settlement/RegularMember";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -271,6 +272,9 @@ const userRoutes: Array<RouteProps> = [
   { path: "/sales/region", element: <SalesByRegion /> },
   { path: "/sales/station", element: <SalesByStation /> },
   { path: "/sales/charger", element: <SalesByCharger /> },
+
+  /* 정산 관리 */
+  { path: "/settlement/regularMember", element: <RegularMember /> },
 
   /* 이용 내역 관리 */
   { path: "/usageHistory/claim", element: <UsageHistoryClaim /> },

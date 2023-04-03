@@ -10,7 +10,8 @@ interface IButtonBase extends ButtonProps {
     | "info"
     | "success"
     | "white"
-    | "danger";
+    | "danger"
+    | "warning";
   icon?: HTMLElement;
   className?: string;
   outline?: boolean;
