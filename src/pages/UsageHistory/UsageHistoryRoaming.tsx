@@ -182,7 +182,7 @@ const UsageHistoryRoaming = () => {
             ) : (
               <tr>
                 <td colSpan={9} className={"py-5 text-center text"}>
-                  등록된 청구 내역이 없습니다.
+                  등록된 로밍 청구 내역이 없습니다.
                 </td>
               </tr>
             )}
