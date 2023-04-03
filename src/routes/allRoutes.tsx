@@ -101,6 +101,7 @@ import UsageHistoryRoaming from "src/pages/UsageHistory/UsageHistoryRoaming";
 import UsageHistoryRoamingDetail from "src/pages/UsageHistory/UsageHistoryRoamingDetail";
 import UsageHistoryClaimDetail from "src/pages/UsageHistory/UsageHistoryClaimDetail";
 import RegularMember from "src/pages/Settlement/RegularMember";
+import NonMember from "src/pages/Settlement/NonMember";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -275,6 +276,7 @@ const userRoutes: Array<RouteProps> = [
 
   /* 정산 관리 */
   { path: "/settlement/regularMember", element: <RegularMember /> },
+  { path: "/settlement/nonMember", element: <NonMember /> },
 
   /* 이용 내역 관리 */
   { path: "/usageHistory/claim", element: <UsageHistoryClaim /> },

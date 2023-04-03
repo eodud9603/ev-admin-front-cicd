@@ -388,7 +388,9 @@ export const Playground = (props: any) => {
                 <MenuItem component={<Link to={"/settlement/regularMember"} />}>
                   정회원 결제 관리
                 </MenuItem>
-                <MenuItem>비회원 결제 관리</MenuItem>
+                <MenuItem component={<Link to={"/settlement/nonMember"} />}>
+                  비회원 결제 관리
+                </MenuItem>
                 <MenuItem>로밍회원 결제 관리</MenuItem>
                 <MenuItem>그룹 정산 관리</MenuItem>
               </SubMenu>
