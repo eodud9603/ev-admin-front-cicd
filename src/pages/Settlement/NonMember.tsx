@@ -14,7 +14,6 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
-import SettlementTextModal from "./components/SettlementTextModal";
 
 const PAGE_NAME = "비회원 결제 관리";
 
@@ -167,7 +166,7 @@ const tableHeader = [
 ];
 
 /** 임시 데이터 */
-const regularList = [
+const nonList = [
   {
     id: "1",
     orderId: "OD2022120112345678",
@@ -193,13 +192,6 @@ const NonMember = () => {
   const [tabList, setTabList] = useState([{ label: "정산 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
-  const [cancelModalOpen, setCancelModalOpen] = useState<{
-    visible: boolean;
-    id: string | null;
-  }>({
-    visible: false,
-    id: null,
-  });
 
   const {
     usageStatus,
@@ -217,14 +209,6 @@ const NonMember = () => {
     sort: "",
     count: "1",
   });
-
-  const onChangeCancelModal = (id?: string) => {
-    setCancelModalOpen((prev) => ({
-      ...prev,
-      id: id ?? prev.id,
-      visible: !prev.visible,
-    }));
-  };
 
   return (
     <ContainerBase>
@@ -333,8 +317,8 @@ const NonMember = () => {
           className={"d-flex align-items-center justify-content-between mb-4"}
         >
           <span className={"font-size-13 fw-bold"}>
-            총 <span className={"text-turu"}>{regularList.length}개</span>의
-            결제가 있습니다.
+            총 <span className={"text-turu"}>{nonList.length}개</span>의 결제가
+            있습니다.
           </span>
 
           <div className={"d-flex align-items-center gap-3"}>
@@ -355,41 +339,36 @@ const NonMember = () => {
 
         <TableBase tableHeader={tableHeader}>
           <>
-            {regularList.length > 0 ? (
-              regularList.map((regular, index) => (
-                <tr key={regular.id}>
+            {nonList.length > 0 ? (
+              nonList.map((non, index) => (
+                <tr key={non.id}>
                   <td>{index + 1}</td>
-                  {/* <td>{regular.userName}</td>
-                  <td>{regular.userId}</td> */}
-                  <td>{regular.orderId}</td>
-                  <td>{regular.chargerStationName}</td>
+                  <td>{non.orderId}</td>
+                  <td>{non.chargerStationName}</td>
                   <td>
                     <ButtonBase
                       className={"w-xs rounded-5 py-1"}
                       color={"danger"}
-                      label={regular.usageStatus}
+                      label={non.usageStatus}
                     />
                   </td>
-                  <td>{regular.usageDate}</td>
-                  <td>{regular.chargeAmount}Kw</td>
-                  <td>{regular.prepaymentAmount}</td>
-                  <td>{regular.usageAmount}</td>
-                  <td>{regular.repaymentAmount}</td>
-                  <td>{regular.paymentStatus || "-"}</td>
-                  <td>{regular.paymentMethod || "-"}</td>
-                  <td>{regular.paymentDate || "-"}</td>
-                  <td>{regular.cancelDate || "-"}</td>
-                  <td>{regular.preApprovalNumber || "-"}</td>
-                  <td>{regular.reApprovalNumber || "-"}</td>
-                  <td>{regular.approvalResult || "-"}</td>
+                  <td>{non.usageDate}</td>
+                  <td>{non.chargeAmount}Kw</td>
+                  <td>{non.prepaymentAmount}</td>
+                  <td>{non.usageAmount}</td>
+                  <td>{non.repaymentAmount}</td>
+                  <td>{non.paymentStatus || "-"}</td>
+                  <td>{non.paymentMethod || "-"}</td>
+                  <td>{non.paymentDate || "-"}</td>
+                  <td>{non.cancelDate || "-"}</td>
+                  <td>{non.preApprovalNumber || "-"}</td>
+                  <td>{non.reApprovalNumber || "-"}</td>
+                  <td>{non.approvalResult || "-"}</td>
                   <td>
                     <ButtonBase
                       className={"w-xs rounded-5 py-1"}
                       color={"secondary"}
-                      label={regular.statusControl}
-                      onClick={() => {
-                        onChangeCancelModal(regular.id);
-                      }}
+                      label={non.statusControl}
                     />
                   </td>
                 </tr>
@@ -405,25 +384,6 @@ const NonMember = () => {
         </TableBase>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
-
-      <SettlementTextModal
-        isOpen={cancelModalOpen.visible}
-        title={"결제 취소 안내"}
-        contents={`삭제 후 고객에게 해당 공지사항이 표시되지 않습니다.\n삭제하시겠습니까?`}
-        onClose={onChangeCancelModal}
-        buttons={[
-          {
-            label: "아니오",
-            color: "secondary",
-            onClick: onChangeCancelModal,
-          },
-          {
-            label: "삭제",
-            color: "turu",
-            onClick: () => {},
-          },
-        ]}
-      />
     </ContainerBase>
   );
 };

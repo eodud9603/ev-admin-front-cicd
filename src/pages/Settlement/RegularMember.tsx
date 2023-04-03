@@ -14,7 +14,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
-import SettlementTextModal from "./components/SettlementTextModal";
+import SettlementTextModal from "src/pages/Settlement/components/SettlementTextModal";
 
 const PAGE_NAME = "정회원 결제 관리";
 
