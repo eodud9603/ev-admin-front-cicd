@@ -14,6 +14,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
+import { toLocaleString } from "src/utils/toLocaleString";
 
 const PAGE_NAME = "비회원 결제 관리";
 
@@ -353,10 +354,10 @@ const NonMember = () => {
                     />
                   </td>
                   <td>{non.usageDate}</td>
-                  <td>{non.chargeAmount}Kw</td>
-                  <td>{non.prepaymentAmount}</td>
-                  <td>{non.usageAmount}</td>
-                  <td>{non.repaymentAmount}</td>
+                  <td>{toLocaleString(non.chargeAmount)}Kw</td>
+                  <td>{toLocaleString(non.prepaymentAmount)}</td>
+                  <td>{toLocaleString(non.usageAmount)}</td>
+                  <td>{toLocaleString(non.repaymentAmount)}</td>
                   <td>{non.paymentStatus || "-"}</td>
                   <td>{non.paymentMethod || "-"}</td>
                   <td>{non.paymentDate || "-"}</td>

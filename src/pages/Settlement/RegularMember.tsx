@@ -15,6 +15,7 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import SettlementTextModal from "src/pages/Settlement/components/SettlementTextModal";
+import { toLocaleString } from "src/utils/toLocaleString";
 
 const PAGE_NAME = "정회원 결제 관리";
 
@@ -344,10 +345,10 @@ const RegularMember = () => {
                       label={regular.usageStatus}
                     />
                   </td>
-                  <td>{regular.chargeAmount}Kw</td>
-                  <td>{regular.usageAmount}</td>
-                  <td>{regular.discountAmount}</td>
-                  <td>{regular.paymentAmount}</td>
+                  <td>{toLocaleString(regular.chargeAmount)}Kw</td>
+                  <td>{toLocaleString(regular.usageAmount)}</td>
+                  <td>{toLocaleString(regular.discountAmount || "-")}</td>
+                  <td>{toLocaleString(regular.paymentAmount)}</td>
                   <td>{regular.cardNumber}</td>
                   <td>{regular.paymentStatus || "-"}</td>
                   <td>{regular.paymentDate || "-"}</td>
