@@ -14,6 +14,7 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import MonthGroup from "src/pages/UsageHistory/components/MonthGroup";
+import { toLocaleString } from "src/utils/toLocaleString";
 import styled from "styled-components";
 
 const PAGE_NAME = "로밍 청구 현황";
@@ -173,10 +174,10 @@ const UsageHistoryRoaming = () => {
                   <td>{roaming.chargerStationName}</td>
                   <td>{roaming.claimDate}</td>
                   <td>{roaming.count}</td>
-                  <td>{roaming.chargeAmount}</td>
-                  <td>{roaming.usageAmount}</td>
-                  <td>{roaming.discountAmount || "-"}</td>
-                  <td>{roaming.billingAmount}</td>
+                  <td>{toLocaleString(roaming.chargeAmount)}</td>
+                  <td>{toLocaleString(roaming.usageAmount)}</td>
+                  <td>{toLocaleString(roaming.discountAmount || "-")}</td>
+                  <td>{toLocaleString(roaming.billingAmount)}</td>
                 </HoverTr>
               ))
             ) : (
