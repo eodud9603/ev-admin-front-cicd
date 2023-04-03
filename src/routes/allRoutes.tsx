@@ -96,6 +96,10 @@ import IndividualSettlement from "src/pages/Sales/IndividualSettlement";
 import TotalSettlement from "src/pages/Sales/TotalSettlement";
 import BillingHistory from "src/pages/Sales/BillingHistory";
 import { Login } from "src/pages/Login/Login";
+import UsageHistoryClaim from "src/pages/UsageHistory/UsageHistoryClaim";
+import UsageHistoryRoaming from "src/pages/UsageHistory/UsageHistoryRoaming";
+import UsageHistoryRoamingDetail from "src/pages/UsageHistory/UsageHistoryRoamingDetail";
+import UsageHistoryClaimDetail from "src/pages/UsageHistory/UsageHistoryClaimDetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -267,6 +271,18 @@ const userRoutes: Array<RouteProps> = [
   { path: "/sales/region", element: <SalesByRegion /> },
   { path: "/sales/station", element: <SalesByStation /> },
   { path: "/sales/charger", element: <SalesByCharger /> },
+
+  /* 이용 내역 관리 */
+  { path: "/usageHistory/claim", element: <UsageHistoryClaim /> },
+  {
+    path: "/usageHistory/claim/detail/:id",
+    element: <UsageHistoryClaimDetail />,
+  },
+  { path: "/usageHistory/roaming", element: <UsageHistoryRoaming /> },
+  {
+    path: "/usageHistory/roaming/detail/:id",
+    element: <UsageHistoryRoamingDetail />,
+  },
 ];
 
 const authRoutes: Array<RouteProps> = [
