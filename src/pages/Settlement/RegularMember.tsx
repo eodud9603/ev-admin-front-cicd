@@ -34,7 +34,7 @@ const usageStatusList = [
   },
 ];
 
-/** 이용상태 목록 */
+/** 결제상태 목록 */
 const paymentStatusList = [
   {
     label: "전체",
