@@ -12,6 +12,9 @@ interface IMapBaseProps {
 
 const { naver } = window;
 
+const naverSize = new naver.maps.Size(0, 0);
+const marekerSize = naverSize.clone().add(22, 32);
+
 /**
  * 네이버 지도 단일 마커 표시 공통 컴포넌트
  * @description children을 넣으려면, css > z-index 추가할 것
@@ -175,5 +178,5 @@ const icon = {
                  height='32' 
                  alt='충전소 위치'
             />`,
-  size: new naver.maps.Size(22, 32),
+  size: marekerSize,
 };
