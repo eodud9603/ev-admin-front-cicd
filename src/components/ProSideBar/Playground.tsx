@@ -416,8 +416,12 @@ export const Playground = (props: any) => {
                   eachOpenMenuItem("usageHistory", isOpen)
                 }
               >
-                <MenuItem>청구 현황</MenuItem>
-                <MenuItem>로밍 청구 현황</MenuItem>
+                <MenuItem component={<Link to={"/usageHistory/claim"} />}>
+                  청구 현황
+                </MenuItem>
+                <MenuItem component={<Link to={"/usageHistory/roaming"} />}>
+                  로밍 청구 현황
+                </MenuItem>
               </SubMenu>
 
               <SubMenu label="Components" icon={<Diamond />}>
