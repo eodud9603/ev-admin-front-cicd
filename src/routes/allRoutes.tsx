@@ -95,6 +95,7 @@ import ChargerControl from "src/pages/ChargeMonitoring/ChargerControl";
 import IndividualSettlement from "src/pages/Sales/IndividualSettlement";
 import TotalSettlement from "src/pages/Sales/TotalSettlement";
 import BillingHistory from "src/pages/Sales/BillingHistory";
+import { Login } from "src/pages/Login/Login";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -269,6 +270,7 @@ const userRoutes: Array<RouteProps> = [
 ];
 
 const authRoutes: Array<RouteProps> = [
+  { path: "login", element: <Login /> },
   // { path: "/login2", element: <Login2 /> },
   // { path: "/pages-500", element: <Error500 /> },
 ];

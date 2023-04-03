@@ -88,7 +88,7 @@ export const TableBase = (props: ITableBase) => {
 //   max-width: 130px;
 //   display: table-cell;
 //   vertical-align: middle;
-// `;
+// `;p
 
 const TableWrapper = styled(Table)`
   vertical-align: middle;
