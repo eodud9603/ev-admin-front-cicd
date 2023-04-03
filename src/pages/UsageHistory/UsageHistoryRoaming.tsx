@@ -68,7 +68,7 @@ const roamingList = [
 ];
 
 const UsageHistoryRoaming = () => {
-  const [tabList, setTabList] = useState([{ label: "청구 현황" }]);
+  const [tabList, setTabList] = useState([{ label: "로밍 청구 현황" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
 

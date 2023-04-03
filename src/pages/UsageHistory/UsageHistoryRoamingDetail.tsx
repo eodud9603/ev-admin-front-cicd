@@ -66,7 +66,7 @@ const usageList = [
 ];
 
 const UsageHistoryRoamingDetail = () => {
-  const [tabList, setTabList] = useState([{ label: "그룹 정보" }]);
+  const [tabList, setTabList] = useState([{ label: "로밍 청구 현황" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
   const disabled = true;
