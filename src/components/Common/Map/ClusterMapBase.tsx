@@ -18,6 +18,16 @@ interface IMapBaseProps {
 
 const { naver } = window;
 
+const naverSize = new naver.maps.Size(0, 0);
+const markerSize = naverSize.clone().add(22, 32);
+const clusterSize = (size: number) => naverSize.clone().add(size, size);
+
+const infoWidth = 290;
+const naverPoint = new naver.maps.Point(0, 0);
+const infoPoint = naverPoint.clone().add(infoWidth / 2, 15);
+const clusterPoint = (size: number) =>
+  naverPoint.clone().add(size / 2, size / 2);
+
 const INIT_MAP_CENTER = {
   lat: 36.704882,
   long: 127.917245,
@@ -144,8 +154,8 @@ const ClusterMapBase = (props: IMapBaseProps) => {
       content: "<div />",
       disableAnchor: true /* 기본 말풍선 꼬리 활성화 여부 */,
       borderWidth: 0 /* 두께 */,
-      pixelOffset: new naver.maps.Point(145, 15) /* 정보창 offset */,
-      maxWidth: 290 /* 최대 너비 */,
+      pixelOffset: infoPoint /* 정보창 offset */,
+      maxWidth: infoWidth /* 최대 너비 */,
       backgroundColor: "transparent",
     });
     /** 팝업창 데이터 추가 */
@@ -222,7 +232,7 @@ const icon = (status: keyof typeof MARKER_IMAGE_URL) => ({
                  height='32' 
                  alt='충전소 위치' 
             />`,
-  size: new naver.maps.Size(22, 32),
+  size: markerSize,
 });
 
 /** 임시 클러스터 마커 */
@@ -241,8 +251,8 @@ const getHtmlMarker = (size: number) => {
                        font-weight: 600;
                       ' 
               />`,
-    size: new naver.maps.Size(size, size),
-    anchor: new naver.maps.Point(size / 2, size / 2),
+    size: clusterSize(size),
+    anchor: clusterPoint(size),
   };
 };
 
@@ -296,7 +306,7 @@ const getPopup = (chargerStation: {
         overflow: hidden;
         display: flex; 
         flex-direction: column; 
-        width: 290px; 
+        width: ${infoWidth}px; 
         height: 411px;
         max-height: 411px;
         justify-content: space-between;
