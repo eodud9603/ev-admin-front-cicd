@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Col, Input } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
+import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
 import {
   EditorContentCol,
   EditorTitleCol,
@@ -15,6 +16,7 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import useImages from "src/hooks/useImages";
 import useInputs from "src/hooks/useInputs";
+import { toLocaleString } from "src/utils/toLocaleString";
 import styled from "styled-components";
 
 const OperateQnADetail = () => {
@@ -33,6 +35,12 @@ const OperateQnADetail = () => {
     answerName,
     title,
     contents,
+    chargerStationName,
+    chargerId,
+    startDate,
+    endDate,
+    chargeAmount,
+    chargeFee,
     questionImages,
   } = useInputs({
     regDate: "2022-11-31 12:00:00",
@@ -44,6 +52,14 @@ const OperateQnADetail = () => {
     answerName: "백민규",
     title: "개인정보 처리 방침 변경 안내",
     contents: "안녕하세요! 문의드립니다.",
+    /* 이용내역 데이터 */
+    chargerStationName: "휴맥스빌리지",
+    chargerId: "012345",
+    startDate: "YYYY.MM.DD HH:mm:ss",
+    endDate: "YYYY.MM.DD HH:mm:ss",
+    chargeAmount: 50,
+    chargeFee: 20000,
+    /* 질문 이미지 */
     questionImages: [
       {
         src: "https://t1.daumcdn.net/cfile/tistory/24283C3858F778CA2E",
@@ -230,6 +246,7 @@ const OperateQnADetail = () => {
           <Col sm={3} />
         </EditorRow>
         <EditorHeader
+          hasMargin={false}
           className={"pb-3"}
           label={"문의 제목"}
           name={"title"}
@@ -237,16 +254,66 @@ const OperateQnADetail = () => {
           disabled={true}
         />
 
-        <EditorRow className={"border-bottom-0 pb-3"}>
-          <EditorTitleCol>문의 내용</EditorTitleCol>
-          <EditorContentCol>
+        <EditorRow>
+          <EditorTitleCol className={"pt-3"}>문의 내용</EditorTitleCol>
+          <EditorContentCol sm={5}>
             <TextInputBase
               disabled={true}
-              className={"rounded-0 border-0 bg-white"}
-              inputstyle={{ height: 300 }}
+              className={"pt-3 rounded-0 border-0 bg-white"}
+              inputstyle={{ height: "100%" }}
               name={"contents"}
               value={contents}
               type={"textarea"}
+            />
+          </EditorContentCol>
+          <EditorContentCol sm={6} className={"m-0 p-0"}>
+            <DetailTextInputRow
+              hasMargin={false}
+              itemClassName={"border-bottom border-2"}
+              rows={[
+                {
+                  disabled: true,
+                  titleWidthRatio: 5,
+                  containerWidthRatio: 6,
+                  title: "충전소명",
+                  content: chargerStationName,
+                },
+                {
+                  disabled: true,
+                  titleWidthRatio: 5,
+                  containerWidthRatio: 6,
+                  title: "충전소 ID",
+                  content: chargerId,
+                },
+                {
+                  disabled: true,
+                  titleWidthRatio: 5,
+                  containerWidthRatio: 6,
+                  title: "시작일시",
+                  content: startDate,
+                },
+                {
+                  disabled: true,
+                  titleWidthRatio: 5,
+                  containerWidthRatio: 6,
+                  title: "종료일시",
+                  content: endDate,
+                },
+                {
+                  disabled: true,
+                  titleWidthRatio: 5,
+                  containerWidthRatio: 6,
+                  title: "충전량(Kwh)",
+                  content: toLocaleString(chargeAmount),
+                },
+                {
+                  disabled: true,
+                  titleWidthRatio: 5,
+                  containerWidthRatio: 6,
+                  title: "충전요금",
+                  content: toLocaleString(chargeFee),
+                },
+              ]}
             />
           </EditorContentCol>
         </EditorRow>

@@ -8,7 +8,7 @@ export interface IEditorHeaderProps {
   value?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   disabled?: boolean
-
+  hasMargin?:boolean
 }
 
 export interface IEditorBodyProps {

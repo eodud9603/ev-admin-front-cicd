@@ -19,9 +19,10 @@ interface IDetailTextInputRow {
   } | null>;
   hasMargin?: boolean;
   className?: string;
+  itemClassName?: string;
 }
 export const DetailTextInputRow = (props: IDetailTextInputRow) => {
-  const { rows, hasMargin = true, className } = props;
+  const { rows, hasMargin = true, className, itemClassName = "" } = props;
 
   return (
     <Row
@@ -35,7 +36,7 @@ export const DetailTextInputRow = (props: IDetailTextInputRow) => {
           <Col
             key={index}
             sm={item?.containerWidthRatio}
-            className={"d-flex p-0"}
+            className={"d-flex p-0 " + itemClassName}
           >
             <Col
               xs={item?.titleWidthRatio}
