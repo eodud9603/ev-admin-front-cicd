@@ -4,21 +4,30 @@ import { Container, Col, Label } from "reactstrap";
 import { LoginForm } from "src/pages/Login/components/LoginForm";
 import { AuthCodeForm } from "./components/AuthCodeForm";
 import useInputs from "src/hooks/useInputs";
-import { object, string } from "yup";
-import { postAuthenticate } from "src/api/auth/authAPi";
+import { object, string, number } from "yup";
+import { postAuthCode, postAuthenticate } from "src/api/auth/authAPi";
+import useAuthStore from "src/store/authStore";
 
 const loginValidation = object({
   id: string().required("Please Enter id"),
   pw: string().required("Please Enter pw"),
 });
 
+const authCodeValidation = object({
+  adminSeq: number().required("Please Enter adminSeq"),
+  code: string().required("Please Enter code"),
+});
+
 export const Login = () => {
   const [firstAuth, setFirstAuth] = useState(false);
+  const [seq, setSeq] = useState(-1);
+
   const { id, pw, code, onChange } = useInputs({
     id: "",
     pw: "",
     code: "",
   });
+  const { setAuth } = useAuthStore();
 
   /** 계정 확인 */
   const authHandler = async () => {
@@ -28,13 +37,18 @@ export const Login = () => {
     }
 
     /* 인증번호 요청 */
-    const { code } = await postAuthenticate({
+    const { code, data } = await postAuthenticate({
       adminId: id,
       password: pw,
     });
 
     /** 성공 */
-    return code === "SUCCESS";
+    const success = code === "SUCCESS" && !!data;
+    if (success) {
+      setSeq(data.adminSeq);
+    }
+
+    return success;
   };
 
   /** 로그인 */
@@ -42,6 +56,30 @@ export const Login = () => {
     const success = await authHandler();
     if (success) {
       setFirstAuth(true);
+    }
+  };
+
+  /** 인증 코드 확인 */
+  const authCodeHandler = async () => {
+    if (seq < 0) {
+      return;
+    }
+    const isValid = await authCodeValidation.isValid({ adminSeq: seq, code });
+    if (!isValid) {
+      return;
+    }
+
+    /* 코드 확인 요청 */
+    const { code: resultCode, data } = await postAuthCode({
+      adminSeq: seq,
+      code,
+    });
+
+    /** 성공 */
+    const success = resultCode === "SUCCESS" && !!data;
+    if (success) {
+      /* 토큰정보 저장 */
+      setAuth(data);
     }
   };
 
@@ -90,7 +128,8 @@ export const Login = () => {
                 <AuthCodeForm
                   code={code}
                   onChangeLoginInfo={onChange}
-                  authHandler={authHandler}
+                  resendHandler={authHandler}
+                  authCodeHandler={authCodeHandler}
                 />
               )}
             </div>

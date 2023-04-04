@@ -9,14 +9,25 @@ axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.baseURL = baseUrl;
 axios.defaults.timeout = 3000;
 
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: baseUrl,
+});
+
+/* api(axios) 요청시, 요청헤더에 token 추가 */
+axiosInstance.interceptors.request.use((config) => {
+  const authInfo = JSON.parse(sessionStorage.getItem('auth-storage') ?? "");
+  const accessToken: string = authInfo?.state?.accessToken ?? "";
+  if (accessToken) {
+      config.headers["Authorization"] = `bearer ${accessToken}`;
+  }
+
+  return config;
 });
 
 const rest = (method: Method) => {
   return async <T,>(
     url: string,
-    { header = {}, params = {}, body = {}, token = "" } = {}
+    { header = {}, params = {}, body = {} } = {}
   ) => {
     try {
       const response = await axiosInstance(url, {
@@ -24,7 +35,6 @@ const rest = (method: Method) => {
         params,
         data: body,
         headers: {
-          Authorization: `Bearer ${token}`,
           ...header,
         },
       });

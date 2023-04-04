@@ -7,3 +7,15 @@ export interface IRequestAuthenticate {
 export interface IAuthenticateResponse {
   adminSeq: number;
 }
+
+/** 코드 확인 */
+export interface IRequestAuthCode {
+  adminSeq: number
+  code: string
+}
+
+export interface IAuthCodeResponse {
+  accessToken: string
+  refreshToken: string
+  expiredTime: string
+}

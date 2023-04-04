@@ -1,22 +1,25 @@
-import React, { ChangeEvent, Fragment, useEffect, useRef } from "react";
+import React, { ChangeEvent, useEffect, useRef } from "react";
 import { Label } from "reactstrap";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import styled from "styled-components";
 import useTimer from "src/hooks/useTimer";
 import { timerFormat } from "src/utils/timer";
+import FormBase from "src/components/Common/Form/FormBase";
 
 interface IAuthCodeForm {
   code: string;
   loginType?: string;
   onChangeLoginInfo: (e: ChangeEvent<HTMLInputElement>) => void;
-  authHandler: () => Promise<boolean | undefined>;
+  resendHandler: () => Promise<boolean | undefined>;
+  authCodeHandler: () => Promise<void>;
 }
 export const AuthCodeForm = ({
   code,
   loginType,
   onChangeLoginInfo,
-  authHandler,
+  resendHandler,
+  authCodeHandler,
 }: IAuthCodeForm) => {
   const { startTimer, remain } = useTimer({
     timer: 1000 * 60 * 5,
@@ -29,14 +32,14 @@ export const AuthCodeForm = ({
 
   /* 재전송 */
   const resend = async () => {
-    const success = await authHandler();
+    const success = await resendHandler();
     if (success) {
       startTimer();
     }
   };
 
   return (
-    <Fragment>
+    <FormBase onSubmit={authCodeHandler}>
       <div className={"my-3"} />
       <Label for="password" className={"fw-semibold font-size-16"}>
         인증번호
@@ -77,7 +80,7 @@ export const AuthCodeForm = ({
         size={"lg"}
         className={"form-control mt-4"}
       />
-    </Fragment>
+    </FormBase>
   );
 };
 
