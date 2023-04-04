@@ -100,6 +100,8 @@ import UsageHistoryClaim from "src/pages/UsageHistory/UsageHistoryClaim";
 import UsageHistoryRoaming from "src/pages/UsageHistory/UsageHistoryRoaming";
 import UsageHistoryRoamingDetail from "src/pages/UsageHistory/UsageHistoryRoamingDetail";
 import UsageHistoryClaimDetail from "src/pages/UsageHistory/UsageHistoryClaimDetail";
+import { RoamingPaymentDetail } from "src/pages/UsageHistory/RoamingPaymentDetail";
+import { GroupSettlementDetail } from "src/pages/UsageHistory/GroupSettlementDetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -282,6 +284,14 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/usageHistory/roaming/detail/:id",
     element: <UsageHistoryRoamingDetail />,
+  },
+  {
+    path: "/usageHistory/roaming/payment/detail/:id",
+    element: <RoamingPaymentDetail />,
+  },
+  {
+    path: "/usageHistory/group/settlement/detail/:id",
+    element: <GroupSettlementDetail />,
   },
 ];
 
