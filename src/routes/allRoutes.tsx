@@ -100,8 +100,8 @@ import UsageHistoryClaim from "src/pages/UsageHistory/UsageHistoryClaim";
 import UsageHistoryRoaming from "src/pages/UsageHistory/UsageHistoryRoaming";
 import UsageHistoryRoamingDetail from "src/pages/UsageHistory/UsageHistoryRoamingDetail";
 import UsageHistoryClaimDetail from "src/pages/UsageHistory/UsageHistoryClaimDetail";
-import { RoamingPaymentDetail } from "src/pages/UsageHistory/RoamingPaymentDetail";
-import { GroupSettlementDetail } from "src/pages/UsageHistory/GroupSettlementDetail";
+import { SettlementRoamingDetail } from "src/pages/Settlement/SettlementRoamingDetail";
+import { SettlementGroupDetail } from "src/pages/Settlement/SettlementGroupDetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -285,13 +285,15 @@ const userRoutes: Array<RouteProps> = [
     path: "/usageHistory/roaming/detail/:id",
     element: <UsageHistoryRoamingDetail />,
   },
+
+  /* 정산 관리 */
   {
-    path: "/usageHistory/roaming/payment/detail/:id",
-    element: <RoamingPaymentDetail />,
+    path: "/settlement/roaming/detail/:id",
+    element: <SettlementRoamingDetail />,
   },
   {
-    path: "/usageHistory/group/settlement/detail/:id",
-    element: <GroupSettlementDetail />,
+    path: "/settlement/group/detail/:id",
+    element: <SettlementGroupDetail />,
   },
 ];
 
