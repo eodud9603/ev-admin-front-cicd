@@ -394,7 +394,9 @@ export const Playground = (props: any) => {
                 <MenuItem component={<Link to={"/settlement/roaming"} />}>
                   로밍회원 결제 관리
                 </MenuItem>
-                <MenuItem>그룹 정산 관리</MenuItem>
+                <MenuItem component={<Link to={"/settlement/group"} />}>
+                  그룹 정산 관리
+                </MenuItem>
               </SubMenu>
               <SubMenu
                 label="요금 관리"

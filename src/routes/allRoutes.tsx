@@ -105,6 +105,7 @@ import { SettlementGroupDetail } from "src/pages/Settlement/SettlementGroupDetai
 import SettlementRoaming from "src/pages/Settlement/SettlementRoaming";
 import SettlementRegular from "src/pages/Settlement/SettlementRegular";
 import SettlementNon from "src/pages/Settlement/SettlementNon";
+import SettlementGroup from "src/pages/Settlement/SettlementGroup";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -297,6 +298,7 @@ const userRoutes: Array<RouteProps> = [
     path: "/settlement/roaming/detail/:id",
     element: <SettlementRoamingDetail />,
   },
+  { path: "/settlement/group", element: <SettlementGroup /> },
   {
     path: "/settlement/group/detail/:id",
     element: <SettlementGroupDetail />,

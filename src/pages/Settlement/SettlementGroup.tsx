@@ -15,11 +15,10 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
-import SettlementTextModal from "src/pages/Settlement/components/SettlementTextModal";
 import { toLocaleString } from "src/utils/toLocaleString";
 import styled from "styled-components";
 
-const PAGE_NAME = "로밍회원 결제 관리";
+const PAGE_NAME = "그룹 정산 관리";
 
 /** 마감여부 목록 */
 const deadLineStatusList = [
@@ -36,25 +35,89 @@ const deadLineStatusList = [
     value: "2",
   },
 ];
+/** 결제수단 목록 */
+const paymentMethodList = [
+  {
+    label: "전체",
+    value: "",
+  },
+  {
+    label: "개인결제",
+    value: "1",
+  },
+  {
+    label: "법인결제",
+    value: "2",
+  },
+  {
+    label: "세금계산서",
+    value: "3",
+  },
+];
+
+/** 청구 상태 목록 */
+const claimStatusList = [
+  {
+    label: "전체",
+    value: "",
+  },
+  {
+    label: "청구완료",
+    value: "1",
+  },
+  {
+    label: "미납",
+    value: "2",
+  },
+  {
+    label: "결제 완료",
+    value: "3",
+  },
+];
 
 /* 검색어 필터 */
 const searchList = [
   { label: "전체", value: "" },
-  { label: "로밍사", value: "1" },
-  { label: "로밍사 ID", value: "2" },
-  { label: "선결제 승인 번호", value: "3" },
-  { label: "재결제 승인 번호", value: "4" },
+  {
+    label: "그룹명",
+    value: "1",
+  },
+  {
+    label: "그룹 ID",
+    value: "2",
+  },
 ];
 
 /** 정렬기준 */
 const sortList = [
-  { label: "전체", value: "" },
-  { label: "로밍사", value: "1" },
-  { label: "로밍사 ID", value: "2" },
-  { label: "정산월", value: "3" },
-  { label: "정산일", value: "4" },
-  { label: "충전량", value: "5" },
-  { label: "정산 금액", value: "6" },
+  {
+    label: "전체",
+    value: "",
+  },
+  {
+    label: "그룹명",
+    value: "1",
+  },
+  {
+    label: "그룹 ID",
+    value: "2",
+  },
+  {
+    label: "정산월",
+    value: "3",
+  },
+  {
+    label: "정산일",
+    value: "4",
+  },
+  {
+    label: "충전량",
+    value: "5",
+  },
+  {
+    label: "이용 금액",
+    value: "6",
+  },
 ];
 
 /** 테이블 헤더 */
@@ -63,16 +126,13 @@ const tableHeader = [
     label: "번호",
   },
   {
-    label: "로밍사",
+    label: "그룹명",
   },
   {
-    label: "로밍사 ID",
+    label: "그룹 ID",
   },
   {
-    label: "정산번호",
-  },
-  {
-    label: "이용시간",
+    label: "정산 기간",
   },
   {
     label: "정산월",
@@ -84,65 +144,66 @@ const tableHeader = [
     label: "마감 여부",
   },
   {
-    label: "충전량(Kw)",
+    label: "청구 상태",
+  },
+  {
+    label: "결제 수단",
+  },
+  {
+    label: "충전량(Kwh)",
   },
   {
     label: "이용 금액",
   },
   {
-    label: "할인 금액",
+    label: "기타 금액",
   },
   {
-    label: "정산 금액",
+    label: "상태 제어",
   },
 ];
 
 /** 임시 데이터 */
-const roamingList = [
+const groupList = [
   {
     id: "1",
-    roaming: "로밍사 A",
-    roamingId: "51533305",
-    settlementNumber: "51533305",
-    usageDate: "2023-03-27 12:00 ~ 2023-03-27 15:00",
+    groupName: "휴맥스",
+    groupId: "H1234",
+    settlementPeriod: "2023-03-01 ~ 2023-03-29",
     settlementMonth: "2023-03",
     settlementDate: "2023-03-15",
     deadLineStatus: "N",
-    chargeAmount: 20,
-    usageAmount: 10000,
-    discountAmount: null,
-    settlementAmount: 10000,
+    claimStatus: "청구 완료",
+    paymentMethod: "개별 결제",
+    chargeAmount: 50,
+    usageAmount: 100000,
+    etcAmount: 1000,
+    statusControl: "재결제",
   },
 ];
 
-const SettlementRoaming = () => {
+const SettlementGroup = () => {
   const [tabList, setTabList] = useState([{ label: "정산 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
-  const [cancelModalOpen, setCancelModalOpen] = useState<{
-    visible: boolean;
-    id: string | null;
-  }>({
-    visible: false,
-    id: null,
-  });
 
-  const { deadLineStatus, searchText, onChange, onChangeSingle } = useInputs({
+  const {
+    deadLineStatus,
+    searchText,
+    claimStatus,
+    paymentMethod,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
     deadLineStatus: "",
     searchText: "",
     searchRange: "",
+    claimStatus: "",
     sort: "",
+    paymentMethod: "",
     count: "1",
   });
   const navigate = useNavigate();
-
-  const onChangeCancelModal = (id?: string) => {
-    setCancelModalOpen((prev) => ({
-      ...prev,
-      id: id ?? prev.id,
-      visible: !prev.visible,
-    }));
-  };
 
   return (
     <ContainerBase>
@@ -172,7 +233,7 @@ const SettlementRoaming = () => {
           }
         >
           <Row className={"d-flex align-items-center"}>
-            <Col md={8}>
+            <Col md={7}>
               <DateGroup
                 label={"정산일"}
                 buttonState={[
@@ -182,7 +243,7 @@ const SettlementRoaming = () => {
                 ]}
               />
             </Col>
-            <Col md={4}>
+            <Col md={5}>
               <RadioGroup
                 title={"마감 여부"}
                 name={"deadLineStatus"}
@@ -194,8 +255,9 @@ const SettlementRoaming = () => {
               />
             </Col>
           </Row>
+
           <Row className={"d-flex align-items-center"}>
-            <Col md={8}>
+            <Col md={7}>
               <SearchTextInput
                 title={"검색어"}
                 menuItems={searchList}
@@ -205,10 +267,20 @@ const SettlementRoaming = () => {
                 onChange={onChange}
               />
             </Col>
-            <Col md={4} />
+            <Col md={5}>
+              <RadioGroup
+                title={"청구 상태"}
+                name={"claimStatus"}
+                list={claimStatusList.map((data) => ({
+                  ...data,
+                  checked: claimStatus === data.value,
+                }))}
+                onChange={onChange}
+              />
+            </Col>
           </Row>
           <Row className={"d-flex align-items-center"}>
-            <Col md={4}>
+            <Col md={7}>
               <DropdownBase
                 label={"정렬기준"}
                 menuItems={sortList}
@@ -217,7 +289,17 @@ const SettlementRoaming = () => {
                 }}
               />
             </Col>
-            <Col md={8} />
+            <Col md={5}>
+              <RadioGroup
+                title={"결제 수단"}
+                name={"paymentMethod"}
+                list={paymentMethodList.map((data) => ({
+                  ...data,
+                  checked: paymentMethod === data.value,
+                }))}
+                onChange={onChange}
+              />
+            </Col>
           </Row>
         </section>
 
@@ -225,7 +307,7 @@ const SettlementRoaming = () => {
           className={"d-flex align-items-center justify-content-between mb-4"}
         >
           <span className={"font-size-13 fw-bold"}>
-            총 <span className={"text-turu"}>{roamingList.length}개</span>의
+            총 <span className={"text-turu"}>{groupList.length}개</span>의
             결제가 있습니다.
           </span>
 
@@ -247,31 +329,38 @@ const SettlementRoaming = () => {
 
         <TableBase tableHeader={tableHeader}>
           <>
-            {roamingList.length > 0 ? (
-              roamingList.map((roaming, index) => (
+            {groupList.length > 0 ? (
+              groupList.map((group, index) => (
                 <HoverTr
-                  key={roaming.id}
+                  key={group.id}
                   onClick={() => {
-                    navigate(`/settlement/roaming/detail/${roaming.id}`);
+                    navigate(`/settlement/group/detail/${group.id}`);
                   }}
                 >
                   <td>{index + 1}</td>
-                  <td>{roaming.roaming}</td>
-                  <td>{roaming.roamingId}</td>
-                  <td>{roaming.settlementNumber}</td>
-                  <td>{roaming.usageDate}</td>
-                  <td>{roaming.settlementMonth}</td>
-                  <td>{roaming.settlementDate}</td>
-                  <td>{roaming.deadLineStatus}</td>
-                  <td>{toLocaleString(roaming.chargeAmount)}Kw</td>
-                  <td>{toLocaleString(roaming.usageAmount)}</td>
-                  <td>{toLocaleString(roaming.discountAmount || "-")}</td>
-                  <td>{toLocaleString(roaming.settlementAmount)}</td>
+                  <td>{group.groupName}</td>
+                  <td>{group.groupId}</td>
+                  <td>{group.settlementPeriod}</td>
+                  <td>{group.settlementMonth}</td>
+                  <td>{group.settlementDate}</td>
+                  <td>{group.deadLineStatus}</td>
+                  <td>{group.claimStatus}</td>
+                  <td>{group.paymentMethod}</td>
+                  <td>{toLocaleString(group.chargeAmount)}Kw</td>
+                  <td>{toLocaleString(group.usageAmount)}</td>
+                  <td>{toLocaleString(group.etcAmount || "-")}</td>
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <ButtonBase
+                      className={"w-xs rounded-5 py-1"}
+                      color={"secondary"}
+                      label={group.statusControl}
+                    />
+                  </td>
                 </HoverTr>
               ))
             ) : (
               <tr>
-                <td colSpan={12} className={"py-5 text-center text"}>
+                <td colSpan={13} className={"py-5 text-center text"}>
                   등록된 결제 정보가 없습니다.
                 </td>
               </tr>
@@ -280,30 +369,11 @@ const SettlementRoaming = () => {
         </TableBase>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
-
-      <SettlementTextModal
-        isOpen={cancelModalOpen.visible}
-        title={"결제 취소 안내"}
-        contents={`삭제 후 고객에게 해당 공지사항이 표시되지 않습니다.\n삭제하시겠습니까?`}
-        onClose={onChangeCancelModal}
-        buttons={[
-          {
-            label: "아니오",
-            color: "secondary",
-            onClick: onChangeCancelModal,
-          },
-          {
-            label: "삭제",
-            color: "turu",
-            onClick: () => {},
-          },
-        ]}
-      />
     </ContainerBase>
   );
 };
 
-export default SettlementRoaming;
+export default SettlementGroup;
 
 const HoverTr = styled.tr`
   :hover {
