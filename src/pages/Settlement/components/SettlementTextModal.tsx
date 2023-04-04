@@ -3,7 +3,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import ModalBase from "src/components/Common/Modal/ModalBase";
 import styled from "styled-components";
 
-interface IOperateTextModalProps {
+interface ISettlementTextModalProps {
   isOpen: boolean;
   onClose: () => void;
 
@@ -28,7 +28,7 @@ interface IOperateTextModalProps {
   }[];
 }
 
-const OperateTextModal = (props: IOperateTextModalProps) => {
+const SettlementTextModal = (props: ISettlementTextModalProps) => {
   const {
     isOpen,
     onClose,
@@ -65,7 +65,7 @@ const OperateTextModal = (props: IOperateTextModalProps) => {
   );
 };
 
-export default OperateTextModal;
+export default SettlementTextModal;
 
 const PWrapper = styled.p`
   white-space: pre-wrap;

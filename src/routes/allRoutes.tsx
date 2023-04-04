@@ -102,6 +102,9 @@ import UsageHistoryRoamingDetail from "src/pages/UsageHistory/UsageHistoryRoamin
 import UsageHistoryClaimDetail from "src/pages/UsageHistory/UsageHistoryClaimDetail";
 import { SettlementRoamingDetail } from "src/pages/Settlement/SettlementRoamingDetail";
 import { SettlementGroupDetail } from "src/pages/Settlement/SettlementGroupDetail";
+import SettlementRoaming from "src/pages/Settlement/SettlementRoaming";
+import SettlementRegular from "src/pages/Settlement/SettlementRegular";
+import SettlementNon from "src/pages/Settlement/SettlementNon";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -287,6 +290,9 @@ const userRoutes: Array<RouteProps> = [
   },
 
   /* 정산 관리 */
+  { path: "/settlement/regular", element: <SettlementRegular /> },
+  { path: "/settlement/non", element: <SettlementNon /> },
+  { path: "/settlement/roaming", element: <SettlementRoaming /> },
   {
     path: "/settlement/roaming/detail/:id",
     element: <SettlementRoamingDetail />,

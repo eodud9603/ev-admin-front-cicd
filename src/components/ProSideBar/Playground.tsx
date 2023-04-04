@@ -385,9 +385,15 @@ export const Playground = (props: any) => {
                   eachOpenMenuItem("settlement", isOpen)
                 }
               >
-                <MenuItem>정회원 결제 관리</MenuItem>
-                <MenuItem>비회원 결제 관리</MenuItem>
-                <MenuItem>로밍회원 결제 관리</MenuItem>
+                <MenuItem component={<Link to={"/settlement/regular"} />}>
+                  정회원 결제 관리
+                </MenuItem>
+                <MenuItem component={<Link to={"/settlement/non"} />}>
+                  비회원 결제 관리
+                </MenuItem>
+                <MenuItem component={<Link to={"/settlement/roaming"} />}>
+                  로밍회원 결제 관리
+                </MenuItem>
                 <MenuItem>그룹 정산 관리</MenuItem>
               </SubMenu>
               <SubMenu
