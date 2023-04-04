@@ -27,7 +27,7 @@ import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
 import SingleMapBase from "src/components/Common/Map/SingleMapBase";
-import { useMapStore } from "src/store/store";
+import useMapStore from "src/store/mapStore";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [

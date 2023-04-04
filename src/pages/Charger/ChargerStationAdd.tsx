@@ -28,7 +28,7 @@ import useInputs from "src/hooks/useInputs";
 import { DetailDropdownRow } from "src/components/Common/DetailContentRow/DetailDropdownRow";
 import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 import SingleMapBase from "src/components/Common/Map/SingleMapBase";
-import { useMapStore } from "src/store/store";
+import useMapStore from "src/store/mapStore";
 
 const ChargerStationAdd = () => {
   const [tabList, setTabList] = useState([

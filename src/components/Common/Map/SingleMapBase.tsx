@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { MARKER_IMAGE_URL } from "src/constants/marker";
-import { useMapStore } from "src/store/store";
+import useMapStore from "src/store/mapStore";
 
 interface IMapBaseProps {
   lat?: number;
