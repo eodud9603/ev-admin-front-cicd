@@ -1,19 +1,40 @@
-import React, { ChangeEvent, Fragment } from "react";
+import React, { ChangeEvent, Fragment, useEffect, useRef } from "react";
 import { Label } from "reactstrap";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import styled from "styled-components";
+import useTimer from "src/hooks/useTimer";
+import { timerFormat } from "src/utils/timer";
 
 interface IAuthCodeForm {
   code: string;
   loginType?: string;
   onChangeLoginInfo: (e: ChangeEvent<HTMLInputElement>) => void;
+  authHandler: () => Promise<boolean | undefined>;
 }
 export const AuthCodeForm = ({
   code,
   loginType,
   onChangeLoginInfo,
+  authHandler,
 }: IAuthCodeForm) => {
+  const { startTimer, remain } = useTimer({
+    timer: 1000 * 60 * 5,
+  });
+  const startTimerRef = useRef(startTimer);
+
+  useEffect(() => {
+    startTimerRef.current();
+  }, []);
+
+  /* 재전송 */
+  const resend = async () => {
+    const success = await authHandler();
+    if (success) {
+      startTimer();
+    }
+  };
+
   return (
     <Fragment>
       <div className={"my-3"} />
@@ -24,15 +45,21 @@ export const AuthCodeForm = ({
         <TextInputBase
           placeholder={"인증번호를 입력해주세요"}
           name={"code"}
+          maxLength={10}
           value={code}
           bsSize={"lg"}
           onChange={onChangeLoginInfo}
         />
-        <CountWrapper className={"text-turu"}>05:00</CountWrapper>
+        <CountWrapper className={"text-turu"}>
+          {timerFormat(remain)}
+        </CountWrapper>
       </AuthInputWrapper>
       <u
         role={"button"}
         className={"text-center d-flex justify-content-end text-turu mt-3"}
+        onClick={() => {
+          void resend();
+        }}
       >
         인증번호 재전송
       </u>

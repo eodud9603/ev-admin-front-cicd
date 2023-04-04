@@ -20,21 +20,27 @@ export const Login = () => {
     code: "",
   });
 
-  /** 로그인 */
-  const loginHandler = async () => {
-    /* valid check */
+  /** 계정 확인 */
+  const authHandler = async () => {
     const isValid = await loginValidation.isValid({ id, pw });
     if (!isValid) {
       return;
     }
 
+    /* 인증번호 요청 */
     const { code } = await postAuthenticate({
       adminId: id,
       password: pw,
     });
 
     /** 성공 */
-    if (code === "SUCCESS") {
+    return code === "SUCCESS";
+  };
+
+  /** 로그인 */
+  const loginHandler = async () => {
+    const success = await authHandler();
+    if (success) {
       setFirstAuth(true);
     }
   };
@@ -81,7 +87,11 @@ export const Login = () => {
                   loginHandler={loginHandler}
                 />
               ) : (
-                <AuthCodeForm code={code} onChangeLoginInfo={onChange} />
+                <AuthCodeForm
+                  code={code}
+                  onChangeLoginInfo={onChange}
+                  authHandler={authHandler}
+                />
               )}
             </div>
             <Label
