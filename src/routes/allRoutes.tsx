@@ -107,7 +107,9 @@ const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
   { path: "/main/dashboard", element: <MainDashboard />, loader: mainLoader },
   { path: "/example", element: <Example /> },
+  /* 충전 모니터링 */
   { path: "/chargeMonitoring/chargerControl", element: <ChargerControl /> },
+  /* 충전소 및 충전기 관리 */
   {
     path: "/charger/chargerStation",
     element: <ChargingStation />,
@@ -165,7 +167,7 @@ const userRoutes: Array<RouteProps> = [
     path: "/charger/operator/registration",
     element: <ChargerOperatorRegistration />,
   },
-
+  /* 회원 및 카드관리 */
   { path: "/member/normal", element: <MemberNormal /> },
   { path: "/member/normal/detail/:id", element: <MemberNormalDetail /> },
   { path: "/member/withdraw", element: <MemberWithdraw /> },
@@ -182,6 +184,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/member/corporation", element: <MemberCorporation /> },
   { path: "/member/contract", element: <MemberContract /> },
 
+  /* 서비스 운영 관리 */
   { path: "/operate/notice", element: <OperateNotice /> },
   { path: "/operate/notice/add", element: <OperateNoticeAdd /> },
   { path: "/operate/notice/detail/:id", element: <OperateNoticeDetail /> },
@@ -227,20 +230,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/variable", element: <OperateVariable /> },
   { path: "/operate/code", element: <OperateCode /> },
 
-  { path: "/operator/account", element: <OperatorAccount /> },
-  { path: "/operator/account/add", element: <OperatorAccountAdd /> },
-  { path: "/operator/account/detail/:id", element: <OperatorAccountDetail /> },
-  { path: "/operator/counselor", element: <OperatorCounselor /> },
-  { path: "/operator/counselor/add", element: <OperatorCounselorAdd /> },
-  {
-    path: "/operator/counselor/detail/:id",
-    element: <OperatorCounselorDetail />,
-  },
-  { path: "/operator/role", element: <OperatorRole /> },
-
-  // { path: "/member/card", element: <ChargerOperator /> },
-  // { path: "/member/card", element: <ChargerOperator /> },
-
+  /* 상담 관리 */
   { path: "/counseling/customer", element: <CounselingCustomer /> },
   { path: "/counseling/history", element: <CounselingHistory /> },
   {
@@ -265,7 +255,7 @@ const userRoutes: Array<RouteProps> = [
   },
   { path: "/payment/roaming", element: <PaymentInRoaming /> },
 
-  //매출 모니터링
+  /* 매출 모니터링 */
   { path: "/sales/individualSettlement", element: <IndividualSettlement /> },
   { path: "/sales/totalSettlement", element: <TotalSettlement /> },
   { path: "/sales/billingHistory", element: <BillingHistory /> },
@@ -295,11 +285,22 @@ const userRoutes: Array<RouteProps> = [
     path: "/settlement/group/detail/:id",
     element: <SettlementGroupDetail />,
   },
+
+  /* 운영자 관리 */
+  { path: "/operator/account", element: <OperatorAccount /> },
+  { path: "/operator/account/add", element: <OperatorAccountAdd /> },
+  { path: "/operator/account/detail/:id", element: <OperatorAccountDetail /> },
+  { path: "/operator/counselor", element: <OperatorCounselor /> },
+  { path: "/operator/counselor/add", element: <OperatorCounselorAdd /> },
+  {
+    path: "/operator/counselor/detail/:id",
+    element: <OperatorCounselorDetail />,
+  },
+  { path: "/operator/role", element: <OperatorRole /> },
 ];
 
 const authRoutes: Array<RouteProps> = [
   { path: "login", element: <Login /> },
-  // { path: "/login2", element: <Login2 /> },
   // { path: "/pages-500", element: <Error500 /> },
 ];
 
