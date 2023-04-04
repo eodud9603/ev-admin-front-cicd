@@ -104,6 +104,7 @@ import RegularMember from "src/pages/Settlement/RegularMember";
 import NonMember from "src/pages/Settlement/NonMember";
 import { RoamingPaymentDetail } from "src/pages/UsageHistory/RoamingPaymentDetail";
 import { GroupSettlementDetail } from "src/pages/UsageHistory/GroupSettlementDetail";
+import RoamingMember from "src/pages/Settlement/RoamingMember";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -279,6 +280,7 @@ const userRoutes: Array<RouteProps> = [
   /* 정산 관리 */
   { path: "/settlement/regularMember", element: <RegularMember /> },
   { path: "/settlement/nonMember", element: <NonMember /> },
+  { path: "/settlement/roamingMember", element: <RoamingMember /> },
 
   /* 이용 내역 관리 */
   { path: "/usageHistory/claim", element: <UsageHistoryClaim /> },
