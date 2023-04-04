@@ -1,18 +1,42 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import Logo from "src/assets/images/sidebar_logo.png";
 import { Container, Col, Label } from "reactstrap";
 import { LoginForm } from "src/pages/Login/components/LoginForm";
+import { AuthCodeForm } from "./components/AuthCodeForm";
+import useInputs from "src/hooks/useInputs";
+import { object, string } from "yup";
+import { postAuthenticate } from "src/api/auth/authAPi";
+
+const loginValidation = object({
+  id: string().required("Please Enter id"),
+  pw: string().required("Please Enter pw"),
+});
 
 export const Login = () => {
-  const [loginInfo, setLoginInfo] = useState({ id: "", pw: "", code: "" });
+  const [firstAuth, setFirstAuth] = useState(false);
+  const { id, pw, code, onChange } = useInputs({
+    id: "",
+    pw: "",
+    code: "",
+  });
 
-  const onChangeLoginInfo = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target);
-    console.log(e.currentTarget);
-    setLoginInfo((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+  /** 로그인 */
+  const loginHandler = async () => {
+    /* valid check */
+    const isValid = await loginValidation.isValid({ id, pw });
+    if (!isValid) {
+      return;
+    }
+
+    const { code } = await postAuthenticate({
+      adminId: id,
+      password: pw,
+    });
+
+    /** 성공 */
+    if (code === "SUCCESS") {
+      setFirstAuth(true);
+    }
   };
 
   return (
@@ -49,15 +73,16 @@ export const Login = () => {
                 <img src={Logo} style={{ width: 200 }} className={"mb-4"} />
                 <h2 style={{ color: "#FB7C1E" }}>관리자 로그인</h2>
               </div>
-              <LoginForm
-                id={loginInfo.id}
-                pw={loginInfo.pw}
-                onChangeLoginInfo={onChangeLoginInfo}
-              />
-              {/*<AuthCodeForm*/}
-              {/*  code={loginInfo.code}*/}
-              {/*  onChangeLoginInfo={onChangeLoginInfo}*/}
-              {/*/>*/}
+              {!firstAuth ? (
+                <LoginForm
+                  id={id}
+                  pw={pw}
+                  onChangeLoginInfo={onChange}
+                  loginHandler={loginHandler}
+                />
+              ) : (
+                <AuthCodeForm code={code} onChangeLoginInfo={onChange} />
+              )}
             </div>
             <Label
               className={"m-0 d-flex justify-content-center align-items-center"}
@@ -70,7 +95,6 @@ export const Login = () => {
             </Label>
           </Col>
         </Container>
-        블
         <div className={"d-flex justify-content-center"}>
           Copyright HUMAX mobility corp. All rights reserved.
         </div>

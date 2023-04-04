@@ -1,22 +1,25 @@
-import React, { ChangeEvent, Dispatch, Fragment } from "react";
+import React, { ChangeEvent } from "react";
 import { Label } from "reactstrap";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
+import FormBase from "src/components/Common/Form/FormBase";
 
 interface ILoginForm {
   id: string;
   pw: string;
   loginType?: string;
   onChangeLoginInfo: (e: ChangeEvent<HTMLInputElement>) => void;
+  loginHandler: () => void | Promise<void>;
 }
 export const LoginForm = ({
   id,
   pw,
   loginType,
   onChangeLoginInfo,
+  loginHandler,
 }: ILoginForm) => {
   return (
-    <Fragment>
+    <FormBase onSubmit={loginHandler}>
       <Label
         for="email"
         className={"fw-semibold font-size-16 d-flex align-items-center"}
@@ -45,11 +48,12 @@ export const LoginForm = ({
         onChange={onChangeLoginInfo}
       />
       <ButtonBase
+        type={"submit"}
         color={"turu"}
         label={"로그인"}
         size={"lg"}
         className={"form-control mt-4"}
       />
-    </Fragment>
+    </FormBase>
   );
 };
