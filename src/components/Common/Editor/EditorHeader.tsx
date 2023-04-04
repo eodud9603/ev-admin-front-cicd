@@ -12,12 +12,16 @@ const EditorHeader = (props: IEditorHeaderProps) => {
     /* optional props */
     className = "",
     label = "제목",
+    hasMargin = true,
     /* input props */
     ...rest
   } = props;
 
   return (
-    <EditorRow className={"d-flex align-items-end " + className}>
+    <EditorRow
+      hasMargin={hasMargin}
+      className={"d-flex align-items-end " + className}
+    >
       <EditorTitleCol>
         <Label className={"font-size-16 fw-semibold "} htmlFor={label}>
           {label}
