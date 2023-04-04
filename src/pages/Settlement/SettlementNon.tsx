@@ -14,10 +14,9 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
-import SettlementTextModal from "src/pages/Settlement/components/SettlementTextModal";
 import { toLocaleString } from "src/utils/toLocaleString";
 
-const PAGE_NAME = "정회원 결제 관리";
+const PAGE_NAME = "비회원 결제 관리";
 
 /** 이용상태 목록 */
 const usageStatusList = [
@@ -42,28 +41,42 @@ const paymentStatusList = [
     value: "",
   },
   {
-    label: "결제 완료",
+    label: "선결제",
     value: "1",
   },
   {
-    label: "취소",
+    label: "결제 완료",
     value: "2",
   },
   {
-    label: "미납",
+    label: "취소",
     value: "3",
+  },
+];
+
+/** 결제수단 목록 */
+const paymentMethodList = [
+  {
+    label: "전체",
+    value: "",
+  },
+  {
+    label: "카드",
+    value: "1",
+  },
+  {
+    label: "무통장",
+    value: "2",
   },
 ];
 
 /* 검색어 필터 */
 const searchList = [
   { label: "전체", value: "" },
-  { label: "회원명", value: "1" },
-  { label: "회원 ID", value: "2" },
-  { label: "주문 ID", value: "3" },
-  { label: "충전소명", value: "4" },
-  { label: "카드 번호", value: "5" },
-  { label: "승인 번호", value: "6" },
+  { label: "주문 ID", value: "1" },
+  { label: "충전소명", value: "2" },
+  { label: "선결제 승인 번호", value: "3" },
+  { label: "재결제 승인 번호", value: "4" },
 ];
 
 /** 정렬기준 */
@@ -77,15 +90,15 @@ const sortList = [
     value: "1",
   },
   {
-    label: "이용 금액",
+    label: "선결제 금액",
     value: "2",
   },
   {
-    label: "할인 금액",
+    label: "이용 금액",
     value: "3",
   },
   {
-    label: "결제 금액",
+    label: "재결제 금액",
     value: "4",
   },
   {
@@ -104,49 +117,46 @@ const tableHeader = [
     label: "번호",
   },
   {
-    label: "회원명",
-  },
-  {
-    label: "회원 ID",
-  },
-  {
     label: "주문 ID",
   },
   {
     label: "충전소명",
   },
   {
-    label: "이용기간",
+    label: "이용 상태",
   },
   {
-    label: "이용 상태",
+    label: "이용기간",
   },
   {
     label: "충전량(Kw)",
   },
   {
+    label: "선결제 금액",
+  },
+  {
     label: "이용 금액",
   },
   {
-    label: "할인 금액",
-  },
-  {
-    label: "결제 금액",
-  },
-  {
-    label: "카드 번호",
+    label: "재결제 금액",
   },
   {
     label: "결제 상태",
   },
   {
-    label: "결제일시",
+    label: "결제 수단",
+  },
+  {
+    label: "선/재결제 일시",
   },
   {
     label: "취소일시",
   },
   {
-    label: "승인 번호",
+    label: "선결제 승인 번호",
+  },
+  {
+    label: "재결제 승인 번호",
   },
   {
     label: "승인 결과",
@@ -157,58 +167,49 @@ const tableHeader = [
 ];
 
 /** 임시 데이터 */
-const regularList = [
+const nonList = [
   {
     id: "1",
-    userName: "홍길동",
-    userId: "123456",
     orderId: "OD2022120112345678",
     chargerStationName: "휴맥스빌리지",
-    usageDate: "2023-03-27 12:00 ~ 2023-03-27 15:00",
     usageStatus: "종료",
+    usageDate: "2023-03-27 12:00 ~ 2023-03-27 15:00",
     chargeAmount: 30,
-    usageAmount: 10000,
-    discountAmount: 1000,
-    paymentAmount: 9000,
-    cardNumber: "(PG사 정책에 따름)",
+    prepaymentAmount: 10000,
+    usageAmount: 5000,
+    repaymentAmount: 5000,
     paymentStatus: "결제 완료",
+    paymentMethod: "카드",
     paymentDate: "2023-03-27 15:00",
     cancelDate: null,
-    approvalNumber: "05991234455",
+    preApprovalNumber: "05991234455",
+    reApprovalNumber: "05991234455",
     approvalResult: "정상 승인",
-    statusControl: "결제 취소",
+    statusControl: "재결제",
   },
 ];
 
-const RegularMember = () => {
+const SettlementNon = () => {
   const [tabList, setTabList] = useState([{ label: "정산 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
-  const [cancelModalOpen, setCancelModalOpen] = useState<{
-    visible: boolean;
-    id: string | null;
-  }>({
-    visible: false,
-    id: null,
+
+  const {
+    usageStatus,
+    paymentStatus,
+    searchText,
+    paymentMethod,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    usageStatus: "",
+    paymentStatus: "",
+    searchText: "",
+    searchRange: "",
+    paymentMethod: "",
+    sort: "",
+    count: "1",
   });
-
-  const { usageStatus, paymentStatus, searchText, onChange, onChangeSingle } =
-    useInputs({
-      usageStatus: "",
-      paymentStatus: "",
-      searchText: "",
-      searchRange: "",
-      sort: "",
-      count: "1",
-    });
-
-  const onChangeCancelModal = (id?: string) => {
-    setCancelModalOpen((prev) => ({
-      ...prev,
-      id: id ?? prev.id,
-      visible: !prev.visible,
-    }));
-  };
 
   return (
     <ContainerBase>
@@ -240,7 +241,7 @@ const RegularMember = () => {
           <Row className={"d-flex align-items-center"}>
             <Col md={8}>
               <DateGroup
-                label={"결제일시"}
+                label={"선/재결제 일시"}
                 buttonState={[
                   { label: "7일" },
                   { label: "1개월" },
@@ -287,9 +288,19 @@ const RegularMember = () => {
                 onChange={onChange}
               />
             </Col>
-            <Col md={4} />
+            <Col md={4}>
+              <RadioGroup
+                title={"결제 수단"}
+                name={"paymentMethod"}
+                list={paymentMethodList.map((data) => ({
+                  ...data,
+                  checked: paymentMethod === data.value,
+                }))}
+                onChange={onChange}
+              />
+            </Col>
           </Row>
-          <Row className={"d-flex align-items-center"}>
+          <Row>
             <Col md={4}>
               <DropdownBase
                 label={"정렬기준"}
@@ -307,8 +318,8 @@ const RegularMember = () => {
           className={"d-flex align-items-center justify-content-between mb-4"}
         >
           <span className={"font-size-13 fw-bold"}>
-            총 <span className={"text-turu"}>{regularList.length}개</span>의
-            결제가 있습니다.
+            총 <span className={"text-turu"}>{nonList.length}개</span>의 결제가
+            있습니다.
           </span>
 
           <div className={"d-flex align-items-center gap-3"}>
@@ -329,47 +340,43 @@ const RegularMember = () => {
 
         <TableBase tableHeader={tableHeader}>
           <>
-            {regularList.length > 0 ? (
-              regularList.map((regular, index) => (
-                <tr key={regular.id}>
+            {nonList.length > 0 ? (
+              nonList.map((non, index) => (
+                <tr key={non.id}>
                   <td>{index + 1}</td>
-                  <td>{regular.userName}</td>
-                  <td>{regular.userId}</td>
-                  <td>{regular.orderId}</td>
-                  <td>{regular.chargerStationName}</td>
-                  <td>{regular.usageDate}</td>
+                  <td>{non.orderId}</td>
+                  <td>{non.chargerStationName}</td>
                   <td>
                     <ButtonBase
                       className={"w-xs rounded-5 py-1"}
                       color={"danger"}
-                      label={regular.usageStatus}
+                      label={non.usageStatus}
                     />
                   </td>
-                  <td>{toLocaleString(regular.chargeAmount)}Kw</td>
-                  <td>{toLocaleString(regular.usageAmount)}</td>
-                  <td>{toLocaleString(regular.discountAmount || "-")}</td>
-                  <td>{toLocaleString(regular.paymentAmount)}</td>
-                  <td>{regular.cardNumber}</td>
-                  <td>{regular.paymentStatus || "-"}</td>
-                  <td>{regular.paymentDate || "-"}</td>
-                  <td>{regular.cancelDate || "-"}</td>
-                  <td>{regular.approvalNumber || "-"}</td>
-                  <td>{regular.approvalResult || "-"}</td>
+                  <td>{non.usageDate}</td>
+                  <td>{toLocaleString(non.chargeAmount)}Kw</td>
+                  <td>{toLocaleString(non.prepaymentAmount)}</td>
+                  <td>{toLocaleString(non.usageAmount)}</td>
+                  <td>{toLocaleString(non.repaymentAmount)}</td>
+                  <td>{non.paymentStatus || "-"}</td>
+                  <td>{non.paymentMethod || "-"}</td>
+                  <td>{non.paymentDate || "-"}</td>
+                  <td>{non.cancelDate || "-"}</td>
+                  <td>{non.preApprovalNumber || "-"}</td>
+                  <td>{non.reApprovalNumber || "-"}</td>
+                  <td>{non.approvalResult || "-"}</td>
                   <td>
                     <ButtonBase
                       className={"w-xs rounded-5 py-1"}
-                      color={"warning"}
-                      label={regular.statusControl}
-                      onClick={() => {
-                        onChangeCancelModal(regular.id);
-                      }}
+                      color={"secondary"}
+                      label={non.statusControl}
                     />
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={18} className={"py-5 text-center text"}>
+                <td colSpan={17} className={"py-5 text-center text"}>
                   등록된 결제 정보가 없습니다.
                 </td>
               </tr>
@@ -378,27 +385,8 @@ const RegularMember = () => {
         </TableBase>
         <PaginationBase setPage={setPage} data={{}} />
       </BodyBase>
-
-      <SettlementTextModal
-        isOpen={cancelModalOpen.visible}
-        title={"결제 취소 안내"}
-        contents={`삭제 후 고객에게 해당 공지사항이 표시되지 않습니다.\n삭제하시겠습니까?`}
-        onClose={onChangeCancelModal}
-        buttons={[
-          {
-            label: "아니오",
-            color: "secondary",
-            onClick: onChangeCancelModal,
-          },
-          {
-            label: "삭제",
-            color: "turu",
-            onClick: () => {},
-          },
-        ]}
-      />
     </ContainerBase>
   );
 };
 
-export default RegularMember;
+export default SettlementNon;

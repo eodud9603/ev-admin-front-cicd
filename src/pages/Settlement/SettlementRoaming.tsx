@@ -115,7 +115,7 @@ const roamingList = [
   },
 ];
 
-const RoamingMember = () => {
+const SettlementRoaming = () => {
   const [tabList, setTabList] = useState([{ label: "정산 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
@@ -253,6 +253,7 @@ const RoamingMember = () => {
                   key={roaming.id}
                   onClick={() => {
                     /** @TODO 상세페이지 내비게이션 연동 추가 */
+                    navigate(`/settlement/roaming/detail/${roaming.id}`);
                   }}
                 >
                   <td>{index + 1}</td>
@@ -303,7 +304,7 @@ const RoamingMember = () => {
   );
 };
 
-export default RoamingMember;
+export default SettlementRoaming;
 
 const HoverTr = styled.tr`
   :hover {

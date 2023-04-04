@@ -100,11 +100,11 @@ import UsageHistoryClaim from "src/pages/UsageHistory/UsageHistoryClaim";
 import UsageHistoryRoaming from "src/pages/UsageHistory/UsageHistoryRoaming";
 import UsageHistoryRoamingDetail from "src/pages/UsageHistory/UsageHistoryRoamingDetail";
 import UsageHistoryClaimDetail from "src/pages/UsageHistory/UsageHistoryClaimDetail";
-import RegularMember from "src/pages/Settlement/RegularMember";
-import NonMember from "src/pages/Settlement/NonMember";
-import RoamingMember from "src/pages/Settlement/RoamingMember";
 import { SettlementRoamingDetail } from "src/pages/Settlement/SettlementRoamingDetail";
 import { SettlementGroupDetail } from "src/pages/Settlement/SettlementGroupDetail";
+import SettlementRoaming from "src/pages/Settlement/SettlementRoaming";
+import SettlementRegular from "src/pages/Settlement/SettlementRegular";
+import SettlementNon from "src/pages/Settlement/SettlementNon";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -290,9 +290,9 @@ const userRoutes: Array<RouteProps> = [
   },
 
   /* 정산 관리 */
-  { path: "/settlement/regularMember", element: <RegularMember /> },
-  { path: "/settlement/nonMember", element: <NonMember /> },
-  { path: "/settlement/roamingMember", element: <RoamingMember /> },
+  { path: "/settlement/regular", element: <SettlementRegular /> },
+  { path: "/settlement/non", element: <SettlementNon /> },
+  { path: "/settlement/roaming", element: <SettlementRoaming /> },
   {
     path: "/settlement/roaming/detail/:id",
     element: <SettlementRoamingDetail />,
