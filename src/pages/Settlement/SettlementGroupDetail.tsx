@@ -5,7 +5,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import styled from "styled-components";
-import { Col, Label } from "reactstrap";
+import { ButtonGroup, Col, Label } from "reactstrap";
 import {
   DetailContentCol,
   DetailLabelCol,
@@ -65,7 +65,7 @@ const usageData = [
     settlementFee: 9000,
   },
 ];
-export const RoamingPaymentDetail = () => {
+export const SettlementGroupDetail = () => {
   const [tabList, setTabList] = useState([
     { label: "공지사항" },
     { label: "정산 관리" },
@@ -108,15 +108,15 @@ export const RoamingPaymentDetail = () => {
           list={[
             { label: "홈", href: "" },
             { label: "정산 관리", href: "" },
-            { label: "로밍회원 결제 관리", href: "" },
-            { label: "로밍회원 결제 관리 상세", href: "" },
+            { label: "그룹 정산 관리", href: "" },
+            { label: "그룹 정산 관리 상세", href: "" },
           ]}
-          title={"로밍회원 결제 관리 상세"}
+          title={"그룹 정산 관리 상세"}
         />
         <BasicInfoSection className={"mt-4"}>
           <Label className={"fw-semibold"}>기본정보</Label>
           <DetailRow className={"bg-light bg-opacity-10"}>
-            <DetailLabelCol sm={2}>로밍사</DetailLabelCol>
+            <DetailLabelCol sm={2}>그룹명</DetailLabelCol>
             <DetailContentCol>
               <TextInputBase
                 name={"roamingCooperation"}
@@ -217,7 +217,7 @@ export const RoamingPaymentDetail = () => {
           </DetailRow>
         </BasicInfoSection>
         <SettlementHistorySection className={"my-4"}>
-          <Label className={"fw-semibold"}>정산 내역</Label>
+          <Label className={"fw-semibold"}>월간 정산 내역</Label>
           <Col md={6}>
             <TableBase tableHeader={settlementHistoryHeader}>
               <>
@@ -235,10 +235,34 @@ export const RoamingPaymentDetail = () => {
                   ))}
               </>
             </TableBase>
+            <ButtonGroup>
+              <ButtonBase
+                label={"이용 내역"}
+                color={"turu"}
+                outline={true}
+                className={"w-xs"}
+              />
+              <ButtonBase
+                label={"로밍 내역"}
+                color={"turu"}
+                outline={true}
+                className={"w-xs"}
+              />
+            </ButtonGroup>
           </Col>
         </SettlementHistorySection>
         <UsageHistorySection>
-          <Label className={"fw-semibold"}>이용 내역</Label>
+          <div
+            className={"d-flex justify-content-between align-items-center mb-1"}
+          >
+            <Label className={"fw-semibold m-0"}>이용 내역</Label>
+            <ButtonBase
+              label={"엑셀 저장"}
+              color={"turu"}
+              outline={true}
+              className={"w-xs"}
+            />
+          </div>
           <TableBase tableHeader={usageHistoryHeader}>
             <>
               {usageData.length > 0 &&

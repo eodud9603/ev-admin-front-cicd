@@ -102,9 +102,9 @@ import UsageHistoryRoamingDetail from "src/pages/UsageHistory/UsageHistoryRoamin
 import UsageHistoryClaimDetail from "src/pages/UsageHistory/UsageHistoryClaimDetail";
 import RegularMember from "src/pages/Settlement/RegularMember";
 import NonMember from "src/pages/Settlement/NonMember";
-import { RoamingPaymentDetail } from "src/pages/UsageHistory/RoamingPaymentDetail";
-import { GroupSettlementDetail } from "src/pages/UsageHistory/GroupSettlementDetail";
 import RoamingMember from "src/pages/Settlement/RoamingMember";
+import { SettlementRoamingDetail } from "src/pages/Settlement/SettlementRoamingDetail";
+import { SettlementGroupDetail } from "src/pages/Settlement/SettlementGroupDetail";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -277,11 +277,6 @@ const userRoutes: Array<RouteProps> = [
   { path: "/sales/station", element: <SalesByStation /> },
   { path: "/sales/charger", element: <SalesByCharger /> },
 
-  /* 정산 관리 */
-  { path: "/settlement/regularMember", element: <RegularMember /> },
-  { path: "/settlement/nonMember", element: <NonMember /> },
-  { path: "/settlement/roamingMember", element: <RoamingMember /> },
-
   /* 이용 내역 관리 */
   { path: "/usageHistory/claim", element: <UsageHistoryClaim /> },
   {
@@ -293,13 +288,18 @@ const userRoutes: Array<RouteProps> = [
     path: "/usageHistory/roaming/detail/:id",
     element: <UsageHistoryRoamingDetail />,
   },
+
+  /* 정산 관리 */
+  { path: "/settlement/regularMember", element: <RegularMember /> },
+  { path: "/settlement/nonMember", element: <NonMember /> },
+  { path: "/settlement/roamingMember", element: <RoamingMember /> },
   {
-    path: "/usageHistory/roaming/payment/detail/:id",
-    element: <RoamingPaymentDetail />,
+    path: "/settlement/roaming/detail/:id",
+    element: <SettlementRoamingDetail />,
   },
   {
-    path: "/usageHistory/group/settlement/detail/:id",
-    element: <GroupSettlementDetail />,
+    path: "/settlement/group/detail/:id",
+    element: <SettlementGroupDetail />,
   },
 ];
 
