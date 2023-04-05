@@ -127,8 +127,8 @@ const ChargingStationManagement = () => {
     async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestStationList = {
-        size: 10,
-        page: 0,
+        size: Number(count),
+        page,
         sido: sido,
         operation: operation,
         gugun: gugun,
