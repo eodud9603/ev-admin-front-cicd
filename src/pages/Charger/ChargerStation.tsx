@@ -18,19 +18,6 @@ import { COUNT_FILTER_LIST, OPERATOR_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
-/* 주소(지역) 필터 */
-const addressList = [
-  {
-    menuItems: [{ label: "시,도", value: "" }],
-  },
-  {
-    menuItems: [{ label: "구,군", value: "" }],
-  },
-  {
-    menuItems: [{ label: "동,읍", value: "" }],
-  },
-];
-
 /* 사용여부 필터 */
 const useList = [
   { label: "전체", value: "" },
