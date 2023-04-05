@@ -47,15 +47,9 @@ const rest = (method: Method) => {
       const axiosError = isAxiosError(err);
       if(axiosError) {
         return {
-          response: {
-            status: "",
-            data: {
-              code: err.code,
-              data: null,
-              errors: [],
-              message: err.message
-            }
-          }
+          code: err.code,
+          data: null,
+          message: err.message
         };
       }
 
