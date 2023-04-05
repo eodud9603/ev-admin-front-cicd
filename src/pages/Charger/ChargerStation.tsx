@@ -5,6 +5,7 @@ import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
+import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
@@ -171,10 +172,10 @@ const ChargingStationManagement = () => {
         <SearchSection className={"py-4 border-top border-bottom"}>
           <Row className={"d-flex align-items-center"}>
             <Col md={7}>
-              <DropboxGroup
-                label={"지역"}
-                dropdownItems={addressList}
-                className={"me-2 w-xs"}
+              <RegionGroup
+                onChangeCallback={(region) => {
+                  /** @TODO 선택(변경)된 지역 정보 데이터 */
+                }}
               />
             </Col>
             <Col md={5}>
