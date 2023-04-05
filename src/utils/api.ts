@@ -1,4 +1,4 @@
-import axios, { Method } from "axios";
+import axios, { isAxiosError, Method } from "axios";
 import { API_URL } from "src/constants/url";
 import { IApiResponse, IAxiosErrorResponse } from "src/type/api.interface";
 
@@ -43,8 +43,18 @@ const rest = (method: Method) => {
 
       return data as IApiResponse<T>;
     } catch (err) {
-      const { response } = err as IAxiosErrorResponse;
+      /** axios error 여부 */
+      const axiosError = isAxiosError(err);
+      if(axiosError) {
+        return {
+          code: err.code,
+          data: null,
+          message: err.message
+        };
+      }
 
+      const { response } = err as IAxiosErrorResponse;
+   
       /*  403: token이 인증되지 않을경우, refreshToken으로 업데이트 후에도 없으면, 로그인 화면으로 네비게이팅 */
       if (response.status === 403) {
         /** @TODO refresh 로직 추가 */

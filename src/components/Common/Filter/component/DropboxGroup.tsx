@@ -7,6 +7,7 @@ interface IDropboxGroupProps {
   className?: string;
   dropdownItems: Array<{
     disabled?: boolean;
+    onClickDropdownItem?: (label: string, value: string) => void;
     menuItems: Array<{
       label: string;
       value: string;

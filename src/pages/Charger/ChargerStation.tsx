@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
+import { getStationList } from "src/api/station/stationApi";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
@@ -17,41 +18,33 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST, OPERATOR_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
-
-/* 주소(지역) 필터 */
-const addressList = [
-  {
-    menuItems: [{ label: "시,도", value: "" }],
-  },
-  {
-    menuItems: [{ label: "구,군", value: "" }],
-  },
-  {
-    menuItems: [{ label: "동,읍", value: "" }],
-  },
-];
+import {
+  IRequestStationList,
+  IStationListItem,
+} from "src/api/station/stationApi.interface";
+import { getPageList } from "src/utils/pagination";
 
 /* 사용여부 필터 */
 const useList = [
   { label: "전체", value: "" },
-  { label: "Y", value: "1" },
-  { label: "N", value: "2" },
+  { label: "Y", value: "Y" },
+  { label: "N", value: "N" },
 ];
 
-/* 검색어 필터 */
+/** @TODO 검색어 필터, 빈 value값 추가 필요 */
 const searchList = [
-  { label: "충전소명", placeholderKeyword: "충전소명을", value: "1" },
-  { label: "충전소 ID", placeholderKeyword: "충전소 ID를", value: "2" },
-  { label: "주소", placeholderKeyword: "주소를", value: "3" },
+  { label: "충전소명", placeholderKeyword: "충전소명을", value: "stationNm" },
+  { label: "충전소 ID", placeholderKeyword: "충전소 ID를", value: "stationId" },
+  { label: "주소", placeholderKeyword: "주소를", value: "" },
 ];
 
-/* 정렬기준 */
+/** @TODO 정렬기준, 빈 value값 추가 필요 */
 const sortList = [
-  { label: "기본", value: "1" },
-  { label: "충전소명", value: "2" },
-  { label: "충전소 ID", value: "3" },
-  { label: "급/완속(기)", value: "4" },
-  { label: "등록일", value: "5" },
+  { label: "기본", value: "StationName" },
+  { label: "충전소명", value: "StationName" },
+  { label: "충전소 ID", value: "StationId" },
+  { label: "급/완속(기)", value: "" },
+  { label: "등록일", value: "CrateAt" },
 ];
 
 /* 목록 헤더 */
@@ -68,85 +61,118 @@ const tableHeader = [
   { label: "등록일" },
 ];
 
-/* 임시 목록 데이터 */
-const chargingStationList = [
-  {
-    region: "서울",
-    division: "HEV",
-    chargerName: "휴맥스 카플랫 전용 A",
-    chargerId: "KEP0000000020",
-    address: "경기도 성남시 분당구 황새울로 216",
-    addressDetail: " 902호 (수내동, 휴맥스빌리지)",
-    fast: "3",
-    slow: "2",
-    isOpen: "완전",
-    isUse: "N",
-    date: "YYYY.MM.DD",
-  },
-  {
-    region: "서울",
-    division: "HEV",
-    chargerName: "휴맥스 카플랫 전용 A",
-    chargerId: "KEP0000000020",
-    address: "경기도 성남시 분당구 황새울로 216",
-    addressDetail: " 902호 (수내동, 휴맥스빌리지)",
-    fast: "3",
-    slow: "2",
-    isOpen: "완전",
-    isUse: "N",
-    date: "YYYY.MM.DD",
-  },
-];
+const defaultParams: IRequestStationList = {
+  /** @TODO 서버 sortDirection 정의 후, 추가 */
+  // sortDirection: "ASC",
+  size: 10,
+  page: 0,
+  sort: "StationName",
+  stationNm: "서울",
+};
 
 const ChargingStationManagement = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전소 관리" },
-  ]);
+  const [tabList, setTabList] = useState([{ label: "충전소 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const [page, setPage] = useState(1);
+  const [list, setList] = useState<IStationListItem[]>([]);
 
+  const [page, setPage] = useState(1);
+  const [maxPage, setMaxPage] = useState(1);
+  const [total, setTotal] = useState("-");
+
+  const inputs = useInputs({
+    sido: "",
+    gugun: "",
+    dong: "",
+    operation: "",
+    searchRange: "stationNm",
+    searchText: "서울",
+    isUse: "" as "Y" | "N",
+    sort: "StationName",
+    count: "10",
+  });
   const {
-    operator,
+    count,
+    sido,
+    gugun,
+    dong,
+    operation,
     searchRange,
     searchText,
-    useStatus,
+    isUse,
+    sort,
     onChange,
     onChangeSingle,
-  } = useInputs({
-    operator: "",
-    searchRange: "1",
-    searchText: "",
-    useStatus: "",
-    sort: "",
-    count: "1",
-  });
+  } = inputs;
   const searchKeyword =
     searchList.find((data) => searchRange === data.value)?.placeholderKeyword ??
     "";
 
   const navigate = useNavigate();
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
+  /** 파라미터 빈값 제거 */
+  const getParams = (params: Partial<IRequestStationList>) => {
+    for (const param in params) {
+      const deleteName = param as keyof IRequestStationList;
+      const data = params[deleteName];
+
+      if (data === "") {
+        delete params[deleteName];
+      }
+    }
   };
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestStationList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams: IRequestStationList = {
+        size: 10,
+        page: 0,
+        sido: sido,
+        operation: operation,
+        gugun: gugun,
+        dong: dong,
+        isUse: isUse,
+        sort: sort as IRequestStationList["sort"],
+      };
+      if (searchRange) {
+        searchParams[searchRange as "stationNm" | "stationId"] = searchText;
+      }
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
 
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
+      /* 검색  */
+      const { code, data } = await getStationList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        setList(data.elements);
+        setMaxPage(data.totalPages);
+        setTotal(data.totalElements.toString());
+      }
+    };
 
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
+  /* init 검색 목록 */
+  useEffect(() => {
+    const init = async () => {
+      /* 검색  */
+      const { code, data } = await getStationList(defaultParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        setList(data.elements);
+        setMaxPage(data.totalPages);
+        setTotal(data.totalElements.toString());
+      }
+    };
 
-    setTabList(tempList);
-  };
+    void init();
+  }, []);
 
   return (
     <ContainerBase>
@@ -155,8 +181,8 @@ const ChargingStationManagement = () => {
       <TabGroup
         list={tabList}
         selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
+        onClick={() => {}}
+        onClose={() => {}}
       />
 
       <BodyBase>
@@ -174,17 +200,21 @@ const ChargingStationManagement = () => {
             <Col md={7}>
               <RegionGroup
                 onChangeCallback={(region) => {
-                  /** @TODO 선택(변경)된 지역 정보 데이터 */
+                  onChangeSingle({
+                    sido: region.sido,
+                    gugun: region.sigugun,
+                    dong: region.dongmyun,
+                  });
                 }}
               />
             </Col>
             <Col md={5}>
               <RadioGroup
                 title={"운영사"}
-                name={"operator"}
+                name={"operation"}
                 list={OPERATOR_FILTER_LIST.map((data) => ({
                   ...data,
-                  checked: operator == data.value,
+                  checked: operation == data.value,
                 }))}
                 onChange={onChange}
               />
@@ -199,18 +229,20 @@ const ChargingStationManagement = () => {
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
+                disabled={true} /** @TODO 임시 비활성화 (서버 이슈) */
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
+                onClick={searchHandler()}
               />
             </Col>
             <Col md={5}>
               <RadioGroup
                 title={"사용여부"}
-                name={"useStatus"}
+                name={"isUse"}
                 list={useList.map((data) => ({
                   ...data,
-                  checked: useStatus == data.value,
+                  checked: isUse == data.value,
                 }))}
                 onChange={onChange}
               />
@@ -225,6 +257,9 @@ const ChargingStationManagement = () => {
                   {
                     onClickDropdownItem: (_, value) => {
                       onChangeSingle({ sort: value });
+                      void searchHandler({
+                        sort: value as IRequestStationList["sort"],
+                      })();
                     },
                     menuItems: sortList,
                   },
@@ -239,11 +274,8 @@ const ChargingStationManagement = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총{" "}
-              <span className={"text-turu"}>
-                {chargingStationList.length}개
-              </span>
-              의 충전소 정보가 있습니다.
+              총 <span className={"text-turu"}>{total}개</span>의 충전소 정보가
+              있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
@@ -254,6 +286,7 @@ const ChargingStationManagement = () => {
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ count: value });
+                  void searchHandler({ size: Number(value) })();
                 }}
               />
               <ButtonBase
@@ -269,48 +302,46 @@ const ChargingStationManagement = () => {
 
           <TableBase tableHeader={tableHeader}>
             <>
-              {chargingStationList.length > 0 ? (
-                chargingStationList.map(
+              {list.length > 0 ? (
+                list.map(
                   (
                     {
+                      stationId,
                       region,
-                      division,
-                      chargerName,
-                      chargerId,
+                      operation,
+                      stationNm,
                       address,
-                      addressDetail,
-                      fast,
-                      slow,
+                      fastCharger,
+                      fullCharger,
                       isOpen,
-                      isUse,
-                      date,
+                      createAt,
                     },
                     index
                   ) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
+                    <tr key={stationId}>
+                      <td>{(page - 1) * Number(count) + index + 1}</td>
                       <td>{region}</td>
-                      <td>{division}</td>
+                      <td>{operation ?? "전체"}</td>
                       <td>
                         <HoverSpan
                           className={"text-turu"}
                           onClick={() => {
-                            navigate(`/charger/chargerStation/detail/${index}`);
+                            navigate(
+                              `/charger/chargerStation/detail/${stationId}`
+                            );
                           }}
                         >
-                          <u>{chargerName}</u>
+                          <u>{stationNm}</u>
                         </HoverSpan>
                       </td>
-                      <td>{chargerId}</td>
+                      <td>{stationId}</td>
+                      <td>{address}</td>
                       <td>
-                        {address}, {addressDetail}
+                        {fastCharger} / {fullCharger - fastCharger}
                       </td>
-                      <td>
-                        {fast} / {slow}
-                      </td>
-                      <td>{isOpen ? "완전" : "X"}</td>
-                      <td>{isUse}</td>
-                      <td>{date}</td>
+                      <td>{isOpen}</td>
+                      <td>데이터 누락</td>
+                      <td>{createAt}</td>
                     </tr>
                   )
                 )
@@ -324,7 +355,18 @@ const ChargingStationManagement = () => {
             </>
           </TableBase>
 
-          <PaginationBase setPage={setPage} data={{}} />
+          <PaginationBase
+            setPage={setPage}
+            data={{
+              hasPreviousPage: page > 1,
+              hasNextPage: page < maxPage,
+              navigatePageNums: getPageList(page, maxPage),
+              pageNum: page,
+              onChangePage: (page) => {
+                void searchHandler({ page })();
+              },
+            }}
+          />
         </ListSection>
       </BodyBase>
     </ContainerBase>

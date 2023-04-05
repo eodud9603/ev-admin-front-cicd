@@ -93,7 +93,7 @@ export const RegionGroup = (props: IRegionGroupProps) => {
     }
   };
 
-  /* 지역 정보 변경 */
+  /** 지역 정보 변경 */
   const onChange =
     (type: "sido" | "sigugun" | "dongmyun") => (_: string, value: string) => {
       if (type === "sido" && sido !== value) {

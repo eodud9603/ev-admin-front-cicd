@@ -13,7 +13,7 @@ interface ITextInputFilterProps extends ITextInputBaseProps {
   disabled?: boolean;
   onClickDropdownItem?: (label: string, value: string) => void;
 
-  onClick?: () => void;
+  onClick?: () => void | Promise<void>;
 }
 
 const SearchTextInput = (props: ITextInputFilterProps) => {
@@ -47,7 +47,12 @@ const SearchTextInput = (props: ITextInputFilterProps) => {
       )}
 
       <div className={"d-flex flex-grow-1"}>
-        <TextInputBase bsSize={"lg"} className={`${className}`} {...rest} />
+        <TextInputBase
+          bsSize={"lg"}
+          className={`${className}`}
+          disabled={disabled}
+          {...rest}
+        />
       </div>
       <div>
         <ButtonBase

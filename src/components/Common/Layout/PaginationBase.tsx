@@ -6,10 +6,9 @@ interface IPaginationBase {
   data: {
     navigatePageNums?: Array<number>;
     pageNum?: number;
-    hasPreviousPage?: number;
-    hasNextPage?: number;
-    prePage?: number;
-    nextPage?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+    onChangePage?: (page: number) => void;
   };
 }
 const PaginationBase = (props: IPaginationBase) => {
@@ -18,8 +17,7 @@ const PaginationBase = (props: IPaginationBase) => {
     pageNum = 1,
     hasPreviousPage,
     hasNextPage,
-    prePage,
-    nextPage,
+    onChangePage,
   } = props.data;
 
   return (
@@ -32,7 +30,12 @@ const PaginationBase = (props: IPaginationBase) => {
         className="d-flex justify-content-center"
       >
         <PaginationItem className={`${!hasPreviousPage ? "disabled" : ""}`}>
-          <PaginationLink onClick={() => props.setPage(prePage ?? 1)}>
+          <PaginationLink
+            onClick={() => {
+              props.setPage(pageNum - 1);
+              !!onChangePage && void onChangePage(pageNum - 1);
+            }}
+          >
             <i className="mdi mdi-chevron-left" />
           </PaginationLink>
         </PaginationItem>
@@ -42,13 +45,25 @@ const PaginationBase = (props: IPaginationBase) => {
               key={idx}
               className={`${pageNum === value ? "active" : ""}`}
             >
-              <PaginationLink href="#" onClick={() => props.setPage(value)}>
+              <PaginationLink
+                href="#"
+                onClick={() => {
+                  props.setPage(value);
+                  !!onChangePage && void onChangePage(value);
+                }}
+              >
                 {value}
               </PaginationLink>
             </PaginationItem>
           ))}
         <PaginationItem className={`${!hasNextPage ? "disabled" : ""}`}>
-          <PaginationLink href="#" onClick={() => props.setPage(nextPage ?? 1)}>
+          <PaginationLink
+            href="#"
+            onClick={() => {
+              props.setPage(pageNum + 1);
+              !!onChangePage && void onChangePage(pageNum + 1);
+            }}
+          >
             <i className="mdi mdi-chevron-right" />
           </PaginationLink>
         </PaginationItem>
