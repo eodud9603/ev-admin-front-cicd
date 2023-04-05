@@ -15,8 +15,8 @@ const loginValidation = object({
 });
 
 const authCodeValidation = object({
-  adminSeq: number().required("Please Enter adminSeq"),
-  code: string().required("Please Enter code"),
+  adminSeq: number().min(0).required("Please Enter adminSeq"),
+  code: string().min(6).max(6).required("Please Enter code"),
 });
 
 export const Login = () => {
@@ -63,9 +63,6 @@ export const Login = () => {
 
   /** 인증 코드 확인 */
   const authCodeHandler = async () => {
-    if (seq < 0) {
-      return;
-    }
     const isValid = await authCodeValidation.isValid({ adminSeq: seq, code });
     if (!isValid) {
       return;
