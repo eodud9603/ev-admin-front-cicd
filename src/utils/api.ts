@@ -18,7 +18,7 @@ axiosInstance.interceptors.request.use((config) => {
   const authInfo = JSON.parse(sessionStorage.getItem('auth-storage') ?? "");
   const accessToken: string = authInfo?.state?.accessToken ?? "";
   if (accessToken) {
-      config.headers["Authorization"] = `bearer ${accessToken}`;
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
   }
 
   return config;
