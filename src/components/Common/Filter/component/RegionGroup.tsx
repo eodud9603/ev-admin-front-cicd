@@ -12,6 +12,7 @@ import {
   getRegionSigugun,
 } from "src/api/region/regionApi";
 import useInputs from "src/hooks/useInputs";
+import styled from "styled-components";
 
 interface IRegionGroupProps {
   onChangeCallback?: (region: {
@@ -186,7 +187,13 @@ export const RegionDropdown = (props: IDropdownBaseProps) => {
         <DropdownToggle tag="button" className="btn btn-outline-light w-xs">
           {selectedLabel} <i className="mdi mdi-chevron-down ms-5" />
         </DropdownToggle>
-        <DropdownMenu>
+        <Menu
+          style={{
+            maxHeight: 32.2 * 10,
+            overflow: "hidden",
+            overflowY: "scroll",
+          }}
+        >
           {menuItems.map(({ label, value }, index) => (
             <DropdownItem
               key={`${value}${index}`}
@@ -197,8 +204,14 @@ export const RegionDropdown = (props: IDropdownBaseProps) => {
               {label}
             </DropdownItem>
           ))}
-        </DropdownMenu>
+        </Menu>
       </Dropdown>
     </div>
   );
 };
+
+const Menu = styled(DropdownMenu)`
+  max-height: 322px;
+  overflow: hidden;
+  overflow-y: scroll;
+`;
