@@ -5,10 +5,10 @@ import useAuthStore from "src/store/authStore";
 const Authmiddleware = (props: any) => {
   const { accessToken } = useAuthStore();
 
-  /** @TODO 현재는 임시 주석처리 (인증 코드번호를 서버에 번호 요청해야하므로) */
-  // if (!accessToken) {
-  //   return <Navigate to={{ pathname: "/login" }} />;
-  // }
+  /** @TODO 토큰이 없을 경우, 로그인페이지로 리다이렉션(로직 수정 필요 시, 수정) */
+  if (!accessToken) {
+    return <Navigate to={{ pathname: "/login" }} />;
+  }
 
   return <React.Fragment>{props.children}</React.Fragment>;
 };

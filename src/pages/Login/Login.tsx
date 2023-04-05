@@ -7,6 +7,7 @@ import useInputs from "src/hooks/useInputs";
 import { object, string, number } from "yup";
 import { postAuthCode, postAuthenticate } from "src/api/auth/authAPi";
 import useAuthStore from "src/store/authStore";
+import { useNavigate } from "react-router";
 
 const loginValidation = object({
   id: string().required("Please Enter id"),
@@ -28,6 +29,7 @@ export const Login = () => {
     code: "",
   });
   const { setAuth } = useAuthStore();
+  const navigate = useNavigate();
 
   /** 계정 확인 */
   const authHandler = async () => {
@@ -80,6 +82,8 @@ export const Login = () => {
     if (success) {
       /* 토큰정보 저장 */
       setAuth(data);
+      /** @TODO  */
+      navigate("/main/dashboard", { replace: true });
     }
   };
 
