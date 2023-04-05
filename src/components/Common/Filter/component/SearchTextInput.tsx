@@ -47,7 +47,12 @@ const SearchTextInput = (props: ITextInputFilterProps) => {
       )}
 
       <div className={"d-flex flex-grow-1"}>
-        <TextInputBase bsSize={"lg"} className={`${className}`} {...rest} />
+        <TextInputBase
+          bsSize={"lg"}
+          className={`${className}`}
+          disabled={disabled}
+          {...rest}
+        />
       </div>
       <div>
         <ButtonBase

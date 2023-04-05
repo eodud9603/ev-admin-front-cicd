@@ -34,4 +34,48 @@ export interface IStationListResponse {
   totalPages: number;
 }
 
-/** */
+/* 충전소 등록 조회 */
+/** 
+ * @see http://218.38.12.31:45081/docs/index.html#_%EB%93%B1%EB%A1%9D
+ * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ */
+export interface IRequestStationRegister {
+  stationName: string;
+  stationKey: string; /** 자동생성? */
+  location: string;
+  operator: string; // HEV, JEV
+  isUse?: "Y" | "N";
+  isOpen?: "Y" | "N";
+  consignmentCompany: string;
+  quickChargerCount: number;
+  standardChargerCount: number;
+  powerSocket: string;
+  powerSocketCount: number;
+  isHidden: "Y" | "N"; 
+  supplyMethod: string; 
+  billDivision: null; 
+  kepcoCustomerNum: string; 
+  meterNum: null; 
+  kepcoFee: string;
+  kepcoOffice: string;
+  kepcoPayment: string;
+  entryDate: string;
+  chargerLocation: string;
+  addressRoad: string;
+  addressJibun: string;
+  sido: string;
+  sigugun: string;
+  dongmyun: string;
+  zoneCode: string;
+  memo: null;
+  etcInfo: null;
+  lat: number;
+  lng: number;
+  isParkFeeFree: string;
+  baseOperationTimeFrom: string;
+  baseOperationTimeTo: string;
+  holidayOperationTimeFrom: string;
+  holidayOperationTimeTo: string;
+  saturdayOperationTimeFrom: string;
+  saturdayOperationTimeTo: string;
+}
