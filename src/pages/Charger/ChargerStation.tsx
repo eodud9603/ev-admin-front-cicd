@@ -233,7 +233,7 @@ const ChargingStationManagement = () => {
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
-                onClick={void searchHandler()}
+                onClick={searchHandler()}
               />
             </Col>
             <Col md={5}>
