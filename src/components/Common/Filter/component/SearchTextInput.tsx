@@ -13,7 +13,7 @@ interface ITextInputFilterProps extends ITextInputBaseProps {
   disabled?: boolean;
   onClickDropdownItem?: (label: string, value: string) => void;
 
-  onClick?: () => void;
+  onClick?: () => void | Promise<void>;
 }
 
 const SearchTextInput = (props: ITextInputFilterProps) => {

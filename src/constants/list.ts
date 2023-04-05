@@ -1,11 +1,11 @@
 
 /**  목록 표시 개수 */
 export const COUNT_FILTER_LIST = [
-    { label: "10개씩 보기", value: "1" },
-    { label: "20개씩 보기", value: "2" },
-    { label: "30개씩 보기", value: "3" },
-    { label: "50개씩 보기", value: "4" },
-    { label: "100개씩 보기", value: "5" },
+    { label: "10개씩 보기", value: "10" },
+    { label: "20개씩 보기", value: "20" },
+    { label: "30개씩 보기", value: "30" },
+    { label: "50개씩 보기", value: "50" },
+    { label: "100개씩 보기", value: "100" },
   ];
 
 /** 운영사 필터 */
@@ -16,11 +16,11 @@ export const OPERATOR_FILTER_LIST  = [
   },
   {
     label: "HEV",
-    value: "1"
+    value: "HEV"
   },
   {
     label: "JEV",
-    value: "2"
+    value: "JEV"
   },
 ];
 
