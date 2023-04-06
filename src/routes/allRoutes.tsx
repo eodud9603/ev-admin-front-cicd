@@ -108,6 +108,7 @@ import SettlementNon from "src/pages/Settlement/SettlementNon";
 import SettlementGroup from "src/pages/Settlement/SettlementGroup";
 import { stationDetailLoader } from "src/pages/Charger/loader/stationDetailLoader";
 import { stationListLoader } from "src/pages/Charger/loader/stationListLoader";
+import { chargerListLoader } from "src/pages/Charger/loader/chargerListLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -133,6 +134,7 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/charger",
     element: <Charger />,
+    loader: chargerListLoader,
   },
   {
     path: "/charger/add",

@@ -144,11 +144,13 @@ const ChargerStationAdd = () => {
 
   /** 등록 */
   const save = async () => {
+    /* 등록 params */
     const registrationParams = {
       stationName: inputs.stationName,
       lat: Number(inputs.lat),
       lng: Number(inputs.lng),
     };
+    /* valid 체크 */
     const isValid = await stationRegistrationValidation.isValid(
       registrationParams
     );

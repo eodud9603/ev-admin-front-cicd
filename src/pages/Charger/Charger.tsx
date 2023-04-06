@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -13,43 +13,48 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import {
-  COUNT_FILTER_LIST,
-  DEMOLITION_FILTER_LIST,
-  OPERATOR_FILTER_LIST,
-} from "src/constants/list";
+import { COUNT_FILTER_LIST, OPERATOR_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
 import BatchControlModal from "src/pages/Charger/components/BatchControlModal";
 import SingleControlModal from "src/pages/Charger/components/SingleControlModal";
 import useInputs from "src/hooks/useInputs";
+import {
+  IChargerListResponse,
+  IRequestChargerList,
+} from "src/api/charger/chargerApi.interface";
+import { getPageList } from "src/utils/pagination";
+import { getChargerList } from "src/api/charger/chargerApi";
+import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
+import {
+  CHARGER_MODE,
+  CHARGER_RATION,
+  CHARGER_TYPE,
+  OPERATION_STATUS,
+  TChargerModeKeys,
+  TOperationStatusKeys,
+} from "src/constants/charger";
 
-/* 주소(지역) 필터 */
-const addressList = [
-  {
-    menuItems: [{ label: "시,도", value: "" }],
-  },
-  {
-    menuItems: [{ label: "구,군", value: "" }],
-  },
-  {
-    menuItems: [{ label: "동,읍", value: "" }],
-  },
+/* 철거여부 필터 */
+const operationStatusList = [
+  { label: "전체", value: "" },
+  { label: "철거예정", value: "TO_BE_DEMOLISH" },
+  { label: "철거완료", value: "DEMOLISHED" },
 ];
 
 /* 검색어 필터 */
 const searchList = [
-  { label: "충전소명", placeholderKeyword: "충전소명을", value: "1" },
-  { label: "충전소 ID", placeholderKeyword: "충전소 ID를", value: "2" },
-  { label: "주소", placeholderKeyword: "주소를", value: "3" },
+  { label: "충전소명", placeholderKeyword: "충전소명을", value: "stationNm" },
+  { label: "충전소 ID", placeholderKeyword: "충전소 ID를", value: "stationId" },
+  { label: "주소", placeholderKeyword: "주소를", value: "" },
 ];
 
 /* 정렬기준 */
 const sortList = [
-  { label: "기본", value: "" },
-  { label: "충전소명", value: "1" },
-  { label: "충전소 ID", value: "2" },
-  { label: "급/완속(기)", value: "3" },
-  { label: "등록일", value: "4" },
+  { label: "기본", value: "StationName" },
+  { label: "충전소명", value: "StationName" },
+  { label: "충전소 ID", value: "StationId" },
+  { label: "급/완속(기)", value: "" },
+  { label: "등록일", value: "CrateAt" },
 ];
 
 /* 목록 헤더 */
@@ -72,53 +77,43 @@ const tableHeader = [
   { label: "등록일" },
 ];
 
-/* 임시 목록 데이터 */
-const chargerList = [
-  {
-    region: "서울",
-    division: "HEV",
-    chargerName: "휴맥스 카플랫 전용 A",
-    chargerId: "KEP0000000020",
-    chargerNum: "0000",
-    type: "급속",
-    connector: "DC콤보",
-    status: "충전중",
-    communication: "연결",
-    start: "YYYY.MM.DD 00:00:00",
-    connect: "YYYY.MM.DD 00:00:00",
-    end: "YYYY.MM.DD 00:00:00",
-    isClosure: "N",
-    assetNum: "자산번호 노출",
-    date: "YYYY.MM.DD",
-  },
-];
-
 const Charger = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전기 관리" },
-  ]);
+  const data = useLoaderData() as IChargerListResponse | null;
+
+  const [tabList, setTabList] = useState([{ label: "충전기 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
+
+  const [list, setList] = useState(data?.elements ?? []);
   const [page, setPage] = useState(1);
+  const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
+  const [total, setTotal] = useState(data?.totalElements ?? 0);
   /* 일괄 제어 모달 */
   const [batchControlModalOpen, setBatchControlModalOpen] = useState(false);
   /* 단일 제어 모달 */
   const [singleControlModalOpen, setSingleControlModalOpen] = useState(false);
 
   const {
-    operator,
+    sido,
+    gugun,
+    dong,
+    operation,
     searchRange,
     searchText,
-    demolition,
+    operationStatus,
+    sort,
+    count,
     onChange,
     onChangeSingle,
   } = useInputs({
-    operator: "",
-    searchRange: "1",
+    sido: "",
+    gugun: "",
+    dong: "",
+    operation: "",
+    searchRange: "stationNm",
     searchText: "",
-    demolition: "",
-    sort: "",
-    count: "1",
+    operationStatus: "",
+    sort: "StationName",
+    count: "10",
   });
   const searchKeyword =
     searchList.find((data) => searchRange === data.value)?.placeholderKeyword ??
@@ -126,26 +121,61 @@ const Charger = () => {
 
   const navigate = useNavigate();
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
+  /** 파라미터 빈값 제거 */
+  const getParams = (params: Partial<IRequestChargerList>) => {
+    for (const param in params) {
+      const deleteName = param as keyof IRequestChargerList;
+      const data = params[deleteName];
+
+      if (data === "") {
+        delete params[deleteName];
+      }
+    }
   };
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestChargerList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams: IRequestChargerList = {
+        size: Number(count),
+        page,
+        sido,
+        operation,
+        gugun,
+        dong,
+        operationStatus: operationStatus as TOperationStatusKeys,
+        sort: sort as IRequestChargerList["sort"],
+      };
+      if (searchRange) {
+        searchParams[searchRange as "stationNm" | "stationId"] = searchText;
+      }
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
 
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
+      /* 검색  */
+      const { code, data } = await getChargerList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        if (searchParams.page === 0) {
+          setPage(1);
+        }
+        setList(data.elements);
+        setMaxPage(data.totalPages);
+        setTotal(data.totalElements);
+      } else {
+        setPage(1);
+        setList([]);
+        setMaxPage(1);
+        setTotal(0);
+      }
+    };
 
   return (
     <ContainerBase>
@@ -154,8 +184,8 @@ const Charger = () => {
       <TabGroup
         list={tabList}
         selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
+        onClick={() => {}}
+        onClose={() => {}}
       />
 
       <BodyBase>
@@ -171,19 +201,23 @@ const Charger = () => {
         <SearchSection className={"py-4 border-top border-bottom"}>
           <Row className={"d-flex align-items-center"}>
             <Col md={7}>
-              <DropboxGroup
-                label={"지역"}
-                dropdownItems={addressList}
-                className={"me-2 w-xs"}
+              <RegionGroup
+                onChangeRegion={(region) => {
+                  onChangeSingle({
+                    sido: region.sido,
+                    gugun: region.sigugun,
+                    dong: region.dongmyun,
+                  });
+                }}
               />
             </Col>
             <Col md={5}>
               <RadioGroup
                 title={"운영사"}
-                name={"operator"}
+                name={"operation"}
                 list={OPERATOR_FILTER_LIST.map((data) => ({
                   ...data,
-                  checked: operator === data.value,
+                  checked: operation === data.value,
                 }))}
                 onChange={onChange}
               />
@@ -201,15 +235,16 @@ const Charger = () => {
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
             <Col md={5}>
               <RadioGroup
                 title={"철거여부"}
-                name={"demolition"}
-                list={DEMOLITION_FILTER_LIST.map((data) => ({
+                name={"operationStatus"}
+                list={operationStatusList.map((data) => ({
                   ...data,
-                  checked: demolition === data.value,
+                  checked: operationStatus == data.value,
                 }))}
                 onChange={onChange}
               />
@@ -224,6 +259,10 @@ const Charger = () => {
                   {
                     onClickDropdownItem: (_, value) => {
                       onChangeSingle({ sort: value });
+                      void searchHandler({
+                        page: 1,
+                        sort: value as IRequestChargerList["sort"],
+                      })();
                     },
                     menuItems: sortList,
                   },
@@ -238,8 +277,8 @@ const Charger = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{chargerList.length}개</span>의
-              충전기 정보가 있습니다.
+              총 <span className={"text-turu"}>{total}개</span>의 충전기 정보가
+              있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
@@ -252,6 +291,7 @@ const Charger = () => {
                   onChangeSingle({
                     count: value,
                   });
+                  void searchHandler({ page: 1, size: Number(value) })();
                 }}
               />
               <ButtonBase
@@ -283,60 +323,61 @@ const Charger = () => {
 
           <TableBase tableHeader={tableHeader}>
             <>
-              {chargerList.length > 0 ? (
-                chargerList.map(
+              {list.length > 0 ? (
+                list.map(
                   (
                     {
                       region,
-                      division,
-                      chargerId,
-                      chargerName,
-                      chargerNum,
+                      operator,
+                      stationName,
+                      stationId,
+                      chargerKey,
+                      searchKey,
+                      chargerClass /* 일반/고속 충전 */,
                       type,
-                      connector,
                       status,
-                      communication,
-                      start,
-                      connect,
-                      end,
-                      isClosure,
-                      assetNum,
-                      date,
+                      lastConnection,
+                      assetNumber,
+                      nowChargingStartTime,
+                      // lastChargingStartTime,
+                      lastChargingEndTime,
+                      operationStatus,
+                      isConnection,
                     },
                     index
                   ) => (
                     <tr key={index}>
-                      <td>{index + 1}</td>
+                      <td>{(page - 1) * Number(count) + index + 1}</td>
                       <td>{region}</td>
-                      <td>{division}</td>
+                      <td>{operator ?? "전체"}</td>
                       <td>
                         <HoverSpan
                           className={"text-turu"}
                           onClick={() => {
-                            navigate(`/charger/charger/detail/${index}`);
+                            navigate(`/charger/charger/detail/${searchKey}`);
                           }}
                         >
-                          <u>{chargerName}</u>
+                          <u>{stationName}</u>
                         </HoverSpan>
                       </td>
-                      <td>{chargerId}</td>
-                      <td>{chargerNum}</td>
-                      <td>{type}</td>
-                      <td>{connector}</td>
+                      <td>{stationId}</td>
+                      <td>{chargerKey}</td>
+                      <td>{CHARGER_RATION[chargerClass]}</td>
+                      <td>{CHARGER_TYPE[type]}</td>
                       <td>
                         <ButtonBase
                           className={"w-xs rounded-5 py-1"}
-                          label={status}
-                          color={"success"}
+                          label={CHARGER_MODE[status]}
+                          color={getChargerStatusColor(status)}
                         />
                       </td>
-                      <td>{communication}</td>
-                      <td>{start}</td>
-                      <td>{connect}</td>
-                      <td>{end}</td>
-                      <td>{isClosure}</td>
-                      <td>{assetNum}</td>
-                      <td>{date}</td>
+                      <td>{isConnection === "Y" ? "연결" : "미연결"}</td>
+                      <td>{nowChargingStartTime ?? "-"}</td>
+                      <td>{lastConnection ?? "-"}</td>
+                      <td>{lastChargingEndTime ?? "-"}</td>
+                      <td>{operationStatus === "DEMOLISHED" ? "Y" : "N"}</td>
+                      <td>{assetNumber}</td>
+                      <td>등록일{}</td>
                     </tr>
                   )
                 )
@@ -350,7 +391,18 @@ const Charger = () => {
             </>
           </TableBase>
 
-          <PaginationBase setPage={setPage} data={{}} />
+          <PaginationBase
+            setPage={setPage}
+            data={{
+              hasPreviousPage: page > 1,
+              hasNextPage: page < maxPage,
+              navigatePageNums: getPageList(page, maxPage),
+              pageNum: page,
+              onChangePage: (page) => {
+                void searchHandler({ page })();
+              },
+            }}
+          />
         </ListSection>
       </BodyBase>
 
@@ -381,3 +433,17 @@ const HoverSpan = styled.span`
     cursor: pointer;
   }
 `;
+
+const getChargerStatusColor = (status: TChargerModeKeys) => {
+  switch (status) {
+    case "S1":
+      return "danger";
+    case "S2":
+    case "S3":
+      return "info";
+    case "S6":
+      return "success";
+    default:
+      return "secondary";
+  }
+};

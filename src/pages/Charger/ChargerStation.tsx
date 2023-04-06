@@ -72,7 +72,7 @@ const ChargingStationManagement = () => {
 
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
-  const [total, setTotal] = useState(data?.totalElements ?? "-");
+  const [total, setTotal] = useState(data?.totalElements ?? 0);
 
   const inputs = useInputs({
     sido: "",
@@ -151,12 +151,12 @@ const ChargingStationManagement = () => {
         }
         setList(data.elements);
         setMaxPage(data.totalPages);
-        setTotal(data.totalElements.toString());
+        setTotal(0);
       } else {
         setPage(1);
         setList([]);
         setMaxPage(1);
-        setTotal("-");
+        setTotal(0);
       }
     };
 

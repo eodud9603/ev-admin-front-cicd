@@ -25,3 +25,4 @@ export const postStationRegistration = (body: IRequestStationRegister) => {
   });
 };
 
+/** @TODO 충전소 수정 api */
