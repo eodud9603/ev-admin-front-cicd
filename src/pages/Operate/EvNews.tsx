@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
+import { YNType } from "src/api/api.interface";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
@@ -92,7 +93,7 @@ interface IListItemProps {
   writer: string;
   view: number;
   date: string;
-  isDelete: "Y" | "N";
+  isDelete: YNType;
 }
 
 const EvNews = () => {

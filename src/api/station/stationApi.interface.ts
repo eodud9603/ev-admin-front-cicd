@@ -1,4 +1,7 @@
 /* 충전소 목록 조회 */
+
+import { YNType } from "src/api/api.interface";
+
 /** @see http://218.38.12.31:45081/docs/index.html#_%EB%AA%A9%EB%A1%9D_%EC%A1%B0%ED%9A%8C */
 export interface IRequestStationList {
   /** @TODO 서버 sortDirection 정의 후, 추가 */
@@ -13,7 +16,7 @@ export interface IRequestStationList {
   stationNm?: string
   stationId?: string;
   operation?: string;
-  isUse?: "Y" | "N";
+  isUse?: YNType
 }
 
 export interface IStationListItem {
@@ -43,44 +46,47 @@ export interface IRequestStationDetail {
 }
 
 export interface IStationDetailResponse {
-  stationName: string;
-  stationKey: string; /** 자동생성? */
-  location: string;
-  operator: string; // HEV, JEV
-  isUse?: "Y" | "N";
-  isOpen?: "Y" | "N";
-  consignmentCompany: string;
-  quickChargerCount: number;
-  standardChargerCount: number;
-  powerSocket: string;
-  powerSocketCount: number;
-  isHidden: "Y" | "N"; 
-  supplyMethod: string; 
-  billDivision: null; 
-  kepcoCustomerNum: string; 
-  meterNum: null; 
-  kepcoFee: string;
-  kepcoOffice: string;
-  kepcoPayment: string;
-  entryDate: string;
-  chargerLocation: string;
-  addressRoad: string;
-  addressJibun: string;
-  sido: string;
-  sigugun: string;
-  dongmyun: string;
-  zoneCode: string;
-  memo: null;
-  etcInfo: null;
+  /* 지도 */
   lat: number;
   lng: number;
-  isParkFeeFree: string;
-  baseOperationTimeFrom: string;
-  baseOperationTimeTo: string;
-  holidayOperationTimeFrom: string;
-  holidayOperationTimeTo: string;
-  saturdayOperationTimeFrom: string;
-  saturdayOperationTimeTo: string;
+  /* 기본정보 */
+  stationName: string;
+  stationKey?: string; /** 자동생성? */
+  location?: string;
+  operator?: string; // HEV, JEV
+  isUse?: YNType;
+  isOpen?: YNType;
+  consignmentCompany?: string;
+  quickChargerCount?: number;
+  standardChargerCount?: number;
+  powerSocket?: string;
+  powerSocketCount?: number;
+  isHidden?: YNType;
+  supplyMethod?: string; 
+  billDivision?: null; 
+  kepcoCustomerNum?: string; 
+  meterNum?: null; 
+  kepcoFee?: string;
+  kepcoOffice?: string;
+  kepcoPayment?: string;
+  entryDate?: string;
+  chargerLocation?: string;
+  addressRoad?: string;
+  addressJibun?: string;
+  sido?: string;
+  sigugun?: string;
+  dongmyun?: string;
+  zoneCode?: string;
+  memo?: null;
+  etcInfo?: null;
+  /* 운영 정보 */
+  baseOperationTimeFrom?: string;
+  baseOperationTimeTo?: string;
+  holidayOperationTimeFrom?: string;
+  holidayOperationTimeTo?: string;
+  saturdayOperationTimeFrom?: string;
+  saturdayOperationTimeTo?: string;
+  isParkFeeFree?: string;
 }
 
 /* 충전소 등록 조회 */

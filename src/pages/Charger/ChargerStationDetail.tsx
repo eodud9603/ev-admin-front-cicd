@@ -152,7 +152,7 @@ const ChargerStationDetail = () => {
     parkingFeeDetail,
     /* 지도 좌표 */
     lat,
-    long,
+    lng,
     /* 계약정보 */
     contractNumber,
     onChange,
@@ -203,7 +203,7 @@ const ChargerStationDetail = () => {
     parkingFeeDetail: "",
     /* 지도 좌표 */
     lat: (detail?.lat ?? "").toString(),
-    long: (detail?.lng ?? "").toString(),
+    lng: (detail?.lng ?? "").toString(),
     /* 계약정보 */
     contractNumber: "",
   });
@@ -892,16 +892,16 @@ const ChargerStationDetail = () => {
                   <MapContainer>
                     <SingleMapBase
                       lat={Number(lat)}
-                      long={Number(long)}
+                      long={Number(lng)}
                       isInitMarker={true}
                       onChangeLocation={(changeLat, changeLong) => {
                         if (
                           lat !== changeLat.toString() ||
-                          long !== changeLong.toString()
+                          lng !== changeLong.toString()
                         ) {
                           onChangeSingle({
                             lat: `${changeLat}`,
-                            long: `${changeLong}`,
+                            lng: `${changeLong}`,
                           });
                         }
                       }}
@@ -950,8 +950,8 @@ const ChargerStationDetail = () => {
                     }
                     disabled={disabled}
                     placeholder={"위치선택, 직접입력"}
-                    name={"long"}
-                    value={long}
+                    name={"lng"}
+                    value={lng}
                     onChange={onChange}
                   />
                 </Col>

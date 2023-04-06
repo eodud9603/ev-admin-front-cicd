@@ -25,6 +25,7 @@ import CodeModal from "src/pages/Operate/components/CodeModal";
 import useInputs from "src/hooks/useInputs";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import OperateTextModal from "./components/OperateTextModal";
+import { YNType } from "src/api/api.interface";
 
 /* 검색어 필터 */
 const searchList = [{ label: "전체", value: "" }];
@@ -74,7 +75,7 @@ interface IListItemProps {
   contents: string;
   regName: string;
   regDate: string;
-  isDelete: "Y" | "N";
+  isDelete: YNType;
 
   setCodeModal: React.Dispatch<
     React.SetStateAction<{ isOpen: boolean; data: IListItemProps }>

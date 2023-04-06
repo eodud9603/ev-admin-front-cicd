@@ -1,5 +1,6 @@
 import React from "react";
 import { ModalBody, ModalFooter } from "reactstrap";
+import { YNType } from "src/api/api.interface";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import {
   DetailContentCol,
@@ -21,7 +22,7 @@ interface ICodeModalProps {
     contents: string;
     regName: string;
     regDate: string;
-    isDelete: "Y" | "N";
+    isDelete: YNType;
   }>;
 }
 
