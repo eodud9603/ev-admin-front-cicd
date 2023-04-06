@@ -33,6 +33,7 @@ import {
   TChargerModeKeys,
   TOperationStatusKeys,
 } from "src/constants/charger";
+import { getChargerStatusColor } from "src/utils/charger";
 
 /* 철거여부 필터 */
 const operationStatusList = [
@@ -333,7 +334,7 @@ const Charger = () => {
                       stationId,
                       chargerKey,
                       searchKey,
-                      chargerClass /* 일반/고속 충전 */,
+                      chargerClass,
                       type,
                       status,
                       lastConnection,
@@ -433,17 +434,3 @@ const HoverSpan = styled.span`
     cursor: pointer;
   }
 `;
-
-const getChargerStatusColor = (status: TChargerModeKeys) => {
-  switch (status) {
-    case "S1":
-      return "danger";
-    case "S2":
-    case "S3":
-      return "info";
-    case "S6":
-      return "success";
-    default:
-      return "secondary";
-  }
-};

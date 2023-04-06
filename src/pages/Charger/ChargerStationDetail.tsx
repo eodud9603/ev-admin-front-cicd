@@ -29,6 +29,13 @@ import useInputs from "src/hooks/useInputs";
 import SingleMapBase from "src/components/Common/Map/SingleMapBase";
 import useMapStore from "src/store/mapStore";
 import { IStationDetailResponse } from "src/api/station/stationApi.interface";
+import { IChargerListByStationResponse } from "src/api/charger/chargerApi.interface";
+import {
+  CHARGER_MODE,
+  CHARGER_RATION,
+  OPERATION_STATUS,
+} from "src/constants/charger";
+import { getChargerStatusColor } from "src/utils/charger";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -46,17 +53,6 @@ const chargerSummaryTableHeader = [
   },
   {
     label: "기타",
-  },
-];
-
-/* 임시 목록 데이터 */
-const chargerSummaryList = [
-  {
-    totalCount: 1,
-    communicationCount: 0,
-    validCount: 0,
-    ingCount: 1,
-    etcCount: 0,
   },
 ];
 
@@ -79,20 +75,19 @@ const chargerTableHeader = [
   },
 ];
 
-/* 임시 목록 데이터 */
-const chargerList = [
-  {
-    chargerNum: "0000",
-    installStatus: "설치완료",
-    type: "급속",
-    chargerStatus: "충전중",
-    communicationStatus: "연결",
-  },
-];
-
 const ChargerStationDetail = () => {
-  /** 상세 데이터 */
-  const detail = useLoaderData() as IStationDetailResponse | null;
+  /** init api response */
+  const initData = useLoaderData() as {
+    station: IStationDetailResponse;
+    charger: IChargerListByStationResponse;
+  } | null;
+  /** 충전소 상세 */
+  const detail = initData?.station;
+  /** 충전소별 충전기 */
+  const chargers = initData?.charger;
+  /* 충전기 상태 통계 */
+  const { fast, slow, total, communication, valid, ing, etc } =
+    getChargerStatusStatistics(chargers);
 
   const [tabList, setTabList] = useState([{ label: "충전소 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
@@ -983,72 +978,58 @@ const ChargerStationDetail = () => {
                   }
                 >
                   <span className={"font-size-16 fw-bold"}>충전기 상태</span>
-                  <span className={"font-size-12"}>급속 1대 / 완속 0</span>
+                  <span className={"font-size-12"}>
+                    급속 {fast}대 / 완속 {slow}
+                  </span>
                 </Col>
                 <Col md={12}>
                   {/* 충전기 요약 테이블 */}
                   <TableBase tableHeader={chargerSummaryTableHeader}>
-                    <>
-                      {chargerSummaryList.map(
-                        (
-                          {
-                            totalCount,
-                            communicationCount,
-                            validCount,
-                            ingCount,
-                            etcCount,
-                          },
-                          index
-                        ) => (
-                          <tr key={index} className={"bg-white"}>
-                            <td>{totalCount}</td>
-                            <td>{communicationCount}</td>
-                            <td>{validCount}</td>
-                            <td>{ingCount}</td>
-                            <td>{etcCount}</td>
-                          </tr>
-                        )
-                      )}
-                    </>
+                    <tr className={"bg-white"}>
+                      <td>{total}</td>
+                      <td>{communication}</td>
+                      <td>{valid}</td>
+                      <td>{ing}</td>
+                      <td>{etc}</td>
+                    </tr>
                   </TableBase>
                   {/* 충전기 상세 테이블 */}
                   <TableBase tableHeader={chargerTableHeader}>
                     <>
-                      {chargerList.map(
-                        (
-                          {
-                            chargerNum,
-                            installStatus,
-                            type,
-                            chargerStatus,
-                            communicationStatus,
-                          },
-                          index
-                        ) => (
-                          <tr className={"bg-white"} key={index}>
+                      {(chargers ?? []).map(
+                        ({
+                          id,
+                          chargerKey,
+                          operationStatus,
+                          status,
+                          chargerClass,
+                          isConnection,
+                        }) => (
+                          <tr className={"bg-white"} key={id}>
                             <td>
                               <HoverSpan
                                 className={"text-turu"}
                                 onClick={() => {
-                                  navigate(`/charger/charger/detail/${index}`);
+                                  navigate(`/charger/charger/detail/${id}`);
                                 }}
                               >
-                                <u>{chargerNum}</u>
+                                <u>{chargerKey}</u>
                               </HoverSpan>
                             </td>
-                            <td>{installStatus}</td>
-                            <td>{type}</td>
+                            <td>{OPERATION_STATUS[operationStatus]}</td>
+                            <td>{CHARGER_RATION[chargerClass]}</td>
                             <td>
                               <span
                                 className={
-                                  "px-2 py-1 d-inline-block bg-success " +
-                                  "rounded-pill text-center text-white"
+                                  "px-2 py-1 d-inline-block " +
+                                  "rounded-pill text-center text-white " +
+                                  `bg-${getChargerStatusColor(status)}`
                                 }
                               >
-                                {chargerStatus}
+                                {CHARGER_MODE[status]}
                               </span>
                             </td>
-                            <td>{communicationStatus}</td>
+                            <td>{isConnection === "Y" ? "연결" : "미연결"}</td>
                           </tr>
                         )
                       )}
@@ -1174,3 +1155,56 @@ const HoverSpan = styled.span`
     cursor: pointer;
   }
 `;
+
+/** 충전기상태 목록 통계 */
+const getChargerStatusStatistics = (
+  chargers: IChargerListByStationResponse = []
+) => {
+  return chargers.reduce(
+    (acc, cur) => {
+      const { chargerClass, status } = cur;
+
+      /* 급속/완속 계산 */
+      if (chargerClass === "QUICK") {
+        acc.fast += 1;
+      } else if (chargerClass === "STANDARD") {
+        acc.fast += 1;
+      }
+
+      /* 충전기 상태별 계산 */
+      switch (status) {
+        /* 통신 이상 */
+        case "S1":
+          acc.communication += 1;
+          break;
+        /* 충전가능 */
+        case "S2":
+        case "S3":
+        case "S4":
+        case "S5":
+          acc.valid += 1;
+          break;
+        /* 충전중 */
+        case "S6":
+        case "S7":
+          acc.ing += 1;
+          break;
+        /* 기타 */
+        default:
+          acc.etc += 1;
+          break;
+      }
+
+      return acc;
+    },
+    {
+      fast: 0,
+      slow: 0,
+      total: chargers.length,
+      communication: 0,
+      valid: 0,
+      ing: 0,
+      etc: 0,
+    }
+  );
+};
