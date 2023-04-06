@@ -19,9 +19,9 @@ export const getStationDetail = (params: IRequestStationDetail) => {
 };
 
 /** 충전소 등록 api */
-export const postStation = (params: IRequestStationRegister) => {
+export const postStation = (body: IRequestStationRegister) => {
   return api.post<undefined>(`${stationUrl}/register`, {
-    params
+    body
   });
 };
 
