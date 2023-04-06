@@ -73,6 +73,8 @@ const ChargingStationManagement = () => {
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
   const [total, setTotal] = useState(data?.totalElements ?? 0);
+  const [emptyMessage, setEmptyMessage] =
+    useState("등록된 충전소 정보가 없습니다.");
 
   const inputs = useInputs({
     sido: "",
@@ -149,6 +151,9 @@ const ChargingStationManagement = () => {
         if (searchParams.page === 0) {
           setPage(1);
         }
+        if (data.totalElements === 0) {
+          setEmptyMessage("검색된 충전소 정보가 없습니다.");
+        }
         setList(data.elements);
         setMaxPage(data.totalPages);
         setTotal(0);
@@ -157,6 +162,7 @@ const ChargingStationManagement = () => {
         setList([]);
         setMaxPage(1);
         setTotal(0);
+        setEmptyMessage("오류가 발생하였습니다.");
       }
     };
 
@@ -335,7 +341,7 @@ const ChargingStationManagement = () => {
               ) : (
                 <tr>
                   <td colSpan={10} className={"py-5 text-center text"}>
-                    등록된 충전소 정보가 없습니다.
+                    {emptyMessage}
                   </td>
                 </tr>
               )}
