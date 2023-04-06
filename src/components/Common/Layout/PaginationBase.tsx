@@ -20,6 +20,10 @@ const PaginationBase = (props: IPaginationBase) => {
     onChangePage,
   } = props.data;
 
+  const scrollTop = () => {
+    window?.scrollTo(0, 0);
+  };
+
   return (
     <Row
       className="justify-content-md-end justify-content-center
@@ -33,6 +37,7 @@ const PaginationBase = (props: IPaginationBase) => {
           <PaginationLink
             onClick={() => {
               props.setPage(pageNum - 1);
+              scrollTop();
               !!onChangePage && void onChangePage(pageNum - 1);
             }}
           >
@@ -46,9 +51,9 @@ const PaginationBase = (props: IPaginationBase) => {
               className={`${pageNum === value ? "active" : ""}`}
             >
               <PaginationLink
-                href="#"
                 onClick={() => {
                   props.setPage(value);
+                  scrollTop();
                   !!onChangePage && void onChangePage(value);
                 }}
               >
@@ -58,9 +63,9 @@ const PaginationBase = (props: IPaginationBase) => {
           ))}
         <PaginationItem className={`${!hasNextPage ? "disabled" : ""}`}>
           <PaginationLink
-            href="#"
             onClick={() => {
               props.setPage(pageNum + 1);
+              scrollTop();
               !!onChangePage && void onChangePage(pageNum + 1);
             }}
           >
