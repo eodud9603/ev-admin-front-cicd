@@ -5,7 +5,7 @@ interface IDetailBottomButtonProps {
   rightButtonTitle: string;
 
   listHandler?: () => void;
-  rightButtonHandler?: () => void;
+  rightButtonHandler?: () => void | Promise<void>;
   containerClassName?: string;
 }
 
