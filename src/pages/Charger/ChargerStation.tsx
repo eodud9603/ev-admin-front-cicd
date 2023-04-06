@@ -151,6 +151,9 @@ const ChargingStationManagement = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
+        if (searchParams.page === 0) {
+          setPage(1);
+        }
         setList(data.elements);
         setMaxPage(data.totalPages);
         setTotal(data.totalElements.toString());
@@ -233,7 +236,7 @@ const ChargingStationManagement = () => {
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
-                onClick={searchHandler()}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
             <Col md={5}>
@@ -258,6 +261,7 @@ const ChargingStationManagement = () => {
                     onClickDropdownItem: (_, value) => {
                       onChangeSingle({ sort: value });
                       void searchHandler({
+                        page: 1,
                         sort: value as IRequestStationList["sort"],
                       })();
                     },
@@ -286,7 +290,7 @@ const ChargingStationManagement = () => {
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ count: value });
-                  void searchHandler({ size: Number(value) })();
+                  void searchHandler({ page: 1, size: Number(value) })();
                 }}
               />
               <ButtonBase
