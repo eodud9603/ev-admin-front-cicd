@@ -29,8 +29,6 @@ import {
   CHARGER_MODE,
   CHARGER_RATION,
   CHARGER_TYPE,
-  OPERATION_STATUS,
-  TChargerModeKeys,
   TOperationStatusKeys,
 } from "src/constants/charger";
 import { getChargerStatusColor } from "src/utils/charger";
