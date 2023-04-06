@@ -152,6 +152,11 @@ const ChargingStationManagement = () => {
         setList(data.elements);
         setMaxPage(data.totalPages);
         setTotal(data.totalElements.toString());
+      } else {
+        setPage(1);
+        setList([]);
+        setMaxPage(1);
+        setTotal("-");
       }
     };
 
@@ -180,7 +185,7 @@ const ChargingStationManagement = () => {
           <Row className={"d-flex align-items-center"}>
             <Col md={7}>
               <RegionGroup
-                onChangeCallback={(region) => {
+                onChangeRegion={(region) => {
                   onChangeSingle({
                     sido: region.sido,
                     gugun: region.sigugun,

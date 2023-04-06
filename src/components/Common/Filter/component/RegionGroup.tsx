@@ -15,7 +15,7 @@ import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
 interface IRegionGroupProps {
-  onChangeCallback?: (region: {
+  onChangeRegion?: (region: {
     sido: string;
     sigugun: string;
     dongmyun: string;
@@ -25,8 +25,8 @@ interface IRegionGroupProps {
 const DEFAULT_REGION_ITEM = { label: "전체", value: "" };
 
 export const RegionGroup = (props: IRegionGroupProps) => {
-  const { onChangeCallback } = props;
-  const onChangeCallbackRef = useRef(onChangeCallback);
+  const { onChangeRegion } = props;
+  const onChangeCallbackRef = useRef(onChangeRegion);
   /* 시/도 목록 */
   const [sidoList, setSidoList] = useState<{ label: string; value: string }[]>([
     DEFAULT_REGION_ITEM,
