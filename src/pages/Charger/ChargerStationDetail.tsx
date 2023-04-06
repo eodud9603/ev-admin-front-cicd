@@ -132,10 +132,10 @@ const ChargerStationDetail = () => {
     meterNum,
     kepcoFee,
     kepcoOffice,
-    payment,
+    kepcoPayment,
     entryDate,
     chargerLocation,
-    streetAddr,
+    addressRoad,
     zipCode,
     addr,
     addrDetail,
@@ -165,7 +165,10 @@ const ChargerStationDetail = () => {
     operator: detail?.operator ?? "",
     isUse: detail?.isUse ?? "",
     business: "" /* 위탁사업자 > dropdown */,
-    directInput: "" /* 위탁사업자 > 직접입력 체크여부 */,
+    directInput:
+      detail?.consignmentCompany ?? ""
+        ? "1"
+        : "0" /* 직접입력 check "1": 체크, "0": "미체크" */,
     consignmentCompany:
       detail?.consignmentCompany ?? "" /* 위탁사업자명 (input text) */,
     isOpen: detail?.isOpen ?? "",
@@ -180,10 +183,10 @@ const ChargerStationDetail = () => {
     meterNum: detail?.meterNum ?? "",
     kepcoFee: detail?.kepcoFee ?? "",
     kepcoOffice: detail?.kepcoOffice ?? "",
-    payment: "",
-    entryDate: "",
-    chargerLocation: "",
-    streetAddr: "",
+    kepcoPayment: detail?.kepcoPayment ?? "",
+    entryDate: detail?.entryDate ?? "",
+    chargerLocation: detail?.chargerLocation ?? "",
+    addressRoad: detail?.addressRoad ?? "",
     zipCode: "",
     addr: "",
     addrDetail: "",
@@ -594,8 +597,8 @@ const ChargerStationDetail = () => {
                         <TextInputBase
                           bsSize={"lg"}
                           disabled={disabled}
-                          name={"payment"}
-                          value={payment}
+                          name={"kepcoPayment"}
+                          value={kepcoPayment}
                           onChange={onChange}
                         />
                       </DetailContentCol>
@@ -634,8 +637,8 @@ const ChargerStationDetail = () => {
                         disabled,
                         titleWidthRatio: 2,
                         title: "도로명 주소",
-                        name: "streetAddr",
-                        content: streetAddr,
+                        name: "addressRoad",
+                        content: addressRoad,
                         onChange,
                       },
                     ]}
