@@ -34,12 +34,15 @@ export interface IStationListResponse {
   totalPages: number;
 }
 
-/* 충전소 등록 조회 */
+/* 충전소 상세 조회 */
 /** 
- * @see http://218.38.12.31:45081/docs/index.html#_%EB%93%B1%EB%A1%9D
- * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ * @see http://218.38.12.31:45081/docs/index.html#_%EC%83%81%EC%
  */
-export interface IRequestStationRegister {
+export interface IRequestStationDetail {
+  id: string;
+}
+
+export interface IStationDetailResponse {
   stationName: string;
   stationKey: string; /** 자동생성? */
   location: string;
@@ -79,3 +82,10 @@ export interface IRequestStationRegister {
   saturdayOperationTimeFrom: string;
   saturdayOperationTimeTo: string;
 }
+
+/* 충전소 등록 조회 */
+/** 
+ * @see http://218.38.12.31:45081/docs/index.html#_%EB%93%B1%EB%A1%9D
+ * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ */
+export type IRequestStationRegister  = IStationDetailResponse

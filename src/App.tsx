@@ -38,6 +38,7 @@ export const router = createBrowserRouter(
               <Playground>{route.element}</Playground>
             </Authmiddleware>
           }
+          loader={route.loader}
           key={idx}
           // errorElement={}
         />
