@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -28,6 +28,7 @@ import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
 import SingleMapBase from "src/components/Common/Map/SingleMapBase";
 import useMapStore from "src/store/mapStore";
+import { IStationDetailResponse } from "src/api/station/stationApi.interface";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -90,10 +91,10 @@ const chargerList = [
 ];
 
 const ChargerStationDetail = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전소 관리" },
-  ]);
+  /** 상세 데이터 */
+  const detail = useLoaderData() as IStationDetailResponse | null;
+
+  const [tabList, setTabList] = useState([{ label: "충전소 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
@@ -110,26 +111,27 @@ const ChargerStationDetail = () => {
   const [isEditCancel, setIsEditCancel] = useState(false);
 
   const {
-    chargerStationName,
-    chargerStationId,
-    chargerStationLocation,
-    serviceProvider,
-    useStatus,
+    /* 기본정보 */
+    stationName,
+    stationKey,
+    location,
+    operator,
+    isUse,
     /* 위탁사업자 직접입력 체크여부 */
     directInput,
-    businessName,
-    openStatus,
-    fast,
-    slow,
-    outletName,
-    outletCount,
-    exposedStatus,
-    receivingMethod,
-    separation,
-    customerNumber,
-    meter,
-    optionalFee,
-    businessOffice,
+    consignmentCompany,
+    isOpen,
+    quickChargerCount,
+    standardChargerCount,
+    powerSocket,
+    powerSocketCount,
+    isHidden,
+    supplyMethod,
+    billDivision,
+    kepcoCustomerNum,
+    meterNum,
+    kepcoFee,
+    kepcoOffice,
     payment,
     entryDate,
     chargerLocation,
@@ -139,90 +141,73 @@ const ChargerStationDetail = () => {
     addrDetail,
     significant,
     nonRechargeable,
-    weekdayStartDate,
-    weekdayEndDate,
-    holidayStartDate,
-    holidayEndDate,
-    saturdayStartDate,
-    saturdayEndDate,
-    parkingFeeStatus,
+    /* 운영정보 */
+    baseOperationTimeFrom,
+    baseOperationTimeTo,
+    holidayOperationTimeFrom,
+    holidayOperationTimeTo,
+    saturdayOperationTimeFrom,
+    saturdayOperationTimeTo,
+    isParkFeeFree,
     parkingFeeDetail,
+    /* 지도 좌표 */
     lat,
     long,
+    /* 계약정보 */
     contractNumber,
     onChange,
     onChangeSingle,
   } = useInputs({
     /* 기본정보 */
-    chargerStationName: "휴맥스 카플랫 전용 A",
-    chargerStationId: "KEP0000000020",
-    chargerStationLocation: "입력 내용 노출",
-    serviceProvider: "1",
-    useStatus: "1",
+    stationName: detail?.stationName ?? "",
+    stationKey: detail?.stationKey ?? "",
+    location: detail?.location ?? "",
+    operator: detail?.operator ?? "",
+    isUse: detail?.isUse ?? "",
     business: "" /* 위탁사업자 > dropdown */,
-    directInput: "0" /* 위탁사업자 > 직접입력 체크여부 */,
-    businessName: "선택 내용 노출" /* 위탁사업자 > 직접입력값(businessName) */,
-    openStatus: "1",
-    fast: "3",
-    slow: "2",
-    outletName: "3kw 콘센트",
-    outletCount: "3",
-    exposedStatus: "1",
-    receivingMethod: "1",
-    separation: "1",
-    customerNumber: "선택 내용 노출",
-    meter: "선택 내용 노출",
-    optionalFee: "선택 내용 노출",
-    businessOffice: "선택 내용 노출",
-    payment: "선택 내용 노출",
-    entryDate: "2022-01-07",
-    chargerLocation: "선택 내용 노출",
-    streetAddr: "선택 내용 노출",
-    zipCode: "우편번호 노출",
-    addr: "검색된 주소 정보 노출",
-    addrDetail: "입력한 상세 주소 정보 노출",
-    significant: "선택 내용 노출",
-    nonRechargeable: "차량A,차량B",
+    directInput: "" /* 위탁사업자 > 직접입력 체크여부 */,
+    consignmentCompany:
+      detail?.consignmentCompany ?? "" /* 위탁사업자명 (input text) */,
+    isOpen: detail?.isOpen ?? "",
+    quickChargerCount: (detail?.quickChargerCount ?? "").toString(),
+    standardChargerCount: (detail?.standardChargerCount ?? "").toString() ?? "",
+    powerSocket: detail?.powerSocket ?? "",
+    powerSocketCount: (detail?.powerSocketCount ?? "").toString(),
+    isHidden: detail?.isHidden ?? "",
+    supplyMethod: detail?.supplyMethod ?? "",
+    billDivision: detail?.billDivision ?? "",
+    kepcoCustomerNum: detail?.kepcoCustomerNum ?? "",
+    meterNum: detail?.meterNum ?? "",
+    kepcoFee: detail?.kepcoFee ?? "",
+    kepcoOffice: detail?.kepcoOffice ?? "",
+    payment: "",
+    entryDate: "",
+    chargerLocation: "",
+    streetAddr: "",
+    zipCode: "",
+    addr: "",
+    addrDetail: "",
+    significant: "",
+    nonRechargeable: "",
     /* 운영정보 */
-    weekdayStartDate: "00:00",
-    weekdayEndDate: "00:00",
-    holidayStartDate: "00:00",
-    holidayEndDate: "00:00",
-    saturdayStartDate: "00:00",
-    saturdayEndDate: "00:00",
-    parkingFeeStatus: "1",
-    parkingFeeDetail: "입력한 내용 노출",
+    baseOperationTimeFrom: detail?.baseOperationTimeFrom ?? "",
+    baseOperationTimeTo: detail?.baseOperationTimeTo ?? "",
+    holidayOperationTimeFrom: detail?.holidayOperationTimeFrom ?? "",
+    holidayOperationTimeTo: detail?.holidayOperationTimeTo ?? "",
+    saturdayOperationTimeFrom: detail?.saturdayOperationTimeFrom ?? "",
+    saturdayOperationTimeTo: detail?.saturdayOperationTimeTo ?? "",
+    isParkFeeFree: detail?.isParkFeeFree ?? "",
+    parkingFeeDetail: "",
     /* 지도 좌표 */
-    lat: "37.378553955447",
-    long: "127.11254077891",
+    lat: (detail?.lat ?? "").toString(),
+    long: (detail?.lng ?? "").toString(),
     /* 계약정보 */
-    contractNumber: "계약번호 노출",
+    contractNumber: "",
   });
   /* 지도 컨트롤러 */
   const { setZoom, createMarker } = useMapStore();
 
   const navigate = useNavigate();
-
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
 
   return (
     <ContainerBase>
@@ -231,8 +216,8 @@ const ChargerStationDetail = () => {
       <TabGroup
         list={tabList}
         selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
+        onClick={() => {}}
+        onClose={() => {}}
       />
 
       <BodyBase className={"pb-5"}>
@@ -284,16 +269,16 @@ const ChargerStationDetail = () => {
                         title: "충전소명",
                         required: true,
                         disabled,
-                        name: "chargerStationName",
-                        content: chargerStationName,
+                        name: "stationName",
+                        content: stationName,
                         onChange,
                       },
                       {
                         titleWidthRatio: 4,
                         title: "충전소ID",
                         disabled,
-                        name: "chargerStationId",
-                        content: chargerStationId,
+                        name: "stationKey",
+                        content: stationKey,
                         onChange,
                       },
                     ]}
@@ -305,8 +290,8 @@ const ChargerStationDetail = () => {
                         titleWidthRatio: 2,
                         title: "충전소 위치",
                         disabled,
-                        name: "chargerStationLocation",
-                        content: chargerStationLocation,
+                        name: "location",
+                        content: location,
                         onChange,
                       },
                     ]}
@@ -317,19 +302,19 @@ const ChargerStationDetail = () => {
                       <DetailLabelCol sm={4}>충전서비스사업자</DetailLabelCol>
                       <DetailContentCol>
                         <RadioGroup
-                          name={"serviceProvider"}
+                          name={"operator"}
                           list={[
                             {
                               disabled,
                               label: "HEV",
                               value: "1",
-                              checked: serviceProvider === "1",
+                              checked: operator === "1",
                             },
                             {
                               disabled,
                               label: "JEV",
                               value: "2",
-                              checked: serviceProvider === "2",
+                              checked: operator === "2",
                             },
                           ]}
                           onChange={onChange}
@@ -340,19 +325,19 @@ const ChargerStationDetail = () => {
                       <DetailLabelCol sm={4}>사용여부</DetailLabelCol>
                       <DetailContentCol>
                         <RadioGroup
-                          name={"useStatus"}
+                          name={"isUse"}
                           list={[
                             {
                               disabled,
                               label: "사용",
-                              value: "1",
-                              checked: useStatus === "1",
+                              value: "Y",
+                              checked: isUse === "Y",
                             },
                             {
                               disabled,
                               label: "미사용",
-                              value: "2",
-                              checked: useStatus === "2",
+                              value: "N",
+                              checked: isUse === "N",
                             },
                           ]}
                           onChange={onChange}
@@ -384,8 +369,8 @@ const ChargerStationDetail = () => {
                           <TextInputBase
                             bsSize={"lg"}
                             disabled={disabled}
-                            name={"businessName"}
-                            value={businessName}
+                            name={"consignmentCompany"}
+                            value={consignmentCompany}
                             onChange={onChange}
                           />
                         )}
@@ -407,19 +392,19 @@ const ChargerStationDetail = () => {
                       <DetailLabelCol sm={4}>개방여부</DetailLabelCol>
                       <DetailContentCol>
                         <RadioGroup
-                          name={"openStatus"}
+                          name={"isOpen"}
                           list={[
                             {
                               disabled,
                               label: "완전",
-                              value: "1",
-                              checked: openStatus === "1",
+                              value: "Y",
+                              checked: isOpen === "Y",
                             },
                             {
                               disabled,
                               label: "부분",
-                              value: "2",
-                              checked: openStatus === "2",
+                              value: "N",
+                              checked: isOpen === "N",
                             },
                           ]}
                           onChange={onChange}
@@ -439,8 +424,8 @@ const ChargerStationDetail = () => {
                           disabled={disabled}
                           type={"number"}
                           placeholder={"숫자만 입력해주세요"}
-                          name={"fast"}
-                          value={fast}
+                          name={"quickChargerCount"}
+                          value={quickChargerCount}
                           onChange={onChange}
                         />
                         <span>기</span>
@@ -456,8 +441,8 @@ const ChargerStationDetail = () => {
                           disabled={disabled}
                           type={"number"}
                           placeholder={"숫자만 입력해주세요"}
-                          name={"slow"}
-                          value={slow}
+                          name={"standardChargerCount"}
+                          value={standardChargerCount}
                           onChange={onChange}
                         />
                         <span>기</span>
@@ -475,8 +460,8 @@ const ChargerStationDetail = () => {
                           bsSize={"lg"}
                           disabled={disabled}
                           placeholder={"입력해주세요 (ex. 3kw 콘센트)"}
-                          name={"outletName"}
-                          value={outletName}
+                          name={"powerSocket"}
+                          value={powerSocket}
                           onChange={onChange}
                         />
                         <TextInputBase
@@ -484,8 +469,8 @@ const ChargerStationDetail = () => {
                           disabled={disabled}
                           type={"number"}
                           placeholder={"개수"}
-                          name={"outletCount"}
-                          value={outletCount}
+                          name={"powerSocketCount"}
+                          value={powerSocketCount}
                           onChange={onChange}
                         />
                         <span>기</span>
@@ -495,19 +480,19 @@ const ChargerStationDetail = () => {
                       <DetailLabelCol sm={4}>충전소 노출여부</DetailLabelCol>
                       <DetailContentCol>
                         <RadioGroup
-                          name={"exposedStatus"}
+                          name={"isHidden"}
                           list={[
                             {
                               disabled,
                               label: "노출",
-                              value: "1",
-                              checked: exposedStatus === "1",
+                              value: "Y",
+                              checked: isHidden === "Y",
                             },
                             {
                               disabled,
                               label: "미노출",
-                              value: "2",
-                              checked: exposedStatus === "2",
+                              value: "N",
+                              checked: isHidden === "N",
                             },
                           ]}
                           onChange={onChange}
@@ -520,38 +505,38 @@ const ChargerStationDetail = () => {
                     rows={[
                       {
                         title: "수전방식",
-                        name: "receivingMethod",
+                        name: "supplyMethod",
                         list: [
                           {
                             disabled,
                             label: "자중",
                             value: "1",
-                            checked: receivingMethod === "1",
+                            checked: supplyMethod === "1",
                           },
                           {
                             disabled,
                             label: "가공",
                             value: "2",
-                            checked: receivingMethod === "2",
+                            checked: supplyMethod === "2",
                           },
                         ],
                         onChange,
                       },
                       {
                         title: "모자분리여부",
-                        name: "separation",
+                        name: "billDivision",
                         list: [
                           {
                             disabled,
                             label: "모자",
-                            value: "1",
-                            checked: separation === "1",
+                            value: "Y",
+                            checked: billDivision === "Y",
                           },
                           {
                             disabled,
                             label: "자가",
-                            value: "2",
-                            checked: separation === "2",
+                            value: "N",
+                            checked: billDivision === "N",
                           },
                         ],
                         onChange,
@@ -565,16 +550,16 @@ const ChargerStationDetail = () => {
                         disabled,
                         titleWidthRatio: 4,
                         title: "한전고객번호",
-                        name: "customerNumber",
-                        content: customerNumber,
+                        name: "kepcoCustomerNum",
+                        content: kepcoCustomerNum,
                         onChange,
                       },
                       {
                         disabled,
                         titleWidthRatio: 4,
                         title: "계량기 번호",
-                        name: "meter",
-                        content: meter,
+                        name: "meterNum",
+                        content: meterNum,
                         onChange,
                         placeholder: "최대 1개 입력 가능합니다",
                       },
@@ -587,16 +572,16 @@ const ChargerStationDetail = () => {
                         disabled,
                         titleWidthRatio: 4,
                         title: "한전선택요금",
-                        name: "optionalFee",
-                        content: optionalFee,
+                        name: "kepcoFee",
+                        content: kepcoFee,
                         onChange,
                       },
                       {
                         disabled,
                         titleWidthRatio: 4,
                         title: "해당 한전영업소",
-                        name: "businessOffice",
-                        content: businessOffice,
+                        name: "kepcoOffice",
+                        content: kepcoOffice,
                         onChange,
                       },
                     ]}
@@ -753,8 +738,8 @@ const ChargerStationDetail = () => {
                         disabled,
                         titleWidthRatio: 4,
                         title: "운영시작시간(평일)",
-                        name: "weekdayStartDate",
-                        content: weekdayStartDate,
+                        name: "baseOperationTimeFrom",
+                        content: baseOperationTimeFrom,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
@@ -762,8 +747,8 @@ const ChargerStationDetail = () => {
                         disabled,
                         titleWidthRatio: 4,
                         title: "운영종료시간(평일)",
-                        name: "weekdayEndDate",
-                        content: weekdayEndDate,
+                        name: "baseOperationTimeTo",
+                        content: baseOperationTimeTo,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
@@ -775,8 +760,8 @@ const ChargerStationDetail = () => {
                         disabled,
                         titleWidthRatio: 4,
                         title: "운영시작시간(휴일)",
-                        name: "holidayStartDate",
-                        content: holidayStartDate,
+                        name: "holidayOperationTimeFrom",
+                        content: holidayOperationTimeFrom,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
@@ -784,8 +769,8 @@ const ChargerStationDetail = () => {
                         disabled,
                         titleWidthRatio: 4,
                         title: "운영종료시간(휴일)",
-                        name: "holidayEndDate",
-                        content: holidayEndDate,
+                        name: "holidayOperationTimeTo",
+                        content: holidayOperationTimeTo,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
@@ -797,8 +782,8 @@ const ChargerStationDetail = () => {
                         disabled,
                         titleWidthRatio: 4,
                         title: "운영시작시간(토)",
-                        name: "saturdayStartDate",
-                        content: saturdayStartDate,
+                        name: "saturdayOperationTimeFrom",
+                        content: saturdayOperationTimeFrom,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
@@ -806,8 +791,8 @@ const ChargerStationDetail = () => {
                         disabled,
                         titleWidthRatio: 4,
                         title: "운영종료시간(토)",
-                        name: "saturdayEndDate",
-                        content: saturdayEndDate,
+                        name: "saturdayOperationTimeTo",
+                        content: saturdayOperationTimeTo,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
@@ -818,25 +803,25 @@ const ChargerStationDetail = () => {
                     <DetailLabelCol sm={2}>주차비 여부</DetailLabelCol>
                     <DetailContentCol>
                       <RadioGroup
-                        name={"parkingFeeStatus"}
+                        name={"isParkFeeFree"}
                         list={[
                           {
                             disabled,
                             label: "미확인",
-                            value: "1",
-                            checked: parkingFeeStatus === "1",
+                            value: "",
+                            checked: isParkFeeFree === "",
                           },
                           {
                             disabled,
                             label: "유",
-                            value: "2",
-                            checked: parkingFeeStatus === "2",
+                            value: "Y",
+                            checked: isParkFeeFree === "Y",
                           },
                           {
                             disabled,
                             label: "무",
-                            value: "3",
-                            checked: parkingFeeStatus === "3",
+                            value: "N",
+                            checked: isParkFeeFree === "N",
                           },
                         ]}
                         onChange={onChange}

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import React, { useState } from "react";
+import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import { getStationList } from "src/api/station/stationApi";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -21,6 +21,7 @@ import styled from "styled-components";
 import {
   IRequestStationList,
   IStationListItem,
+  IStationListResponse,
 } from "src/api/station/stationApi.interface";
 import { getPageList } from "src/utils/pagination";
 
@@ -61,23 +62,16 @@ const tableHeader = [
   { label: "등록일" },
 ];
 
-const defaultParams: IRequestStationList = {
-  /** @TODO 서버 sortDirection 정의 후, 추가 */
-  // sortDirection: "ASC",
-  size: 10,
-  page: 0,
-  sort: "StationName",
-  stationNm: "서울",
-};
-
 const ChargingStationManagement = () => {
+  const data = useLoaderData() as IStationListResponse | null;
+
   const [tabList, setTabList] = useState([{ label: "충전소 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const [list, setList] = useState<IStationListItem[]>([]);
+  const [list, setList] = useState<IStationListItem[]>(data?.elements ?? []);
 
   const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(1);
-  const [total, setTotal] = useState("-");
+  const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
+  const [total, setTotal] = useState(data?.totalElements ?? "-");
 
   const inputs = useInputs({
     sido: "",
@@ -159,23 +153,6 @@ const ChargingStationManagement = () => {
         setTotal(data.totalElements.toString());
       }
     };
-
-  /* init 검색 목록 */
-  useEffect(() => {
-    const init = async () => {
-      /* 검색  */
-      const { code, data } = await getStationList(defaultParams);
-      /** 검색 성공 */
-      const success = code === "SUCCESS" && !!data;
-      if (success) {
-        setList(data.elements);
-        setMaxPage(data.totalPages);
-        setTotal(data.totalElements.toString());
-      }
-    };
-
-    void init();
-  }, []);
 
   return (
     <ContainerBase>
