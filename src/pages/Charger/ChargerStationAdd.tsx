@@ -29,12 +29,18 @@ import { DetailDropdownRow } from "src/components/Common/DetailContentRow/Detail
 import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 import SingleMapBase from "src/components/Common/Map/SingleMapBase";
 import useMapStore from "src/store/mapStore";
+import { postStationRegistration } from "src/api/station/stationApi";
+import { OPERATOR_FILTER_LIST } from "src/constants/list";
+import { object, string, number } from "yup";
+
+const stationRegistrationValidation = object({
+  stationName: string().required("Please Enter stationName"),
+  lat: number().required("Please Enter lat"),
+  lng: number().required("Please Enter lng"),
+});
 
 const ChargerStationAdd = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전소 관리" },
-  ]);
+  const [tabList, setTabList] = useState([{ label: "충전소 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
@@ -43,86 +49,88 @@ const ChargerStationAdd = () => {
   /* 계약정보 drop */
   const [isContractDrop, setIsContractDrop] = useState(true);
 
-  const {
-    chargerStationName,
-    chargerStationId,
-    chargerStationLocation,
-    directInput,
-    businessName,
-    fast,
-    slow,
-    outletName,
-    outletCount,
-    customerNumber,
-    meter,
-    optionalFee,
-    businessOffice,
-    payment,
-    entryDate,
-    chargerLocation,
-    streetAddr,
-    zipCode,
-    addr,
-    addrDetail,
-    significant,
-    nonRechargeable,
-    weekdayStartDate,
-    weekdayEndDate,
-    holidayStartDate,
-    holidayEndDate,
-    saturdayStartDate,
-    saturdayEndDate,
-    parkingFeeDetail,
-    lat,
-    long,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
     /* 기본정보 */
-    chargerStationName: "",
-    chargerStationId: "",
-    chargerStationLocation: "",
-    serviceProvider: "1",
-    useStatus: "",
+    stationName: "",
+    stationKey: "",
+    location: "",
+    operator: "HEV",
+    isUse: "",
     business: "" /* 위탁사업자 > dropdown */,
-    directInput: "0" /* 위탁사업자 > 직접입력 체크여부 */,
-    businessName: "" /* 위탁사업자 > 직접입력값(businessName) */,
-    openStatus: "",
-    fast: "",
-    slow: "",
-    outletName: "",
-    outletCount: "",
-    exposedStatus: "",
-    receivingMethod: "",
-    separation: "",
-    customerNumber: "",
-    meter: "",
-    optionalFee: "",
-    businessOffice: "",
-    payment: "",
+    directInput: "0" /* 직접입력 check "1": 체크, "0": "미체크" */,
+    consignmentCompany: "" /* 위탁사업자명 (input text) */,
+    isOpen: "",
+    quickChargerCount: "",
+    standardChargerCount: "",
+    powerSocket: "",
+    powerSocketCount: "",
+    isHidden: "",
+    supplyMethod: "",
+    billDivision: "",
+    kepcoCustomerNum: "",
+    meterNum: "",
+    kepcoFee: "",
+    kepcoOffice: "",
+    kepcoPayment: "",
     entryDate: "",
     chargerLocation: "",
-    streetAddr: "",
+    addressRoad: "",
     zipCode: "",
     addr: "",
     addrDetail: "",
     significant: "",
     nonRechargeable: "",
     /* 운영정보 */
-    weekdayStartDate: "",
-    weekdayEndDate: "",
-    holidayStartDate: "",
-    holidayEndDate: "",
-    saturdayStartDate: "",
-    saturdayEndDate: "",
-    parkingFeeStatus: "1",
+    baseOperationTimeFrom: "",
+    baseOperationTimeTo: "",
+    holidayOperationTimeFrom: "",
+    holidayOperationTimeTo: "",
+    saturdayOperationTimeFrom: "",
+    saturdayOperationTimeTo: "",
+    isParkFeeFree: "",
     parkingFeeDetail: "",
     /* 지도 좌표 */
     lat: "",
-    long: "",
+    lng: "",
     /* 계약정보 */
     contractNumber: "",
   });
+  const {
+    /* 기본정보 */ stationName,
+    stationKey,
+    location,
+    operator,
+    directInput /* 직접입력 check "1": 체크, "0": "미체크" */,
+    consignmentCompany /* 위탁사업자명 (input text) */,
+    quickChargerCount,
+    standardChargerCount,
+    powerSocket,
+    powerSocketCount,
+    kepcoCustomerNum,
+    meterNum,
+    kepcoFee,
+    kepcoOffice,
+    kepcoPayment,
+    entryDate,
+    chargerLocation,
+    addressRoad,
+    zipCode,
+    addr,
+    addrDetail,
+    significant,
+    nonRechargeable,
+    /* 운영정보 */
+    baseOperationTimeFrom,
+    baseOperationTimeTo,
+    holidayOperationTimeFrom,
+    holidayOperationTimeTo,
+    saturdayOperationTimeFrom,
+    saturdayOperationTimeTo,
+    isParkFeeFree,
+    parkingFeeDetail,
+    lat,
+    lng,
+  } = inputs;
   /* 등록완료 모달 */
   const [isRegistrationComplete, setIsRegistrationComplete] = useState(false);
   /* 미입력 안내 모달 */
@@ -134,53 +142,26 @@ const ChargerStationAdd = () => {
 
   const navigate = useNavigate();
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
-
-  /** 빈값 체크 */
-  const emptyCheck = (value: string) => {
-    return value.trim().length === 0;
-  };
-
-  /** 피그마 기준 - 필수입력 항목 체크 */
-  const requiredCheck = () => {
-    return (
-      emptyCheck(chargerStationName) ||
-      emptyCheck(chargerStationName) ||
-      emptyCheck(lat) ||
-      emptyCheck(long)
-    );
-  };
-
   /** 등록 */
-  const save = () => {
-    const isEmpty = requiredCheck();
-    if (isEmpty) {
+  const save = async () => {
+    const registrationParams = {
+      stationName: inputs.stationName,
+      lat: Number(inputs.lat),
+      lng: Number(inputs.lng),
+    };
+    const isValid = await stationRegistrationValidation.isValid(
+      registrationParams
+    );
+    if (!isValid) {
       setIsValidCheckModalOpen(true);
-      return;
     }
-    /** @TODO 저장 로직 추가 필요 */
 
-    /* 저장 성공 */
-    setIsRegistrationComplete(true);
+    const { code } = await postStationRegistration(registrationParams);
+    /** 저장 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      setIsRegistrationComplete(true);
+    }
   };
 
   return (
@@ -190,8 +171,8 @@ const ChargerStationAdd = () => {
       <TabGroup
         list={tabList}
         selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
+        onClick={() => {}}
+        onClose={() => {}}
       />
 
       <BodyBase className={"pb-5"}>
@@ -230,16 +211,16 @@ const ChargerStationAdd = () => {
                         titleWidthRatio: 4,
                         title: "충전소명",
                         required: true,
-                        name: "chargerStationName",
-                        content: chargerStationName,
+                        name: "stationName",
+                        content: stationName,
                         onChange,
                       },
 
                       {
                         titleWidthRatio: 4,
                         title: "충전소ID",
-                        name: "chargerStationId",
-                        content: chargerStationId,
+                        name: "stationKey",
+                        content: stationKey,
                         onChange,
                       },
                     ]}
@@ -250,8 +231,8 @@ const ChargerStationAdd = () => {
                       {
                         titleWidthRatio: 2,
                         title: "충전소 위치",
-                        name: "chargerStationLocation",
-                        content: chargerStationLocation,
+                        name: "location",
+                        content: location,
                         onChange,
                       },
                     ]}
@@ -262,17 +243,13 @@ const ChargerStationAdd = () => {
                       <DetailLabelCol sm={4}>충전서비스사업자</DetailLabelCol>
                       <DetailContentCol>
                         <RadioGroup
-                          name={"serviceProvider"}
-                          list={[
-                            {
-                              label: "HEV",
-                              value: "1",
-                            },
-                            {
-                              label: "JEV",
-                              value: "2",
-                            },
-                          ]}
+                          name={"operator"}
+                          list={OPERATOR_FILTER_LIST.filter(
+                            (data) => data.value !== ""
+                          ).map((data) => ({
+                            ...data,
+                            checked: operator === data.value,
+                          }))}
                           onChange={onChange}
                         />
                       </DetailContentCol>
@@ -281,7 +258,7 @@ const ChargerStationAdd = () => {
                       <DetailLabelCol sm={4}>사용여부</DetailLabelCol>
                       <DetailContentCol>
                         <RadioGroup
-                          name={"useStatus"}
+                          name={"isUse"}
                           list={[
                             {
                               label: "사용",
@@ -320,8 +297,8 @@ const ChargerStationAdd = () => {
                         ) : (
                           <TextInputBase
                             bsSize={"lg"}
-                            name={"businessName"}
-                            value={businessName}
+                            name={"consignmentCompany"}
+                            value={consignmentCompany}
                             onChange={onChange}
                           />
                         )}
@@ -342,7 +319,7 @@ const ChargerStationAdd = () => {
                       <DetailLabelCol sm={4}>개방여부</DetailLabelCol>
                       <DetailContentCol>
                         <RadioGroup
-                          name={"openStatus"}
+                          name={"isOpen"}
                           list={[
                             {
                               label: "완전",
@@ -369,8 +346,8 @@ const ChargerStationAdd = () => {
                           bsSize={"lg"}
                           type={"number"}
                           placeholder={"숫자만 입력해주세요"}
-                          name={"fast"}
-                          value={fast}
+                          name={"quickChargerCount"}
+                          value={quickChargerCount}
                           onChange={onChange}
                         />
                         <span>기</span>
@@ -385,8 +362,8 @@ const ChargerStationAdd = () => {
                           bsSize={"lg"}
                           type={"number"}
                           placeholder={"숫자만 입력해주세요"}
-                          name={"slow"}
-                          value={slow}
+                          name={"standardChargerCount"}
+                          value={standardChargerCount}
                           onChange={onChange}
                         />
                         <span>기</span>
@@ -404,8 +381,8 @@ const ChargerStationAdd = () => {
                           inputstyle={{ flex: 3 }}
                           bsSize={"lg"}
                           placeholder={"입력해주세요 (ex. 3kw 콘센트)"}
-                          name={"outletName"}
-                          value={outletName}
+                          name={"powerSocket"}
+                          value={powerSocket}
                           onChange={onChange}
                         />
                         <TextInputBase
@@ -413,8 +390,8 @@ const ChargerStationAdd = () => {
                           bsSize={"lg"}
                           type={"number"}
                           placeholder={"개수"}
-                          name={"outletCount"}
-                          value={outletCount}
+                          name={"powerSocketCount"}
+                          value={powerSocketCount}
                           onChange={onChange}
                         />
                         <span>기</span>
@@ -424,7 +401,7 @@ const ChargerStationAdd = () => {
                       <DetailLabelCol sm={4}>충전소 노출여부</DetailLabelCol>
                       <DetailContentCol>
                         <RadioGroup
-                          name={"exposedStatus"}
+                          name={"isHidden"}
                           list={[
                             {
                               label: "노출",
@@ -444,7 +421,7 @@ const ChargerStationAdd = () => {
                     rows={[
                       {
                         title: "수전방식",
-                        name: "receivingMethod",
+                        name: "supplyMethod",
                         list: [
                           {
                             label: "자중",
@@ -459,7 +436,7 @@ const ChargerStationAdd = () => {
                       },
                       {
                         title: "모자분리여부",
-                        name: "separation",
+                        name: "billDivision",
                         list: [
                           {
                             label: "모자",
@@ -480,15 +457,15 @@ const ChargerStationAdd = () => {
                       {
                         titleWidthRatio: 4,
                         title: "한전고객번호",
-                        name: "customerNumber",
-                        content: customerNumber,
+                        name: "kepcoCustomerNum",
+                        content: kepcoCustomerNum,
                         onChange,
                       },
                       {
                         titleWidthRatio: 4,
                         title: "계량기 번호",
-                        name: "meter",
-                        content: meter,
+                        name: "meterNum",
+                        content: meterNum,
                         onChange,
                         placeholder: "최대 1개 입력 가능합니다",
                       },
@@ -500,15 +477,15 @@ const ChargerStationAdd = () => {
                       {
                         titleWidthRatio: 4,
                         title: "한전선택요금",
-                        name: "optionalFee",
-                        content: optionalFee,
+                        name: "kepcoFee",
+                        content: kepcoFee,
                         onChange,
                       },
                       {
                         titleWidthRatio: 4,
                         title: "해당 한전영업소",
-                        name: "businessOffice",
-                        content: businessOffice,
+                        name: "kepcoOffice",
+                        content: kepcoOffice,
                         onChange,
                       },
                     ]}
@@ -520,8 +497,8 @@ const ChargerStationAdd = () => {
                       <DetailContentCol>
                         <TextInputBase
                           bsSize={"lg"}
-                          name={"payment"}
-                          value={payment}
+                          name={"kepcoPayment"}
+                          value={kepcoPayment}
                           onChange={onChange}
                         />
                       </DetailContentCol>
@@ -557,8 +534,8 @@ const ChargerStationAdd = () => {
                       {
                         titleWidthRatio: 2,
                         title: "도로명 주소",
-                        name: "streetAddr",
-                        content: streetAddr,
+                        name: "addressRoad",
+                        content: addressRoad,
                         onChange,
                       },
                     ]}
@@ -656,16 +633,16 @@ const ChargerStationAdd = () => {
                       {
                         titleWidthRatio: 4,
                         title: "운영시작시간(평일)",
-                        name: "weekdayStartDate",
-                        content: weekdayStartDate,
+                        name: "baseOperationTimeFrom",
+                        content: baseOperationTimeFrom,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
                       {
                         titleWidthRatio: 4,
                         title: "운영종료시간(평일)",
-                        name: "weekdayEndDate",
-                        content: weekdayEndDate,
+                        name: "baseOperationTimeTo",
+                        content: baseOperationTimeTo,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
@@ -676,16 +653,16 @@ const ChargerStationAdd = () => {
                       {
                         titleWidthRatio: 4,
                         title: "운영시작시간(휴일)",
-                        name: "holidayStartDate",
-                        content: holidayStartDate,
+                        name: "holidayOperationTimeFrom",
+                        content: holidayOperationTimeFrom,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
                       {
                         titleWidthRatio: 4,
                         title: "운영종료시간(휴일)",
-                        name: "holidayEndDate",
-                        content: holidayEndDate,
+                        name: "holidayOperationTimeTo",
+                        content: holidayOperationTimeTo,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
@@ -696,16 +673,16 @@ const ChargerStationAdd = () => {
                       {
                         titleWidthRatio: 4,
                         title: "운영시작시간(토)",
-                        name: "saturdayStartDate",
-                        content: saturdayStartDate,
+                        name: "saturdayOperationTimeFrom",
+                        content: saturdayOperationTimeFrom,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
                       {
                         titleWidthRatio: 4,
                         title: "운영종료시간(토)",
-                        name: "saturdayEndDate",
-                        content: saturdayEndDate,
+                        name: "saturdayOperationTimeTo",
+                        content: saturdayOperationTimeTo,
                         onChange,
                         placeholder: "00:00 형식으로 입력해주세요",
                       },
@@ -716,19 +693,22 @@ const ChargerStationAdd = () => {
                     <DetailLabelCol sm={2}>주차비 여부</DetailLabelCol>
                     <DetailContentCol>
                       <RadioGroup
-                        name={"parkingFeeStatus"}
+                        name={"isParkFeeFree"}
                         list={[
                           {
                             label: "미확인",
-                            value: "1",
+                            value: "",
+                            checked: isParkFeeFree === "",
                           },
                           {
                             label: "유",
-                            value: "2",
+                            value: "Y",
+                            checked: isParkFeeFree === "Y",
                           },
                           {
                             label: "무",
-                            value: "3",
+                            value: "N",
+                            checked: isParkFeeFree === "N",
                           },
                         ]}
                         onChange={onChange}
@@ -771,10 +751,6 @@ const ChargerStationAdd = () => {
                                 label: "선택",
                                 value: "",
                               },
-                              {
-                                label: "test",
-                                value: "1",
-                              },
                             ],
                             onClickDropdownItem: (label, value) => {
                               onChangeSingle({ contractNumber: value });
@@ -801,15 +777,15 @@ const ChargerStationAdd = () => {
                   <MapContainer>
                     <SingleMapBase
                       lat={Number(lat)}
-                      long={Number(long)}
+                      long={Number(lng)}
                       onChangeLocation={(changeLat, changeLong) => {
                         if (
                           lat !== changeLat.toString() ||
-                          long !== changeLong.toString()
+                          lng !== changeLong.toString()
                         ) {
                           onChangeSingle({
                             lat: `${changeLat}`,
-                            long: `${changeLong}`,
+                            lng: `${changeLong}`,
                           });
                         }
                       }}
@@ -853,8 +829,8 @@ const ChargerStationAdd = () => {
                     }
                     bsSize={"lg"}
                     placeholder={"위치선택, 직접입력"}
-                    name={"long"}
-                    value={long}
+                    name={"lng"}
+                    value={lng}
                     onChange={onChange}
                   />
                 </Col>

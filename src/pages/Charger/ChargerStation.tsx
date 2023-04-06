@@ -24,6 +24,7 @@ import {
   IStationListResponse,
 } from "src/api/station/stationApi.interface";
 import { getPageList } from "src/utils/pagination";
+import { YNType } from "src/api/api.interface";
 
 /* 사용여부 필터 */
 const useList = [
@@ -80,7 +81,7 @@ const ChargingStationManagement = () => {
     operation: "",
     searchRange: "stationNm",
     searchText: "서울",
-    isUse: "" as "Y" | "N",
+    isUse: "" as YNType,
     sort: "StationName",
     count: "10",
   });

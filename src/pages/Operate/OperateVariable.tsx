@@ -25,6 +25,7 @@ import styled from "styled-components";
 import VariableModal from "src/pages/Operate/components/VariableModal";
 import useInputs from "src/hooks/useInputs";
 import OperateTextModal from "./components/OperateTextModal";
+import { YNType } from "src/api/api.interface";
 
 /* 검색어 필터 */
 const searchList = [{ label: "전체", value: "" }];
@@ -79,7 +80,7 @@ interface IListItemProps {
   contents: string;
   regName: string;
   regDate: string;
-  isDelete: "Y" | "N";
+  isDelete: YNType;
 }
 
 const OperateVariable = () => {
