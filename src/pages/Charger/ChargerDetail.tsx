@@ -58,8 +58,8 @@ const ChargerDetail = () => {
     companyType,
     useStatus,
     installStatus,
-    breakdownStatus,
-    paymentTerminalStatus,
+    isBroken,
+    hasPgTerm,
     maxChargeTime,
     idleCommunicationTime,
     busyCommunicationTime,
@@ -98,7 +98,7 @@ const ChargerDetail = () => {
     assetsNumber: charger.assetsNumber ?? "",
     chargerClass: charger.chargerClass ?? "",
     installType: charger.installType ?? "",
-    capacity: charger.capacity,
+    capacity: charger.capacity ?? "",
     /* 듀얼형 */
     isDualChannel: charger.isDualChannel ?? "N",
     channelType01: charger.channelType01 ?? "",
@@ -111,17 +111,17 @@ const ChargerDetail = () => {
     manufacturerModel: "",
     installStatus: "",
     connectorType: "",
-    breakdownStatus: "",
-    chargerStatus: "",
-    paymentTerminalStatus: "",
-    pg: "",
-    interlockingStandard: "",
+    isBroken: charger.isBroken ?? "",
+    status: charger.status ?? "",
+    hasPgTerm: charger.hasPgTerm ?? "",
+    pgName: charger.pgName ?? "",
+    infProtocol: charger.infProtocol ?? "",
     maxChargeTime: (charger.maxChargeTime ?? "").toString(),
     idleCommunicationTime: (charger.idleCommunicationTime ?? "").toString(),
     busyCommunicationTime: (charger.busyCommunicationTime ?? "").toString(),
     isRoaming: charger.isRoaming ?? "",
     isKepcoRoaming: charger.isKepcoRoaming ?? "",
-    rechargeAppAvailable: "",
+    rechargeAppAvailable: "" /** @TODO 앱 충전 가능 여부 추가필요 */,
     contractPrice: "" /** @TODO 예약단가 추가필요 */,
     qrType: charger.qrType ?? "",
     reservationType: charger.reservationType ?? "",
@@ -251,7 +251,7 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
-                    disabled={disabled}
+                    disabled={true}
                     name={"assetsNumber"}
                     value={assetsNumber}
                     onChange={onChange}
@@ -541,19 +541,19 @@ const ChargerDetail = () => {
                 <DetailLabelCol sm={2}>고장유무</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"breakdownStatus"}
+                    name={"isBroken"}
                     list={[
                       {
                         disabled,
                         label: "정상",
-                        value: "1",
-                        checked: breakdownStatus === "1",
+                        value: "Y",
+                        checked: isBroken === "Y",
                       },
                       {
                         disabled,
                         label: "고장",
-                        value: "2",
-                        checked: breakdownStatus === "2",
+                        value: "N",
+                        checked: isBroken === "N",
                       },
                     ]}
                     onChange={onChange}
@@ -570,7 +570,7 @@ const ChargerDetail = () => {
                       },
                     ]}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ chargerStatus: value });
+                      onChangeSingle({ status: value });
                     }}
                   />
                 </DetailContentCol>
@@ -580,19 +580,19 @@ const ChargerDetail = () => {
                 <DetailLabelCol sm={2}>결제단말기 여부</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"paymentTerminalStatus"}
+                    name={"hasPgTerm"}
                     list={[
                       {
                         disabled,
                         label: "Y",
-                        value: "1",
-                        checked: paymentTerminalStatus === "1",
+                        value: "Y",
+                        checked: hasPgTerm === "Y",
                       },
                       {
                         disabled,
                         label: "N",
-                        value: "2",
-                        checked: paymentTerminalStatus === "2",
+                        value: "N",
+                        checked: hasPgTerm === "N",
                       },
                     ]}
                     onChange={onChange}
@@ -609,7 +609,7 @@ const ChargerDetail = () => {
                       },
                     ]}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ pg: value });
+                      onChangeSingle({ pgName: value });
                     }}
                   />
                 </DetailContentCol>
@@ -622,7 +622,7 @@ const ChargerDetail = () => {
                     disabled={disabled}
                     menuItems={[{ label: "OCPP 1.6", value: "1" }]}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ interlockingStandard: value });
+                      onChangeSingle({ infProtocol: value });
                     }}
                   />
                 </DetailContentCol>
