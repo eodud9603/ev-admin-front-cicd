@@ -27,16 +27,14 @@ axiosInstance.interceptors.request.use((config) => {
 const rest = (method: Method) => {
   return async <T,>(
     url: string,
-    { header = {}, params = {}, body = {} } = {}
+    { headers = {}, params = {}, body = {} } = {}
   ) => {
     try {
       const response = await axiosInstance(url, {
-        method: method,
+        method,
         params,
         data: body,
-        headers: {
-          ...header,
-        },
+        headers,
       });
 
       const { data } = response;
