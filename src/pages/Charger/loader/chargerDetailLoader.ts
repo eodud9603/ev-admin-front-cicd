@@ -1,18 +1,18 @@
-import { getStationDetail } from "src/api/station/stationApi";
+import { getChargerDetail } from "src/api/charger/chargerApi";
 
 interface IChargerDetailParams {
   params: {
-    id?: string;
+    id?: number;
   };
 }
 
 export const chargerDetailLoader = async ({ params }: IChargerDetailParams) => {
   if (!params?.id) {
-    return null;
+    return {};
   }
 
   /* 충전기 상세 정보 조회 */
-  const { data } = await getStationDetail({ id: params.id });
+  const { data } = await getChargerDetail({ searchKey: params.id });
 
-  return { station: data ?? {} };
+  return  data ?? {};
 };

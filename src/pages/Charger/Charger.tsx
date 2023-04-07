@@ -338,7 +338,7 @@ const Charger = () => {
                       stationName,
                       stationId,
                       chargerKey,
-                      searchKey,
+                      // searchKey,
                       chargerClass,
                       type,
                       status,
@@ -352,7 +352,7 @@ const Charger = () => {
                     },
                     index
                   ) => (
-                    <tr key={index}>
+                    <tr key={assetNumber}>
                       <td>{(page - 1) * Number(count) + index + 1}</td>
                       <td>{region}</td>
                       <td>{operator ?? "전체"}</td>
@@ -360,7 +360,8 @@ const Charger = () => {
                         <HoverSpan
                           className={"text-turu"}
                           onClick={() => {
-                            navigate(`/charger/charger/detail/${searchKey}`);
+                            /** @TODO 현재 자산번호가 id로 되어 있음. * id필드로 변경 예정 */
+                            navigate(`/charger/charger/detail/${assetNumber}`);
                           }}
                         >
                           <u>{stationName}</u>

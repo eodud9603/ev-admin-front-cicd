@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import { Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -26,8 +26,12 @@ import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModa
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 import useInputs from "src/hooks/useInputs";
+import { IChargerDetailResponse } from "src/api/charger/chargerApi.interface";
 
 const ChargerDetail = () => {
+  /** init 충전기 상세 데이터 */
+  const charger = useLoaderData() as Partial<IChargerDetailResponse>;
+
   const [tabList, setTabList] = useState([{ label: "충전기 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 기본정보 drop */
@@ -44,110 +48,107 @@ const ChargerDetail = () => {
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
 
   const {
-    chargerStationName,
-    chargerId,
-    chargerAssetNumber,
-    chargerType,
-    dualType,
-    dualCh2,
+    stationName,
+    id,
+    assetsNumber,
+    chargerClass,
+    isDualChannel,
+    channelType02,
     envVersion,
     companyType,
     useStatus,
     installStatus,
     breakdownStatus,
     paymentTerminalStatus,
-    rapidTime,
-    unusedCycle,
-    chargingCycle,
-    syncEnvironment,
-    syncKEPCO,
+    maxChargeTime,
+    idleCommunicationTime,
+    busyCommunicationTime,
+    isRoaming,
+    isKepcoRoaming,
     rechargeAppAvailable,
     contractPrice,
-    syncQR,
-    reservationAvailable,
-    significant,
-    installationCategory,
-    installer,
-    installationYear,
-    installationMonth,
+    qrType,
+    reservationType,
+    etcInfo,
+    installGubun,
+    installCompany,
+    yyyy,
+    mm,
     serverDomain,
     serverPort,
     chargerSN,
-    installationTR,
-    chargerFirmware,
-    currentChargerFirmware,
-    modemNumber,
-    modemManufacturer,
-    modemManufacturerTel,
+    hasTr,
+    fwVer,
+    fwVerCurrent,
+    modemOpenNumber,
+    modemCompany,
+    modemCompanyPhone,
     modemName,
     modemSN,
-    carrier,
-    communicationFee,
-    openCarrier,
-    openCarrierTel,
+    carrierName,
+    commFee,
+    openCompany,
+    openCompanyPhone,
     onChange,
     onChangeSingle,
   } = useInputs({
     /* 기본정보 */
-    chargerStationName: "휴맥스 카플랫 전용 A",
-    chargerId: "입력 내용 노출",
-    chargerAssetNumber: "입력 내용 노출",
-    chargerType: "1",
-    installType: "1",
-    chargerVolume: "1",
+    stationName: charger.station?.stationName ?? "",
+    id: (charger.id ?? "").toString(),
+    assetsNumber: charger.assetsNumber ?? "",
+    chargerClass: charger.chargerClass ?? "",
+    installType: charger.installType ?? "",
+    capacity: charger.capacity,
     /* 듀얼형 */
-    dualType: "",
-    dualCh1: "1",
-    dualCh2: "",
-    envVersion: "입력 내용 노출",
-    companyType: "1",
-    useStatus: "1",
-    consignmentName: "1",
-    manufacturerName: "1",
-    manufacturerModel: "1",
-    installStatus: "1",
-    connectorType: "1",
-    breakdownStatus: "1",
-    chargerStatus: "1",
-    paymentTerminalStatus: "1",
-    pg: "1",
-    interlockingStandard: "1",
-    rapidTime:
-      "입력 내용 노출  * 완속 또는 과금형인 경우 해당 텍스트 필드 미노출, 입력 비활성화",
-    unusedCycle: "입력 내용 노출",
-    chargingCycle: "입력 내용 노출",
-    syncEnvironment: "1",
-    syncKEPCO: "1",
-    rechargeAppAvailable: "1",
-    contractPrice: "입력 내용 노출",
-    syncQR: "1",
-    reservationAvailable: "1",
-    significant: "입력 내용 노출",
+    isDualChannel: charger.isDualChannel ?? "N",
+    channelType01: charger.channelType01 ?? "",
+    channelType02: charger.channelType02 ?? "",
+    envVersion: charger.envVersion ?? "",
+    companyType: "",
+    useStatus: "",
+    consignmentName: "",
+    manufacturerName: "",
+    manufacturerModel: "",
+    installStatus: "",
+    connectorType: "",
+    breakdownStatus: "",
+    chargerStatus: "",
+    paymentTerminalStatus: "",
+    pg: "",
+    interlockingStandard: "",
+    maxChargeTime: (charger.maxChargeTime ?? "").toString(),
+    idleCommunicationTime: (charger.idleCommunicationTime ?? "").toString(),
+    busyCommunicationTime: (charger.busyCommunicationTime ?? "").toString(),
+    isRoaming: charger.isRoaming ?? "",
+    isKepcoRoaming: charger.isKepcoRoaming ?? "",
+    rechargeAppAvailable: "",
+    contractPrice: "" /** @TODO 예약단가 추가필요 */,
+    qrType: charger.qrType ?? "",
+    reservationType: charger.reservationType ?? "",
+    etcInfo: charger.etcInfo ?? "",
     /* 계약정보 */
-    installationCategory: "1",
-    installer: "입력 내용 노출",
-    installationYear: "2023",
-    installationMonth: "12",
-    serverDomain: "입력 내용 노출",
-    serverPort: "입력 내용 노출",
-    chargerSN: "입력 내용 노출",
-    installationTR: "1",
-    chargerFirmware:
-      "펌웨어 정보 노출(자사 관리/ 충전기가 보고하는 펌웨어 정보)",
-    currentChargerFirmware:
-      "펌웨어 업데이트 또는 충전기 on/off 시 업로드 되는 펌웨어 정보 자동 노출 영역",
+    installGubun: charger.install?.gubun ?? "",
+    installCompany: charger.install?.companyName ?? "",
+    yyyy: charger.install?.yyyy ?? "",
+    mm: charger.install?.mm ?? "",
+    serverDomain: charger.install?.serverDomain ?? "",
+    serverPort: charger.install?.serverPort ?? "",
+    chargerSN: charger.install?.sn ?? "",
+    hasTr: charger.install?.hasTr ?? "",
+    fwVer: charger.install?.fwVer ?? "",
+    fwVerCurrent: charger.install?.fwVerCurrent ?? "",
     /* 모뎀  */
-    modemNumber: "입력 내용 노출",
-    modemManufacturer: "입력 내용 노출",
-    modemManufacturerTel: "입력 내용 노출",
-    modemName: "입력 내용 노출",
-    modemSN: "입력 내용 노출",
+    modemOpenNumber: charger.install?.modem?.openNumber ?? "",
+    modemCompany: charger.install?.modem?.company ?? "",
+    modemCompanyPhone: charger.install?.modem?.companyPhone ?? "",
+    modemName: charger.install?.modem?.name ?? "",
+    modemSN: charger.install?.modem?.sn ?? "",
     /* 통신사  */
-    carrier: "입력 내용 노출",
-    communicationFee: "입력 내용 노출",
+    carrierName: charger.install?.modem?.carrierName ?? "",
+    commFee: charger.install?.modem?.commFee ?? "",
     /* 개통사  */
-    openCarrier: "입력 내용 노출",
-    openCarrierTel: "입력 내용 노출",
+    openCompany: charger.install?.modem?.openCompany ?? "",
+    openCompanyPhone: charger.install?.modem?.openCompanyPhone ?? "",
   });
 
   const navigate = useNavigate();
@@ -216,8 +217,8 @@ const ChargerDetail = () => {
                       inputstyle={{ flex: 1 }}
                       bsSize={"lg"}
                       disabled={true}
-                      name={"chargerStationName"}
-                      value={chargerStationName}
+                      name={"stationName"}
+                      value={stationName}
                       onChange={onChange}
                     />
 
@@ -238,8 +239,8 @@ const ChargerDetail = () => {
                   <TextInputBase
                     bsSize={"lg"}
                     disabled={true}
-                    name={"chargerId"}
-                    value={chargerId}
+                    name={"id"}
+                    value={id}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -251,32 +252,32 @@ const ChargerDetail = () => {
                   <TextInputBase
                     bsSize={"lg"}
                     disabled={disabled}
-                    name={"chargerAssetNumber"}
-                    value={chargerAssetNumber}
+                    name={"assetsNumber"}
+                    value={assetsNumber}
                     onChange={onChange}
                   />
                 </DetailContentCol>
                 <DetailLabelCol sm={2}>종별</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"chargerType"}
+                    name={"chargerClass"}
                     list={[
                       {
                         label: "급속",
                         value: "1",
-                        checked: chargerType === "1",
+                        checked: chargerClass === "1",
                         disabled,
                       },
                       {
                         label: "완속",
                         value: "2",
-                        checked: chargerType === "2",
+                        checked: chargerClass === "2",
                         disabled,
                       },
                       {
                         label: "과금형 콘센트",
                         value: "3",
-                        checked: chargerType === "3",
+                        checked: chargerClass === "3",
                         disabled,
                       },
                     ]}
@@ -318,7 +319,7 @@ const ChargerDetail = () => {
                           },
                         ],
                         onClickDropdownItem: (label, value) => {
-                          onChangeSingle({ chargerVolume: value });
+                          onChangeSingle({ capacity: value });
                         },
                       },
                     ],
@@ -337,8 +338,9 @@ const ChargerDetail = () => {
                       value={"1"}
                       onChange={() => {
                         onChangeSingle({
-                          dualType: dualType === "1" ? "" : "1",
-                          dualCh2: dualType === "1" ? "" : dualCh2,
+                          isDualChannel: isDualChannel === "Y" ? "N" : "Y",
+                          channelType02:
+                            isDualChannel === "Y" ? "" : channelType02,
                         });
                       }}
                     />
@@ -352,12 +354,12 @@ const ChargerDetail = () => {
                       ]}
                       onClickDropdownItem={(_, value) => {
                         onChangeSingle({
-                          dualCh1: value,
+                          channelType01: value,
                         });
                       }}
                     />
                     <>
-                      {dualType === "1" && (
+                      {isDualChannel === "Y" && (
                         <DropdownBase
                           menuItems={[
                             {
@@ -367,7 +369,7 @@ const ChargerDetail = () => {
                           ]}
                           onClickDropdownItem={(_, value) => {
                             onChangeSingle({
-                              dualCh2: value,
+                              channelType02: value,
                             });
                           }}
                         />
@@ -632,8 +634,8 @@ const ChargerDetail = () => {
                   <TextInputBase
                     bsSize={"lg"}
                     disabled={disabled}
-                    name={"rapidTime"}
-                    value={rapidTime}
+                    name={"maxChargeTime"}
+                    value={maxChargeTime}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -645,16 +647,16 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     disabled,
                     title: "미사용 전송 주기(분)",
-                    name: "unusedCycle",
-                    content: unusedCycle,
+                    name: "idleCommunicationTime",
+                    content: idleCommunicationTime,
                     onChange,
                   },
                   {
                     titleWidthRatio: 4,
                     disabled,
                     title: "충전중 전송 주기(분)",
-                    name: "chargingCycle",
-                    content: chargingCycle,
+                    name: "busyCommunicationTime",
+                    content: busyCommunicationTime,
                     onChange,
                   },
                 ]}
@@ -664,38 +666,38 @@ const ChargerDetail = () => {
                 rows={[
                   {
                     title: "환경부 연동 여부",
-                    name: "syncEnvironment",
+                    name: "isRoaming",
                     list: [
                       {
                         disabled,
                         label: "연동",
                         value: "1",
-                        checked: syncEnvironment === "1",
+                        checked: isRoaming === "1",
                       },
                       {
                         disabled,
                         label: "미연동",
                         value: "2",
-                        checked: syncEnvironment === "2",
+                        checked: isRoaming === "2",
                       },
                     ],
                     onChange,
                   },
                   {
                     title: "한전 연동 여부",
-                    name: "syncKEPCO",
+                    name: "isKepcoRoaming",
                     list: [
                       {
                         disabled,
                         label: "연동",
                         value: "1",
-                        checked: syncKEPCO === "1",
+                        checked: isKepcoRoaming === "1",
                       },
                       {
                         disabled,
                         label: "미연동",
                         value: "2",
-                        checked: syncKEPCO === "2",
+                        checked: isKepcoRoaming === "2",
                       },
                     ],
                     onChange,
@@ -741,56 +743,56 @@ const ChargerDetail = () => {
                 rows={[
                   {
                     title: "QR 연동여부",
-                    name: "syncQR",
+                    name: "qrType",
                     list: [
                       {
                         disabled,
                         label: "없음",
                         value: "1",
-                        checked: syncQR === "1",
+                        checked: qrType === "1",
                       },
                       {
                         disabled,
                         label: "카카오",
                         value: "2",
-                        checked: syncQR === "2",
+                        checked: qrType === "2",
                       },
                       {
                         disabled,
                         label: "티맵",
                         value: "3",
-                        checked: syncQR === "3",
+                        checked: qrType === "3",
                       },
                       {
                         disabled,
                         label: "현대 E-PIT",
                         value: "4",
-                        checked: syncQR === "4",
+                        checked: qrType === "4",
                       },
                     ],
                     onChange,
                   },
                   {
                     title: "예약 가능 여부",
-                    name: "reservationAvailable",
+                    name: "reservationType",
                     list: [
                       {
                         disabled,
                         label: "비예약",
                         value: "1",
-                        checked: reservationAvailable === "1",
+                        checked: reservationType === "1",
                       },
                       {
                         disabled,
                         label: "예약",
                         value: "2",
-                        checked: reservationAvailable === "2",
+                        checked: reservationType === "2",
                       },
                       {
                         disabled,
                         label: "시범",
                         value: "3",
-                        checked: reservationAvailable === "3",
+                        checked: reservationType === "3",
                       },
                     ],
                     onChange,
@@ -804,8 +806,8 @@ const ChargerDetail = () => {
                     titleWidthRatio: 2,
                     disabled,
                     title: "특이사항",
-                    name: "significant",
-                    content: significant,
+                    name: "etcInfo",
+                    content: etcInfo,
                     onChange,
                   },
                 ]}
@@ -830,31 +832,31 @@ const ChargerDetail = () => {
                 <DetailLabelCol sm={2}>설치구분</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"installationCategory"}
+                    name={"installGubun"}
                     list={[
                       {
                         disabled,
                         label: "자체",
                         value: "1",
-                        checked: installationCategory === "1",
+                        checked: installGubun === "1",
                       },
                       {
                         disabled,
                         label: "보조금",
                         value: "2",
-                        checked: installationCategory === "2",
+                        checked: installGubun === "2",
                       },
                       {
                         disabled,
                         label: "납품",
                         value: "3",
-                        checked: installationCategory === "3",
+                        checked: installGubun === "3",
                       },
                       {
                         disabled,
                         label: "위탁",
                         value: "4",
-                        checked: installationCategory === "4",
+                        checked: installGubun === "4",
                       },
                     ]}
                     onChange={onChange}
@@ -865,8 +867,8 @@ const ChargerDetail = () => {
                   <TextInputBase
                     bsSize={"lg"}
                     disabled={disabled}
-                    name={"installer"}
-                    value={installer}
+                    name={"installCompany"}
+                    value={installCompany}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -879,8 +881,8 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "설치 연도",
-                    name: "installationYear",
-                    content: installationYear,
+                    name: "yyyy",
+                    content: yyyy,
                     onChange,
                     placeholder: "숫자만 입력해주세요 (ex. 2023)",
                   },
@@ -889,8 +891,8 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "설치 월",
-                    name: "installationMonth",
-                    content: installationMonth,
+                    name: "mm",
+                    content: mm,
                     onChange,
                     placeholder: "숫자만 입력해주세요 (ex. 06)",
                   },
@@ -932,19 +934,19 @@ const ChargerDetail = () => {
                 <DetailLabelCol sm={2}>TR 설치여부</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"installationTR"}
+                    name={"hasTr"}
                     list={[
                       {
                         disabled,
                         label: "Y",
                         value: "1",
-                        checked: installationTR === "1",
+                        checked: hasTr === "1",
                       },
                       {
                         disabled,
                         label: "N",
                         value: "2",
-                        checked: installationTR === "2",
+                        checked: hasTr === "2",
                       },
                     ]}
                     onChange={onChange}
@@ -958,8 +960,8 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     disabled,
                     title: "충전기 펌웨어",
-                    name: "chargerFirmware",
-                    content: chargerFirmware,
+                    name: "fwVer",
+                    content: fwVer,
                     onChange,
                   },
                   /** @TODO 자동 노출 표시로 disabled true 고정 */
@@ -967,8 +969,8 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     disabled: true,
                     title: "현재 충전기 펌웨어",
-                    name: "currentChargerFirmware",
-                    content: currentChargerFirmware,
+                    name: "fwVerCurrent",
+                    content: fwVerCurrent,
                     onChange,
                   },
                 ]}
@@ -980,8 +982,8 @@ const ChargerDetail = () => {
                     titleWidthRatio: 2,
                     disabled,
                     title: "모뎀개통 번호",
-                    name: "modemNumber",
-                    content: modemNumber,
+                    name: "modemOpenNumber",
+                    content: modemOpenNumber,
                     onChange,
                   },
                 ]}
@@ -993,16 +995,16 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     disabled,
                     title: "모뎀 제조사",
-                    name: "modemManufacturer",
-                    content: modemManufacturer,
+                    name: "modemCompany",
+                    content: modemCompany,
                     onChange,
                   },
                   {
                     titleWidthRatio: 4,
                     disabled,
                     title: "모뎀 제조사 연락처",
-                    name: "modemManufacturerTel",
-                    content: modemManufacturerTel,
+                    name: "modemCompanyPhone",
+                    content: modemCompanyPhone,
                     onChange,
                   },
                 ]}
@@ -1035,16 +1037,16 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     disabled,
                     title: "통신사",
-                    name: "carrier",
-                    content: carrier,
+                    name: "carrierName",
+                    content: carrierName,
                     onChange,
                   },
                   {
                     titleWidthRatio: 4,
                     disabled,
                     title: "통신요금",
-                    name: "communicationFee",
-                    content: communicationFee,
+                    name: "commFee",
+                    content: commFee,
                     onChange,
                   },
                 ]}
@@ -1056,16 +1058,16 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     disabled,
                     title: "개통사",
-                    name: "openCarrier",
-                    content: openCarrier,
+                    name: "openCompany",
+                    content: openCompany,
                     onChange,
                   },
                   {
                     titleWidthRatio: 4,
                     disabled,
                     title: "개통사 연락처",
-                    name: "openCarrierTel",
-                    content: openCarrierTel,
+                    name: "openCompanyPhone",
+                    content: openCompanyPhone,
                     onChange,
                   },
                 ]}

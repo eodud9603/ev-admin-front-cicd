@@ -1,5 +1,5 @@
 
-import { YNType } from "src/api/api.interface";
+import { OperatorType, YNType } from "src/api/api.interface";
 import { TChargerModeKeys, TChargerRationKeys, TChargerTypeKeys, TOperationStatusKeys } from "src/constants/charger";
 
 /* 충전기별 충전기 목록 조회 */
@@ -9,7 +9,7 @@ export interface IRequestChargerListByStation {
 }
 
 export interface IChargerListByStationItem {
-  id: string;
+  id: number;
   station: null;
   chargerKey: string;
   operationStatus: TOperationStatusKeys;
@@ -42,7 +42,7 @@ export interface IRequestChargerList {
 
 export interface IChargerListItem {
   region: string;
-  operator: "HEV" | "JEV";
+  operator: OperatorType;
   stationName: string;
   stationId: string;
   chargerKey: string; /* 충전소별 충전기 키 */
@@ -71,8 +71,84 @@ export interface IRequestChargerDetail {
   searchKey: number;
 }
 
+interface IStationItem {
+  id: number; /* 충전소 내부 관리 ID */
+  stationKey: string; /* 충전기 고유키 */
+  stationName: string;
+  operationStatus: TOperationStatusKeys;
+  roamingNumber: string;
+  region: string;
+  zoneCode: string;
+  addressRoad: string;
+  addressJibun: string;
+  sigunguCode: string;
+  lat: number;
+  lng: number;
+  operatingTime: string;
+  isHidden: YNType;
+  etcInfo: string;
+  memo: string;
+  updateDate: string;
+  isKakako: YNType;
+}
+
+interface IModemItem {
+  id: number; /* 모뎀 관리 ID 등록시 없어야함 */
+  openNumber: string;
+  company: string;
+  companyPhone: string;
+  name: string;
+  sn: null;
+  carrierName: string;
+  commFee: string;
+  openCompany: string;
+  openCompanyPhone: string;
+}
+
+interface IInstallItem {
+  id: number; /* 설치 관리 ID 등록시 없어야함 */
+  gubun: string;
+  companyName: string;
+  yyyy: string;
+  mm: string;
+  serverDomain: string;
+  serverPort: string;
+  sn: null;
+  hasTr: null;
+  fwVer: string;
+  fwVerCurrent: string;
+  modem?: IModemItem;
+
+}
 export interface IChargerDetailResponse {
-  id: number; /* 충전기 고유 ID, 등록시 X */
+  id: number; /* 충전기 고유 ID 등록시 없어야함 */
   assetsNumber: string;
   chargerKey: string;
+  chargerClass: TChargerRationKeys;
+  installType: TChargerTypeKeys;
+  capacity: string;
+  isDualChannel: YNType;
+  channelType01: string;
+  channelType02: string;
+  envVersion: string;
+  consignmentGubun: string;
+  useCode: string;
+  consignmentName: string;
+  operationStatus: TOperationStatusKeys;
+  isBroken: YNType;
+  status: TChargerModeKeys;
+  hasPgTerm: string;
+  pgName: string;
+  infProtocol: string;
+  maxChargeTime: number;
+  idleCommunicationTime: number;
+  busyCommunicationTime: number;
+  isKepcoRoaming: YNType;
+  searchKey: number; /* 충전기 고유 키 */
+  qrType: string;
+  reservationType: string;
+  etcInfo: string; /* 특이사항 */
+  isRoaming: YNType;
+  station?: IStationItem;
+  install?: IInstallItem;
 }
