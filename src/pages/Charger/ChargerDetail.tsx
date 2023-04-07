@@ -237,7 +237,7 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
-                    disabled={disabled}
+                    disabled={true}
                     name={"chargerId"}
                     value={chargerId}
                     onChange={onChange}
