@@ -1,7 +1,7 @@
 import { getChargerList } from "src/api/charger/chargerApi";
-import { IRequestStationList } from "src/api/station/stationApi.interface";
+import { IRequestChargerList } from "src/api/charger/chargerApi.interface";
 
-const defaultParams: IRequestStationList = {
+const defaultParams: IRequestChargerList = {
   /** @TODO 서버 sortDirection 정의 후, 추가 */
   // sortDirection: "ASC",
   size: 10,

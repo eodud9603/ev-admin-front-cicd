@@ -28,10 +28,7 @@ import { StationSearchModal } from "src/pages/Charger/components/StationSearchMo
 import useInputs from "src/hooks/useInputs";
 
 const ChargerDetail = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전기 관리" },
-  ]);
+  const [tabList, setTabList] = useState([{ label: "충전기 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
@@ -155,27 +152,6 @@ const ChargerDetail = () => {
 
   const navigate = useNavigate();
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
-
   return (
     <ContainerBase>
       <HeaderBase></HeaderBase>
@@ -183,8 +159,8 @@ const ChargerDetail = () => {
       <TabGroup
         list={tabList}
         selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
+        onClick={() => {}}
+        onClose={() => {}}
       />
 
       <BodyBase>
@@ -261,7 +237,7 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
-                    disabled={disabled}
+                    disabled={true}
                     name={"chargerId"}
                     value={chargerId}
                     onChange={onChange}

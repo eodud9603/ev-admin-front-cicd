@@ -274,7 +274,7 @@ const ChargerStationDetail = () => {
                       {
                         titleWidthRatio: 4,
                         title: "충전소ID",
-                        disabled,
+                        disabled: true,
                         name: "stationKey",
                         content: stationKey,
                         onChange,

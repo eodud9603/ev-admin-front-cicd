@@ -5,6 +5,7 @@ import {
   IChargerListResponse,
   IRequestChargerListByStation,
   IChargerListByStationResponse,
+  IRequestChargerDetail,
 } from "src/api/charger/chargerApi.interface";
 
 const { chargerUrl } = API_URL;
@@ -23,4 +24,11 @@ export const getChargerList = (params: IRequestChargerList) => {
   return api.get<IChargerListResponse>(`${chargerUrl}/list`, {
     params,
   });
+};
+
+/** 충전기 상세 조회 api */
+export const getChargerDetail = (params: IRequestChargerDetail) => {
+  return api.get<any>(
+    `${chargerUrl}/detail/${params.searchKey}`
+  );
 };
