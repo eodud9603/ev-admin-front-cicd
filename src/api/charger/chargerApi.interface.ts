@@ -64,3 +64,15 @@ export interface IChargerListResponse {
   totalElements: number;
   totalPages: number;
 }
+
+/* 충전기 상세 조회 */
+/** @see http://218.38.12.31:45081/docs/index.html#_%EC%83%81%EC%84%B8_%EC%A1%B0%ED%9A%8C */
+export interface IRequestChargerDetail {
+  searchKey: number;
+}
+
+export interface IChargerDetailResponse {
+  id: number; /* 충전기 고유 ID, 등록시 X */
+  assetsNumber: string;
+  chargerKey: string;
+}
