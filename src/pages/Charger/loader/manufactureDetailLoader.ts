@@ -1,9 +1,9 @@
 import { getManufactureDetail } from "src/api/manufactures/manufactureApi";
 import { IRequestManufactureDetail } from "src/api/manufactures/manufactureApi.interface";
 
-export const manufactureDetailLoader = async ({ params }: {params: IRequestManufactureDetail}) => {
+export const manufactureDetailLoader = async ({ params }: {params: Partial<IRequestManufactureDetail>}) => {
   if(!params?.id) {
-    return;
+    return null;
   }
    /* 상세 조회  */
    const { code, data } = await getManufactureDetail({ id: params.id });
