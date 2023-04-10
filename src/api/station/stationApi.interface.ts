@@ -89,9 +89,108 @@ export interface IStationDetailResponse {
   isParkFeeFree?: string;
 }
 
-/* 충전소 등록 조회 */
+/* 충전소 등록 */
 /** 
  * @see http://218.38.12.31:45081/docs/index.html#_%EB%93%B1%EB%A1%9D
  * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
  */
 export type IRequestStationRegister  = IStationDetailResponse
+
+/* 충전소 계약 목록 조회 */
+/** 
+ * @see http://218.38.12.31:45081/docs/index.html#_%EC%A1%B0%ED%9A%8C
+ * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ */
+export interface IRequestStationContractList {
+  /** @TODO 서버 sortDirection 정의 후, 추가 */
+  // sortDirection: "ASC" | "DESC";
+  size: number;
+  page: number;
+  sort: "ContractPlace";
+
+  sido?: string;
+  gugun?: string;
+  dong?: string;
+  contractPlace?: string;
+  contractCode?: string;
+  isUse?: YNType;
+}
+
+export interface IStationContractItem {
+  id: number;
+  place: string;
+  code: string;
+  isUse: YNType;
+  managerName: string;
+  managerPhone: string;
+  meStationId: string;
+  addressSido: string;
+  addressSigugun: string;
+  addressDongmyun: string;
+  salesCompany: string;
+  contractStartDt: string;
+  contractEndDt: string;
+  contractDt: string;
+  createdDate: string;
+}
+
+export interface IStationContractListResponse {
+  totalElements: number;
+  totalPages: number;
+  elements: IStationContractItem[];
+}
+
+/* 충전소 계약 상세 조회 */
+/** 
+ * @see http://218.38.12.31:45081/docs/index.html#_%EC%83%81%EC%84%B8_2
+ * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ */
+export interface IRequestStationContractDetail {
+  contractId: number;
+}
+
+export interface IStationContractDetailResponse {
+  id: number;
+  place: string;
+  contractorName: string;
+  code: string; /* 계약코드 관리 */
+  isMeRoaming: YNType;
+  // isUse: YNType;
+  meStationId?: string;
+  contractStartDt: string;
+  contractEndDt: string;
+  addressSido: string;
+  addressSigugun: string;
+  addressDongmyun: string;
+  managerName: string;
+  managerPhone: string;
+  salesCompany: string;
+  salesManagerName: string;
+  salesManagerPhone: string;
+  contractInfo: string;
+  /** 계약파일 임시 옵셔널 */
+  contractFileUrl?: string;
+  contractFileName?: string;
+  contractDt: string;
+  subsidyAgency: string;
+  subsidyYyyy: string;
+  subsidyAmount: number;
+  subsidyRevDt: string;
+  costSales: number;
+  costConstruct: number;
+  esafetyMng: string;
+}
+
+/* 충전소 계약 상세 수정 */
+/** 
+ * @see http://218.38.12.31:45081/docs/index.html#_%EC%88%98%EC%A0%95
+ * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ */
+export type IRequestStationContractModify = IStationContractDetailResponse
+
+/* 충전소 계약 등록 */
+/** 
+ * @see http://218.38.12.31:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_2
+ * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ */
+export type IRequestStationContractRegister = Omit<IStationContractDetailResponse, "id">

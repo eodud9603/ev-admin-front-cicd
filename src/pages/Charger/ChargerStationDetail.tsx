@@ -36,6 +36,7 @@ import {
   OPERATION_STATUS,
 } from "src/constants/charger";
 import { getChargerStatusColor } from "src/utils/charger";
+import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -104,6 +105,8 @@ const ChargerStationDetail = () => {
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
   const [isEditCancel, setIsEditCancel] = useState(false);
+  /* 주소검색 모달 */
+  const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
 
   const {
     /* 기본정보 */
@@ -206,6 +209,10 @@ const ChargerStationDetail = () => {
   const { setZoom, createMarker } = useMapStore();
 
   const navigate = useNavigate();
+
+  const onChangeModalVisible = () => {
+    setAddrSearchModalOpen((prev) => !prev);
+  };
 
   return (
     <ContainerBase>
@@ -661,7 +668,7 @@ const ChargerStationDetail = () => {
                                 outline
                                 label={"우편번호 검색"}
                                 color={"turu"}
-                                onClick={() => {}}
+                                onClick={onChangeModalVisible}
                               />
                             )}
                           </div>
@@ -1085,6 +1092,16 @@ const ChargerStationDetail = () => {
         contents={
           "수정된 충전소 정보가 저장되지 않습니다.\n수정을 취소하시겠습니까?"
         }
+      />
+      <AddressSearchModal
+        isOpen={addrSearchModalOpen}
+        onClose={onChangeModalVisible}
+        onchange={(data) => {
+          onChangeSingle({
+            zipCode: data.zipCode,
+            addr: data.address,
+          });
+        }}
       />
     </ContainerBase>
   );

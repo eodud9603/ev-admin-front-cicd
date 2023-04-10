@@ -11,36 +11,78 @@ import {
   ManufacturerBasicInfoTab,
   ManufacturerFirmwareInfoTab,
 } from "src/pages/Charger/components/ManufacturerInfoTemplates";
+import { useLoaderData, useNavigate } from "react-router";
+import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
+import { deleteManufacture } from "src/api/manufactures/manufactureApi";
+import { IManufactureDetailResponse } from "src/api/manufactures/manufactureApi.interface";
+import { number } from "yup";
+import DetailDeleteModal from "src/pages/Charger/components/DetailDeleteModal";
+import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+
+const idValidation = number().required("id값이 없습니다.");
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerDetail = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전기 제조사 관리" },
-  ]);
+  /** init 제조사 상세 데이터 (basic info) */
+  const data = useLoaderData() as IManufactureDetailResponse | null;
+
+  const [tabList, setTabList] = useState([{ label: "충전기 제조사 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
   const [tab, setTab] = useState<tabType>("BASIC");
   const [type, setType] = useState<"DETAIL" | "UPDATE">("DETAIL");
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
+
+  /* 주소검색 모달 */
+  const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
+  /* 삭제안내 모달 */
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  /* 텍스트 모달 */
+  const [textModal, setTextModal] = useState({
+    isOpen: false,
+    title: "",
+    contents: "",
+  });
+
+  const navigate = useNavigate();
+
+  /** 주소검색 open handler */
+  const onChangeAddrModalVisible = () => {
+    setAddrSearchModalOpen((prev) => !prev);
   };
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
+  /** 삭제안내 모달 handler */
+  const onChangeDeleteModalVisible = () => {
+    setDeleteModalOpen((prev) => !prev);
+  };
+
+  /** 텍스트 모달 handler */
+  const onChangeTextModal =
+    ({ title = "", contents = "" }) =>
+    () => {
+      setTextModal((prev) => ({
+        isOpen: !prev.isOpen,
+        title: title || prev.title,
+        contents: contents || prev.contents,
+      }));
+    };
+
+  /** 삭제 */
+  const deleteHandler = async () => {
+    /* 유효성 체크 */
+    const valid = await idValidation.isValid(data?.id);
+    if (!valid) {
       return;
     }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
+    /* 삭제 요청 */
+    const { code } = await deleteManufacture({ id: data!.id });
+    /* 삭제 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      onChangeTextModal({
+        title: "충전기 제조사 정보 삭제 완료",
+        contents: "충전기 제조사 정보가 삭제되었습니다.",
+      })();
     }
-
-    setTabList(tempList);
   };
 
   return (
@@ -49,8 +91,8 @@ export const ChargerManufacturerDetail = () => {
       <TabGroup
         list={tabList}
         selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
+        onClick={() => {}}
+        onClose={() => {}}
       />
       <BodyBase className={"pb-5"}>
         <BreadcrumbBase
@@ -87,7 +129,10 @@ export const ChargerManufacturerDetail = () => {
 
           <TabSection>
             {tab === "BASIC" ? (
-              <ManufacturerBasicInfoTab type={type} />
+              <ManufacturerBasicInfoTab
+                type={type}
+                onChangeModal={onChangeAddrModalVisible}
+              />
             ) : (
               <ManufacturerFirmwareInfoTab type={type} />
             )}
@@ -100,10 +145,34 @@ export const ChargerManufacturerDetail = () => {
             color={"turu"}
             outline={true}
             className={"mx-3 w-xs"}
+            onClick={onChangeDeleteModalVisible}
           />
           <ButtonBase label={"수정"} color={"turu"} className={"w-xs"} />
         </div>
       </BodyBase>
+
+      <DetailDeleteModal
+        isOpen={deleteModalOpen}
+        onClose={onChangeDeleteModalVisible}
+        deleteHandler={deleteHandler}
+        onClosed={() => {}}
+        title={"충전기 제조사 정보 삭제 안내"}
+        contents={"충전기 제조사 정보를 삭제하시겠습니까?"}
+      />
+      <DetailCompleteModal
+        {...textModal}
+        onClose={onChangeTextModal({ title: "", contents: "" })}
+        confirmHandler={() => {
+          navigate("/charger/manufacturer");
+        }}
+      />
+      <AddressSearchModal
+        isOpen={addrSearchModalOpen}
+        onClose={onChangeAddrModalVisible}
+        onchange={(data) => {
+          /** @TODO 검색된 주소 데이터, 추가 데이터 필요시, 모달 response 추가 */
+        }}
+      />
     </ContainerBase>
   );
 };

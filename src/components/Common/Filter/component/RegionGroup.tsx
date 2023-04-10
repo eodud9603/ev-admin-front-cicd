@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Dropdown,
   DropdownItem,
@@ -15,6 +15,13 @@ import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
 interface IRegionGroupProps {
+  disabled?: boolean;
+  init?: {
+    sido: string;
+    sigugun: string;
+    dongmyun: string;
+  };
+  label?: string;
   onChangeRegion?: (region: {
     sido: string;
     sigugun: string;
@@ -25,7 +32,7 @@ interface IRegionGroupProps {
 const DEFAULT_REGION_ITEM = { label: "전체", value: "" };
 
 export const RegionGroup = (props: IRegionGroupProps) => {
-  const { onChangeRegion } = props;
+  const { disabled = false, init, label, onChangeRegion } = props;
   const onChangeCallbackRef = useRef(onChangeRegion);
   /* 시/도 목록 */
   const [sidoList, setSidoList] = useState<{ label: string; value: string }[]>([
@@ -39,59 +46,41 @@ export const RegionGroup = (props: IRegionGroupProps) => {
   const [dongmyunList, setDongmyunList] = useState<
     { label: string; value: string }[]
   >([DEFAULT_REGION_ITEM]);
-  /* 선택한 값 */
+  /* init/선택한 값 */
   const { sido, sigugun, dongmyun, onChangeSingle } = useInputs({
-    sido: "",
-    sigugun: "",
-    dongmyun: "",
+    sido: init?.sido ?? "",
+    sigugun: init?.sigugun ?? "",
+    dongmyun: init?.dongmyun ?? "",
   });
 
-  /* sido 목록 init */
-  useEffect(() => {
-    const init = async () => {
-      const { code, data } = await getRegionSido();
-
-      const success = code === "SUCCESS" && !!data;
-      if (success) {
-        setSidoList([DEFAULT_REGION_ITEM, ...regionListFormat(data.elements)]);
-      }
-    };
-
-    void init();
-  }, []);
-
-  /* 선택(변경)된 지역정보 콜백 */
-  useEffect(() => {
-    const onChangeCallbackDelegate = onChangeCallbackRef.current;
-    !!onChangeCallbackDelegate &&
-      onChangeCallbackDelegate({ sido, sigugun, dongmyun });
-  }, [sido, sigugun, dongmyun]);
-
   /** 구/군 목록 요청 */
-  const getSigugun = async (regionName: string) => {
+  const getSigugun = useCallback(async (regionName: string) => {
     const { code, data } = await getRegionSigugun({ sido: regionName });
 
     const success = code === "SUCCESS" && !!data;
     if (success) {
       setSigugunList([DEFAULT_REGION_ITEM, ...regionListFormat(data.elements)]);
     }
-  };
+  }, []);
 
   /** 동/읍 목록 요청 */
-  const getDongmyun = async (regionName1: string, regionName2: string) => {
-    const { code, data } = await getRegionDongmyun({
-      sido: regionName1,
-      sigugun: regionName2,
-    });
+  const getDongmyun = useCallback(
+    async (regionName1: string, regionName2: string) => {
+      const { code, data } = await getRegionDongmyun({
+        sido: regionName1,
+        sigugun: regionName2,
+      });
 
-    const success = code === "SUCCESS" && !!data;
-    if (success) {
-      setDongmyunList([
-        DEFAULT_REGION_ITEM,
-        ...regionListFormat(data.elements),
-      ]);
-    }
-  };
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        setDongmyunList([
+          DEFAULT_REGION_ITEM,
+          ...regionListFormat(data.elements),
+        ]);
+      }
+    },
+    []
+  );
 
   /** 지역 정보 변경 */
   const onChange =
@@ -116,22 +105,69 @@ export const RegionGroup = (props: IRegionGroupProps) => {
       onChangeSingle({ [type]: value });
     };
 
+  /* sido 목록 init */
+  useEffect(() => {
+    const init = async () => {
+      const { code, data } = await getRegionSido();
+
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        setSidoList([DEFAULT_REGION_ITEM, ...regionListFormat(data.elements)]);
+      }
+    };
+
+    void init();
+  }, []);
+
+  /* 선택(변경)된 지역정보 콜백 */
+  useEffect(() => {
+    const onChangeCallbackDelegate = onChangeCallbackRef.current;
+    !!onChangeCallbackDelegate &&
+      onChangeCallbackDelegate({ sido, sigugun, dongmyun });
+  }, [sido, sigugun, dongmyun]);
+
+  /** init 지역 선택 값 목록 가져오기 */
+  const initRef = useRef({
+    init,
+    getSigugun,
+    getDongmyun,
+  });
+  useEffect(() => {
+    const { init, getSigugun, getDongmyun } = initRef.current;
+    if (!init) {
+      return;
+    }
+
+    const { sido, sigugun } = init;
+    if (!sido) {
+      return;
+    }
+
+    void getSigugun(sido);
+    if (sigugun) {
+      void getDongmyun(sido, sigugun);
+    }
+  }, []);
+
   return (
     <div className="btn-group d-flex align-items-center">
-      <Label className={"fw-bold m-0 w-xs"}>지역</Label>
+      {Boolean(label) && <Label className={"fw-bold m-0 w-xs"}>{label}</Label>}
       <RegionDropdown
+        disabled={disabled}
         className={"me-2 w-xs"}
         selectedLabel={sido || "시,도"}
         menuItems={sidoList}
         onClickDropdownItem={onChange("sido")}
       />
       <RegionDropdown
+        disabled={disabled}
         className={"me-2 w-xs"}
         selectedLabel={sigugun || "구,군"}
         menuItems={sigugunList}
         onClickDropdownItem={onChange("sigugun")}
       />
       <RegionDropdown
+        disabled={disabled}
         className={"me-2 w-xs"}
         selectedLabel={dongmyun || "동,읍"}
         menuItems={dongmyunList}

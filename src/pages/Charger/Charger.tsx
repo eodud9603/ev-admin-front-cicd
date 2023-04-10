@@ -144,9 +144,9 @@ const Charger = () => {
         size: Number(count),
         page,
         sido,
-        operation,
         gugun,
         dong,
+        operation,
         operationStatus: operationStatus as TOperationStatusKeys,
         sort: sort as IRequestChargerList["sort"],
       };
@@ -208,6 +208,7 @@ const Charger = () => {
           <Row className={"d-flex align-items-center"}>
             <Col md={7}>
               <RegionGroup
+                label={"지역"}
                 onChangeRegion={(region) => {
                   onChangeSingle({
                     sido: region.sido,

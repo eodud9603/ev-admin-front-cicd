@@ -15,6 +15,7 @@ export interface IModalBaseProps extends ModalProps {
   onClose: () => void;
   headerClassName?: string;
 
+  isHeader?: boolean;
   isCloseButton?: boolean;
   size?: "sm" | "md" | "lg" | "xl";
   title?: string;
@@ -34,6 +35,7 @@ const ModalBase = (props: IModalBaseProps) => {
     onClose,
     children,
     /* Optional */
+    isHeader = true,
     isCloseButton = true,
     size = "md",
     title = "",
@@ -46,25 +48,27 @@ const ModalBase = (props: IModalBaseProps) => {
 
   return (
     <Modal isOpen={isOpen} size={size} {...rest}>
-      <ModalHeader
-        className={
-          "py-3 border-bottom border-light border-2 " + `${headerClassName}`
-        }
-        close={
-          isCloseButton ? (
-            <Button
-              type={"button"}
-              className={`pe-3 btn-close bg-transparent btn-close-dark`}
-              aria-label={"Close"}
-              outline
-              size={"sm"}
-              onClick={onClose}
-            />
-          ) : undefined
-        }
-      >
-        <span className={"font-size-20"}>{title}</span>
-      </ModalHeader>
+      {isHeader && (
+        <ModalHeader
+          className={
+            "py-3 border-bottom border-light border-2 " + `${headerClassName}`
+          }
+          close={
+            isCloseButton ? (
+              <Button
+                type={"button"}
+                className={`pe-3 btn-close bg-transparent btn-close-dark`}
+                aria-label={"Close"}
+                outline
+                size={"sm"}
+                onClick={onClose}
+              />
+            ) : undefined
+          }
+        >
+          <span className={"font-size-20"}>{title}</span>
+        </ModalHeader>
+      )}
       {/* children or body/footer 태그 */}
       {children ?? (
         <>

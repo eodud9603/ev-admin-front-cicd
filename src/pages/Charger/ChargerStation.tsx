@@ -126,11 +126,11 @@ const ChargingStationManagement = () => {
       let searchParams: IRequestStationList = {
         size: Number(count),
         page,
-        sido: sido,
-        operation: operation,
-        gugun: gugun,
-        dong: dong,
-        isUse: isUse,
+        sido,
+        gugun,
+        dong,
+        operation,
+        isUse,
         sort: sort as IRequestStationList["sort"],
       };
       if (searchRange) {
@@ -202,6 +202,7 @@ const ChargingStationManagement = () => {
           <Row className={"d-flex align-items-center"}>
             <Col md={7}>
               <RegionGroup
+                label={"지역"}
                 onChangeRegion={(region) => {
                   onChangeSingle({
                     sido: region.sido,

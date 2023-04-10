@@ -4,19 +4,19 @@ import { IRegionResponse, IRequestDongmyun, IRequestSigugun } from "src/api/regi
 
 const { regionUrl } = API_URL;
 
-/** 시/도 api */
+/** 시/도 목록 조회 api */
 export const getRegionSido = () => {
   return api.get<IRegionResponse>(`${regionUrl}/sido`);
 };
 
-/** 구/군 api */
+/** 구/군 목록 조회 api */
 export const getRegionSigugun = (params: IRequestSigugun) => {
   return api.get<IRegionResponse>(`${regionUrl}/sigugun`, {
     params,
   });
 };
 
-/** 동/읍 api */
+/** 동/읍 목록 조회 api */
 export const getRegionDongmyun = (params: IRequestDongmyun) => {
   return api.get<IRegionResponse>(`${regionUrl}/dongmyun`, {
     params,

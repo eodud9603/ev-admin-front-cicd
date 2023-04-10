@@ -12,34 +12,36 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import { COUNT_FILTER_LIST } from "src/constants/list";
+import {
+  IManufactureListResponse,
+  IRequestManufactureList,
+} from "src/api/manufactures/manufactureApi.interface";
+import useInputs from "src/hooks/useInputs";
+import { getPageList } from "src/utils/pagination";
+import { getManufactureList } from "src/api/manufactures/manufactureApi";
 import { useTabStore } from "src/store/tabStore";
-
-const dropdownData = [
-  { label: "10개씩 보기", value: "1" },
-  { label: "20개씩 보기", value: "2" },
-  { label: "50개씩 보기", value: "3" },
-];
 
 const dropdownGroupSort = [
   {
     menuItems: [
-      { label: "기본", value: "1" },
-      { label: "제조사명", value: "1" },
-      { label: "수정일", value: "1" },
+      { label: "기본", value: "CrateAt" },
+      { label: "제조사명", value: "" },
+      { label: "수정일", value: "" },
     ],
   },
 ];
 
 const dropdownGroupSearch = [
-  { label: "제조사 ID", value: "1" },
-  { label: "제조사명", value: "1" },
-  { label: "충전소 ID", value: "1" },
-  { label: "담당자명", value: "1" },
+  { label: "제조사 ID", value: "companyId" },
+  { label: "제조사명", value: "" },
+  { label: "충전소 ID", value: "" },
+  { label: "담당자명", value: "" },
 ];
 
 const tableHeader = [
-  { label: "번호", sort: () => {} },
+  { label: "번호" },
   { label: "제조사 ID" },
   { label: "제조사명" },
   { label: "코드" },
@@ -50,36 +52,82 @@ const tableHeader = [
   { label: "수정일" },
 ];
 
-const data = [
-  {
-    manufacturerSeq: 1,
-    manufacturerId: "애플망고 02",
-    manufacturerName: "(주)애플망고",
-    code: "A",
-    charger: "김애플",
-    chargerPhone: "000-0000-0000",
-    representNumber: "000-000-0000",
-    address: "경기도 성남시 분당구 황새울로 216휴맥스빌리지",
-    updateDt: "YYYY.MM.DD",
-  },
-  {
-    manufacturerSeq: 2,
-    manufacturerId: "애플망고 01",
-    manufacturerName: "(주)애플망고",
-    code: "A",
-    charger: "강애플",
-    chargerPhone: "000-0000-0000",
-    representNumber: "000-000-0000",
-    address: "경기도 성남시 분당구 황새울로 216휴맥스빌리지",
-    updateDt: "YYYY.MM.DD",
-  },
-];
-
 export const ChargerManufacturer = () => {
+  const data = useLoaderData() as IManufactureListResponse | null;
+
   const nav = useNavigate();
   const { pathname } = useLocation();
+  const [selected, setSelected] = useState("0");
+
+  const { count, searchRange, searchText, sort, onChange, onChangeSingle } =
+    useInputs({
+      searchRange: "companyId",
+      searchText: "",
+      sort: "CrateAt",
+      count: "10",
+    });
+
+  const [list, setList] = useState(data?.elements ?? []);
   const [page, setPage] = useState(1);
-  const [text, setText] = useState("");
+  const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
+  const [total, setTotal] = useState(data?.totalElements ?? 0);
+  const [emptyMessage, setEmptyMessage] =
+    useState("등록된 제조사 정보가 없습니다.");
+
+  /** 파라미터 빈값 제거 */
+  const getParams = (params: Partial<IRequestManufactureList>) => {
+    for (const param in params) {
+      const deleteName = param as keyof IRequestManufactureList;
+      const data = params[deleteName];
+
+      if (data === "") {
+        delete params[deleteName];
+      }
+    }
+  };
+
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestManufactureList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams: IRequestManufactureList = {
+        size: Number(count),
+        page,
+        sort: sort as IRequestManufactureList["sort"],
+      };
+      if (searchRange) {
+        searchParams[searchRange as "companyId"] = searchText;
+      }
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
+
+      /* 검색  */
+      const { code, data } = await getManufactureList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        if (searchParams.page === 0) {
+          setPage(1);
+        }
+        if (data.totalElements === 0) {
+          setEmptyMessage("검색된 제조사 정보가 없습니다.");
+        }
+        setList(data.elements);
+        setMaxPage(data.totalPages);
+        setTotal(data.totalElements);
+      } else {
+        setPage(1);
+        setList([]);
+        setMaxPage(1);
+        setTotal(0);
+        setEmptyMessage("오류가 발생하였습니다.");
+      }
+    };
 
   const moveToRegister = () => {
     nav(`${pathname}/registration`);
@@ -124,11 +172,14 @@ export const ChargerManufacturer = () => {
               <SearchTextInput
                 title={"검색어"}
                 menuItems={dropdownGroupSearch}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ searchRange: value });
+                }}
                 placeholder={"제조사 ID를 입력해주세요"}
                 name={"searchText"}
-                className={""}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                value={searchText}
+                onChange={onChange}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
           </Row>
@@ -136,12 +187,22 @@ export const ChargerManufacturer = () => {
             <Col>
               <DropboxGroup
                 label={"정렬기준"}
-                dropdownItems={dropdownGroupSort}
+                dropdownItems={dropdownGroupSort.map((data) => ({
+                  ...data,
+                  onClickDropdownItem: (label, value) => {
+                    onChangeSingle({
+                      sort: value,
+                    });
+                    void searchHandler({
+                      page: 1,
+                      sort: value as IRequestManufactureList["sort"],
+                    })();
+                  },
+                }))}
                 className={"me-2"}
               />
             </Col>
           </Row>
-          {/*  */}
         </FilterSection>
         <Separator />
 
@@ -149,8 +210,8 @@ export const ChargerManufacturer = () => {
           <Row className={"mb-4"}>
             <Col>
               <AmountInfo className={"text-size-13 fw-bold"}>
-                총 <AmountInfo className={"text-turu"}>0건</AmountInfo>의 충전기
-                제조사 정보가 있습니다.
+                총 <AmountInfo className={"text-turu"}>{total}건</AmountInfo>의
+                충전기 제조사 정보가 있습니다.
               </AmountInfo>
             </Col>
             <Col className={"d-flex justify-content-end"}>
@@ -158,7 +219,15 @@ export const ChargerManufacturer = () => {
                 <span className={"font-size-10 text-muted"}>
                   2023-04-01 14:51기준
                 </span>
-                <DropdownBase menuItems={dropdownData} />
+                <DropdownBase
+                  menuItems={COUNT_FILTER_LIST}
+                  onClickDropdownItem={(_, value) => {
+                    onChangeSingle({
+                      count: value,
+                    });
+                    void searchHandler({ page: 1, size: Number(value) })();
+                  }}
+                />
                 <ButtonBase
                   label={"신규 등록"}
                   color={"turu"}
@@ -170,32 +239,52 @@ export const ChargerManufacturer = () => {
           </Row>
           <TableBase tableHeader={tableHeader}>
             <>
-              {data.length > 0 &&
-                data.map((e, i) => (
-                  <tr key={i}>
-                    <td>{}</td>
+              {list.length > 0 ? (
+                list.map((manufacture, index) => (
+                  <tr key={manufacture.id}>
+                    <td>{(page - 1) * Number(count) + index + 1}</td>
                     <td>
                       <u
                         className={"text-turu"}
                         role={"button"}
-                        onClick={() => moveToDetail(e.manufacturerSeq)}
+                        onClick={() => moveToDetail(manufacture.id)}
                       >
-                        {e.manufacturerId}
+                        {manufacture.id}
                       </u>
                     </td>
-                    <td>{e.manufacturerName}</td>
-                    <td>{e.code}</td>
-                    <td>{e.charger}</td>
-                    <td>{e.chargerPhone}</td>
-                    <td>{e.representNumber}</td>
-                    <td>{e.address}</td>
-                    <td>{e.updateDt}</td>
+                    <td>{manufacture.name}</td>
+                    <td>{manufacture.code}</td>
+                    <td>{manufacture.managerName ?? "-"}</td>
+                    <td>{manufacture.managerPhone ?? "-"}</td>
+                    <td>{manufacture.phone ?? "-"}</td>
+                    <td>{manufacture.address ?? "-"}</td>
+                    <td>{manufacture.modifiedDate ?? "-"}</td>
                   </tr>
-                ))}
+                ))
+              ) : (
+                <>
+                  <tr>
+                    <td colSpan={9} className={"py-5 text-center text"}>
+                      {emptyMessage}
+                    </td>
+                  </tr>
+                </>
+              )}
             </>
           </TableBase>
         </ListSection>
-        <PaginationBase setPage={setPage} data={{}} />
+        <PaginationBase
+          setPage={setPage}
+          data={{
+            hasPreviousPage: page > 1,
+            hasNextPage: page < maxPage,
+            navigatePageNums: getPageList(page, maxPage),
+            pageNum: page,
+            onChangePage: (page) => {
+              void searchHandler({ page })();
+            },
+          }}
+        />
       </BodyBase>
     </ContainerBase>
   );

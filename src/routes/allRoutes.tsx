@@ -110,6 +110,11 @@ import { stationDetailLoader } from "src/pages/Charger/loader/stationDetailLoade
 import { stationListLoader } from "src/pages/Charger/loader/stationListLoader";
 import { chargerListLoader } from "src/pages/Charger/loader/chargerListLoader";
 import { chargerDetailLoader } from "src/pages/Charger/loader/chargerDetailLoader";
+import { stationContractListLoader } from "src/pages/Charger/loader/stationContractListLoader";
+import { stationContractDetailLoader } from "src/pages/Charger/loader/stationContractDetailLoader";
+import { brokenListLoader } from "src/pages/Charger/loader/brokenListLoader";
+import { manufactureListLoader } from "src/pages/Charger/loader/manufactureListLoader";
+import { manufactureDetailLoader } from "src/pages/Charger/loader/manufactureDetailLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -152,6 +157,7 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/contract",
     element: <ChargerContract />,
+    loader: stationContractListLoader,
   },
   {
     path: "/charger/contract/add",
@@ -160,14 +166,23 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/contract/detail/:id",
     element: <ChargerContractDetail />,
+    loader: stationContractDetailLoader,
   },
-  { path: "/charger/trouble", element: <ChargerTrouble /> },
+  {
+    path: "/charger/trouble",
+    element: <ChargerTrouble />,
+    loader: brokenListLoader,
+  },
   { path: "/charger/trouble/detail/:id", element: <ChargerTroubleDetail /> },
   {
     path: "/charger/trouble/registration",
     element: <ChargerTroubleRegistration />,
   },
-  { path: "/charger/manufacturer", element: <ChargerManufacturer /> },
+  {
+    path: "/charger/manufacturer",
+    element: <ChargerManufacturer />,
+    loader: manufactureListLoader,
+  },
   {
     path: "/charger/manufacturer/registration",
     element: <ChargerManufacturerRegistration />,
@@ -175,6 +190,7 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/manufacturer/detail/:id",
     element: <ChargerManufacturerDetail />,
+    loader: manufactureDetailLoader,
   },
   { path: "/charger/operator", element: <ChargerOperator /> },
   { path: "/charger/operator/detail/:id", element: <ChargerOperatorDetail /> },

@@ -4,4 +4,6 @@ export const API_URL = {
   regionUrl: "/members/search/region",
   stationUrl: "/station",
   chargerUrl: "/chargers",
+  brokenUrl: "/broken",
+  manufactureUrl: "/manufactures",
 } as const;

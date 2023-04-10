@@ -48,7 +48,7 @@ const CheckBoxBase = (props: ICheckBoxBaseProps) => {
         {...rest}
       />
       <Label
-        className={"text-nowrap"}
+        className={"ps-1 text-nowrap"}
         htmlFor={shareId}
         disabled={disabled}
         check
@@ -62,6 +62,9 @@ const CheckBoxBase = (props: ICheckBoxBaseProps) => {
 export default CheckBoxBase;
 
 const FormGroupBase = styled(FormGroup)<{ disabled: boolean }>`
+  display: flex;
+  align-items: center;
+
   :hover {
     cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   }

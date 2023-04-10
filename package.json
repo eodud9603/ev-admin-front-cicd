@@ -48,6 +48,7 @@
     "react-countdown": "2.3.5",
     "react-countup": "^6.4.0",
     "react-csv": "^2.2.2",
+    "react-daum-postcode": "^3.1.1",
     "react-dom": "^18.2.0",
     "react-draft-wysiwyg": "^1.15.0",
     "react-dropzone": "^14.2.3",

@@ -15,7 +15,7 @@ interface IButtonBase extends ButtonProps {
   icon?: HTMLElement;
   className?: string;
   outline?: boolean;
-  onClick?: () => void;
+  onClick?: () => void | Promise<void>;
 
   disabled?: boolean;
 }
