@@ -106,7 +106,7 @@ export interface IRequestStationContractList {
   // sortDirection: "ASC" | "DESC";
   size: number;
   page: number;
-  sort: "StationName" | "StationId" | "CrateAt";
+  sort: "ContractPlace";
 
   sido?: string;
   gugun?: string;

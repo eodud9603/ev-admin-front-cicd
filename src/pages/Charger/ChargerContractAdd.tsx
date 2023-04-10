@@ -246,7 +246,7 @@ const ChargerContractAdd = () => {
 
             <DetailLabelCol sm={2}>장소 담당자</DetailLabelCol>
             <DetailContentCol>
-              <DetailGroupCol className={"gap-3"}>
+              <DetailGroupCol className={"gap-3 d-flex align-items-center"}>
                 <TextInputBase
                   className={"width-100"}
                   bsSize={"lg"}
@@ -280,7 +280,7 @@ const ChargerContractAdd = () => {
 
             <DetailLabelCol sm={2}>영업 담당자/연락처</DetailLabelCol>
             <DetailContentCol>
-              <DetailGroupCol className={"gap-3"}>
+              <DetailGroupCol className={"gap-3 d-flex align-items-center"}>
                 <TextInputBase
                   className={"width-100"}
                   bsSize={"lg"}

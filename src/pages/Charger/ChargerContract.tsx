@@ -66,7 +66,7 @@ const searchList = [
   {
     label: "계약장소명",
     placeholderKeyword: "계약장소명을",
-    value: "contractPlace",
+    value: "",
   },
   { label: "충전소 ID", placeholderKeyword: "충전소 ID를", value: "" },
   { label: "영업업체", placeholderKeyword: "영업업체를", value: "" },
@@ -74,7 +74,7 @@ const searchList = [
 
 /* 정렬기준 */
 const sortList = [
-  { label: "기본", value: "StationName" },
+  { label: "기본", value: "ContractPlace" },
   { label: "계약 체결일", value: "" },
 ];
 
@@ -130,7 +130,7 @@ const ChargerContract = () => {
     searchRange: "1",
     searchText: "",
     isUse: "" as YNType,
-    sort: "StationName",
+    sort: "ContractPlace",
     count: "10",
   });
   const placeholderKeyword =
@@ -165,9 +165,10 @@ const ChargerContract = () => {
         isUse,
         sort: sort as IRequestStationContractList["sort"],
       };
-      if (searchRange) {
-        searchParams[searchRange as "contractPlace"] = searchText;
-      }
+      /** @TODO 검색어 필터 추가 후, 추가예정 */
+      // if (searchRange) {
+      //   searchParams[searchRange as "contractPlace"] = searchText;
+      // }
       searchParams = {
         ...searchParams,
         ...params,
@@ -332,7 +333,8 @@ const ChargerContract = () => {
                     <td>{(page - 1) * Number(count) + index + 1}</td>
                     <td>{contract.id}</td>
                     <td>{isUse === "Y" ? "사용" : "미사용"}</td>
-                    <td>데이터 누락</td>
+                    {/** @TODO 서버 code 픽스 후, 매칭작업 필요 */}
+                    <td>{contract.code}(코드 매칭 필요)</td>
                     <td>
                       <HoverSpan
                         className={"text-turu"}
