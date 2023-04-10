@@ -11,9 +11,15 @@ import {
   ManufacturerBasicInfoTab,
   ManufacturerFirmwareInfoTab,
 } from "src/pages/Charger/components/ManufacturerInfoTemplates";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
+import { deleteManufacture } from "src/api/manufactures/manufactureApi";
 import { IManufactureDetailResponse } from "src/api/manufactures/manufactureApi.interface";
+import { number } from "yup";
+import DetailDeleteModal from "src/pages/Charger/components/DetailDeleteModal";
+import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+
+const idValidation = number().required("id값이 없습니다.");
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerDetail = () => {
@@ -28,9 +34,55 @@ export const ChargerManufacturerDetail = () => {
 
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
+  /* 삭제안내 모달 */
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  /* 텍스트 모달 */
+  const [textModal, setTextModal] = useState({
+    isOpen: false,
+    title: "",
+    contents: "",
+  });
 
-  const onChangeModalVisible = () => {
+  const navigate = useNavigate();
+
+  /** 주소검색 open handler */
+  const onChangeAddrModalVisible = () => {
     setAddrSearchModalOpen((prev) => !prev);
+  };
+
+  /** 삭제안내 모달 handler */
+  const onChangeDeleteModalVisible = () => {
+    setDeleteModalOpen((prev) => !prev);
+  };
+
+  /** 텍스트 모달 handler */
+  const onChangeTextModal =
+    ({ title = "", contents = "" }) =>
+    () => {
+      setTextModal((prev) => ({
+        isOpen: !prev.isOpen,
+        title: title || prev.title,
+        contents: contents || prev.contents,
+      }));
+    };
+
+  /** 삭제 */
+  const deleteHandler = async () => {
+    /* 유효성 체크 */
+    const valid = await idValidation.isValid(data?.id);
+    if (!valid) {
+      return;
+    }
+    /* 삭제 요청 */
+    const { code } = await deleteManufacture({ id: data!.id });
+    /* 삭제 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      onChangeTextModal({
+        title: "충전기 제조사 정보 삭제 완료",
+        contents: "충전기 제조사 정보가 삭제되었습니다.",
+      })();
+    }
   };
 
   return (
@@ -79,7 +131,7 @@ export const ChargerManufacturerDetail = () => {
             {tab === "BASIC" ? (
               <ManufacturerBasicInfoTab
                 type={type}
-                onChangeModal={onChangeModalVisible}
+                onChangeModal={onChangeAddrModalVisible}
               />
             ) : (
               <ManufacturerFirmwareInfoTab type={type} />
@@ -93,14 +145,30 @@ export const ChargerManufacturerDetail = () => {
             color={"turu"}
             outline={true}
             className={"mx-3 w-xs"}
+            onClick={onChangeDeleteModalVisible}
           />
           <ButtonBase label={"수정"} color={"turu"} className={"w-xs"} />
         </div>
       </BodyBase>
 
+      <DetailDeleteModal
+        isOpen={deleteModalOpen}
+        onClose={onChangeDeleteModalVisible}
+        deleteHandler={deleteHandler}
+        onClosed={() => {}}
+        title={"충전기 제조사 정보 삭제 안내"}
+        contents={"충전기 제조사 정보를 삭제하시겠습니까?"}
+      />
+      <DetailCompleteModal
+        {...textModal}
+        onClose={onChangeTextModal({ title: "", contents: "" })}
+        confirmHandler={() => {
+          navigate("/charger/manufacturer");
+        }}
+      />
       <AddressSearchModal
         isOpen={addrSearchModalOpen}
-        onClose={onChangeModalVisible}
+        onClose={onChangeAddrModalVisible}
         onchange={(data) => {
           /** @TODO 검색된 주소 데이터, 추가 데이터 필요시, 모달 response 추가 */
         }}

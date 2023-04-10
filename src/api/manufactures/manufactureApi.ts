@@ -22,3 +22,10 @@ export const getManufactureDetail = (params: IRequestManufactureDetail) => {
     `${manufactureUrl}/detail/${params.id}`
   );
 };
+
+/** 제조사 삭제 조회 api */
+export const deleteManufacture = (params: IRequestManufactureDetail) => {
+  return api.get<undefined>(
+    `${manufactureUrl}/delete/${params.id}`
+  );
+};
