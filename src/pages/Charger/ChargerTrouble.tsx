@@ -220,6 +220,9 @@ export const ChargerTrouble = () => {
               <SearchTextInput
                 title={"검색어"}
                 menuItems={dropdownGroupSearch}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({ searchRange: value });
+                }}
                 placeholder={"충전소를 입력해주세요"}
                 name={"searchText"}
                 value={searchText}
