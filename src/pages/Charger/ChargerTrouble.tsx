@@ -52,7 +52,7 @@ const brokenStatusList = [
 ];
 
 const tableHeader = [
-  { label: "번호", sort: () => {} },
+  { label: "번호" },
   { label: "지역" },
   { label: "구분" },
   { label: "충전소명" },
@@ -249,7 +249,6 @@ export const ChargerTrouble = () => {
                 dropdownItems={dropdownGroupSort.map((data) => ({
                   ...data,
                   onClickDropdownItem: (label, value) => {
-                    onChangeSingle({ sort: value });
                     onChangeSingle({ sort: value });
                     void searchHandler({
                       page: 1,

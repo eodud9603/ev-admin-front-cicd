@@ -1,6 +1,6 @@
 import { API_URL } from "src/constants/url";
 import api from "src/utils/api";
-import { IBrokenListResponse, IRequestBrokenList } from "./brokenApi.interface";
+import { IBrokenListResponse, IRequestBrokenList } from "src/api/broken/brokenApi.interface";
 
 const { brokenUrl } = API_URL;
 
