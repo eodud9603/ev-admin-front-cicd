@@ -32,6 +32,7 @@ import useMapStore from "src/store/mapStore";
 import { postStationRegistration } from "src/api/station/stationApi";
 import { OPERATOR_FILTER_LIST } from "src/constants/list";
 import { object, string, number } from "yup";
+import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 
 const stationRegistrationValidation = object({
   stationName: string().required("Please Enter stationName"),
@@ -137,10 +138,16 @@ const ChargerStationAdd = () => {
   const [isValidCheckModalOpen, setIsValidCheckModalOpen] = useState(false);
   /* 등록취소 모달 */
   const [isRegistrationCancel, setIsRegistrationCancel] = useState(false);
+  /* 주소검색 모달 */
+  const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
   /* 지도 컨트롤러 */
   const { setZoom, createMarker } = useMapStore();
 
   const navigate = useNavigate();
+
+  const onChangeModalVisible = () => {
+    setAddrSearchModalOpen((prev) => !prev);
+  };
 
   /** 등록 */
   const save = async () => {
@@ -564,7 +571,7 @@ const ChargerStationAdd = () => {
                               outline
                               label={"우편번호 검색"}
                               color={"turu"}
-                              onClick={() => {}}
+                              onClick={onChangeModalVisible}
                             />
                           </div>
                         </div>
@@ -897,6 +904,16 @@ const ChargerStationAdd = () => {
         isOpen={isValidCheckModalOpen}
         onClose={() => {
           setIsValidCheckModalOpen((prev) => !prev);
+        }}
+      />
+      <AddressSearchModal
+        isOpen={addrSearchModalOpen}
+        onClose={onChangeModalVisible}
+        onchange={(data) => {
+          onChangeSingle({
+            zipCode: data.zipCode,
+            addr: data.address,
+          });
         }}
       />
     </ContainerBase>

@@ -32,6 +32,7 @@ const AddressSearchModal = (props: IAddressSearchModalProps) => {
         zipCode: data.zonecode,
         address: fullAddress,
       });
+    onClose();
   };
 
   return (
