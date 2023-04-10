@@ -12,17 +12,27 @@ import {
   ManufacturerFirmwareInfoTab,
 } from "src/pages/Charger/components/ManufacturerInfoTemplates";
 import { useLoaderData } from "react-router";
+import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
+import { IManufactureDetailResponse } from "src/api/manufactures/manufactureApi.interface";
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerDetail = () => {
   /** init 제조사 상세 데이터 (basic info) */
-  const data = useLoaderData();
+  const data = useLoaderData() as IManufactureDetailResponse | null;
 
   const [tabList, setTabList] = useState([{ label: "충전기 제조사 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
   const [tab, setTab] = useState<tabType>("BASIC");
-  const [type, setType] = useState<"DETAIL" | "UPDATE">("DETAIL");
+  // const [type, setType] = useState<"DETAIL" | "UPDATE">("DETAIL");
+  const [type, setType] = useState<"DETAIL" | "UPDATE">("UPDATE");
+
+  /* 주소검색 모달 */
+  const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
+
+  const onChangeModalVisible = () => {
+    setAddrSearchModalOpen((prev) => !prev);
+  };
 
   return (
     <ContainerBase>
@@ -68,7 +78,10 @@ export const ChargerManufacturerDetail = () => {
 
           <TabSection>
             {tab === "BASIC" ? (
-              <ManufacturerBasicInfoTab type={type} />
+              <ManufacturerBasicInfoTab
+                type={type}
+                onChangeModal={onChangeModalVisible}
+              />
             ) : (
               <ManufacturerFirmwareInfoTab type={type} />
             )}
@@ -85,6 +98,14 @@ export const ChargerManufacturerDetail = () => {
           <ButtonBase label={"수정"} color={"turu"} className={"w-xs"} />
         </div>
       </BodyBase>
+
+      <AddressSearchModal
+        isOpen={addrSearchModalOpen}
+        onClose={onChangeModalVisible}
+        onchange={(data) => {
+          /** @TODO 검색된 주소 데이터, 추가 데이터 필요시, 모달 response 추가 */
+        }}
+      />
     </ContainerBase>
   );
 };

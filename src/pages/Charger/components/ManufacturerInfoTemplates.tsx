@@ -6,16 +6,20 @@ import {
 } from "src/components/Common/DetailContentRow/Detail";
 import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
-import { Col, Row } from "reactstrap";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 
 interface IManufacturerInfoTemplates {
   type: "ADD" | "DETAIL" | "UPDATE";
 }
 
+interface IBasicInfoTabProps extends IManufacturerInfoTemplates {
+  onChangeModal: () => void;
+}
+
 export const ManufacturerBasicInfoTab = ({
   type,
-}: IManufacturerInfoTemplates) => {
+  onChangeModal,
+}: IBasicInfoTabProps) => {
   const disabled = type === "DETAIL";
 
   return (
@@ -64,17 +68,15 @@ export const ManufacturerBasicInfoTab = ({
               className={"mb-4"}
               name={"우편번호"}
               value={"우편번호 노출"}
-              onChange={() => {}}
             />
             <div style={{ flex: 3 }}>
-              호
               {!disabled && (
                 <ButtonBase
                   className={"width-110"}
                   outline
                   label={"우편번호 검색"}
                   color={"turu"}
-                  onClick={() => {}}
+                  onClick={onChangeModal}
                 />
               )}
             </div>
@@ -85,14 +87,12 @@ export const ManufacturerBasicInfoTab = ({
               disabled={true}
               name={"주소"}
               value={"검색된 주소 정보 노출"}
-              onChange={() => {}}
             />
             <TextInputBase
               bsSize={"lg"}
               disabled={disabled}
               name={"상세주소"}
               value={"입력한 상세 주소 정보 노출"}
-              onChange={() => {}}
             />
           </div>
         </DetailContentCol>
