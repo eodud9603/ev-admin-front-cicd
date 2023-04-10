@@ -24,8 +24,7 @@ export const ChargerManufacturerDetail = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
 
   const [tab, setTab] = useState<tabType>("BASIC");
-  // const [type, setType] = useState<"DETAIL" | "UPDATE">("DETAIL");
-  const [type, setType] = useState<"DETAIL" | "UPDATE">("UPDATE");
+  const [type, setType] = useState<"DETAIL" | "UPDATE">("DETAIL");
 
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
