@@ -144,9 +144,9 @@ const Charger = () => {
         size: Number(count),
         page,
         sido,
-        operation,
         gugun,
         dong,
+        operation,
         operationStatus: operationStatus as TOperationStatusKeys,
         sort: sort as IRequestChargerList["sort"],
       };

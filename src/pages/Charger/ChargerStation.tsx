@@ -126,11 +126,11 @@ const ChargingStationManagement = () => {
       let searchParams: IRequestStationList = {
         size: Number(count),
         page,
-        sido: sido,
-        operation: operation,
-        gugun: gugun,
-        dong: dong,
-        isUse: isUse,
+        sido,
+        gugun,
+        dong,
+        operation,
+        isUse,
         sort: sort as IRequestStationList["sort"],
       };
       if (searchRange) {

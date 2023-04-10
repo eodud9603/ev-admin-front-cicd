@@ -1,6 +1,6 @@
 import { API_URL } from "src/constants/url";
 import api from "src/utils/api";
-import { IRequestStationDetail, IRequestStationList, IRequestStationRegister, IStationDetailResponse, IStationListResponse } from "src/api/station/stationApi.interface";
+import { IRequestStationContractList, IRequestStationDetail, IRequestStationList, IRequestStationRegister, IStationContractListResponse, IStationDetailResponse, IStationListResponse } from "src/api/station/stationApi.interface";
 
 const { stationUrl } = API_URL;
 
@@ -26,3 +26,10 @@ export const postStationRegistration = (body: IRequestStationRegister) => {
 };
 
 /** @TODO 충전소 수정 api */
+
+/** 충전소 계약 목록 조회 api */
+export const getStationContractList = (params: IRequestStationContractList) => {
+  return api.get<IStationContractListResponse>(`${stationUrl}/contract/list`, {
+    params
+  });
+};
