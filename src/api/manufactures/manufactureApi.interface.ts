@@ -28,3 +28,23 @@ export interface IManufactureListResponse {
   totalElements: number;
   totalPages: number;
 }
+
+/* 제조사 상세 조회 */
+/** @see http://218.38.12.31:45081/docs/index.html#_%EC%A0%9C%EC%A1%B0%EC%82%AC_%EC%83%81%EC%84%B8 */
+export interface IRequestManufactureDetail {
+ id: string;
+}
+
+export interface IManufactureDetailResponse {
+  id: number; /** 고유 ID */
+  code: string;
+  name: string;
+  identifier: string;
+  companyId: string;
+  managerName: string;
+  managerPhone: string;
+  phone: string;
+  address: string;
+  zipCode: string;
+  managerExtPhone: string;
+}

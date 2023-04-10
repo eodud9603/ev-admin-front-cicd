@@ -1,6 +1,11 @@
 import { API_URL } from "src/constants/url";
 import api from "src/utils/api";
-import { IRequestManufactureList, IManufactureListResponse } from "src/api/manufactures/manufactureApi.interface";
+import {
+  IRequestManufactureList,
+  IManufactureListResponse,
+  IRequestManufactureDetail,
+  IManufactureDetailResponse,
+} from "src/api/manufactures/manufactureApi.interface";
 
 const { manufactureUrl } = API_URL;
 
@@ -9,4 +14,11 @@ export const getManufactureList = (params: IRequestManufactureList) => {
   return api.get<IManufactureListResponse>(`${manufactureUrl}/list`, {
     params,
   });
+};
+
+/** 제조사 상세 조회 api */
+export const getManufactureDetail = (params: IRequestManufactureDetail) => {
+  return api.get<IManufactureDetailResponse>(
+    `${manufactureUrl}/detail/${params.id}`
+  );
 };

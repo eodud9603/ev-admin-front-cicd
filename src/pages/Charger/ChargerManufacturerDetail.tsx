@@ -11,37 +11,18 @@ import {
   ManufacturerBasicInfoTab,
   ManufacturerFirmwareInfoTab,
 } from "src/pages/Charger/components/ManufacturerInfoTemplates";
+import { useLoaderData } from "react-router";
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerDetail = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전기 제조사 관리" },
-  ]);
+  /** init 제조사 상세 데이터 (basic info) */
+  const data = useLoaderData();
+
+  const [tabList, setTabList] = useState([{ label: "충전기 제조사 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
   const [tab, setTab] = useState<tabType>("BASIC");
   const [type, setType] = useState<"DETAIL" | "UPDATE">("DETAIL");
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
 
   return (
     <ContainerBase>
@@ -49,8 +30,8 @@ export const ChargerManufacturerDetail = () => {
       <TabGroup
         list={tabList}
         selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
+        onClick={() => {}}
+        onClose={() => {}}
       />
       <BodyBase className={"pb-5"}>
         <BreadcrumbBase
