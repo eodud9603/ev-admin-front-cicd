@@ -9,7 +9,6 @@ import {
   DetailRow,
 } from "src/components/Common/DetailContentRow/Detail";
 import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
-import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 
 import BodyBase from "src/components/Common/Layout/BodyBase";
@@ -23,6 +22,39 @@ import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import useInputs from "src/hooks/useInputs";
 import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
+import { postStationContractRegister } from "src/api/station/stationApi";
+import { number, object, string } from "yup";
+import { YNType } from "src/api/api.interface";
+
+const contractionValidation = object({
+  place: string().required("계약 장소를 입력해주세요."),
+  contractorName: string().required("계약자 이름을 입력해주세요."),
+  code: string().required("계약여부를 입력해주세요."),
+  isMeRoaming: string().required("환경부 연동 여부를 입력해주세요."),
+  // isUse: string().required("사용여부를 입력해주세요."),
+  meStationId: string().optional(),
+  contractStartDt: string().required("계약 시작일를 입력해주세요."),
+  contractEndDt: string().required("계약 종료일를 입력해주세요."),
+  addressSido: string().required("행정동 주소 (시도)를 입력해주세요."),
+  addressSigugun: string().required("행정동 주소(구군)를 입력해주세요."),
+  addressDongmyun: string().required("행정동 주소(동읍)를 입력해주세요."),
+  managerName: string().required("장소 담당자를 입력해주세요."),
+  managerPhone: string().required("담당자 전화번호를 입력해주세요."),
+  salesCompany: string().required("영업업체를 입력해주세요."),
+  salesManagerName: string().required("영업담당자를 입력해주세요."),
+  salesManagerPhone: string().required("영업담당자 전화번호를 입력해주세요."),
+  contractInfo: string().required("영업내용을 입력해주세요."),
+  // contractFileUrl: string().required("계약파일을 업로드해주세요."),
+  // contractFileName: string().required("계약파일 이름을 찾을 수 없습니다."),
+  contractDt: string().required("계약일를 입력해주세요."),
+  subsidyAgency: string().required("보조금 기관을 입력해주세요."),
+  subsidyYyyy: string().required("보조금 연도를 입력해주세요."),
+  subsidyAmount: number().required("보조금 금액을 입력해주세요."),
+  subsidyRevDt: string().required("보조금 수령일를 입력해주세요."),
+  costSales: number().required("영업비용을 입력해주세요."),
+  costConstruct: number().required("공사비를 입력해주세요."),
+  esafetyMng: string().required("전기 안전 관리를 입력해주세요."),
+});
 
 const ChargerContractAdd = () => {
   const [tabList, setTabList] = useState([{ label: "충전소 계약 관리" }]);
@@ -31,54 +63,92 @@ const ChargerContractAdd = () => {
   const [isAddComplete, setIsAddComplete] = useState(false);
   /* 등록취소 모달 */
   const [isAddCancel, setIsAddCancel] = useState(false);
-  const {
-    contractPlace,
-    contractName,
-    envChargerId,
-    contractStartDate,
-    contractEndDate,
-    placeManagerName,
-    placeManagerTel,
-    business,
-    businessMangerName,
-    businessMangerTel,
-    contractContents,
-    contractSigningDate,
-    grantAgency,
-    grantYear,
-    grantPrice,
-    receiptDate,
-    businessPrice,
-    constructionPrice,
-    safetyManagement,
-    onChange,
-  } = useInputs({
-    contractPlace: "",
-    contractName: "",
-    contractStatus: "",
-    syncEnvironment: "",
-    envChargerId: "",
-    contractStartDate: "",
-    contractEndDate: "",
-    placeManagerName: "",
-    placeManagerTel: "",
-    business: "",
-    businessMangerName: "",
-    businessMangerTel: "",
-    contractContents: "",
-    contractSigningDate: "",
-    grantAgency: "",
-    grantYear: "",
-    grantPrice: "",
-    receiptDate: "",
-    businessPrice: "",
-    constructionPrice: "",
-    safetyManagement: "",
+  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+    place: "",
+    contractorName: "",
+    code: "",
+    isMeRoaming: "" as YNType,
+    meStationId: "",
+    contractStartDt: "",
+    contractEndDt: "",
+    addressSido: "",
+    addressSigugun: "",
+    addressDongmyun: "",
+    managerName: "",
+    managerPhone: "",
+    salesCompany: "",
+    salesManagerName: "",
+    salesManagerPhone: "",
+    contractInfo: "",
+    contractDt: "",
+    subsidyAgency: "",
+    subsidyYyyy: "",
+    subsidyAmount: "",
+    subsidyRevDt: "",
+    costSales: "",
+    costConstruct: "",
+    esafetyMng: "",
   });
+  const {
+    place,
+    contractorName,
+    code,
+    isMeRoaming,
+    meStationId,
+    contractStartDt,
+    contractEndDt,
+    addressSido,
+    addressSigugun,
+    addressDongmyun,
+    managerName,
+    managerPhone,
+    salesCompany,
+    salesManagerName,
+    salesManagerPhone,
+    contractInfo,
+    contractDt,
+    subsidyAgency,
+    subsidyYyyy,
+    subsidyAmount,
+    subsidyRevDt,
+    costSales,
+    costConstruct,
+    esafetyMng,
+  } = inputs;
   /* 계약서 파일 */
   const [file, setFile] = useState<FileList | null>(null);
 
   const navigate = useNavigate();
+
+  /** 계약 등록 */
+  const postRegister = async () => {
+    /** 유효성 체크 */
+    const valid = await contractionValidation.isValid({
+      ...inputs,
+      /** @TODO 파일 업로드 기능 추가 후, 적용 */
+      // contractFileUrl:
+      // contractFileName: file?.item(0)?.name
+    });
+    if (!valid) {
+      return;
+    }
+
+    /* 등록 요청 */
+    const { code } = await postStationContractRegister({
+      ...inputs,
+      subsidyAmount: Number(subsidyAmount),
+      costSales: Number(costSales),
+      costConstruct: Number(costConstruct),
+      contractFileUrl: "",
+      contractFileName: "",
+    });
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      /* 등록 완료 모달 오픈 */
+      setIsAddComplete(true);
+    }
+  };
 
   return (
     <ContainerBase>
@@ -109,16 +179,16 @@ const ChargerContractAdd = () => {
               {
                 titleWidthRatio: 4,
                 title: "계약장소명",
-                name: "contractPlace",
-                content: contractPlace,
+                name: "place",
+                content: place,
                 onChange,
                 placeholder: "입력해주세요.",
               },
               {
                 titleWidthRatio: 4,
                 title: "계약자명",
-                name: "contractName",
-                content: contractName,
+                name: "contractorName",
+                content: contractorName,
                 onChange,
                 placeholder: "입력해주세요.",
               },
@@ -129,7 +199,7 @@ const ChargerContractAdd = () => {
             <DetailLabelCol sm={2}>계약여부</DetailLabelCol>
             <DetailContentCol>
               <RadioGroup
-                name={"contractStatus"}
+                name={"code"}
                 list={[
                   {
                     label: "계약",
@@ -153,15 +223,15 @@ const ChargerContractAdd = () => {
             <DetailLabelCol sm={2}>환경부 연동여부</DetailLabelCol>
             <DetailContentCol>
               <RadioGroup
-                name={"syncEnvironment"}
+                name={"isMeRoaming"}
                 list={[
                   {
                     label: "연동",
-                    value: "1",
+                    value: "Y",
                   },
                   {
                     label: "미연동",
-                    value: "2",
+                    value: "N",
                   },
                 ]}
                 onChange={onChange}
@@ -171,8 +241,8 @@ const ChargerContractAdd = () => {
             <DetailContentCol>
               <TextInputBase
                 bsSize={"lg"}
-                name={"envChargerId"}
-                value={envChargerId}
+                name={"meStationId"}
+                value={meStationId}
                 onChange={onChange}
               />
             </DetailContentCol>
@@ -184,17 +254,17 @@ const ChargerContractAdd = () => {
               <div className={"input-group d-flex align-items-center w-auto"}>
                 <input
                   type={"date"}
-                  name={"contractStartDate"}
+                  name={"contractStartDt"}
                   className={"form-control w-xs"}
-                  value={contractStartDate}
+                  value={contractStartDt}
                   onChange={onChange}
                 />
                 <div className={"px-2 text-center"}>~</div>
                 <input
                   type={"date"}
-                  name={"contractEndDate"}
+                  name={"contractEndDt"}
                   className={"form-control w-xs"}
-                  value={contractEndDate}
+                  value={contractEndDt}
                   onChange={onChange}
                 />
               </div>
@@ -205,7 +275,15 @@ const ChargerContractAdd = () => {
           <DetailRow>
             <DetailLabelCol sm={2}>행정동 주소</DetailLabelCol>
             <DetailContentCol>
-              <RegionGroup />
+              <RegionGroup
+                onChangeRegion={(region) => {
+                  onChangeSingle({
+                    addressSido: region.sido,
+                    addressSigugun: region.sigugun,
+                    addressDongmyun: region.dongmyun,
+                  });
+                }}
+              />
             </DetailContentCol>
 
             <DetailLabelCol sm={2}>장소 담당자</DetailLabelCol>
@@ -214,16 +292,16 @@ const ChargerContractAdd = () => {
                 <TextInputBase
                   className={"width-100"}
                   bsSize={"lg"}
-                  name={"placeManagerName"}
-                  value={placeManagerName}
+                  name={"managerName"}
+                  value={managerName}
                   onChange={onChange}
                 />
                 <div className={"font-size-14"}>연락처</div>
                 <TextInputBase
                   inputstyle={{ flex: 1 }}
                   bsSize={"lg"}
-                  name={"placeManagerTel"}
-                  value={placeManagerTel}
+                  name={"managerPhone"}
+                  value={managerPhone}
                   placeholder={"000-0000-0000"}
                   onChange={onChange}
                 />
@@ -236,8 +314,8 @@ const ChargerContractAdd = () => {
             <DetailContentCol>
               <TextInputBase
                 bsSize={"lg"}
-                name={"business"}
-                value={business}
+                name={"salesCompany"}
+                value={salesCompany}
                 onChange={onChange}
               />
             </DetailContentCol>
@@ -248,16 +326,16 @@ const ChargerContractAdd = () => {
                 <TextInputBase
                   className={"width-100"}
                   bsSize={"lg"}
-                  name={"businessMangerName"}
-                  value={businessMangerName}
+                  name={"salesManagerName"}
+                  value={salesManagerName}
                   onChange={onChange}
                 />
                 <div className={"font-size-14"}>연락처</div>
                 <TextInputBase
                   inputstyle={{ flex: 1 }}
                   bsSize={"lg"}
-                  name={"businessMangerTel"}
-                  value={businessMangerTel}
+                  name={"salesManagerPhone"}
+                  value={salesManagerPhone}
                   placeholder={"000-0000-0000"}
                   onChange={onChange}
                 />
@@ -270,8 +348,8 @@ const ChargerContractAdd = () => {
               {
                 titleWidthRatio: 2,
                 title: "계약 조건 내용",
-                name: "contractContents",
-                content: contractContents,
+                name: "contractInfo",
+                content: contractInfo,
                 placeholder: "입력해주세요.",
                 onChange,
               },
@@ -328,8 +406,8 @@ const ChargerContractAdd = () => {
               <input
                 type={"date"}
                 className={"form-control w-xs"}
-                name={"contractSigningDate"}
-                value={contractSigningDate}
+                name={"contractDt"}
+                value={contractDt}
                 onChange={onChange}
               />
             </DetailContentCol>
@@ -340,16 +418,16 @@ const ChargerContractAdd = () => {
               {
                 titleWidthRatio: 4,
                 title: "보조금 기관",
-                name: "grantAgency",
-                content: grantAgency,
+                name: "subsidyAgency",
+                content: subsidyAgency,
                 placeholder: "입력해주세요.",
                 onChange,
               },
               {
                 titleWidthRatio: 4,
                 title: "보조금 연도",
-                name: "grantYear",
-                content: grantYear,
+                name: "subsidyYyyy",
+                content: subsidyYyyy,
                 placeholder: "입력해주세요.",
                 onChange,
               },
@@ -361,8 +439,8 @@ const ChargerContractAdd = () => {
             <DetailContentCol>
               <TextInputBase
                 bsSize={"lg"}
-                name={"grantPrice"}
-                value={grantPrice}
+                name={"subsidyAmount"}
+                value={subsidyAmount}
                 onChange={onChange}
               />
             </DetailContentCol>
@@ -371,8 +449,8 @@ const ChargerContractAdd = () => {
               <input
                 type={"date"}
                 className={"form-control w-xs"}
-                name={"receiptDate"}
-                value={receiptDate}
+                name={"subsidyRevDt"}
+                value={subsidyRevDt}
                 onChange={onChange}
               />
             </DetailContentCol>
@@ -383,16 +461,16 @@ const ChargerContractAdd = () => {
               {
                 titleWidthRatio: 4,
                 title: "영업비",
-                name: "businessPrice",
-                content: businessPrice,
+                name: "costSales",
+                content: costSales,
                 placeholder: "입력해주세요.",
                 onChange,
               },
               {
                 titleWidthRatio: 4,
                 title: "공사비",
-                name: "constructionPrice",
-                content: constructionPrice,
+                name: "costConstruct",
+                content: costConstruct,
                 placeholder: "입력해주세요.",
                 onChange,
               },
@@ -404,8 +482,8 @@ const ChargerContractAdd = () => {
               {
                 titleWidthRatio: 2,
                 title: "전기 안전관리",
-                name: "safetyManagement",
-                content: safetyManagement,
+                name: "esafetyMng",
+                content: esafetyMng,
                 placeholder: "입력해주세요.",
                 onChange,
               },
@@ -430,9 +508,7 @@ const ChargerContractAdd = () => {
             /** @TODO disabled에 따른 코드 추후 추가 */
             // color={false ? "turu" : "secondary"}
             color={"turu"}
-            onClick={() => {
-              setIsAddComplete(true);
-            }}
+            onClick={postRegister}
           />
         </div>
       </BodyBase>

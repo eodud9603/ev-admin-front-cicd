@@ -150,8 +150,8 @@ export interface IRequestStationContractRegister {
   contractorName: string;
   code: string; /* 계약코드 관리 */
   isMeRoaming: YNType;
-  isUse: YNType;
-  meStationId: string;
+  // isUse: YNType;
+  meStationId?: string;
   contractStartDt: string;
   contractEndDt: string;
   addressSido: string;
@@ -163,8 +163,9 @@ export interface IRequestStationContractRegister {
   salesManagerName: string;
   salesManagerPhone: string;
   contractInfo: string;
-  contractFileUrl: string;
-  contractFileName: string;
+  /** 계약파일 임시 옵셔널 */
+  contractFileUrl?: string;
+  contractFileName?: string;
   contractDt: string;
   subsidyAgency: string;
   subsidyYyyy: string;
