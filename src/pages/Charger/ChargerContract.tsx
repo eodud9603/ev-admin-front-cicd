@@ -224,6 +224,7 @@ const ChargerContract = () => {
           <Row className={"d-flex align-items-center"}>
             <Col md={7}>
               <RegionGroup
+                label={"지역"}
                 onChangeRegion={(region) => {
                   onChangeSingle({
                     sido: region.sido,

@@ -139,3 +139,38 @@ export interface IStationContractListResponse {
   totalPages: number;
   elements: IStationContractItem[];
 }
+
+/* 충전소 계약 등록 */
+/** 
+ * @see http://218.38.12.31:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_2
+ * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ */
+export interface IRequestStationContractRegister {
+  place: string;
+  contractorName: string;
+  code: string; /* 계약코드 관리 */
+  isMeRoaming: YNType;
+  isUse: YNType;
+  meStationId: string;
+  contractStartDt: string;
+  contractEndDt: string;
+  addressSido: string;
+  addressSigugun: string;
+  addressDongmyun: string;
+  managerName: string;
+  managerPhone: string;
+  salesCompany: string;
+  salesManagerName: string;
+  salesManagerPhone: string;
+  contractInfo: string;
+  contractFileUrl: string;
+  contractFileName: string;
+  contractDt: string;
+  subsidyAgency: string;
+  subsidyYyyy: string;
+  subsidyAmount: number;
+  subsidyRevDt: string;
+  costSales: number;
+  costConstruct: number;
+  esafetyMng: string;
+}

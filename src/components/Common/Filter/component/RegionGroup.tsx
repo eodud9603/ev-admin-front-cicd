@@ -15,6 +15,7 @@ import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 
 interface IRegionGroupProps {
+  label?: string;
   onChangeRegion?: (region: {
     sido: string;
     sigugun: string;
@@ -25,7 +26,7 @@ interface IRegionGroupProps {
 const DEFAULT_REGION_ITEM = { label: "전체", value: "" };
 
 export const RegionGroup = (props: IRegionGroupProps) => {
-  const { onChangeRegion } = props;
+  const { label, onChangeRegion } = props;
   const onChangeCallbackRef = useRef(onChangeRegion);
   /* 시/도 목록 */
   const [sidoList, setSidoList] = useState<{ label: string; value: string }[]>([
@@ -118,7 +119,7 @@ export const RegionGroup = (props: IRegionGroupProps) => {
 
   return (
     <div className="btn-group d-flex align-items-center">
-      <Label className={"fw-bold m-0 w-xs"}>지역</Label>
+      {Boolean(label) && <Label className={"fw-bold m-0 w-xs"}>{label}</Label>}
       <RegionDropdown
         className={"me-2 w-xs"}
         selectedLabel={sido || "시,도"}

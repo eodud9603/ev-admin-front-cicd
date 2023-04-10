@@ -22,25 +22,10 @@ import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModa
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import useInputs from "src/hooks/useInputs";
-
-/* 주소(지역) 필터 */
-const addressList = [
-  {
-    menuItems: [{ label: "시,도", value: "1" }],
-  },
-  {
-    menuItems: [{ label: "구,군", value: "1" }],
-  },
-  {
-    menuItems: [{ label: "동,읍", value: "1" }],
-  },
-];
+import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
 
 const ChargerContractAdd = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전소 계약 관리" },
-  ]);
+  const [tabList, setTabList] = useState([{ label: "충전소 계약 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 등록완료 모달 */
   const [isAddComplete, setIsAddComplete] = useState(false);
@@ -95,27 +80,6 @@ const ChargerContractAdd = () => {
 
   const navigate = useNavigate();
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
-
   return (
     <ContainerBase>
       <HeaderBase></HeaderBase>
@@ -123,8 +87,8 @@ const ChargerContractAdd = () => {
       <TabGroup
         list={tabList}
         selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
+        onClick={() => {}}
+        onClose={() => {}}
       />
 
       <BodyBase>
@@ -241,7 +205,7 @@ const ChargerContractAdd = () => {
           <DetailRow>
             <DetailLabelCol sm={2}>행정동 주소</DetailLabelCol>
             <DetailContentCol>
-              <DropboxGroup dropdownItems={addressList} className={"me-2"} />
+              <RegionGroup />
             </DetailContentCol>
 
             <DetailLabelCol sm={2}>장소 담당자</DetailLabelCol>
