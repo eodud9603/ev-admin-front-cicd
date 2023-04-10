@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import { getStationList } from "src/api/station/stationApi";
@@ -25,6 +25,7 @@ import {
 } from "src/api/station/stationApi.interface";
 import { getPageList } from "src/utils/pagination";
 import { YNType } from "src/api/api.interface";
+import { useTabStore } from "src/store/tabStore";
 
 /* 사용여부 필터 */
 const useList = [
@@ -66,8 +67,6 @@ const tableHeader = [
 const ChargingStationManagement = () => {
   const data = useLoaderData() as IStationListResponse | null;
 
-  const [tabList, setTabList] = useState([{ label: "충전소 관리" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
   const [list, setList] = useState<IStationListItem[]>(data?.elements ?? []);
 
   const [page, setPage] = useState(1);
@@ -122,6 +121,7 @@ const ChargingStationManagement = () => {
   const searchHandler =
     (params: Partial<IRequestStationList> = {}) =>
     async () => {
+      console.log("ddd");
       /* 검색 파라미터 */
       let searchParams: IRequestStationList = {
         size: Number(count),
@@ -145,6 +145,7 @@ const ChargingStationManagement = () => {
 
       /* 검색  */
       const { code, data } = await getStationList(searchParams);
+      console.log(data);
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
@@ -166,16 +167,26 @@ const ChargingStationManagement = () => {
       }
     };
 
+  const tabStore = useTabStore();
+
+  useEffect(() => {
+    const index = tabStore.data.findIndex((e) => e.path === location.pathname);
+    if (index < 0) {
+      console.log(location.pathname);
+      tabStore.setData({
+        data: data,
+        label: "충전소 관리",
+        path: "/charger/ChargerStation",
+      });
+    }
+    tabStore.setActive(location.pathname);
+  }, []);
+
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={() => {}}
-        onClose={() => {}}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase

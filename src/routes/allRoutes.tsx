@@ -121,7 +121,10 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/chargerStation",
     element: <ChargingStation />,
-    loader: stationListLoader,
+    loader: async () => {
+      // if()
+      return stationListLoader();
+    },
   },
   {
     path: "/charger/chargerStation/add",

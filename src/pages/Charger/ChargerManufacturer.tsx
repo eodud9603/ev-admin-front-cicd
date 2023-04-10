@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import styled from "styled-components";
-import { Col, Row, Table } from "reactstrap";
+import { Col, Row } from "reactstrap";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
@@ -13,6 +13,7 @@ import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGrou
 import SearchTextInput from "src/components/Common/Filter/component/SearchTextInput";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTabStore } from "src/store/tabStore";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -78,7 +79,6 @@ export const ChargerManufacturer = () => {
   const nav = useNavigate();
   const { pathname } = useLocation();
   const [page, setPage] = useState(1);
-  const [selected, setSelected] = useState("0");
   const [text, setText] = useState("");
 
   const moveToRegister = () => {
@@ -88,14 +88,24 @@ export const ChargerManufacturer = () => {
     nav(`${pathname}/detail/${id}`);
   };
 
+  const tabStore = useTabStore();
+
+  useEffect(() => {
+    const index = tabStore.data.findIndex((e) => e.path === location.pathname);
+    if (index < 0) {
+      tabStore.setData({
+        data: [],
+        label: "충전기 제조사 관리",
+        path: "/charger/manufacturer",
+      });
+    }
+    tabStore.setActive(location.pathname);
+  }, []);
+
   return (
     <ContainerBase>
       <HeaderBase />
-      <TabGroup
-        list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
-        selectedIndex={selected}
-        onClick={(e) => setSelected(e.currentTarget.value)}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase

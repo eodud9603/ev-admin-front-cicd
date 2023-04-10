@@ -1,33 +1,44 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import TabBase, { ITabBaseProps } from "src/components/Common/Tab/TabBase";
+import TabBase from "src/components/Common/Tab/TabBase";
+import { useTabStore } from "src/store/tabStore";
+import { useNavigate } from "react-router-dom";
 
-interface ITabGroupProps extends Omit<ITabBaseProps, "text" | "selected"> {
-  list: { label: string }[];
-  selectedIndex: string;
-}
-
-const TabGroup = (props: ITabGroupProps) => {
+const TabGroup = (props: any) => {
   const {
     /* required */
-    list = [],
-    selectedIndex = "0",
+    // list = [],
+    // selectedIndex = "0",
     /* optional */
     /* rest */
     ...rest
   } = props;
 
+  const nav = useNavigate();
+  const tabState = useTabStore();
+
+  useEffect(() => {
+    console.log("state::", tabState.data);
+  }, [tabState.data]);
+
+  const handleTabClick = (path: string) => {
+    tabState.setActive(path);
+    nav(path);
+  };
+
   return (
     <TabSection className={"mt-4 mx-5 d-flex flex-nowrap"}>
-      {list.map(({ label }, index) => (
-        <TabBase
-          key={index}
-          index={index}
-          text={label}
-          selected={selectedIndex === `${index}`}
-          {...rest}
-        />
-      ))}
+      {tabState.data.length > 0 &&
+        tabState.data.map((state, index) => (
+          <TabBase
+            key={state.path}
+            index={index}
+            text={state.label}
+            selected={state.path === tabState.active}
+            onClick={() => handleTabClick(state.path)}
+            {...rest}
+          />
+        ))}
     </TabSection>
   );
 };
