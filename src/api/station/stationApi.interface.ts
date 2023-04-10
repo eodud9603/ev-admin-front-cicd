@@ -140,12 +140,17 @@ export interface IStationContractListResponse {
   elements: IStationContractItem[];
 }
 
-/* 충전소 계약 등록 */
+/* 충전소 계약 상세 조회 */
 /** 
- * @see http://218.38.12.31:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_2
+ * @see http://218.38.12.31:45081/docs/index.html#_%EC%83%81%EC%84%B8_2
  * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
  */
-export interface IRequestStationContractRegister {
+export interface IRequestStationContractDetail {
+  contractId: number;
+}
+
+export interface IStationContractDetailResponse {
+  id: number;
   place: string;
   contractorName: string;
   code: string; /* 계약코드 관리 */
@@ -175,3 +180,17 @@ export interface IRequestStationContractRegister {
   costConstruct: number;
   esafetyMng: string;
 }
+
+/* 충전소 계약 상세 수정 */
+/** 
+ * @see http://218.38.12.31:45081/docs/index.html#_%EC%88%98%EC%A0%95
+ * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ */
+export type IRequestStationContractModify = IStationContractDetailResponse
+
+/* 충전소 계약 등록 */
+/** 
+ * @see http://218.38.12.31:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_2
+ * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ */
+export type IRequestStationContractRegister = Omit<IStationContractDetailResponse, "id">

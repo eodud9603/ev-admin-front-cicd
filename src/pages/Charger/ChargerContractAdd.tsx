@@ -26,7 +26,7 @@ import { postStationContractRegister } from "src/api/station/stationApi";
 import { number, object, string } from "yup";
 import { YNType } from "src/api/api.interface";
 
-const contractionValidation = object({
+const contractValidation = object({
   place: string().required("계약 장소를 입력해주세요."),
   contractorName: string().required("계약자 이름을 입력해주세요."),
   code: string().required("계약여부를 입력해주세요."),
@@ -123,7 +123,7 @@ const ChargerContractAdd = () => {
   /** 계약 등록 */
   const postRegister = async () => {
     /** 유효성 체크 */
-    const valid = await contractionValidation.isValid({
+    const valid = await contractValidation.isValid({
       ...inputs,
       /** @TODO 파일 업로드 기능 추가 후, 적용 */
       // contractFileUrl:

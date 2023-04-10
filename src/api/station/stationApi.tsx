@@ -1,6 +1,7 @@
 import { API_URL } from "src/constants/url";
 import api from "src/utils/api";
 import {
+  IRequestStationContractDetail,
   IRequestStationContractList,
   IRequestStationContractRegister,
   IRequestStationDetail,
@@ -9,6 +10,8 @@ import {
   IStationContractListResponse,
   IStationDetailResponse,
   IStationListResponse,
+  IRequestStationContractModify,
+  IStationContractDetailResponse,
 } from "src/api/station/stationApi.interface";
 
 const { stationUrl } = API_URL;
@@ -47,14 +50,29 @@ export const getStationContractList = (params: IRequestStationContractList) => {
   });
 };
 
+/** 충전소 계약 상세 조회 api */
+export const getStationContractDetail = (
+  params: IRequestStationContractDetail
+) => {
+  return api.get<IStationContractDetailResponse>(
+    `${stationUrl}/contract/detail/${params.contractId}`
+  );
+};
+
+/** 충전소 계약 수정 api */
+export const postStationContractModify = (
+  body: IRequestStationContractModify
+) => {
+  return api.post<undefined>(`${stationUrl}/contract/modify`, {
+    body,
+  });
+};
+
 /** 충전소 계약 등록 api */
 export const postStationContractRegister = (
   body: IRequestStationContractRegister
 ) => {
-  return api.post<undefined>(
-    `${stationUrl}/contract/register`,
-    {
-      body,
-    }
-  );
+  return api.post<undefined>(`${stationUrl}/contract/register`, {
+    body,
+  });
 };

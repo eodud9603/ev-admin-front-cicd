@@ -300,8 +300,8 @@ const ChargerContract = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{total}개</span>의 충전소 정보가
-              있습니다.
+              총 <span className={"text-turu"}>{total}개</span>의 충전소 계약
+              정보가 있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
