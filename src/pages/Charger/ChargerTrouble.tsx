@@ -5,7 +5,7 @@ import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import styled from "styled-components";
-import { Col, Row, Table } from "reactstrap";
+import { Col, Row } from "reactstrap";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
@@ -14,50 +14,41 @@ import SearchTextInput from "src/components/Common/Filter/component/SearchTextIn
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { useLocation, useNavigate } from "react-router-dom";
-
-const dropdownData = [
-  { label: "10개씩 보기", value: "1" },
-  { label: "20개씩 보기", value: "2" },
-  { label: "50개씩 보기", value: "3" },
-];
-
-const dropdownGroupArea = [
-  {
-    menuItems: [{ label: "시,도", value: "1" }],
-  },
-  {
-    menuItems: [{ label: "구,군", value: "1" }],
-  },
-  {
-    menuItems: [{ label: "동,읍", value: "1" }],
-  },
-];
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import { COUNT_FILTER_LIST, OPERATOR_FILTER_LIST } from "src/constants/list";
+import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
+import {
+  IBrokenListResponse,
+  IRequestBrokenList,
+} from "src/api/broken/brokenApi.interface";
+import { getPageList } from "src/utils/pagination";
+import useInputs from "src/hooks/useInputs";
+import { getBrokenList } from "src/api/broken/brokenApi";
+import { OperatorType } from "src/api/api.interface";
 
 const dropdownGroupSearch = [
-  { label: "충전소명", value: "1" },
-  { label: "충전소 ID", value: "1" },
-  { label: "충전기 번호", value: "1" },
-  { label: "관리자명", value: "1" },
-  { label: "처리자 ID", value: "1" },
+  { label: "충전소명", value: "stationNm" },
+  { label: "충전소 ID", value: "stationId" },
+  { label: "충전기 번호", value: "" },
+  { label: "관리자명", value: "" },
+  { label: "처리자 ID", value: "" },
 ];
 
 const dropdownGroupSort = [
   {
     menuItems: [
-      { label: "기본", value: "1" },
-      { label: "충전소명", value: "1" },
-      { label: "충전소ID", value: "1" },
-      { label: "등록일", value: "1" },
+      { label: "기본", value: "StationName" },
+      { label: "충전소명", value: "StationName" },
+      { label: "충전소ID", value: "stationId" },
+      { label: "등록일", value: "CrateAt" },
     ],
   },
 ];
-const operatorRadio = [{ label: "전체" }, { label: "HEV" }, { label: "JEV" }];
-const statusRadio = [
-  { label: "전체" },
-  { label: "접수" },
-  { label: "진행중" },
-  { label: "처리완료" },
+const brokenStatusList = [
+  { label: "전체", value: "" },
+  { label: "접수", value: "접수" },
+  { label: "진행중", value: "진행중" },
+  { label: "처리완료", value: "처리완료" },
 ];
 
 const tableHeader = [
@@ -76,34 +67,105 @@ const tableHeader = [
   { label: "등록자" },
   { label: "등록일" },
 ];
-const data = [
-  {
-    troubleSeq: 1,
-    area: "서울",
-    division: "HEV",
-    stationName: "휴맥스 카플랫 전용 A",
-    stationId: "충전소 ID 노출",
-    chargerId: "충전기 ID 노출",
-    trouble1: "고장부위11",
-    trouble2: "고장부위22",
-    employeeId: "hong",
-    employeeName: "홍길동",
-    receiptDt: "YYYY.MM.DD",
-    processingYn: "접수",
-    precessingDt: "YYYY.MM.DD 00:00",
-    operatorId: "admin",
-    operatorName: "운영자",
-    register: "박길동",
-    createDt: "YYYY.MM.DD",
-  },
-];
 
 export const ChargerTrouble = () => {
+  /** init 충전기별 고장/파손 데이터 */
+  const data = useLoaderData() as IBrokenListResponse | null;
+
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const [page, setPage] = useState(1);
   const [selected, setSelected] = useState("0");
-  const [text, setText] = useState("");
+
+  const {
+    sido,
+    gugun,
+    dong,
+    count,
+    searchRange,
+    searchText,
+    operator,
+    sort,
+    brokenStatus,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    sido: "",
+    gugun: "",
+    dong: "",
+    searchRange: "",
+    searchText: "",
+    operator: "" as OperatorType,
+    sort: "StationName",
+    brokenStatus: "",
+    count: "10",
+  });
+
+  const [list, setList] = useState(data?.elements ?? []);
+  const [page, setPage] = useState(1);
+  const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
+  const [total, setTotal] = useState(data?.totalElements ?? 0);
+  const [emptyMessage, setEmptyMessage] = useState(
+    "등록된 고장/파손 충전기 정보가 없습니다."
+  );
+
+  /** 파라미터 빈값 제거 */
+  const getParams = (params: Partial<IRequestBrokenList>) => {
+    for (const param in params) {
+      const deleteName = param as keyof IRequestBrokenList;
+      const data = params[deleteName];
+
+      if (data === "") {
+        delete params[deleteName];
+      }
+    }
+  };
+
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestBrokenList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams: IRequestBrokenList = {
+        size: Number(count),
+        page,
+        sido,
+        gugun,
+        dong,
+        operator,
+        sort: sort as IRequestBrokenList["sort"],
+      };
+      if (searchRange) {
+        searchParams[searchRange as "stationNm" | "stationId"] = searchText;
+      }
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
+
+      /* 검색  */
+      const { code, data } = await getBrokenList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        if (searchParams.page === 0) {
+          setPage(1);
+        }
+        if (data.totalElements === 0) {
+          setEmptyMessage("검색된 고장/파손 충전기 정보가 없습니다.");
+        }
+        setList(data.elements);
+        setMaxPage(data.totalPages);
+        setTotal(data.totalElements);
+      } else {
+        setPage(1);
+        setList([]);
+        setMaxPage(1);
+        setTotal(0);
+        setEmptyMessage("오류가 발생하였습니다.");
+      }
+    };
 
   const moveToDetail = (id: number) => {
     nav(`${pathname}/detail/${id}`);
@@ -117,7 +179,7 @@ export const ChargerTrouble = () => {
     <ContainerBase>
       <HeaderBase></HeaderBase>
       <TabGroup
-        list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
+        list={[{ label: "충전소 관리" }]}
         selectedIndex={selected}
         onClick={(e) => setSelected(e.currentTarget.value)}
       />
@@ -136,13 +198,19 @@ export const ChargerTrouble = () => {
         <FilterSection className={"py-4"}>
           <Row className={"mb-3"}>
             <Col md={6}>
-              <DropboxGroup
+              <RegionGroup
                 label={"지역"}
-                dropdownItems={dropdownGroupArea}
-                className={"me-2 w-xs"}
+                onChangeRegion={(region) => {
+                  onChangeSingle({
+                    sido: region.sido,
+                    gugun: region.sigugun,
+                    dong: region.dongmyun,
+                  });
+                }}
               />
             </Col>
             <Col>
+              {/** @TODO 검색 api 해당 필드 추가 필요 (서버 선 작업 필요) */}
               <DateGroup label={"접수일"} />
             </Col>
             <Col md={2} />
@@ -154,16 +222,20 @@ export const ChargerTrouble = () => {
                 menuItems={dropdownGroupSearch}
                 placeholder={"충전소를 입력해주세요"}
                 name={"searchText"}
-                className={""}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                value={searchText}
+                onChange={onChange}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
                 title={"운영사"}
-                name={"radioGroup2"}
-                list={operatorRadio}
+                name={"operator"}
+                list={OPERATOR_FILTER_LIST.map((data) => ({
+                  ...data,
+                  checked: operator === data.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -171,15 +243,29 @@ export const ChargerTrouble = () => {
             <Col>
               <DropboxGroup
                 label={"정렬기준"}
-                dropdownItems={dropdownGroupSort}
+                dropdownItems={dropdownGroupSort.map((data) => ({
+                  ...data,
+                  onClickDropdownItem: (label, value) => {
+                    onChangeSingle({ sort: value });
+                    onChangeSingle({ sort: value });
+                    void searchHandler({
+                      page: 1,
+                      sort: value as IRequestBrokenList["sort"],
+                    })();
+                  },
+                }))}
                 className={"me-2"}
               />
             </Col>
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
                 title={"처리여부"}
-                name={"radioGroup3"}
-                list={statusRadio}
+                name={"brokenStatus"}
+                list={brokenStatusList.map((data) => ({
+                  ...data,
+                  checked: brokenStatus === data.value,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -191,7 +277,7 @@ export const ChargerTrouble = () => {
           <Row className={"mb-4"}>
             <Col>
               <AmountInfo className={"text-size-13 fw-bold"}>
-                총 <AmountInfo className={"text-turu"}>0개</AmountInfo>의
+                총 <AmountInfo className={"text-turu"}>{total}개</AmountInfo>의
                 고장/파손 정보가 있습니다.
               </AmountInfo>
             </Col>
@@ -200,7 +286,15 @@ export const ChargerTrouble = () => {
                 <span className={"font-size-10 text-muted"}>
                   2023-04-01 14:51기준
                 </span>
-                <DropdownBase menuItems={dropdownData} />
+                <DropdownBase
+                  menuItems={COUNT_FILTER_LIST}
+                  onClickDropdownItem={(_, value) => {
+                    onChangeSingle({
+                      count: value,
+                    });
+                    void searchHandler({ page: 1, size: Number(value) })();
+                  }}
+                />
                 <ButtonBase
                   label={"신규 등록"}
                   color={"turu"}
@@ -212,45 +306,63 @@ export const ChargerTrouble = () => {
           </Row>
           <TableBase tableHeader={tableHeader}>
             <>
-              {data.length > 0 &&
-                data.map((e, i) => (
-                  <tr key={i}>
-                    <td>{}</td>
-                    <td>{e.area}</td>
-                    <td>{e.division}</td>
+              {list.length > 0 ? (
+                list.map((broken, index) => (
+                  <tr key={broken.id}>
+                    <td>{(page - 1) * Number(count) + index + 1}</td>
+                    <td>{broken.stationRegion}</td>
+                    <td>{broken.stationOperator ?? "전체"}</td>
                     <td>
                       <u
                         role={"button"}
                         className={"text-turu"}
-                        onClick={() => moveToDetail(e.troubleSeq)}
+                        onClick={() => moveToDetail(broken.id)}
                       >
-                        {e.stationName}
+                        {broken.stationName}
                       </u>
                     </td>
-                    <td>{e.stationId}</td>
-                    <td>{e.chargerId}</td>
-                    <td>{e.trouble1}</td>
-                    <td>{e.trouble2}</td>
+                    <td>{broken.stationKey}</td>
+                    <td>{broken.searchKey}</td>
+                    <td>{broken.damagedPart01 ?? "-"}</td>
+                    <td>{broken.damagedPart02 ?? "-"}</td>
                     <td>
-                      {e.employeeId}({e.employeeName})
+                      {broken.adminId ?? "알수없음"}(
+                      {broken.adminName ?? "알수없음"})
                     </td>
+                    <td>접수일</td>
+                    <td>처리여부(일시)</td>
                     <td>
-                      {e.processingYn}({e.receiptDt})
+                      {broken.managerId ?? "알수없음"}(
+                      {broken.managerName ?? "알수없음"})
                     </td>
-                    <td>
-                      {e.processingYn}({e.precessingDt})
-                    </td>
-                    <td>
-                      {e.operatorId}({e.operatorName})
-                    </td>
-                    <td>{e.register}</td>
-                    <td>{e.createDt}</td>
+                    <td>{broken.reporterName ?? "-"}</td>
+                    <td>{broken.createDate ?? "-"}</td>
                   </tr>
-                ))}
+                ))
+              ) : (
+                <>
+                  <tr>
+                    <td colSpan={14} className={"py-5 text-center text"}>
+                      {emptyMessage}
+                    </td>
+                  </tr>
+                </>
+              )}
             </>
           </TableBase>
         </ListSection>
-        <PaginationBase setPage={setPage} data={{}} />
+        <PaginationBase
+          setPage={setPage}
+          data={{
+            hasPreviousPage: page > 1,
+            hasNextPage: page < maxPage,
+            navigatePageNums: getPageList(page, maxPage),
+            pageNum: page,
+            onChangePage: (page) => {
+              void searchHandler({ page })();
+            },
+          }}
+        />
       </BodyBase>
     </ContainerBase>
   );

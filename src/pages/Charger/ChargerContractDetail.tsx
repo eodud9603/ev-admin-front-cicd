@@ -56,7 +56,7 @@ const contractValidation = object({
   subsidyRevDt: string().required("보조금 수령일를 입력해주세요."),
   costSales: number().required("영업비용을 입력해주세요."),
   costConstruct: number().required("공사비를 입력해주세요."),
-  // esafetyMng: string().required("전기 안전 관리를 입력해주세요."),
+  esafetyMng: string().required("전기 안전 관리를 입력해주세요."),
 });
 
 const ChargerContractDetail = () => {
