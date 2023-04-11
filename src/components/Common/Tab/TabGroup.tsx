@@ -26,6 +26,11 @@ const TabGroup = (props: any) => {
     nav(path);
   };
 
+  const handleTabClose = (path: string) => {
+    tabState.removeData(path);
+    nav(-1);
+  };
+
   return (
     <TabSection className={"mt-4 mx-5 d-flex flex-nowrap"}>
       {tabState.data.length > 0 &&
@@ -36,6 +41,7 @@ const TabGroup = (props: any) => {
             text={state.label}
             selected={state.path === tabState.active}
             onClick={() => handleTabClick(state.path)}
+            onClose={() => handleTabClose(state.path)}
             {...rest}
           />
         ))}
