@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import { YNType } from "src/api/api.interface";
@@ -24,6 +24,7 @@ import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import { getPageList } from "src/utils/pagination";
 import styled from "styled-components";
+import { useTabStore } from "src/store/tabStore";
 
 /* 계약여부 필터 */
 const contractFilterList = [
@@ -98,9 +99,6 @@ const tableHeader = [
 const ChargerContract = () => {
   /** init 충전소 계약 목록 데이터 */
   const data = useLoaderData() as IStationContractListResponse | null;
-
-  const [tabList, setTabList] = useState([{ label: "충전소 계약 관리" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
 
   const [list, setList] = useState(data?.elements ?? []);
   const [page, setPage] = useState(1);
@@ -199,15 +197,32 @@ const ChargerContract = () => {
       }
     };
 
+  const tabStore = useTabStore();
+
+  useEffect(() => {
+    const index = tabStore.data.findIndex((e) =>
+      location.pathname.includes(e.path)
+    );
+    if (index < 0) {
+      console.log(location.pathname);
+      tabStore.setData({
+        data: [],
+        label: "충전소 계약 관리",
+        path: location.pathname,
+      });
+    }
+    tabStore.setActive(location.pathname);
+  }, []);
+
   return (
     <ContainerBase>
       <HeaderBase />
 
       <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={() => {}}
-        onClose={() => {}}
+      // list={tabList}
+      // selectedIndex={selectedIndex}
+      // onClick={() => {}}
+      // onClose={() => {}}
       />
 
       <BodyBase>

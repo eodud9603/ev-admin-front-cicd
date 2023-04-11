@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Input, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -27,6 +27,7 @@ import { number, object, string } from "yup";
 import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
 import { postStationContractModify } from "src/api/station/stationApi";
 import { YNType } from "src/api/api.interface";
+import { useTabStore } from "src/store/tabStore";
 
 const contractValidation = object({
   id: number().required("필수 값이 누락되었습니다."),
@@ -63,8 +64,6 @@ const ChargerContractDetail = () => {
   /** init 충전소 계약 상세 데이터 */
   const data = useLoaderData() as IStationContractDetailResponse | null;
 
-  const [tabList, setTabList] = useState([{ label: "충전소 계약 관리" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
   /** 전역 disabled 처리 */
   const [disabled, setDisabled] = useState(true);
   /* 수정완료 모달 */
@@ -167,15 +166,32 @@ const ChargerContractDetail = () => {
     }
   };
 
+  const tabStore = useTabStore();
+
+  useEffect(() => {
+    const index = tabStore.data.findIndex((e) =>
+      location.pathname.includes(e.path)
+    );
+    if (index < 0) {
+      console.log(location.pathname);
+      tabStore.setData({
+        data: data,
+        label: "충전소 계약 상세",
+        path: location.pathname,
+      });
+    }
+    tabStore.setActive(location.pathname);
+  }, []);
+
   return (
     <ContainerBase>
       <HeaderBase></HeaderBase>
 
       <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={() => {}}
-        onClose={() => {}}
+      // list={tabList}
+      // selectedIndex={selectedIndex}
+      // onClick={() => {}}
+      // onClose={() => {}}
       />
 
       <BodyBase>

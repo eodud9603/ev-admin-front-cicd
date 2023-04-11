@@ -13,6 +13,7 @@ export interface ITabState {
   data: Array<tabType>;
   active: string;
   setData: (tabType: tabType) => void;
+  removeData: (path: string) => void;
   setActive: (path: string) => void;
 }
 export interface ICommonResProps {
@@ -29,6 +30,13 @@ export const useTabStore = create<ITabState>()(
         data: [],
         setData: (data) => {
           set((state) => ({ data: [...(state.data ?? []), { ...data }] }));
+        },
+        removeData: (path: string) => {
+          set((state) => {
+            const arr = JSON.parse(JSON.stringify(state.data));
+
+            return { data: arr.filter((e: tabType) => !e.path.includes(path)) };
+          });
         },
         setActive: (path) => set(() => ({ active: path })),
       }),
