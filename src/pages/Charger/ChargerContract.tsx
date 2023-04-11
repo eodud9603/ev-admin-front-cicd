@@ -66,7 +66,7 @@ const searchList = [
   {
     label: "계약장소명",
     placeholderKeyword: "계약장소명을",
-    value: "",
+    value: "ContractPlace",
   },
   { label: "충전소 ID", placeholderKeyword: "충전소 ID를", value: "" },
   { label: "영업업체", placeholderKeyword: "영업업체를", value: "" },
@@ -127,7 +127,7 @@ const ChargerContract = () => {
     gugun: "",
     dong: "",
     contractStatus: "",
-    searchRange: "1",
+    searchRange: "ContractPlace",
     searchText: "",
     isUse: "" as YNType,
     sort: "ContractPlace",
@@ -166,9 +166,9 @@ const ChargerContract = () => {
         sort: sort as IRequestStationContractList["sort"],
       };
       /** @TODO 검색어 필터 추가 후, 추가예정 */
-      // if (searchRange) {
-      //   searchParams[searchRange as "contractPlace"] = searchText;
-      // }
+      if (searchRange) {
+        searchParams[searchRange as "contractPlace"] = searchText;
+      }
       searchParams = {
         ...searchParams,
         ...params,
