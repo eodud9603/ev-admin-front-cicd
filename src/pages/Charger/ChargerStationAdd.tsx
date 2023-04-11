@@ -25,7 +25,6 @@ import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModa
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
-import { DetailDropdownRow } from "src/components/Common/DetailContentRow/DetailDropdownRow";
 import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 import SingleMapBase from "src/components/Common/Map/SingleMapBase";
 import useMapStore from "src/store/mapStore";
@@ -33,6 +32,7 @@ import { postStationRegistration } from "src/api/station/stationApi";
 import { OPERATOR_FILTER_LIST } from "src/constants/list";
 import { object, string, number } from "yup";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
+import ContractDropdown from "./components/ContractDropdown";
 
 const stationRegistrationValidation = object({
   stationName: string().required("Please Enter stationName"),
@@ -747,28 +747,15 @@ const ChargerStationAdd = () => {
                 />
               </DropArea>
               {isContractDrop && (
-                <Row className={"me-1 border-bottom border-2 mb-4"}>
-                  <DetailDropdownRow
-                    rows={[
-                      {
-                        titleWidthRatio: 2,
-                        title: "계약번호",
-                        dropdownItems: [
-                          {
-                            menuItems: [
-                              {
-                                label: "선택",
-                                value: "",
-                              },
-                            ],
-                            onClickDropdownItem: (label, value) => {
-                              onChangeSingle({ contractNumber: value });
-                            },
-                          },
-                        ],
-                      },
-                    ]}
-                  />
+                <Row className={"me-1 border-top border-bottom border-2 mb-4"}>
+                  <DetailLabelCol sm={2}>계약번호</DetailLabelCol>
+                  <DetailContentCol>
+                    <ContractDropdown
+                      onChange={(data) => {
+                        /** @TODO 계약장소 데이터 state 추가  */
+                      }}
+                    />
+                  </DetailContentCol>
                 </Row>
               )}
             </Col>
