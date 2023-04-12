@@ -361,20 +361,24 @@ const ChargerContract = () => {
                         <u>{contract.place}</u>
                       </HoverSpan>
                     </td>
-                    <td>{contract.meStationId}</td>
+                    <td>{contract.meStationId || "-"}</td>
                     <td>
-                      {contract.addressSido} {contract.addressSigugun}{" "}
-                      {contract.addressDongmyun}
+                      {contract.addressSido
+                        ? `${contract.addressSido} ${contract.addressSigugun} 
+                        ${contract.addressDongmyun}`
+                        : "-"}
                     </td>
-                    <td>{contract.salesCompany}</td>
-                    <td>{contract.managerName}</td>
+                    <td>{contract.salesCompany || "-"}</td>
+                    <td>{contract.managerName || "-"}</td>
                     <td>
-                      <p>{contract.managerPhone}</p>
+                      <p>{contract.managerPhone || "-"}</p>
                     </td>
                     <td>
-                      {contract.contractStartDt}~{contract.contractEndDt}
+                      {contract.contractStartDt
+                        ? `${contract.contractStartDt}~${contract.contractEndDt}`
+                        : "-"}
                     </td>
-                    <td>{contract.contractDt}</td>
+                    <td>{contract.contractDt || "-"}</td>
                     <td>{contract.createdDate}</td>
                   </tr>
                 ))

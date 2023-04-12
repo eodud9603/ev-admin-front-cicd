@@ -343,7 +343,8 @@ const ChargingStationManagement = () => {
                         {fastCharger} / {fullCharger - fastCharger}
                       </td>
                       <td>{isOpen}</td>
-                      <td>데이터 누락</td>
+                      {/** @TODO 데이터 누락 추가 필요 */}
+                      <td>-</td>
                       <td>{createAt}</td>
                     </tr>
                   )

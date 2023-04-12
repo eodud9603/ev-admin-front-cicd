@@ -143,28 +143,6 @@ const SingleMapBase = (props: IMapBaseProps) => {
       className={"m-0 p-0 w-100 h-100 position-relative"}
     >
       {children}
-
-      {/* 임시 중심좌표 라인 */}
-      {/* <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          zIndex: 1,
-          height: 1,
-          width: "100%",
-          backgroundColor: "red",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          left: "50%",
-          zIndex: 1,
-          width: 1,
-          height: "100%",
-          backgroundColor: "red",
-        }}
-      /> */}
     </div>
   );
 };
