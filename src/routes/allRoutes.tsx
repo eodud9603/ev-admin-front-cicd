@@ -115,6 +115,7 @@ import { stationContractDetailLoader } from "src/pages/Charger/loader/stationCon
 import { brokenListLoader } from "src/pages/Charger/loader/brokenListLoader";
 import { manufactureListLoader } from "src/pages/Charger/loader/manufactureListLoader";
 import { manufactureDetailLoader } from "src/pages/Charger/loader/manufactureDetailLoader";
+import SettlementMembership from "src/pages/Settlement/SettlementMembership";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -316,6 +317,10 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/settlement/group/detail/:id",
     element: <SettlementGroupDetail />,
+  },
+  {
+    path: "/settlement/membership",
+    element: <SettlementMembership />,
   },
 
   /* 운영자 관리 */
