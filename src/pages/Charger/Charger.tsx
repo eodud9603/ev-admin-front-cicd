@@ -385,7 +385,8 @@ const Charger = () => {
                       <td>{lastChargingEndTime ?? "-"}</td>
                       <td>{operationStatus === "DEMOLISHED" ? "Y" : "N"}</td>
                       <td>{assetNumber}</td>
-                      <td>등록일{}</td>
+                      {/** @TODO 데이터 누락 추가 필요 */}
+                      <td>-</td>
                     </tr>
                   )
                 )
