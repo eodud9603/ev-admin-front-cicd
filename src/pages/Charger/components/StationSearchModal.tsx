@@ -8,9 +8,16 @@ import styled from "styled-components";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
-import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
+import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
+import useInputs from "src/hooks/useInputs";
+import {
+  IRequestStationList,
+  IStationListItem,
+} from "src/api/station/stationApi.interface";
+import { getStationList } from "src/api/station/stationApi";
+import { getPageList } from "src/utils/pagination";
 
-const dropdownGroupSearch = [{ label: "충전소명", value: "1" }];
+const dropdownGroupSearch = [{ label: "충전소명", value: "stationNm" }];
 
 const tableHeader = [
   { label: "번호" },
@@ -21,22 +28,88 @@ const tableHeader = [
   { label: "커넥터 종류" },
   { label: "주소" },
 ];
+const count = 10;
 
-const data = [
-  {
-    stationName: "휴맥스 카플랫 전용 A",
-    stationId: "KEP0000020",
-    chargerId: "충전기 ID",
-    fast: "급속",
-    slow: "",
-    connectorType: "DC콤보",
-    address: "경기도 성남시 분당구 황새울로 216, 902호 (수내동, 휴맥스빌리지)",
-  },
-];
 export const StationSearchModal = (props: IModalBaseProps) => {
   const { isOpen, onClose, title, size } = props;
-  const [text, setText] = useState("");
+
+  const [list, setList] = useState<IStationListItem[]>([]);
+
   const [page, setPage] = useState(1);
+  const [maxPage, setMaxPage] = useState(1);
+  const [emptyMessage, setEmptyMessage] = useState("충전소를 검색해주세요.");
+
+  const {
+    sido,
+    gugun,
+    dong,
+    searchRange,
+    searchText,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    sido: "",
+    gugun: "",
+    dong: "",
+    searchRange: "stationNm",
+    searchText: "",
+  });
+
+  /** 파라미터 빈값 제거 */
+  const getParams = (params: Partial<IRequestStationList>) => {
+    for (const param in params) {
+      const deleteName = param as keyof IRequestStationList;
+      const data = params[deleteName];
+
+      if (data === "") {
+        delete params[deleteName];
+      }
+    }
+  };
+
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestStationList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams: IRequestStationList = {
+        size: Number(count),
+        page,
+        sido,
+        gugun,
+        dong,
+        sort: "CrateAt",
+      };
+      if (searchRange) {
+        searchParams[searchRange as "stationNm"] = searchText;
+      }
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
+
+      /** @TODO 검색 (* 다른 api로 변경 필요할것으로 판단됨)  */
+      const { code, data } = await getStationList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        if (searchParams.page === 0) {
+          setPage(1);
+        }
+        if (data.totalElements === 0) {
+          setEmptyMessage("검색된 충전소 정보가 없습니다.");
+        }
+        setList(data.elements);
+        setMaxPage(data.totalPages);
+      } else {
+        setPage(1);
+        setList([]);
+        setMaxPage(1);
+        setEmptyMessage("오류가 발생하였습니다.");
+      }
+    };
 
   return (
     <ModalBase
@@ -52,14 +125,14 @@ export const StationSearchModal = (props: IModalBaseProps) => {
             "bg-opacity-10 p-3 rounded-3 mb-3 py-4"
           }
         >
-          <DropboxGroup
-            className={"me-2 bg-white"}
-            label={"지역"}
-            dropdownItems={[
-              { menuItems: [{ label: "시, 도", value: "1" }] },
-              { menuItems: [{ label: "구, 군", value: "1" }] },
-              { menuItems: [{ label: "동, 읍", value: "1" }] },
-            ]}
+          <RegionGroup
+            onChangeRegion={(region) => {
+              onChangeSingle({
+                sido: region.sido,
+                gugun: region.sigugun,
+                dong: region.dongmyun,
+              });
+            }}
           />
           <div className={"my-3"} />
           <SearchTextInput
@@ -67,35 +140,56 @@ export const StationSearchModal = (props: IModalBaseProps) => {
             menuItems={dropdownGroupSearch}
             placeholder={"입력해주세요"}
             name={"searchText"}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
+            value={searchText}
+            onChange={onChange}
+            onClick={searchHandler({ page: 1 })}
           />
         </FilterSection>
 
         <ListSection>
-          <Label className={"fw-bold font-size-16 my-4 m-0"}>운영자 선택</Label>
+          <Label className={"fw-bold font-size-16 my-4 m-0"}>
+            충전소(충전기) 선택
+          </Label>
           <TableBase tableHeader={tableHeader}>
             <>
-              {data.length > 0 &&
-                data.map((e, i) => (
-                  <tr key={i}>
-                    <td>{}</td>
+              {list.length > 0 ? (
+                list.map((data, index) => (
+                  <tr key={data.stationId}>
+                    <td>{(page - 1) * Number(count) + index + 1}</td>
                     <td>
                       <HoverSpan className={"text-turu"}>
-                        <u>{e.stationName}</u>
+                        <u>{data.stationNm}</u>
                       </HoverSpan>
                     </td>
-                    <td>{e.stationId}</td>
-                    <td>{e.chargerId}</td>
-                    <td>{e.fast}</td>
-                    <td>{e.connectorType}</td>
-                    <td>{e.address}</td>
+                    <td>{data.stationId}</td>
+                    <td>{"-"}</td>
+                    <td>{data.fastCharger || "-"}</td>
+                    <td>{data.fullCharger - data.fastCharger}</td>
+                    <td>{data.address}</td>
                   </tr>
-                ))}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} className={"py-5 text-center text"}>
+                    {emptyMessage}
+                  </td>
+                </tr>
+              )}
             </>
           </TableBase>
         </ListSection>
-        <PaginationBase setPage={setPage} data={{}} />
+        <PaginationBase
+          setPage={setPage}
+          data={{
+            hasPreviousPage: page > 1,
+            hasNextPage: page < maxPage,
+            navigatePageNums: getPageList(page, maxPage),
+            pageNum: page,
+            onChangePage: (page) => {
+              void searchHandler({ page })();
+            },
+          }}
+        />
         <div className={"d-flex justify-content-center"}>
           <ButtonBase
             label={"닫기"}

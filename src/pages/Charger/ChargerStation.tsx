@@ -121,7 +121,6 @@ const ChargingStationManagement = () => {
   const searchHandler =
     (params: Partial<IRequestStationList> = {}) =>
     async () => {
-      console.log("ddd");
       /* 검색 파라미터 */
       let searchParams: IRequestStationList = {
         size: Number(count),
@@ -145,7 +144,6 @@ const ChargingStationManagement = () => {
 
       /* 검색  */
       const { code, data } = await getStationList(searchParams);
-      console.log(data);
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
