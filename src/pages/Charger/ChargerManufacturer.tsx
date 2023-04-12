@@ -145,6 +145,7 @@ export const ChargerManufacturer = () => {
         data: [],
         label: "충전기 제조사 관리",
         path: "/charger/manufacturer",
+        rootPath: location.pathname,
       });
     }
     tabStore.setActive(location.pathname);

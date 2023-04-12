@@ -209,6 +209,7 @@ const ChargerContract = () => {
         data: [],
         label: "충전소 계약 관리",
         path: location.pathname,
+        rootPath: location.pathname,
       });
     }
     tabStore.setActive(location.pathname);

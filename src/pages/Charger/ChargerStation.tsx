@@ -170,11 +170,11 @@ const ChargingStationManagement = () => {
   useEffect(() => {
     const index = tabStore.data.findIndex((e) => e.path === location.pathname);
     if (index < 0) {
-      console.log(location.pathname);
       tabStore.setData({
         data: data,
         label: "충전소 관리",
-        path: "/charger/ChargerStation",
+        path: location.pathname,
+        rootPath: location.pathname,
       });
     }
     tabStore.setActive(location.pathname);

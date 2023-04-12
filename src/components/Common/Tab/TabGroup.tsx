@@ -27,8 +27,13 @@ const TabGroup = (props: any) => {
   };
 
   const handleTabClose = (path: string) => {
+    const index = tabState.data.findIndex((e) => path.includes(e.rootPath));
     tabState.removeData(path);
-    nav(-1);
+    if (tabState.data.length <= 1) {
+      nav("/");
+    } else {
+      nav(tabState.data[index > 0 ? index - 1 : index + 1].path);
+    }
   };
 
   return (

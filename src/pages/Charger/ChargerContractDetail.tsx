@@ -172,12 +172,12 @@ const ChargerContractDetail = () => {
     const index = tabStore.data.findIndex((e) =>
       location.pathname.includes(e.path)
     );
-    if (index < 0) {
-      console.log(location.pathname);
-      tabStore.setData({
+    if (index > -1) {
+      tabStore.changeData(location.pathname, {
         data: data,
         label: "충전소 계약 상세",
         path: location.pathname,
+        rootPath: location.pathname.split("/detail")[0],
       });
     }
     tabStore.setActive(location.pathname);
@@ -187,12 +187,7 @@ const ChargerContractDetail = () => {
     <ContainerBase>
       <HeaderBase></HeaderBase>
 
-      <TabGroup
-      // list={tabList}
-      // selectedIndex={selectedIndex}
-      // onClick={() => {}}
-      // onClose={() => {}}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
