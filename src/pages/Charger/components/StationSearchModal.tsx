@@ -91,7 +91,7 @@ export const StationSearchModal = (props: IModalBaseProps) => {
       getParams(searchParams);
 
       /** @TODO 검색 (* 다른 api로 변경 필요할것으로 판단됨)  */
-      const { code, data } = await getStationList(searchParams);
+      const { code, data, message } = await getStationList(searchParams);
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
@@ -107,7 +107,7 @@ export const StationSearchModal = (props: IModalBaseProps) => {
         setPage(1);
         setList([]);
         setMaxPage(1);
-        setEmptyMessage("오류가 발생하였습니다.");
+        setEmptyMessage(message || "오류가 발생하였습니다.");
       }
     };
 

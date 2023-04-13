@@ -161,7 +161,7 @@ const Charger = () => {
       getParams(searchParams);
 
       /* 검색  */
-      const { code, data } = await getChargerList(searchParams);
+      const { code, data, message } = await getChargerList(searchParams);
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
@@ -179,7 +179,7 @@ const Charger = () => {
         setList([]);
         setMaxPage(1);
         setTotal(0);
-        setEmptyMessage("오류가 발생하였습니다.");
+        setEmptyMessage(message || "오류가 발생하였습니다.");
       }
     };
 

@@ -1,4 +1,9 @@
-import axios, { isAxiosError, Method } from "axios";
+import axios, {
+  CancelToken,
+  CancelTokenSource,
+  isAxiosError,
+  Method,
+} from "axios";
 import { API_URL } from "src/constants/url";
 import { IApiResponse, IAxiosErrorResponse } from "src/type/api.interface";
 
@@ -13,15 +18,42 @@ export const axiosInstance = axios.create({
   baseURL: baseUrl,
 });
 
-/* api(axios) 요청시, 요청헤더에 token 추가 */
+const pendingRequests: {
+  [key in string]?: CancelTokenSource;
+} = {};
+
 axiosInstance.interceptors.request.use((config) => {
-  const authInfo = JSON.parse(sessionStorage.getItem('auth-storage') ?? "");
+  /* 토큰관련 로직 */
+  const authInfo = JSON.parse(sessionStorage.getItem("auth-storage") ?? "");
   const accessToken: string = authInfo?.state?.accessToken ?? "";
   if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    config.headers["Authorization"] = `Bearer ${accessToken}`;
   }
 
+  /* pending api 관련 로직 */
+  const { method = "", baseURL = "", url = "" } = config;
+  const cancelKey = method + baseURL + url;
+
+  const cancelHandler = pendingRequests[cancelKey]?.cancel;
+  !!cancelHandler && cancelHandler("가장 최근 정보를 다시 불러오는 중입니다.");
+
+  const source = axios.CancelToken.source();
+  config.cancelToken = source.token;
+  pendingRequests[cancelKey] = source;
+
   return config;
+});
+
+axiosInstance.interceptors.response.use((response) => {
+  /* pending api 관련 로직 */
+  const { method = "", baseURL = "", url = "" } = response.config;
+  const cancelKey = method + baseURL + url;
+
+  if (pendingRequests[cancelKey]) {
+    delete pendingRequests[cancelKey];
+  }
+
+  return response;
 });
 
 const rest = (method: Method) => {
@@ -43,16 +75,16 @@ const rest = (method: Method) => {
     } catch (err) {
       /** axios error 여부 */
       const axiosError = isAxiosError(err);
-      if(axiosError) {
+      if (axiosError) {
         return {
           code: err.code,
           data: null,
-          message: err.message
+          message: err.message,
         };
       }
 
       const { response } = err as IAxiosErrorResponse;
-   
+
       /*  403: token이 인증되지 않을경우, refreshToken으로 업데이트 후에도 없으면, 로그인 화면으로 네비게이팅 */
       if (response.status === 403) {
         /** @TODO refresh 로직 추가 */

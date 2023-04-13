@@ -145,7 +145,7 @@ export const ChargerTrouble = () => {
       getParams(searchParams);
 
       /* 검색  */
-      const { code, data } = await getBrokenList(searchParams);
+      const { code, data, message } = await getBrokenList(searchParams);
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
@@ -163,7 +163,7 @@ export const ChargerTrouble = () => {
         setList([]);
         setMaxPage(1);
         setTotal(0);
-        setEmptyMessage("오류가 발생하였습니다.");
+        setEmptyMessage(message || "오류가 발생하였습니다.");
       }
     };
 

@@ -107,7 +107,7 @@ export const ChargerManufacturer = () => {
       getParams(searchParams);
 
       /* 검색  */
-      const { code, data } = await getManufactureList(searchParams);
+      const { code, data, message } = await getManufactureList(searchParams);
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
@@ -125,7 +125,7 @@ export const ChargerManufacturer = () => {
         setList([]);
         setMaxPage(1);
         setTotal(0);
-        setEmptyMessage("오류가 발생하였습니다.");
+        setEmptyMessage(message || "오류가 발생하였습니다.");
       }
     };
 
