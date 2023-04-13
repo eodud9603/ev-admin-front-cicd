@@ -6,7 +6,7 @@ const defaultParams: IRequestStationContractList = {
   // sortDirection: "ASC",
   size: 10,
   page: 0,
-  sort: "ContractPlace",
+  sort: "CrateAt",
 };
 
 export const stationContractListLoader = async () => {

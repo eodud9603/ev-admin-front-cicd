@@ -75,7 +75,7 @@ const searchList = [
 
 /* 정렬기준 */
 const sortList = [
-  { label: "기본", value: "ContractPlace" },
+  { label: "기본", value: "CrateAt" },
   { label: "계약 체결일", value: "" },
 ];
 
@@ -128,7 +128,7 @@ const ChargerContract = () => {
     searchRange: "ContractPlace",
     searchText: "",
     isUse: "" as YNType,
-    sort: "ContractPlace",
+    sort: "CrateAt",
     count: "10",
   });
   const placeholderKeyword =
@@ -351,7 +351,7 @@ const ChargerContract = () => {
                   <tr key={contract.id}>
                     <td>{(page - 1) * Number(count) + index + 1}</td>
                     <td>{contract.id}</td>
-                    <td>{isUse === "Y" ? "사용" : "미사용"}</td>
+                    <td>{contract.isUse === "Y" ? "사용" : "미사용"}</td>
                     {/** @TODO 서버 code 픽스 후, 매칭작업 필요 */}
                     <td>{contract.code}(코드 매칭 필요)</td>
                     <td>
