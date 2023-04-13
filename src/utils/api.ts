@@ -1,5 +1,4 @@
 import axios, {
-  CancelToken,
   CancelTokenSource,
   isAxiosError,
   Method,
