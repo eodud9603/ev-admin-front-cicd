@@ -28,7 +28,7 @@ const pendingRequests: {
   [key in string]?: CancelTokenSource;
 } = {};
 
-axiosInstance.interceptors.request.use((config: AxiosRequestConfig) => {
+axiosInstance.interceptors.request.use((config) => {
   /* 토큰관련 로직 */
   const authInfo = JSON.parse(sessionStorage.getItem("auth-storage") ?? "");
   const accessToken: string = authInfo?.state?.accessToken ?? "";

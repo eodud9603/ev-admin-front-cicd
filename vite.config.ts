@@ -11,7 +11,7 @@ export default defineConfig({
     port: 3000,
   },
   plugins: [react(), vitePluginRequire({})],
-  define: { global: {}, "process.env": {} },
+  define: { global: "globalThis", "process.env": {} },
   resolve: {
     alias: {
       src: path.resolve(__dirname, "./src"),
