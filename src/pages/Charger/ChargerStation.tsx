@@ -26,6 +26,7 @@ import {
 import { getPageList } from "src/utils/pagination";
 import { YNType } from "src/api/api.interface";
 import { useTabStore } from "src/store/tabStore";
+import { standardDateFormat } from "src/utils/day";
 
 /* 사용여부 필터 */
 const useList = [
@@ -74,6 +75,7 @@ const ChargingStationManagement = () => {
   const [total, setTotal] = useState(data?.totalElements ?? 0);
   const [emptyMessage, setEmptyMessage] =
     useState("등록된 충전소 정보가 없습니다.");
+  const [time, setTime] = useState(standardDateFormat());
 
   const inputs = useInputs({
     sido: "",
@@ -163,6 +165,8 @@ const ChargingStationManagement = () => {
         setTotal(0);
         setEmptyMessage(message || "오류가 발생하였습니다.");
       }
+
+      setTime(standardDateFormat());
     };
 
   const tabStore = useTabStore();
@@ -282,9 +286,7 @@ const ChargingStationManagement = () => {
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
-              <span className={"font-size-10 text-muted"}>
-                2023-04-01 14:51기준
-              </span>
+              <span className={"font-size-10 text-muted"}>{time}기준</span>
               <DropdownBase
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {

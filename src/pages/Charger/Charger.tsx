@@ -32,6 +32,7 @@ import {
   TOperationStatusKeys,
 } from "src/constants/charger";
 import { getChargerStatusColor } from "src/utils/charger";
+import { standardDateFormat } from "src/utils/day";
 
 /* 철거여부 필터 */
 const operationStatusList = [
@@ -88,6 +89,7 @@ const Charger = () => {
   const [total, setTotal] = useState(data?.totalElements ?? 0);
   const [emptyMessage, setEmptyMessage] =
     useState("등록된 충전기 정보가 없습니다.");
+  const [time, setTime] = useState(standardDateFormat());
 
   /* 일괄 제어 모달 */
   const [batchControlModalOpen, setBatchControlModalOpen] = useState(false);
@@ -181,6 +183,8 @@ const Charger = () => {
         setTotal(0);
         setEmptyMessage(message || "오류가 발생하였습니다.");
       }
+
+      setTime(standardDateFormat());
     };
 
   return (
@@ -289,9 +293,7 @@ const Charger = () => {
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
-              <span className={"font-size-10 text-muted"}>
-                2023-04-01 14:51기준
-              </span>
+              <span className={"font-size-10 text-muted"}>{time}기준</span>
               <DropdownBase
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {

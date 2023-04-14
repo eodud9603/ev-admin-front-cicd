@@ -25,6 +25,7 @@ import { getPageList } from "src/utils/pagination";
 import useInputs from "src/hooks/useInputs";
 import { getBrokenList } from "src/api/broken/brokenApi";
 import { OperatorType } from "src/api/api.interface";
+import { standardDateFormat } from "src/utils/day";
 
 const dropdownGroupSearch = [
   { label: "충전소명", value: "stationNm" },
@@ -107,6 +108,7 @@ export const ChargerTrouble = () => {
   const [emptyMessage, setEmptyMessage] = useState(
     "등록된 고장/파손 충전기 정보가 없습니다."
   );
+  const [time, setTime] = useState(standardDateFormat());
 
   /** 파라미터 빈값 제거 */
   const getParams = (params: Partial<IRequestBrokenList>) => {
@@ -165,6 +167,8 @@ export const ChargerTrouble = () => {
         setTotal(0);
         setEmptyMessage(message || "오류가 발생하였습니다.");
       }
+
+      setTime(standardDateFormat());
     };
 
   const moveToDetail = (id: number) => {
@@ -285,9 +289,7 @@ export const ChargerTrouble = () => {
             </Col>
             <Col className={"d-flex justify-content-end"}>
               <div className={"d-flex align-items-center gap-3"}>
-                <span className={"font-size-10 text-muted"}>
-                  2023-04-01 14:51기준
-                </span>
+                <span className={"font-size-10 text-muted"}>{time}기준</span>
                 <DropdownBase
                   menuItems={COUNT_FILTER_LIST}
                   onClickDropdownItem={(_, value) => {

@@ -22,6 +22,7 @@ import useInputs from "src/hooks/useInputs";
 import { getPageList } from "src/utils/pagination";
 import { getManufactureList } from "src/api/manufactures/manufactureApi";
 import { useTabStore } from "src/store/tabStore";
+import { standardDateFormat } from "src/utils/day";
 
 const dropdownGroupSort = [
   {
@@ -73,6 +74,7 @@ export const ChargerManufacturer = () => {
   const [total, setTotal] = useState(data?.totalElements ?? 0);
   const [emptyMessage, setEmptyMessage] =
     useState("등록된 제조사 정보가 없습니다.");
+  const [time, setTime] = useState(standardDateFormat());
 
   /** 파라미터 빈값 제거 */
   const getParams = (params: Partial<IRequestManufactureList>) => {
@@ -127,6 +129,8 @@ export const ChargerManufacturer = () => {
         setTotal(0);
         setEmptyMessage(message || "오류가 발생하였습니다.");
       }
+
+      setTime(standardDateFormat());
     };
 
   const moveToRegister = () => {
@@ -217,9 +221,7 @@ export const ChargerManufacturer = () => {
             </Col>
             <Col className={"d-flex justify-content-end"}>
               <div className={"d-flex align-items-center gap-3"}>
-                <span className={"font-size-10 text-muted"}>
-                  2023-04-01 14:51기준
-                </span>
+                <span className={"font-size-10 text-muted"}>{time}기준</span>
                 <DropdownBase
                   menuItems={COUNT_FILTER_LIST}
                   onClickDropdownItem={(_, value) => {
