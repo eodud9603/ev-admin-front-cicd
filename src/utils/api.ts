@@ -1,4 +1,5 @@
 import axios, {
+  AxiosRequestConfig,
   CancelTokenSource,
   isAxiosError,
   Method,
@@ -17,16 +18,24 @@ export const axiosInstance = axios.create({
   baseURL: baseUrl,
 });
 
+interface IAxiosRequestConfig extends Omit<AxiosRequestConfig, "headers"> {
+  headers: {
+    Authorization?: string;
+  };
+}
+
 const pendingRequests: {
   [key in string]?: CancelTokenSource;
 } = {};
 
-axiosInstance.interceptors.request.use((config) => {
+axiosInstance.interceptors.request.use((config: AxiosRequestConfig) => {
   /* 토큰관련 로직 */
   const authInfo = JSON.parse(sessionStorage.getItem("auth-storage") ?? "");
   const accessToken: string = authInfo?.state?.accessToken ?? "";
   if (accessToken) {
-    config.headers["Authorization"] = `Bearer ${accessToken}`;
+    (config as IAxiosRequestConfig).headers[
+      "Authorization"
+    ] = `Bearer ${accessToken}`;
   }
 
   /* pending api 관련 로직 */
