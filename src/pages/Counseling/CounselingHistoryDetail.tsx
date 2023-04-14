@@ -158,9 +158,9 @@ export const CounselingHistoryDetail = () => {
     <ContainerBase>
       <HeaderBase />
       <TabGroup
-        list={[{ label: "공지사항" }, { label: "상담 내역" }]}
-        selectedIndex={selected}
-        onClick={(e) => setSelected(e.currentTarget.value)}
+      // list={[{ label: "공지사항" }, { label: "상담 내역" }]}
+      // selectedIndex={selected}
+      // onClick={(e) => setSelected(e.currentTarget.value)}
       />
 
       <BodyBase>

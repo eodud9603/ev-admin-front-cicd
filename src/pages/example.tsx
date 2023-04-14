@@ -33,9 +33,9 @@ const Example = () => {
       <HeaderBase>children</HeaderBase>
       <div className={"mt-4 mx-5"}>
         <TabGroup
-          list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
-          selectedIndex={selected}
-          onClick={(e) => setSelected(e.currentTarget.value)}
+        // list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
+        // selectedIndex={selected}
+        // onClick={(e) => setSelected(e.currentTarget.value)}
         />
       </div>
       <BodyBase>

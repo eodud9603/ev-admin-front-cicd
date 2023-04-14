@@ -60,9 +60,9 @@ export const MemberWithdraw = () => {
     <ContainerBase>
       <HeaderBase></HeaderBase>
       <TabGroup
-        list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
-        selectedIndex={selected}
-        onClick={(e) => setSelected(e.currentTarget.value)}
+      // list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
+      // selectedIndex={selected}
+      // onClick={(e) => setSelected(e.currentTarget.value)}
       />
 
       <BodyBase>

@@ -61,9 +61,9 @@ export const MemberCorporation = () => {
     <ContainerBase>
       <HeaderBase></HeaderBase>
       <TabGroup
-        list={[{ label: "공지사항" }, { label: "법인 관리" }]}
-        selectedIndex={selected}
-        onClick={(e) => setSelected(e.currentTarget.value)}
+      // list={[{ label: "공지사항" }, { label: "법인 관리" }]}
+      // selectedIndex={selected}
+      // onClick={(e) => setSelected(e.currentTarget.value)}
       />
 
       <BodyBase>

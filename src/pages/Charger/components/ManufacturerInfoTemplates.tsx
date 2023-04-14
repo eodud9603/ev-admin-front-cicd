@@ -13,7 +13,7 @@ interface IManufacturerInfoTemplates {
 }
 
 interface IBasicInfoTabProps extends IManufacturerInfoTemplates {
-  onChangeModal: () => void;
+  onChangeModal?: () => void;
 }
 
 export const ManufacturerBasicInfoTab = ({

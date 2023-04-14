@@ -82,7 +82,7 @@ export const ChargerOperator = () => {
   const nav = useNavigate();
   const { pathname } = useLocation();
   const [page, setPage] = useState(1);
-  const [selected, setSelected] = useState("0");
+  const [selected, setSelected] = useState<string>("0");
   const [text, setText] = useState("");
 
   const moveToRegistration = () => {
@@ -96,9 +96,9 @@ export const ChargerOperator = () => {
     <ContainerBase>
       <HeaderBase />
       <TabGroup
-        list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
-        selectedIndex={selected}
-        onClick={(e) => setSelected(e.currentTarget.value)}
+      // list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
+      // selectedIndex={selected}
+      // onClick={(e) => setSelected(e.currentTarget.value)}
       />
 
       <BodyBase>
