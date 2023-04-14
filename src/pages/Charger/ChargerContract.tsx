@@ -70,14 +70,22 @@ const searchList = [
     placeholderKeyword: "계약장소명을",
     value: "ContractPlace",
   },
-  { label: "충전소 ID", placeholderKeyword: "충전소 ID를", value: "" },
-  { label: "영업업체", placeholderKeyword: "영업업체를", value: "" },
+  {
+    label: "충전소 ID",
+    placeholderKeyword: "충전소 ID를",
+    value: "StationKey",
+  },
+  {
+    label: "영업업체",
+    placeholderKeyword: "영업업체를",
+    value: "SalesCompany",
+  },
 ];
 
 /* 정렬기준 */
 const sortList = [
-  { label: "기본", value: "CrateAt" },
-  { label: "계약 체결일", value: "" },
+  { label: "기본", value: "ContractedDate" },
+  { label: "계약 체결일", value: "ContractedDate" },
 ];
 
 /* 목록 헤더 */
@@ -130,7 +138,7 @@ const ChargerContract = () => {
     searchRange: "ContractPlace",
     searchText: "",
     isUse: "" as YNType,
-    sort: "CrateAt",
+    sort: "ContractedDate",
     count: "10",
   });
   const placeholderKeyword =
@@ -166,8 +174,10 @@ const ChargerContract = () => {
         sort: sort as IRequestStationContractList["sort"],
       };
       /** @TODO 검색어 필터 추가 후, 추가예정 */
-      if (searchRange) {
-        searchParams[searchRange as "contractPlace"] = searchText;
+      if (searchRange && searchText) {
+        searchParams.searchType =
+          searchRange as IRequestStationContractList["searchType"];
+        searchParams.searchKeyword = searchText;
       }
       searchParams = {
         ...searchParams,

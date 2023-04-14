@@ -17,7 +17,7 @@ import {
 import { getStationList } from "src/api/station/stationApi";
 import { getPageList } from "src/utils/pagination";
 
-const dropdownGroupSearch = [{ label: "충전소명", value: "stationNm" }];
+const dropdownGroupSearch = [{ label: "충전소명", value: "StationName" }];
 
 const tableHeader = [
   { label: "번호" },
@@ -51,7 +51,7 @@ export const StationSearchModal = (props: IModalBaseProps) => {
     sido: "",
     gugun: "",
     dong: "",
-    searchRange: "stationNm",
+    searchRange: "StationName",
     searchText: "",
   });
 
@@ -78,10 +78,12 @@ export const StationSearchModal = (props: IModalBaseProps) => {
         sido,
         gugun,
         dong,
-        sort: "CrateAt",
+        sort: "CreatedDate",
       };
-      if (searchRange) {
-        searchParams[searchRange as "stationNm"] = searchText;
+      if (searchRange && searchText) {
+        searchParams.searchType =
+          searchRange as IRequestStationList["searchType"];
+        searchParams.searchKeyword = searchText;
       }
       searchParams = {
         ...searchParams,

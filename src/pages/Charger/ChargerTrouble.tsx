@@ -28,11 +28,11 @@ import { OperatorType } from "src/api/api.interface";
 import { standardDateFormat } from "src/utils/day";
 
 const dropdownGroupSearch = [
-  { label: "충전소명", value: "stationNm" },
-  { label: "충전소 ID", value: "stationId" },
-  { label: "충전기 번호", value: "" },
-  { label: "관리자명", value: "" },
-  { label: "처리자 ID", value: "" },
+  { label: "충전소명", value: "StationName" },
+  { label: "충전소 ID", value: "StationKey" },
+  { label: "충전기 번호", value: "SearchKey" },
+  { label: "관리자명", value: "AdminName" },
+  { label: "처리자 ID", value: "ManagerId" },
 ];
 
 const dropdownGroupSort = [
@@ -40,8 +40,8 @@ const dropdownGroupSort = [
     menuItems: [
       { label: "기본", value: "StationName" },
       { label: "충전소명", value: "StationName" },
-      { label: "충전소ID", value: "stationId" },
-      { label: "등록일", value: "CrateAt" },
+      { label: "충전소ID", value: "StationKey" },
+      { label: "등록일", value: "CreatedDate" },
     ],
   },
 ];
@@ -93,10 +93,10 @@ export const ChargerTrouble = () => {
     sido: "",
     gugun: "",
     dong: "",
-    searchRange: "",
+    searchRange: "StationName",
     searchText: "",
     operator: "" as OperatorType,
-    sort: "StationName",
+    sort: "CreatedDate",
     brokenStatus: "",
     count: "10",
   });
@@ -136,8 +136,10 @@ export const ChargerTrouble = () => {
         operator,
         sort: sort as IRequestBrokenList["sort"],
       };
-      if (searchRange) {
-        searchParams[searchRange as "stationNm" | "stationId"] = searchText;
+      if (searchRange && searchText) {
+        searchParams.searchType =
+          searchRange as IRequestBrokenList["searchType"];
+        searchParams.searchKeyword = searchText;
       }
       searchParams = {
         ...searchParams,

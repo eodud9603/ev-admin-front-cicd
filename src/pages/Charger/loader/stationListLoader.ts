@@ -10,8 +10,9 @@ const defaultParams: IRequestStationList = {
   // sortDirection: "ASC",
   size: 10,
   page: 0,
-  sort: "StationName",
-  stationNm: "서울",
+  sort: "CreatedDate",
+  searchType: "StationName",
+  searchKeyword: "서울"
 };
 
 export const stationListLoader = async () => {

@@ -6,7 +6,7 @@ const defaultParams: IRequestManufactureList = {
   // sortDirection: "ASC",
   size: 10,
   page: 0,
-  sort: "CrateAt",
+  sort: "CompanyId",
 };
 
 export const manufactureListLoader = async () => {

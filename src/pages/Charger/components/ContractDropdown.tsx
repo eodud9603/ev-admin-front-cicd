@@ -22,7 +22,7 @@ const ContractDropdown = (props: IContractDropdownProps) => {
       const { code, data } = await getStationContractList({
         size: 30,
         page: 0,
-        sort: "ContractPlace",
+        sort: "ContractedDate",
       });
 
       const success = code === "SUCCESS";
@@ -43,8 +43,9 @@ const ContractDropdown = (props: IContractDropdownProps) => {
     const { code, data } = await getStationContractList({
       size: 30,
       page: 0,
-      sort: "ContractPlace",
-      contractPlace: text,
+      sort: "ContractedDate",
+      searchType: "ContractPlace",
+      searchKeyword: text,
     });
 
     const success = code === "SUCCESS";

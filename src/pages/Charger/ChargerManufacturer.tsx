@@ -27,15 +27,15 @@ import { standardDateFormat } from "src/utils/day";
 const dropdownGroupSort = [
   {
     menuItems: [
-      { label: "기본", value: "CrateAt" },
-      { label: "제조사명", value: "" },
-      { label: "수정일", value: "" },
+      { label: "기본", value: "CompanyId" },
+      { label: "제조사명", value: "Name" },
+      { label: "수정일", value: "ModifiedDate" },
     ],
   },
 ];
 
 const dropdownGroupSearch = [
-  { label: "제조사 ID", value: "companyId" },
+  { label: "제조사 ID", value: "CompanyId" },
   { label: "제조사명", value: "" },
   { label: "충전소 ID", value: "" },
   { label: "담당자명", value: "" },
@@ -62,9 +62,9 @@ export const ChargerManufacturer = () => {
 
   const { count, searchRange, searchText, sort, onChange, onChangeSingle } =
     useInputs({
-      searchRange: "companyId",
+      searchRange: "CompanyId",
       searchText: "",
-      sort: "CrateAt",
+      sort: "CompanyId",
       count: "10",
     });
 
@@ -98,8 +98,10 @@ export const ChargerManufacturer = () => {
         page,
         sort: sort as IRequestManufactureList["sort"],
       };
-      if (searchRange) {
-        searchParams[searchRange as "companyId"] = searchText;
+      if (searchRange && searchText) {
+        searchParams.searchType =
+          searchRange as IRequestManufactureList["searchType"];
+        searchParams.searchKeyword = searchText;
       }
       searchParams = {
         ...searchParams,

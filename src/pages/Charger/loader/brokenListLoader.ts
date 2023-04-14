@@ -6,7 +6,7 @@ const defaultParams: IRequestBrokenList = {
   // sortDirection: "ASC",
   size: 10,
   page: 0,
-  sort: "StationName",
+  sort: "CreatedDate",
 };
 
 export const brokenListLoader = async () => {

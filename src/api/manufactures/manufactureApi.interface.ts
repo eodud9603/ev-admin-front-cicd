@@ -5,9 +5,9 @@ export interface IRequestManufactureList {
   // sortDirection: "ASC" | "DESC";
   size: number;
   page: number; // 0부터 시작
-  sort?: "StationName" | "CrateAt";
-  name?: string;
-  companyId?: string;
+  sort: "CompanyId" | "Name" | "ModifiedDate";
+  searchType?: "CompanyName" | "ManagerName" | "CompanyId";
+  searchKeyword?: string
 }
 
 export interface IManufactureListItem {
