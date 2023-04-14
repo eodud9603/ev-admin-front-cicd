@@ -7,13 +7,19 @@ export interface IRequestBrokenList {
   // sortDirection: "ASC" | "DESC";
   size: number;
   page: number; // 0부터 시작
-
-  sort?: "StationName" | "CrateAt";
+  sort: "StationName" | "CreatedDate";
   sido?: string;
   gugun?: string;
   dong?: string;
-  stationNm?: string;
-  stationId?: string;
+  searchType?:
+    | "StationName"
+    | "StationKey"
+    | "SearchKey"
+    | "AdminName"
+    | "ManagerId";
+  searchKeyword?: string;
+  submitStartDate?: string;
+  submitEndDate?: string;
   operator?: OperatorType;
   status?: string;
 }
@@ -28,7 +34,7 @@ export interface IBrokenListItem {
   managerId: string /* 운영자 */;
   managerName: string;
   reporterName: string;
-  stationKey: string; /* 충전소 키 */
+  stationKey: string /* 충전소 키 */;
   searchKey: string /* 충전기 고유값 */;
   chargerKey: string /* 충전소별 충전기 키 */;
   damagedPart01: string;

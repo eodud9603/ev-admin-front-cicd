@@ -29,13 +29,12 @@ export interface IRequestChargerList {
   // sortDirection: "ASC" | "DESC";
   size: number;
   page: number // 0부터 시작
-  
-  sort?: "StationName" | "StationId" | "CrateAt";
+  sort: "StationName" | "StationKey" | "CreatedDate";
   sido?: string;
   gugun?: string;
-  dong?: string
-  stationNm?: string
-  stationId?: string;
+  dong?: string;
+  searchType?: "StationName" | "StationKey";
+  searchKeyword?: string;
   operation?: string;
   operationStatus?: TOperationStatusKeys;
 }

@@ -8,13 +8,13 @@ export interface IRequestStationList {
   // sortDirection: "ASC" | "DESC";
   size: number;
   page: number // 0부터 시작
-  
-  sort?: "StationName" | "StationId" | "CrateAt";
+  sort: "StationName" | "StationKey" | "CreatedDate";
+
   sido?: string;
   gugun?: string;
-  dong?: string
-  stationNm?: string
-  stationId?: string;
+  dong?: string;
+  searchType?: "StationName" | "StationKey";
+  searchKeyword?: string;
   operation?: string;
   isUse?: YNType
 }
@@ -106,13 +106,13 @@ export interface IRequestStationContractList {
   // sortDirection: "ASC" | "DESC";
   size: number;
   page: number;
-  sort: "ContractPlace";
+  sort: "ContractPlace" | "ContractedDate";
 
   sido?: string;
   gugun?: string;
   dong?: string;
-  contractPlace?: string;
-  contractCode?: string;
+  searchType?: "ContractPlace" | "StationKey" | "SalesCompany";
+  searchKeyword?: string;
   isUse?: YNType;
 }
 

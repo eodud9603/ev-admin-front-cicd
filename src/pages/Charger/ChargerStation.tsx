@@ -37,18 +37,22 @@ const useList = [
 
 /** @TODO 검색어 필터, 빈 value값 추가 필요 */
 const searchList = [
-  { label: "충전소명", placeholderKeyword: "충전소명을", value: "stationNm" },
-  { label: "충전소 ID", placeholderKeyword: "충전소 ID를", value: "stationId" },
+  { label: "충전소명", placeholderKeyword: "충전소명을", value: "StationName" },
+  {
+    label: "충전소 ID",
+    placeholderKeyword: "충전소 ID를",
+    value: "StationKey",
+  },
   { label: "주소", placeholderKeyword: "주소를", value: "" },
 ];
 
 /** @TODO 정렬기준, 빈 value값 추가 필요 */
 const sortList = [
-  { label: "기본", value: "StationName" },
+  { label: "기본", value: "CreatedDate" },
   { label: "충전소명", value: "StationName" },
-  { label: "충전소 ID", value: "StationId" },
+  { label: "충전소 ID", value: "StationKey" },
   { label: "급/완속(기)", value: "" },
-  { label: "등록일", value: "CrateAt" },
+  { label: "등록일", value: "CreatedDate" },
 ];
 
 /* 목록 헤더 */
@@ -82,7 +86,7 @@ const ChargingStationManagement = () => {
     gugun: "",
     dong: "",
     operation: "",
-    searchRange: "stationNm",
+    searchRange: "StationName",
     searchText: "서울",
     isUse: "" as YNType,
     sort: "StationName",
@@ -134,8 +138,10 @@ const ChargingStationManagement = () => {
         isUse,
         sort: sort as IRequestStationList["sort"],
       };
-      if (searchRange) {
-        searchParams[searchRange as "stationNm" | "stationId"] = searchText;
+      if (searchRange && searchText) {
+        searchParams.searchType =
+          searchRange as IRequestStationList["searchType"];
+        searchParams.searchKeyword = searchText;
       }
       searchParams = {
         ...searchParams,
