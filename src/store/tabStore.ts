@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
-import { blogGridData } from "src/common/data/blog";
 
 export type tabType = {
   // seq: number;
@@ -22,7 +21,7 @@ export interface ITabState {
   /** tab data 변경 */
   changeData: (path: string, tabData: tabType) => void;
 }
-export interface ICommonResProps {
+export interface ICommonListResProps {
   elements: Array<any>;
   totalElements: number;
   totalPages: number;

@@ -21,6 +21,7 @@ import { SidebarFooter } from "./components/SidebarFooter";
 import Footer from "src/components/Common/Footer/Footer";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useTabStore } from "src/store/tabStore";
 
 type Theme = "light" | "dark";
 
@@ -93,8 +94,17 @@ export const Playground = (props: any) => {
   const [hasImage, setHasImage] = React.useState<boolean>(false);
   const [theme, setTheme] = React.useState<Theme>("light");
 
+  const tabStore = useTabStore();
+
   const handleCollapsed = () => {
     collapseSidebar();
+  };
+
+  const moveToPath = (rootPath: string) => {
+    let path: string = rootPath;
+    const index = tabStore.data.findIndex((e) => e.path.includes(rootPath));
+    if (index > -1) path = tabStore.data[index].path;
+    return path;
   };
 
   const menuItemStyles: MenuItemStyles = {
@@ -202,22 +212,36 @@ export const Playground = (props: any) => {
                   eachOpenMenuItem("charger", isOpen)
                 }
               >
-                <MenuItem component={<Link to={"/charger/ChargerStation"} />}>
+                <MenuItem
+                  component={
+                    <Link to={moveToPath("/charger/ChargerStation")} />
+                  }
+                >
                   충전소 관리
                 </MenuItem>
-                <MenuItem component={<Link to={"/charger/charger"} />}>
+                <MenuItem
+                  component={<Link to={moveToPath("/charger/charger")} />}
+                >
                   충전기 관리
                 </MenuItem>
-                <MenuItem component={<Link to={"/charger/contract"} />}>
+                <MenuItem
+                  component={<Link to={moveToPath("/charger/contract")} />}
+                >
                   충전소 계약 관리
                 </MenuItem>
-                <MenuItem component={<Link to={"/charger/trouble"} />}>
+                <MenuItem
+                  component={<Link to={moveToPath("/charger/trouble")} />}
+                >
                   충전기 고장/파손 관리
                 </MenuItem>
-                <MenuItem component={<Link to={"/charger/manufacturer"} />}>
+                <MenuItem
+                  component={<Link to={moveToPath("/charger/manufacturer")} />}
+                >
                   충전기 제조사 관리
                 </MenuItem>
-                <MenuItem component={<Link to={"/charger/operator"} />}>
+                <MenuItem
+                  component={<Link to={moveToPath("/charger/operator")} />}
+                >
                   서비스 운영사 관리
                 </MenuItem>
               </SubMenu>

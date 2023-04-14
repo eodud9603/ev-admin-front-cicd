@@ -6,7 +6,6 @@ import React, {
   useState,
 } from "react";
 import { Col, Row } from "reactstrap";
-import { Checkbox } from "src/components/Common/Checkbox";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 
 interface IProps {
@@ -65,7 +64,9 @@ export const AreaCheckbox = (props: IProps) => {
     setCheckbox({ ...newCheckboxStates });
   };
   const handleCheckBoxChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const obj = JSON.parse(JSON.stringify(checkbox));
+    const obj: { [key: string]: boolean } = JSON.parse(
+      JSON.stringify(checkbox)
+    );
     console.log(checkbox);
     obj[e.target.name] = e.target.checked;
     setCheckbox({
