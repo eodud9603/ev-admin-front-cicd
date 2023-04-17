@@ -18,6 +18,7 @@ import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import { COUNT_FILTER_LIST, OPERATOR_FILTER_LIST } from "src/constants/list";
 import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
 import {
+  IBrokenListItem,
   IBrokenListResponse,
   IRequestBrokenList,
 } from "src/api/broken/brokenApi.interface";
@@ -25,7 +26,9 @@ import { getPageList } from "src/utils/pagination";
 import useInputs from "src/hooks/useInputs";
 import { getBrokenList } from "src/api/broken/brokenApi";
 import { OperatorType } from "src/api/api.interface";
+import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
+import { TChargerProcessingStatus } from "src/constants/status";
 
 const dropdownGroupSearch = [
   { label: "충전소명", value: "StationName" },
@@ -47,9 +50,9 @@ const dropdownGroupSort = [
 ];
 const brokenStatusList = [
   { label: "전체", value: "" },
-  { label: "접수", value: "접수" },
-  { label: "진행중", value: "진행중" },
-  { label: "처리완료", value: "처리완료" },
+  { label: "접수", value: "SUBMIT" },
+  { label: "진행중", value: "PROGRESS" },
+  { label: "처리완료", value: "COMPLETE" },
 ];
 
 const tableHeader = [
@@ -82,11 +85,13 @@ export const ChargerTrouble = () => {
     gugun,
     dong,
     count,
+    startDate,
+    endDate,
     searchRange,
     searchText,
     operator,
     sort,
-    brokenStatus,
+    status,
     onChange,
     onChangeSingle,
   } = useInputs({
@@ -94,21 +99,24 @@ export const ChargerTrouble = () => {
     gugun: "",
     dong: "",
     searchRange: "StationName",
+    startDate: "",
+    endDate: "",
     searchText: "",
     operator: "" as OperatorType,
     sort: "CreatedDate",
-    brokenStatus: "",
+    status: "" as TChargerProcessingStatus,
     count: "10",
   });
 
-  const [list, setList] = useState(data?.elements ?? []);
-  const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
-  const [total, setTotal] = useState(data?.totalElements ?? 0);
-  const [emptyMessage, setEmptyMessage] = useState(
-    "등록된 고장/파손 충전기 정보가 없습니다."
-  );
-  const [time, setTime] = useState(standardDateFormat());
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<IBrokenListItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: "등록된 고장/파손 충전기 정보가 없습니다.",
+  });
 
   /** 파라미터 빈값 제거 */
   const getParams = (params: Partial<IRequestBrokenList>) => {
@@ -134,8 +142,16 @@ export const ChargerTrouble = () => {
         gugun,
         dong,
         operator,
+        status,
         sort: sort as IRequestBrokenList["sort"],
       };
+      if (startDate && endDate) {
+        searchParams.submitStartDate = standardDateFormat(
+          startDate,
+          "YYYY.MM.DD"
+        );
+        searchParams.submitEndDate = standardDateFormat(endDate, "YYYY.MM.DD");
+      }
       if (searchRange && searchText) {
         searchParams.searchType =
           searchRange as IRequestBrokenList["searchType"];
@@ -153,24 +169,17 @@ export const ChargerTrouble = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
-        if (searchParams.page === 0) {
-          setPage(1);
-        }
-        if (data.totalElements === 0) {
-          setEmptyMessage("검색된 고장/파손 충전기 정보가 없습니다.");
-        }
-        setList(data.elements);
-        setMaxPage(data.totalPages);
-        setTotal(data.totalElements);
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 고장/파손 충전기 정보가 없습니다.",
+        });
       } else {
-        setPage(1);
-        setList([]);
-        setMaxPage(1);
-        setTotal(0);
-        setEmptyMessage(message || "오류가 발생하였습니다.");
+        reset({
+          code,
+          message: message || "오류가 발생하였습니다.",
+        });
       }
-
-      setTime(standardDateFormat());
     };
 
   const moveToDetail = (id: number) => {
@@ -217,7 +226,7 @@ export const ChargerTrouble = () => {
             </Col>
             <Col>
               {/** @TODO 검색 api 해당 필드 추가 필요 (서버 선 작업 필요) */}
-              <DateGroup label={"접수일"} />
+              <DateGroup label={"접수일"} onChangeDate={onChangeSingle} />
             </Col>
             <Col md={2} />
           </Row>
@@ -268,10 +277,10 @@ export const ChargerTrouble = () => {
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
                 title={"처리여부"}
-                name={"brokenStatus"}
+                name={"status"}
                 list={brokenStatusList.map((data) => ({
                   ...data,
-                  checked: brokenStatus === data.value,
+                  checked: status === data.value,
                 }))}
                 onChange={onChange}
               />
@@ -349,7 +358,7 @@ export const ChargerTrouble = () => {
                 <>
                   <tr>
                     <td colSpan={14} className={"py-5 text-center text"}>
-                      {emptyMessage}
+                      {message}
                     </td>
                   </tr>
                 </>
@@ -361,8 +370,8 @@ export const ChargerTrouble = () => {
           setPage={setPage}
           data={{
             hasPreviousPage: page > 1,
-            hasNextPage: page < maxPage,
-            navigatePageNums: getPageList(page, maxPage),
+            hasNextPage: page < lastPage,
+            navigatePageNums: getPageList(page, lastPage),
             pageNum: page,
             onChangePage: (page) => {
               void searchHandler({ page })();

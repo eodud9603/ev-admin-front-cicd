@@ -5,7 +5,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import styled from "styled-components";
-import { Col, Label } from "reactstrap";
+import { Col, Input, Label } from "reactstrap";
 import {
   DetailContentCol,
   DetailLabelCol,
@@ -18,36 +18,64 @@ import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { useNavigate } from "react-router-dom";
 import { ChangeOperatorModal } from "src/pages/Counseling/components/ChangeOperatorModal";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
+import useInputs from "src/hooks/useInputs";
+import { postBrokenRegister } from "src/api/broken/brokenApi";
+import { BROKEN_LIST } from "src/constants/list";
+import { IRequestBrokenRegister } from "src/api/broken/brokenApi.interface";
+import DetailCompleteModal from "./components/DetailCompleteModal";
+import { fileUpload } from "src/utils/upload";
+import { object, string } from "yup";
+
+const contractValidation = object({
+  stationKey: string().required("충전소 ID를 입력해주세요."),
+  stationName: string().required("충전소명을 입력해주세요."),
+  chargerKey: string().required("충전기 ID를 입력해주세요."),
+});
 
 export const ChargerTroubleRegistration = () => {
   const nav = useNavigate();
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전소 고장/파손 관리" },
-  ]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
   const [isChangeOperatorModal, setIsChangeOperatorModal] = useState(false);
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
+  /* 등록완료 모달 */
+  const [isAddComplete, setIsAddComplete] = useState(false);
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
+  const { onChangeSingle, onChange, reset, ...inputs } = useInputs({
+    stationKey: "",
+    stationName: "",
+    chargerKey: "",
+    searchKey: "",
+    chargerName: "",
+    reservation: "",
+    damagedPart01: "",
+    damagedPart02: "",
+    managerMemo: "",
+    brokenContent: "",
+    managerName: "",
+  });
+  const {
+    stationKey,
+    stationName,
+    chargerKey,
+    searchKey,
+    reservation,
+    managerMemo,
+    brokenContent,
+    managerName,
+  } = inputs;
+  /* 고장1 */
+  const [damagedPart01, setDamagedPart01] = useState<
+    Partial<{
+      url?: string;
+      file: FileList | null;
+    }>
+  >({});
+  /* 고장2 */
+  const [damagedPart02, setDamagedPart02] = useState<
+    Partial<{
+      url?: string;
+      file: FileList | null;
+    }>
+  >({});
 
   const onClickHistoryBack = () => {
     nav(-1);
@@ -61,15 +89,63 @@ export const ChargerTroubleRegistration = () => {
     setIsStationSearchModal((prev) => !prev);
   };
 
+  /** 파라미터 빈값 제거 */
+  const getParams = (params: Partial<IRequestBrokenRegister>) => {
+    for (const param in params) {
+      const deleteName = param as keyof IRequestBrokenRegister;
+      const data = params[deleteName];
+
+      if (data === "") {
+        delete params[deleteName];
+      }
+    }
+  };
+
+  /** 등록
+   * @TODO 운영자ID 검색(데이터), 처리자ID(dropdown data), 고장 부위 파일 필드 2개
+   */
+  const registerHandler = async () => {
+    const isValid = await contractValidation.isValid(inputs);
+    if (!isValid) {
+      return;
+    }
+
+    /* 파일 업로드 */
+    const fileParams01 = await fileUpload(damagedPart01);
+    const fileParams02 = await fileUpload(damagedPart02);
+
+    /** 파일 params */
+    const fileParams = {
+      fileIdPart01: fileParams01.id,
+      fileIdPart02: fileParams02.id,
+    };
+
+    /** 등록 params */
+    const params = { ...inputs };
+    void getParams({
+      ...params,
+      reservation: Number(reservation),
+      searchKey: Number(searchKey),
+      ...fileParams,
+    });
+
+    /** 등록 요청 */
+    const { code } = await postBrokenRegister({
+      ...params,
+      reservation: Number(reservation),
+      searchKey: Number(searchKey),
+    });
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      setIsAddComplete(true);
+    }
+  };
+
   return (
     <ContainerBase>
       <HeaderBase />
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
       <BodyBase className={"pb-5"}>
         <BreadcrumbBase
           list={[
@@ -92,9 +168,10 @@ export const ChargerTroubleRegistration = () => {
               }
             >
               <TextInputBase
-                name={"stationId"}
+                disabled={true}
+                name={"stationKey"}
+                value={stationKey}
                 placeholder={"충전소ID 또는 충전소명 입력"}
-                value={"1"}
               />
               <ButtonBase
                 label={"충전소 검색"}
@@ -107,8 +184,9 @@ export const ChargerTroubleRegistration = () => {
             <DetailContentCol>
               <Col className={"d-flex p-0"}>
                 <TextInputBase
+                  disabled={true}
                   name={"stationName"}
-                  value={"1"}
+                  value={stationName}
                   placeholder={"충전소 검색 내역 중 관리자가 선택한 정보 노출"}
                 />
               </Col>
@@ -117,18 +195,34 @@ export const ChargerTroubleRegistration = () => {
           <DetailRow>
             <DetailLabelCol sm={2}>충전기 ID</DetailLabelCol>
             <DetailContentCol>
-              <TextInputBase name={"chargerId"} value={"1"} />
+              <TextInputBase
+                disabled={true}
+                name={"chargerKey"}
+                value={chargerKey}
+                placeholder={"충전소 검색 내역 중 관리자가 선택한 정보 노출"}
+              />
             </DetailContentCol>
-            <DetailLabelCol sm={2}>충전기명??</DetailLabelCol>
+            <Col sm={6} />
+            {/** @TODO 충전기 등록시에도 충전기명은 없음 */}
+            {/* <DetailLabelCol sm={2}>충전기명</DetailLabelCol>
             <DetailContentCol>
-              <TextInputBase name={"stationId"} value={"1"} />
-            </DetailContentCol>
+              <TextInputBase
+                disabled={true}
+                name={"chargerName"}
+                value={chargerName}
+                placeholder={"충전소 검색 내역 중 관리자가 선택한 정보 노출"}
+              />
+            </DetailContentCol> */}
           </DetailRow>
           <DetailRow>
             <DetailLabelCol sm={2}>예약번호</DetailLabelCol>
             <DetailContentCol className={"d-flex p-0"}>
               <Col className={"d-flex align-items-center"}>
-                <TextInputBase name={"reservationNumber"} value={"1"} />
+                <TextInputBase
+                  name={"reservation"}
+                  value={reservation}
+                  onChange={onChange}
+                />
               </Col>
             </DetailContentCol>
           </DetailRow>
@@ -136,26 +230,71 @@ export const ChargerTroubleRegistration = () => {
             <DetailLabelCol sm={2}>고장 부위1</DetailLabelCol>
             <DetailContentCol>
               <DropdownBase
-                menuItems={[{ label: "액정", value: "1" }]}
                 className={"mb-4"}
+                menuItems={BROKEN_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({
+                    damagedPart01: value,
+                  });
+                }}
               />
               <div
                 className={"d-flex justify-content-between align-items-center"}
               >
                 <div
                   role={"button"}
-                  className={"text-secondary text-opacity-50 px-2"}
+                  className={`px-2 text-${
+                    damagedPart01.file?.item(0)?.name
+                      ? "turu"
+                      : "secondary text-opacity-50"
+                  }`}
+                  onClick={() => {
+                    window?.open(damagedPart01.url);
+                  }}
                 >
-                  이미지 파일을 등록해주세요.
+                  {damagedPart01.file?.item(0)?.name ||
+                    "이미지 파일을 등록해주세요."}
                 </div>
-                <ButtonBase label={"업로드"} color={"turu"} outline={true} />
+                <ButtonBase
+                  label={"업로드"}
+                  color={"turu"}
+                  outline={true}
+                  onClick={() => {
+                    document.getElementById("damagedPart01")?.click();
+                  }}
+                />
+                <Input
+                  className={"visually-hidden"}
+                  type={"image"}
+                  id={"damagedPart01"}
+                  name={"damagedPart01"}
+                  accept={"*"}
+                  onChange={(e) => {
+                    if (!e.target.files) {
+                      return;
+                    }
+
+                    const localUrl = URL.createObjectURL(
+                      Array.from(e.target.files)[0]
+                    );
+                    setDamagedPart01({
+                      url: localUrl,
+                      file: e.target.files,
+                    });
+                  }}
+                />
               </div>
             </DetailContentCol>
             <DetailLabelCol sm={2}>고장 부위2</DetailLabelCol>
             <DetailContentCol>
               <DropdownBase
-                menuItems={[{ label: "액정", value: "1" }]}
                 className={"mb-4"}
+                menuItems={BROKEN_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({
+                    damagedPart02: value,
+                  });
+                }}
               />
 
               <div
@@ -163,11 +302,46 @@ export const ChargerTroubleRegistration = () => {
               >
                 <div
                   role={"button"}
-                  className={"text-secondary text-opacity-50 px-2"}
+                  className={`px-2 text-${
+                    damagedPart02.file?.item(0)?.name
+                      ? "turu"
+                      : "secondary text-opacity-50"
+                  }`}
+                  onClick={() => {
+                    window?.open(damagedPart02.url);
+                  }}
                 >
-                  이미지 파일을 등록해주세요.
+                  {damagedPart02.file?.item(0)?.name ||
+                    "이미지 파일을 등록해주세요."}
                 </div>
-                <ButtonBase label={"업로드"} color={"turu"} outline={true} />
+                <ButtonBase
+                  label={"업로드"}
+                  color={"turu"}
+                  outline={true}
+                  onClick={() => {
+                    document.getElementById("damagedPart02")?.click();
+                  }}
+                />
+                <Input
+                  className={"visually-hidden"}
+                  type={"image"}
+                  id={"damagedPart02"}
+                  name={"damagedPart02"}
+                  accept={"*"}
+                  onChange={(e) => {
+                    if (!e.target.files) {
+                      return;
+                    }
+
+                    const localUrl = URL.createObjectURL(
+                      Array.from(e.target.files)[0]
+                    );
+                    setDamagedPart02({
+                      url: localUrl,
+                      file: e.target.files,
+                    });
+                  }}
+                />
               </div>
             </DetailContentCol>
           </DetailRow>
@@ -178,6 +352,9 @@ export const ChargerTroubleRegistration = () => {
                 type: "textarea",
                 placeholder: "내용을 입력해주세요.",
                 titleWidthRatio: 2,
+                name: "brokenContent",
+                content: brokenContent,
+                onChange,
               },
             ]}
           />
@@ -188,6 +365,9 @@ export const ChargerTroubleRegistration = () => {
                 type: "textarea",
                 placeholder: "관리자 내용을 입력해주세요.",
                 titleWidthRatio: 2,
+                name: "managerMemo",
+                content: managerMemo,
+                onChange,
               },
             ]}
           />
@@ -199,9 +379,11 @@ export const ChargerTroubleRegistration = () => {
               }
             >
               <TextInputBase
-                name={"stationId"}
-                value={"1"}
+                disabled={true}
                 placeholder={"관리자ID 또는 관리자명 입력"}
+                name={"managerName"}
+                value={managerName}
+                onChange={onChange}
               />
               <ButtonBase
                 label={"관리자 검색"}
@@ -212,20 +394,24 @@ export const ChargerTroubleRegistration = () => {
             </DetailContentCol>
             <DetailLabelCol sm={2}>처리자ID(처리자명)</DetailLabelCol>
             <DetailContentCol className={"py-0"}>
-              <DropdownBase menuItems={[{ label: "C 코스텔", value: "1" }]} />
+              <DropdownBase menuItems={[{ label: "선택", value: "" }]} />
             </DetailContentCol>
           </DetailRow>
           <DetailRow>
             <DetailLabelCol sm={2}>등록자</DetailLabelCol>
-            <DetailContentCol>홍길동</DetailContentCol>
+            <DetailContentCol className={"text-secondary"}>
+              상세 화면에서 등록자명 자동 노출
+            </DetailContentCol>
             <DetailLabelCol sm={2}>등록일</DetailLabelCol>
-            <DetailContentCol>
-              YYYY.MM.DD 00:00:00 (등록 시점의 일시정보 자동 노출)
+            <DetailContentCol className={"text-secondary"}>
+              등록 시점의 일시정보 자동 노출
             </DetailContentCol>
           </DetailRow>
           <DetailRow>
             <DetailLabelCol sm={2}>연락처</DetailLabelCol>
-            <DetailContentCol></DetailContentCol>
+            <DetailContentCol className={"text-secondary"}>
+              상세 화면에서 등록자 연락처 자동 노출
+            </DetailContentCol>
           </DetailRow>
         </RepairSection>
         <div className={"px-4 mt-3"}>
@@ -244,7 +430,12 @@ export const ChargerTroubleRegistration = () => {
             className={"w-xs mx-2"}
             onClick={onClickHistoryBack}
           />
-          <ButtonBase label={"등록"} disabled={true} className={"w-xs"} />
+          <ButtonBase
+            label={"등록"}
+            color={"turu"}
+            className={"w-xs"}
+            onClick={registerHandler}
+          />
         </div>
       </BodyBase>
       <ChangeOperatorModal
@@ -252,13 +443,31 @@ export const ChargerTroubleRegistration = () => {
         onClose={handleChangeOperatorModal}
       />
       <StationSearchModal
+        size={"xl"}
         isOpen={isStationSearchModal}
         onClose={handleStationSearchModal}
-        size={"xl"}
+        onChangeSelected={(data) => {
+          onChangeSingle({
+            stationKey: data?.stationId ?? "",
+            stationName: data?.stationName ?? "",
+            searchKey: (data?.searchKey ?? "").toString(),
+            chargerKey: (data?.chargerKey ?? "").toString(),
+          });
+        }}
+      />
+      <DetailCompleteModal
+        isOpen={isAddComplete}
+        onClose={() => {
+          setIsAddComplete((prev) => !prev);
+        }}
+        onClosed={() => {
+          nav(-1);
+        }}
+        title={"신규 충전기 고장/파손 정보 등록 완료"}
+        contents={"충전기 고장/파손 정보가 등록되었습니다."}
       />
     </ContainerBase>
   );
 };
 
 const RepairSection = styled.section``;
-const ProcessingSection = styled.section``;

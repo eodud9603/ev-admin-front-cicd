@@ -16,8 +16,15 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
+import { object, string } from "yup";
 
-let disabled = true;
+const contractValidation = object({
+  stationKey: string().required("충전소 ID를 입력해주세요."),
+  stationName: string().required("충전소명을 입력해주세요."),
+  chargerKey: string().required("충전기 ID를 입력해주세요."),
+});
+
+const disabled = true;
 export const ChargerTroubleDetail = () => {
   const [tabList, setTabList] = useState([
     { label: "공지사항" },
@@ -220,10 +227,10 @@ export const ChargerTroubleDetail = () => {
               <RadioGroup
                 name={"processingStatus"}
                 list={[
-                  { label: "접수", value: "1" },
-                  { label: "진행중", value: "1" },
-                  { label: "처리완료", value: "1" },
-                  { label: "접수제외", value: "1" },
+                  { label: "접수", value: "SUBMIT" },
+                  { label: "진행중", value: "PROGRESS" },
+                  { label: "처리완료", value: "COMPLETE" },
+                  { label: "접수제외", value: "EXCEPT" },
                 ]}
               />
             </DetailContentCol>

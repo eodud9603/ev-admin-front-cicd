@@ -19,6 +19,7 @@ import BatchControlModal from "src/pages/Charger/components/BatchControlModal";
 import SingleControlModal from "src/pages/Charger/components/SingleControlModal";
 import useInputs from "src/hooks/useInputs";
 import {
+  IChargerListItem,
   IChargerListResponse,
   IRequestChargerList,
 } from "src/api/charger/chargerApi.interface";
@@ -30,9 +31,9 @@ import {
   CHARGER_RATION,
   CHARGER_TYPE,
   TOperationStatusKeys,
-} from "src/constants/charger";
+} from "src/constants/status";
 import { getChargerStatusColor } from "src/utils/charger";
-import { standardDateFormat } from "src/utils/day";
+import useList from "src/hooks/useList";
 
 /* 철거여부 필터 */
 const operationStatusList = [
@@ -87,13 +88,15 @@ const Charger = () => {
   const [tabList, setTabList] = useState([{ label: "충전기 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
-  const [list, setList] = useState(data?.elements ?? []);
-  const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
-  const [total, setTotal] = useState(data?.totalElements ?? 0);
-  const [emptyMessage, setEmptyMessage] =
-    useState("등록된 충전기 정보가 없습니다.");
-  const [time, setTime] = useState(standardDateFormat());
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<IChargerListItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: "등록된 충전기 정보가 없습니다.",
+  });
 
   /* 일괄 제어 모달 */
   const [batchControlModalOpen, setBatchControlModalOpen] = useState(false);
@@ -173,24 +176,14 @@ const Charger = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
-        if (searchParams.page === 0) {
-          setPage(1);
-        }
-        if (data.totalElements === 0) {
-          setEmptyMessage("검색된 충전소 정보가 없습니다.");
-        }
-        setList(data.elements);
-        setMaxPage(data.totalPages);
-        setTotal(data.totalElements);
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 충전소 정보가 없습니다.",
+        });
       } else {
-        setPage(1);
-        setList([]);
-        setMaxPage(1);
-        setTotal(0);
-        setEmptyMessage(message || "오류가 발생하였습니다.");
+        reset({ code, message: message || "오류가 발생하였습니다." });
       }
-
-      setTime(standardDateFormat());
     };
 
   return (
@@ -401,7 +394,7 @@ const Charger = () => {
               ) : (
                 <tr>
                   <td colSpan={16} className={"py-5 text-center text"}>
-                    {emptyMessage}
+                    {message}
                   </td>
                 </tr>
               )}
@@ -412,8 +405,8 @@ const Charger = () => {
             setPage={setPage}
             data={{
               hasPreviousPage: page > 1,
-              hasNextPage: page < maxPage,
-              navigatePageNums: getPageList(page, maxPage),
+              hasNextPage: page < lastPage,
+              navigatePageNums: getPageList(page, lastPage),
               pageNum: page,
               onChangePage: (page) => {
                 void searchHandler({ page })();

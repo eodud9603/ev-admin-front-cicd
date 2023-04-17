@@ -1,4 +1,4 @@
-import { TChargerModeKeys } from "src/constants/charger";
+import { TChargerModeKeys } from "src/constants/status";
 
 /* 충전기 상태별 컬러 return */
 export const getChargerStatusColor = (status: TChargerModeKeys) => {

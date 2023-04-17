@@ -25,6 +25,9 @@ import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup"
 import { postStationContractRegister } from "src/api/station/stationApi";
 import { number, object, string } from "yup";
 import { YNType } from "src/api/api.interface";
+import { TContractStatus } from "src/constants/status";
+import DetailValidCheckModal from "./components/DetailValidCheckModal";
+import { fileUpload } from "src/utils/upload";
 
 const contractValidation = object({
   place: string().required("계약 장소를 입력해주세요."),
@@ -53,12 +56,14 @@ const contractValidation = object({
   subsidyRevDt: string().required("보조금 수령일를 입력해주세요."),
   costSales: number().required("영업비용을 입력해주세요."),
   costConstruct: number().required("공사비를 입력해주세요."),
-  esafetyMng: string().required("전기 안전 관리를 입력해주세요."),
+  esafetyMng: string().optional(),
+  // .required("전기 안전 관리를 입력해주세요."),
 });
 
 const ChargerContractAdd = () => {
   const [tabList, setTabList] = useState([{ label: "충전소 계약 관리" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
+  /* 미입력 안내 모달 */
+  const [invalidModalOpen, setInvalidModalOpen] = useState(false);
   /* 등록완료 모달 */
   const [isAddComplete, setIsAddComplete] = useState(false);
   /* 등록취소 모달 */
@@ -66,7 +71,7 @@ const ChargerContractAdd = () => {
   const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
     place: "",
     contractorName: "",
-    code: "",
+    code: "" as TContractStatus,
     isMeRoaming: "" as YNType,
     meStationId: "",
     contractStartDt: "",
@@ -116,12 +121,17 @@ const ChargerContractAdd = () => {
     esafetyMng,
   } = inputs;
   /* 계약서 파일 */
-  const [file, setFile] = useState<FileList | null>(null);
+  const [file, setFile] = useState<
+    Partial<{
+      url?: string;
+      file: FileList | null;
+    }>
+  >({});
 
   const navigate = useNavigate();
 
-  /** 계약 등록 */
-  const postRegister = async () => {
+  /** valid check */
+  const isValid = async () => {
     /** 유효성 체크 */
     const valid = await contractValidation.isValid({
       ...inputs,
@@ -129,9 +139,21 @@ const ChargerContractAdd = () => {
       // contractFileUrl:
       // contractFileName: file?.item(0)?.name
     });
+
+    return valid;
+  };
+
+  /** 계약 등록 */
+  const postRegister = async () => {
+    /** 유효성 체크 */
+    const valid = await isValid();
     if (!valid) {
+      setInvalidModalOpen(true);
       return;
     }
+
+    /** upload file params */
+    const fileParams = await fileUpload(file);
 
     /* 등록 요청 */
     const { code } = await postStationContractRegister({
@@ -139,8 +161,8 @@ const ChargerContractAdd = () => {
       subsidyAmount: Number(subsidyAmount),
       costSales: Number(costSales),
       costConstruct: Number(costConstruct),
-      contractFileUrl: "",
-      contractFileName: "",
+      contractFileName: fileParams.name,
+      contractFileUrl: fileParams.url,
     });
     /** 성공 */
     const success = code === "SUCCESS";
@@ -154,12 +176,7 @@ const ChargerContractAdd = () => {
     <ContainerBase>
       <HeaderBase></HeaderBase>
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={() => {}}
-        onClose={() => {}}
-      />
+      <TabGroup list={tabList} />
 
       <BodyBase>
         <BreadcrumbBase
@@ -203,15 +220,15 @@ const ChargerContractAdd = () => {
                 list={[
                   {
                     label: "계약",
-                    value: "1",
+                    value: "SC01",
                   },
                   {
                     label: "해지대기",
-                    value: "2",
+                    value: "SC80",
                   },
                   {
                     label: "해지",
-                    value: "3",
+                    value: "SC89",
                   },
                 ]}
                 onChange={onChange}
@@ -367,8 +384,14 @@ const ChargerContractAdd = () => {
                 }`}
                 onClick={() => {}}
               >
-                {file ? (
-                  <u>{file?.item(0)?.name}</u>
+                {file.file ? (
+                  <u
+                    onClick={() => {
+                      window?.open(file.url);
+                    }}
+                  >
+                    {file.file?.item(0)?.name}
+                  </u>
                 ) : (
                   "계약서 파일을 등록해주세요"
                 )}
@@ -383,7 +406,13 @@ const ChargerContractAdd = () => {
                       return;
                     }
 
-                    setFile(e.target.files);
+                    const localUrl = URL.createObjectURL(
+                      Array.from(e.target.files)[0]
+                    );
+                    setFile({
+                      url: localUrl,
+                      file: e.target.files,
+                    });
                   }}
                 />
               </Hover>
@@ -394,7 +423,6 @@ const ChargerContractAdd = () => {
                   label={"업로드"}
                   color={"turu"}
                   onClick={() => {
-                    /** @TODO 업로드 기능 추가 */
                     document.getElementById("contractFile")?.click();
                   }}
                 />
@@ -513,6 +541,10 @@ const ChargerContractAdd = () => {
         </div>
       </BodyBase>
 
+      <DetailValidCheckModal
+        isOpen={invalidModalOpen}
+        onClose={() => setInvalidModalOpen(false)}
+      />
       <DetailCompleteModal
         isOpen={isAddComplete}
         onClose={() => {

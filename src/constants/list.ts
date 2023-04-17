@@ -262,3 +262,15 @@ export const MESSAGE_TITLE_LIST = [
     value: "1",
   },
 ];
+
+/** 고장 파손 부위 */
+export const BROKEN_LIST = [
+  { label: "선택", value: "" },
+  { label: "액정", value: "SB01" },
+  { label: "충전기 외부", value: "SB02" },
+  { label: "분전함", value: "SB03" },
+  { label: "케이블", value: "SB04" },
+  { label: "커넥터", value: "SB05" },
+  { label: "충전불가", value: "SB06" },
+  { label: "사용불가", value: "SB07" },
+];

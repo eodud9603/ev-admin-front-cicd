@@ -28,6 +28,9 @@ import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup"
 import { postStationContractModify } from "src/api/station/stationApi";
 import { YNType } from "src/api/api.interface";
 import { useTabStore } from "src/store/tabStore";
+import { TContractStatus } from "src/constants/status";
+import DetailValidCheckModal from "./components/DetailValidCheckModal";
+import { fileUpload } from "src/utils/upload";
 
 const contractValidation = object({
   id: number().required("필수 값이 누락되었습니다."),
@@ -57,7 +60,8 @@ const contractValidation = object({
   subsidyRevDt: string().required("보조금 수령일를 입력해주세요."),
   costSales: number().required("영업비용을 입력해주세요."),
   costConstruct: number().required("공사비를 입력해주세요."),
-  esafetyMng: string().required("전기 안전 관리를 입력해주세요."),
+  esafetyMng: string().optional(),
+  // .required("전기 안전 관리를 입력해주세요."),
 });
 
 const ChargerContractDetail = () => {
@@ -66,6 +70,8 @@ const ChargerContractDetail = () => {
 
   /** 전역 disabled 처리 */
   const [disabled, setDisabled] = useState(true);
+  /* 미입력 안내 모달 */
+  const [invalidModalOpen, setInvalidModalOpen] = useState(false);
   /* 수정완료 모달 */
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
@@ -74,7 +80,7 @@ const ChargerContractDetail = () => {
     id: data?.id ?? "",
     place: data?.place ?? "",
     contractorName: data?.contractorName ?? "",
-    code: data?.code ?? "",
+    code: (data?.code ?? "") as TContractStatus,
     isMeRoaming: (data?.isMeRoaming ?? "") as YNType,
     meStationId: data?.meStationId ?? "",
     contractStartDt: data?.contractStartDt ?? "",
@@ -125,9 +131,26 @@ const ChargerContractDetail = () => {
     esafetyMng,
   } = inputs;
   /* 계약서 파일 */
-  const [file, setFile] = useState<FileList | null>(null);
+  const [file, setFile] = useState<
+    Partial<{ url: string; file: FileList | null }>
+  >({
+    url: data?.contractFileUrl ?? "",
+  });
 
   const navigate = useNavigate();
+
+  /** valid check */
+  const isValid = async () => {
+    /** 유효성 체크 */
+    const valid = await contractValidation.isValid({
+      ...inputs,
+      /** @TODO 파일 업로드 기능 추가 후, 적용 */
+      // contractFileUrl:
+      // contractFileName: file?.item(0)?.name
+    });
+
+    return valid;
+  };
 
   /** 계약 수정 */
   const postModify = async () => {
@@ -137,15 +160,14 @@ const ChargerContractDetail = () => {
     }
 
     /** 유효성 체크 */
-    const valid = await contractValidation.isValid({
-      ...inputs,
-      /** @TODO 파일 업로드 기능 추가 후, 적용 */
-      // contractFileUrl:
-      // contractFileName: file?.item(0)?.name
-    });
+    const valid = await isValid();
     if (!valid) {
+      setInvalidModalOpen(true);
       return;
     }
+
+    /** upload file params */
+    const fileParams = await fileUpload(file);
 
     /* 수정 요청 */
     const { code } = await postStationContractModify({
@@ -154,9 +176,10 @@ const ChargerContractDetail = () => {
       subsidyAmount: Number(subsidyAmount),
       costSales: Number(costSales),
       costConstruct: Number(costConstruct),
-      contractFileUrl: "",
-      contractFileName: "",
+      contractFileName: fileParams.name,
+      contractFileUrl: fileParams.url,
     });
+
     /** 성공 */
     const success = code === "SUCCESS";
     if (success) {
@@ -231,20 +254,20 @@ const ChargerContractDetail = () => {
                 list={[
                   {
                     label: "계약",
-                    value: "1",
-                    checked: code === "1",
+                    value: "SC01",
+                    checked: code === "SC01",
                     disabled,
                   },
                   {
                     label: "해지대기",
-                    value: "2",
-                    checked: code === "2",
+                    value: "SC80",
+                    checked: code === "SC80",
                     disabled,
                   },
                   {
                     label: "해지",
-                    value: "3",
-                    checked: code === "3",
+                    value: "SC89",
+                    checked: code === "SC89",
                     disabled,
                   },
                 ]}
@@ -412,7 +435,13 @@ const ChargerContractDetail = () => {
               className={"d-flex align-items-center justify-content-between"}
             >
               <Hover className={"font-size-14 text-turu"} onClick={() => {}}>
-                <u>{file?.item(0)?.name}</u>
+                <u
+                  onClick={() => {
+                    window?.open(file.url || data?.contractFileUrl);
+                  }}
+                >
+                  {file.file?.item(0)?.name || data?.contractFileName}
+                </u>
                 <Input
                   className={"visually-hidden"}
                   type={"file"}
@@ -424,7 +453,13 @@ const ChargerContractDetail = () => {
                       return;
                     }
 
-                    setFile(e.target.files);
+                    const localUrl = URL.createObjectURL(
+                      Array.from(e.target.files)[0]
+                    );
+                    setFile({
+                      url: localUrl,
+                      file: e.target.files,
+                    });
                   }}
                 />
               </Hover>
@@ -437,7 +472,6 @@ const ChargerContractDetail = () => {
                     label={"업로드"}
                     color={"turu"}
                     onClick={() => {
-                      /** @TODO 업로드 기능 추가 */
                       document.getElementById("contractFile")?.click();
                     }}
                   />
@@ -557,6 +591,10 @@ const ChargerContractDetail = () => {
         />
       </BodyBase>
 
+      <DetailValidCheckModal
+        isOpen={invalidModalOpen}
+        onClose={() => setInvalidModalOpen(false)}
+      />
       <DetailCompleteModal
         isOpen={isEditComplete}
         onClose={() => {

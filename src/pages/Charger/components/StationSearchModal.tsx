@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ModalBase, {
   IModalBaseProps,
 } from "src/components/Common/Modal/ModalBase";
@@ -10,12 +10,14 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
 import useInputs from "src/hooks/useInputs";
-import {
-  IRequestStationList,
-  IStationListItem,
-} from "src/api/station/stationApi.interface";
-import { getStationList } from "src/api/station/stationApi";
 import { getPageList } from "src/utils/pagination";
+import useList from "src/hooks/useList";
+import { getChargerList } from "src/api/charger/chargerApi";
+import {
+  IChargerListItem,
+  IRequestChargerList,
+} from "src/api/charger/chargerApi.interface";
+import { CHARGER_RATION, CHARGER_TYPE } from "src/constants/status";
 
 const dropdownGroupSearch = [{ label: "충전소명", value: "StationName" }];
 
@@ -30,14 +32,22 @@ const tableHeader = [
 ];
 const count = 10;
 
-export const StationSearchModal = (props: IModalBaseProps) => {
-  const { isOpen, onClose, title, size } = props;
+interface IStationSearchModalProps extends IModalBaseProps {
+  onChangeSelected?: (data?: IChargerListItem) => void;
+}
 
-  const [list, setList] = useState<IStationListItem[]>([]);
+export const StationSearchModal = (props: IStationSearchModalProps) => {
+  const { isOpen, onClose, title, size, onChangeSelected } = props;
 
-  const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(1);
-  const [emptyMessage, setEmptyMessage] = useState("충전소를 검색해주세요.");
+  const [
+    { list, page, lastPage, message },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<IChargerListItem>({
+    elements: [],
+    totalPages: 1,
+    totalElements: 0,
+    emptyMessage: "충전소를 검색해주세요.",
+  });
 
   const {
     sido,
@@ -56,9 +66,9 @@ export const StationSearchModal = (props: IModalBaseProps) => {
   });
 
   /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestStationList>) => {
+  const getParams = (params: Partial<IRequestChargerList>) => {
     for (const param in params) {
-      const deleteName = param as keyof IRequestStationList;
+      const deleteName = param as keyof IRequestChargerList;
       const data = params[deleteName];
 
       if (data === "") {
@@ -69,10 +79,10 @@ export const StationSearchModal = (props: IModalBaseProps) => {
 
   /** 검색 핸들러 */
   const searchHandler =
-    (params: Partial<IRequestStationList> = {}) =>
+    (params: Partial<IRequestChargerList> = {}) =>
     async () => {
       /* 검색 파라미터 */
-      let searchParams: IRequestStationList = {
+      let searchParams: IRequestChargerList = {
         size: Number(count),
         page,
         sido,
@@ -82,7 +92,7 @@ export const StationSearchModal = (props: IModalBaseProps) => {
       };
       if (searchRange && searchText) {
         searchParams.searchType =
-          searchRange as IRequestStationList["searchType"];
+          searchRange as IRequestChargerList["searchType"];
         searchParams.searchKeyword = searchText;
       }
       searchParams = {
@@ -93,25 +103,27 @@ export const StationSearchModal = (props: IModalBaseProps) => {
       getParams(searchParams);
 
       /** @TODO 검색 (* 다른 api로 변경 필요할것으로 판단됨)  */
-      const { code, data, message } = await getStationList(searchParams);
+      const { code, data, message } = await getChargerList(searchParams);
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
-        if (searchParams.page === 0) {
-          setPage(1);
-        }
-        if (data.totalElements === 0) {
-          setEmptyMessage("검색된 충전소 정보가 없습니다.");
-        }
-        setList(data.elements);
-        setMaxPage(data.totalPages);
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 충전소 정보가 없습니다.",
+        });
       } else {
-        setPage(1);
-        setList([]);
-        setMaxPage(1);
-        setEmptyMessage(message || "오류가 발생하였습니다.");
+        reset({
+          code,
+          message: message || "오류가 발생하였습니다.",
+        });
       }
     };
+
+  const onChangeData = (data: IChargerListItem) => () => {
+    !!onChangeSelected && void onChangeSelected(data);
+    onClose();
+  };
 
   return (
     <ModalBase
@@ -158,22 +170,23 @@ export const StationSearchModal = (props: IModalBaseProps) => {
                 list.map((data, index) => (
                   <tr key={data.stationId}>
                     <td>{(page - 1) * Number(count) + index + 1}</td>
-                    <td>
+                    <td onClick={onChangeData(data)}>
                       <HoverSpan className={"text-turu"}>
-                        <u>{data.stationNm}</u>
+                        <u>{data.stationName}</u>
                       </HoverSpan>
                     </td>
                     <td>{data.stationId}</td>
+                    <td>{data.searchKey}</td>
+                    <td>{CHARGER_RATION[data.chargerClass]}</td>
+                    <td>{CHARGER_TYPE[data.type]}</td>
+                    {/** @TODO 주소필드 추가 필요 */}
                     <td>{"-"}</td>
-                    <td>{data.fastCharger || "-"}</td>
-                    <td>{data.fullCharger - data.fastCharger}</td>
-                    <td>{data.address}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td colSpan={7} className={"py-5 text-center text"}>
-                    {emptyMessage}
+                    {message}
                   </td>
                 </tr>
               )}
@@ -184,8 +197,8 @@ export const StationSearchModal = (props: IModalBaseProps) => {
           setPage={setPage}
           data={{
             hasPreviousPage: page > 1,
-            hasNextPage: page < maxPage,
-            navigatePageNums: getPageList(page, maxPage),
+            hasNextPage: page < lastPage,
+            navigatePageNums: getPageList(page, lastPage),
             pageNum: page,
             onChangePage: (page) => {
               void searchHandler({ page })();

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import { YNType } from "src/api/api.interface";
 import { getStationContractList } from "src/api/station/stationApi";
 import {
   IRequestStationContractList,
+  IStationContractItem,
   IStationContractListResponse,
 } from "src/api/station/stationApi.interface";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -25,6 +26,8 @@ import useInputs from "src/hooks/useInputs";
 import { getPageList } from "src/utils/pagination";
 import styled from "styled-components";
 import { useTabStore } from "src/store/tabStore";
+import useList from "src/hooks/useList";
+import { CONTRACT_STATUS, TContractStatus } from "src/constants/status";
 import { standardDateFormat } from "src/utils/day";
 
 /* 계약여부 필터 */
@@ -35,20 +38,20 @@ const contractFilterList = [
   },
   {
     label: "계약",
-    value: "1",
+    value: "SC01",
   },
   {
     label: "해지대기",
-    value: "2",
+    value: "SC80",
   },
   {
     label: "해지",
-    value: "3",
+    value: "SC89",
   },
 ];
 
 /* 사용여부 필터 */
-const useList = [
+const useStatusList = [
   {
     label: "전체",
     value: "",
@@ -109,20 +112,21 @@ const ChargerContract = () => {
   /** init 충전소 계약 목록 데이터 */
   const data = useLoaderData() as IStationContractListResponse | null;
 
-  const [list, setList] = useState(data?.elements ?? []);
-  const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
-  const [total, setTotal] = useState(data?.totalElements ?? 0);
-  const [emptyMessage, setEmptyMessage] = useState(
-    "등록된 충전소 계약 정보가 없습니다."
-  );
-  const [time, setTime] = useState(standardDateFormat());
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<IStationContractItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: "등록된 충전소 계약 정보가 없습니다.",
+  });
 
   const {
     sido,
     gugun,
     dong,
-    contractStatus,
+    contractCode,
     searchRange,
     searchText,
     isUse,
@@ -134,7 +138,7 @@ const ChargerContract = () => {
     sido: "",
     gugun: "",
     dong: "",
-    contractStatus: "",
+    contractCode: "" as TContractStatus,
     searchRange: "ContractPlace",
     searchText: "",
     isUse: "" as YNType,
@@ -171,6 +175,7 @@ const ChargerContract = () => {
         gugun,
         dong,
         isUse,
+        contractCode,
         sort: sort as IRequestStationContractList["sort"],
       };
       /** @TODO 검색어 필터 추가 후, 추가예정 */
@@ -193,24 +198,17 @@ const ChargerContract = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
-        if (searchParams.page === 0) {
-          setPage(1);
-        }
-        if (data.totalElements === 0) {
-          setEmptyMessage("검색된 충전소 계약 정보가 없습니다.");
-        }
-        setList(data.elements);
-        setMaxPage(data.totalPages);
-        setTotal(data.totalElements);
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 충전소 계약 정보가 없습니다.",
+        });
       } else {
-        setPage(1);
-        setList([]);
-        setMaxPage(1);
-        setTotal(0);
-        setEmptyMessage(message || "오류가 발생하였습니다.");
+        reset({
+          code,
+          message: message || "오류가 발생하였습니다.",
+        });
       }
-
-      setTime(standardDateFormat());
     };
 
   const tabStore = useTabStore();
@@ -269,10 +267,10 @@ const ChargerContract = () => {
             <Col md={5}>
               <RadioGroup
                 title={"계약여부"}
-                name={"contractStatus"}
+                name={"contractCode"}
                 list={contractFilterList.map((contract) => ({
                   ...contract,
-                  checked: contractStatus === contract.value,
+                  checked: contractCode === contract.value,
                 }))}
                 onChange={onChange}
               />
@@ -297,7 +295,7 @@ const ChargerContract = () => {
               <RadioGroup
                 title={"사용여부"}
                 name={"isUse"}
-                list={useList.map((use) => ({
+                list={useStatusList.map((use) => ({
                   ...use,
                   checked: isUse === use.value,
                 }))}
@@ -365,7 +363,7 @@ const ChargerContract = () => {
                     <td>{contract.id}</td>
                     <td>{contract.isUse === "Y" ? "사용" : "미사용"}</td>
                     {/** @TODO 서버 code 픽스 후, 매칭작업 필요 */}
-                    <td>{contract.code}(코드 매칭 필요)</td>
+                    <td>{CONTRACT_STATUS[contract.code] ?? "-"}</td>
                     <td>
                       <HoverSpan
                         className={"text-turu"}
@@ -389,18 +387,34 @@ const ChargerContract = () => {
                       <p>{contract.managerPhone || "-"}</p>
                     </td>
                     <td>
-                      {contract.contractStartDt
-                        ? `${contract.contractStartDt}~${contract.contractEndDt}`
+                      {contract.contractStartDt && contract.contractEndDt
+                        ? standardDateFormat(
+                            contract.contractStartDt,
+                            "YYYY.MM.DD"
+                          ) +
+                          " ~ " +
+                          standardDateFormat(
+                            contract.contractEndDt,
+                            "YYYY.MM.DD"
+                          )
                         : "-"}
                     </td>
-                    <td>{contract.contractDt || "-"}</td>
-                    <td>{contract.createdDate}</td>
+                    <td>
+                      {contract.contractDt
+                        ? standardDateFormat(contract.contractDt, "YYYY.MM.DD")
+                        : "-"}
+                    </td>
+                    <td>
+                      {contract.createdDate
+                        ? standardDateFormat(contract.createdDate, "YYYY.MM.DD")
+                        : "-"}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td colSpan={14} className={"py-5 text-center text"}>
-                    {emptyMessage}
+                    {message}
                   </td>
                 </tr>
               )}
@@ -411,8 +425,8 @@ const ChargerContract = () => {
             setPage={setPage}
             data={{
               hasPreviousPage: page > 1,
-              hasNextPage: page < maxPage,
-              navigatePageNums: getPageList(page, maxPage),
+              hasNextPage: page < lastPage,
+              navigatePageNums: getPageList(page, lastPage),
               pageNum: page,
               onChangePage: (page) => {
                 void searchHandler({ page })();

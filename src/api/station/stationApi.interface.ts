@@ -1,8 +1,9 @@
 
 import { YNType } from "src/api/api.interface";
+import { TContractStatus } from "src/constants/status";
 
 /* 충전소 목록 조회 */
-/** @see http://218.38.12.31:45081/docs/index.html#_%EB%AA%A9%EB%A1%9D_%EC%A1%B0%ED%9A%8C */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EB%AA%A9%EB%A1%9D_%EC%A1%B0%ED%9A%8C */
 export interface IRequestStationList {
   /** @TODO 서버 sortDirection 정의 후, 추가 */
   // sortDirection: "ASC" | "DESC";
@@ -39,7 +40,7 @@ export interface IStationListResponse {
 
 /* 충전소 상세 조회 */
 /**
- * @see http://218.38.12.31:45081/docs/index.html#_%EC%83%81%EC%
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%83%81%EC%
  */
 export interface IRequestStationDetail {
   id: string;
@@ -91,14 +92,14 @@ export interface IStationDetailResponse {
 
 /* 충전소 등록 */
 /**
- * @see http://218.38.12.31:45081/docs/index.html#_%EB%93%B1%EB%A1%9D
+ * @see http://218.38.12.198:45081/docs/index.html#_%EB%93%B1%EB%A1%9D
  * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
  */
 export type IRequestStationRegister  = IStationDetailResponse
 
 /* 충전소 계약 목록 조회 */
 /**
- * @see http://218.38.12.31:45081/docs/index.html#_%EC%A1%B0%ED%9A%8C
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%A1%B0%ED%9A%8C
  * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
  */
 export interface IRequestStationContractList {
@@ -111,6 +112,7 @@ export interface IRequestStationContractList {
   sido?: string;
   gugun?: string;
   dong?: string;
+  contractCode?: TContractStatus;
   searchType?: "ContractPlace" | "StationKey" | "SalesCompany";
   searchKeyword?: string;
   isUse?: YNType;
@@ -119,7 +121,7 @@ export interface IRequestStationContractList {
 export interface IStationContractItem {
   id: number;
   place: string;
-  code: string;
+  code: TContractStatus;
   isUse: YNType;
   managerName: string;
   managerPhone: string;
@@ -142,7 +144,7 @@ export interface IStationContractListResponse {
 
 /* 충전소 계약 상세 조회 */
 /**
- * @see http://218.38.12.31:45081/docs/index.html#_%EC%83%81%EC%84%B8_2
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%83%81%EC%84%B8_2
  * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
  */
 export interface IRequestStationContractDetail {
@@ -153,7 +155,7 @@ export interface IStationContractDetailResponse {
   id: number;
   place: string;
   contractorName: string;
-  code: string; /* 계약코드 관리 */
+  code: TContractStatus; /* 계약코드 관리 */
   isMeRoaming: YNType;
   // isUse: YNType;
   meStationId?: string;
@@ -183,14 +185,14 @@ export interface IStationContractDetailResponse {
 
 /* 충전소 계약 상세 수정 */
 /**
- * @see http://218.38.12.31:45081/docs/index.html#_%EC%88%98%EC%A0%95
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%88%98%EC%A0%95
  * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
  */
 export type IRequestStationContractModify = IStationContractDetailResponse
 
 /* 충전소 계약 등록 */
 /**
- * @see http://218.38.12.31:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_2
+ * @see http://218.38.12.198:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_2
  * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
  */
 export type IRequestStationContractRegister = Omit<IStationContractDetailResponse, "id">
