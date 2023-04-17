@@ -91,3 +91,18 @@ export const CONTRACT_STATUS = {
 } as const;
 /** 계약 상태 코드 키 타입 */
 export type TContractStatus = keyof typeof CONTRACT_STATUS;
+
+/**
+ * @description 고장 파손 부위, 서버 변경 가능성 있음.
+ */
+export const BROKEN_STATUS = {
+  SB01: "액정",
+  SB02: "충전기 외부",
+  SB03: "분전함",
+  SB04: "케이블",
+  SB05: "커넥터",
+  SB06: "충전불가",
+  SB07: "사용불가",
+} as const;
+/** 계약 상태 코드 키 타입 */
+export type TBrokenStatus = keyof typeof BROKEN_STATUS;

@@ -27,7 +27,7 @@ const TextInputBase = (props: ITextInputBaseProps) => {
     type = "text",
     placeholder = "입력해주세요.",
     autoComplete,
-    bsSize = "sm",
+    bsSize = "lg",
     disabled = false,
     inputstyle,
     className = "",
