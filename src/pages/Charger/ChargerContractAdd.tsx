@@ -127,6 +127,19 @@ const ChargerContractAdd = () => {
 
   const navigate = useNavigate();
 
+  /** valid check */
+  const isValid = async () => {
+    /** 유효성 체크 */
+    const valid = await contractValidation.isValid({
+      ...inputs,
+      /** @TODO 파일 업로드 기능 추가 후, 적용 */
+      // contractFileUrl:
+      // contractFileName: file?.item(0)?.name
+    });
+
+    return valid;
+  };
+
   /** file upload */
   const upload = async (
     uploadFile: Partial<{
@@ -146,9 +159,9 @@ const ChargerContractAdd = () => {
       /** 성공 */
       const success = fileCode === "SUCCESS" && !!fileData;
       if (success) {
-        const [uploadFile] = fileData.elements;
-        fileParams.contractFileName = uploadFile.fileName;
-        fileParams.contractFileUrl = uploadFile.url;
+        const [uploadedFile] = fileData.elements;
+        fileParams.contractFileName = uploadedFile.fileName;
+        fileParams.contractFileUrl = uploadedFile.url;
 
         if (url) {
           URL.revokeObjectURL(url);
@@ -162,12 +175,7 @@ const ChargerContractAdd = () => {
   /** 계약 등록 */
   const postRegister = async () => {
     /** 유효성 체크 */
-    const valid = await contractValidation.isValid({
-      ...inputs,
-      /** @TODO 파일 업로드 기능 추가 후, 적용 */
-      // contractFileUrl:
-      // contractFileName: file?.item(0)?.name
-    });
+    const valid = await isValid();
     if (!valid) {
       return;
     }
