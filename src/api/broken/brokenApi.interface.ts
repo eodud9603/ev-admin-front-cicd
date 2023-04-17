@@ -1,5 +1,5 @@
 import { OperatorType } from "src/api/api.interface";
-import { TChargerProcessingStatus } from "src/constants/status";
+import { TBrokenStatus, TChargerProcessingStatus } from "src/constants/status";
 
 /* 충전기 고장/파손 목록 조회 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EC%A1%B0%ED%9A%8C_2 */
@@ -76,4 +76,24 @@ export interface IRequestBrokenRegister {
   reporterId?: string; /* 등록자 ID */
   reporterPhone?: string;
   reservation?: number;
+}
+
+/* 충전기 고장/파손 상세 */
+/** 
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%83%81%EC%84%B8_3
+ * @description 옵션널 임시 추가 (서버/기획 확인 필요, 등록 데이터를 보내지 못하는 데이터)
+ *  */
+export interface IRequestBrokenDetail {
+  id: number;
+}
+
+export interface IBrokenDetailResponse extends IRequestBrokenRegister {
+  stationOperator: string;
+  stationRegion: string;
+  brokenStatus: TBrokenStatus;
+  fileNamePart01: string;
+  fileNamePart02: string;
+  fileUrlPart01: string;
+  fileUrlPart02: string;
+  createDate: string;
 }

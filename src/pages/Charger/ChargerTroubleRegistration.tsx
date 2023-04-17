@@ -5,7 +5,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import styled from "styled-components";
-import { Col, Label } from "reactstrap";
+import { Col, Input, Label } from "reactstrap";
 import {
   DetailContentCol,
   DetailLabelCol,
@@ -23,6 +23,14 @@ import { postBrokenRegister } from "src/api/broken/brokenApi";
 import { BROKEN_LIST } from "src/constants/list";
 import { IRequestBrokenRegister } from "src/api/broken/brokenApi.interface";
 import DetailCompleteModal from "./components/DetailCompleteModal";
+import { fileUpload } from "src/utils/upload";
+import { object, string } from "yup";
+
+const contractValidation = object({
+  stationKey: string().required("충전소 ID를 입력해주세요."),
+  stationName: string().required("충전소명을 입력해주세요."),
+  chargerKey: string().required("충전기 ID를 입력해주세요."),
+});
 
 export const ChargerTroubleRegistration = () => {
   const nav = useNavigate();
@@ -54,6 +62,20 @@ export const ChargerTroubleRegistration = () => {
     brokenContent,
     managerName,
   } = inputs;
+  /* 고장1 */
+  const [damagedPart01, setDamagedPart01] = useState<
+    Partial<{
+      url?: string;
+      file: FileList | null;
+    }>
+  >({});
+  /* 고장2 */
+  const [damagedPart02, setDamagedPart02] = useState<
+    Partial<{
+      url?: string;
+      file: FileList | null;
+    }>
+  >({});
 
   const onClickHistoryBack = () => {
     nav(-1);
@@ -83,12 +105,28 @@ export const ChargerTroubleRegistration = () => {
    * @TODO 운영자ID 검색(데이터), 처리자ID(dropdown data), 고장 부위 파일 필드 2개
    */
   const registerHandler = async () => {
+    const isValid = await contractValidation.isValid(inputs);
+    if (!isValid) {
+      return;
+    }
+
+    /* 파일 업로드 */
+    const fileParams01 = await fileUpload(damagedPart01);
+    const fileParams02 = await fileUpload(damagedPart02);
+
+    /** 파일 params */
+    const fileParams = {
+      fileIdPart01: fileParams01.id,
+      fileIdPart02: fileParams02.id,
+    };
+
     /** 등록 params */
     const params = { ...inputs };
     void getParams({
       ...params,
       reservation: Number(reservation),
       searchKey: Number(searchKey),
+      ...fileParams,
     });
 
     /** 등록 요청 */
@@ -205,11 +243,46 @@ export const ChargerTroubleRegistration = () => {
               >
                 <div
                   role={"button"}
-                  className={"text-secondary text-opacity-50 px-2"}
+                  className={`px-2 text-${
+                    damagedPart01.file?.item(0)?.name
+                      ? "turu"
+                      : "secondary text-opacity-50"
+                  }`}
+                  onClick={() => {
+                    window?.open(damagedPart01.url);
+                  }}
                 >
-                  이미지 파일을 등록해주세요.
+                  {damagedPart01.file?.item(0)?.name ||
+                    "이미지 파일을 등록해주세요."}
                 </div>
-                <ButtonBase label={"업로드"} color={"turu"} outline={true} />
+                <ButtonBase
+                  label={"업로드"}
+                  color={"turu"}
+                  outline={true}
+                  onClick={() => {
+                    document.getElementById("damagedPart01")?.click();
+                  }}
+                />
+                <Input
+                  className={"visually-hidden"}
+                  type={"image"}
+                  id={"damagedPart01"}
+                  name={"damagedPart01"}
+                  accept={"*"}
+                  onChange={(e) => {
+                    if (!e.target.files) {
+                      return;
+                    }
+
+                    const localUrl = URL.createObjectURL(
+                      Array.from(e.target.files)[0]
+                    );
+                    setDamagedPart01({
+                      url: localUrl,
+                      file: e.target.files,
+                    });
+                  }}
+                />
               </div>
             </DetailContentCol>
             <DetailLabelCol sm={2}>고장 부위2</DetailLabelCol>
@@ -229,11 +302,46 @@ export const ChargerTroubleRegistration = () => {
               >
                 <div
                   role={"button"}
-                  className={"text-secondary text-opacity-50 px-2"}
+                  className={`px-2 text-${
+                    damagedPart02.file?.item(0)?.name
+                      ? "turu"
+                      : "secondary text-opacity-50"
+                  }`}
+                  onClick={() => {
+                    window?.open(damagedPart02.url);
+                  }}
                 >
-                  이미지 파일을 등록해주세요.
+                  {damagedPart02.file?.item(0)?.name ||
+                    "이미지 파일을 등록해주세요."}
                 </div>
-                <ButtonBase label={"업로드"} color={"turu"} outline={true} />
+                <ButtonBase
+                  label={"업로드"}
+                  color={"turu"}
+                  outline={true}
+                  onClick={() => {
+                    document.getElementById("damagedPart02")?.click();
+                  }}
+                />
+                <Input
+                  className={"visually-hidden"}
+                  type={"image"}
+                  id={"damagedPart02"}
+                  name={"damagedPart02"}
+                  accept={"*"}
+                  onChange={(e) => {
+                    if (!e.target.files) {
+                      return;
+                    }
+
+                    const localUrl = URL.createObjectURL(
+                      Array.from(e.target.files)[0]
+                    );
+                    setDamagedPart02({
+                      url: localUrl,
+                      file: e.target.files,
+                    });
+                  }}
+                />
               </div>
             </DetailContentCol>
           </DetailRow>

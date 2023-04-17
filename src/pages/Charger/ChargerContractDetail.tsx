@@ -28,9 +28,9 @@ import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup"
 import { postStationContractModify } from "src/api/station/stationApi";
 import { YNType } from "src/api/api.interface";
 import { useTabStore } from "src/store/tabStore";
-import { postFileUpload } from "src/api/common/commonApi";
 import { TContractStatus } from "src/constants/status";
 import DetailValidCheckModal from "./components/DetailValidCheckModal";
+import { fileUpload } from "src/utils/upload";
 
 const contractValidation = object({
   id: number().required("필수 값이 누락되었습니다."),
@@ -152,39 +152,6 @@ const ChargerContractDetail = () => {
     return valid;
   };
 
-  /** file upload */
-  const upload = async (
-    uploadFile: Partial<{
-      url?: string | undefined;
-      file: FileList | null;
-    }>
-  ) => {
-    const { url, file } = uploadFile;
-
-    const fileParams = {
-      contractFileName: data?.contractFileName ?? "",
-      contractFileUrl: data?.contractFileUrl ?? "",
-    };
-
-    if (url?.includes("blob") && !!file) {
-      /* 파일 업로드 요청 */
-      const { code: fileCode, data: fileData } = await postFileUpload(file);
-      /** 성공 */
-      const success = fileCode === "SUCCESS" && !!fileData;
-      if (success) {
-        const [uploadedFile] = fileData.elements;
-        fileParams.contractFileName = uploadedFile.fileName;
-        fileParams.contractFileUrl = uploadedFile.url;
-
-        if (url) {
-          URL.revokeObjectURL(url);
-        }
-      }
-    }
-
-    return fileParams;
-  };
-
   /** 계약 수정 */
   const postModify = async () => {
     if (disabled) {
@@ -200,7 +167,7 @@ const ChargerContractDetail = () => {
     }
 
     /** upload file params */
-    const fileParams = await upload(file);
+    const fileParams = await fileUpload(file);
 
     /* 수정 요청 */
     const { code } = await postStationContractModify({
@@ -209,7 +176,8 @@ const ChargerContractDetail = () => {
       subsidyAmount: Number(subsidyAmount),
       costSales: Number(costSales),
       costConstruct: Number(costConstruct),
-      ...fileParams,
+      contractFileName: fileParams.name,
+      contractFileUrl: fileParams.url,
     });
 
     /** 성공 */
@@ -504,7 +472,6 @@ const ChargerContractDetail = () => {
                     label={"업로드"}
                     color={"turu"}
                     onClick={() => {
-                      /** @TODO 업로드 기능 추가 */
                       document.getElementById("contractFile")?.click();
                     }}
                   />

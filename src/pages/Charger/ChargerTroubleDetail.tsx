@@ -16,6 +16,13 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
+import { object, string } from "yup";
+
+const contractValidation = object({
+  stationKey: string().required("충전소 ID를 입력해주세요."),
+  stationName: string().required("충전소명을 입력해주세요."),
+  chargerKey: string().required("충전기 ID를 입력해주세요."),
+});
 
 const disabled = true;
 export const ChargerTroubleDetail = () => {
