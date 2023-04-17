@@ -25,6 +25,7 @@ import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup"
 import { postStationContractRegister } from "src/api/station/stationApi";
 import { number, object, string } from "yup";
 import { YNType } from "src/api/api.interface";
+import { postFileUpload } from "src/api/common/commonApi";
 
 const contractValidation = object({
   place: string().required("계약 장소를 입력해주세요."),
@@ -116,7 +117,12 @@ const ChargerContractAdd = () => {
     esafetyMng,
   } = inputs;
   /* 계약서 파일 */
-  const [file, setFile] = useState<FileList | null>(null);
+  const [file, setFile] = useState<
+    Partial<{
+      url?: string;
+      file: FileList | null;
+    }>
+  >({});
 
   const navigate = useNavigate();
 
@@ -133,14 +139,35 @@ const ChargerContractAdd = () => {
       return;
     }
 
+    const fileParams = {
+      contractFileName: "",
+      contractFileUrl: "",
+    };
+    if (file.file) {
+      /* 파일 업로드 요청 */
+      const { code: fileCode, data: fileData } = await postFileUpload(
+        file.file
+      );
+      /** 성공 */
+      const success = fileCode === "SUCCESS" && !!fileData;
+      if (success) {
+        const [uploadFile] = fileData.elements;
+        fileParams.contractFileName = uploadFile.fileName;
+        fileParams.contractFileUrl = uploadFile.url;
+
+        if (file.url) {
+          URL.revokeObjectURL(file.url);
+        }
+      }
+    }
+
     /* 등록 요청 */
     const { code } = await postStationContractRegister({
       ...inputs,
       subsidyAmount: Number(subsidyAmount),
       costSales: Number(costSales),
       costConstruct: Number(costConstruct),
-      contractFileUrl: "",
-      contractFileName: "",
+      ...fileParams,
     });
     /** 성공 */
     const success = code === "SUCCESS";
@@ -367,8 +394,14 @@ const ChargerContractAdd = () => {
                 }`}
                 onClick={() => {}}
               >
-                {file ? (
-                  <u>{file?.item(0)?.name}</u>
+                {file.file ? (
+                  <u
+                    onClick={() => {
+                      window?.open(file.url);
+                    }}
+                  >
+                    {file.file?.item(0)?.name}
+                  </u>
                 ) : (
                   "계약서 파일을 등록해주세요"
                 )}
@@ -383,7 +416,13 @@ const ChargerContractAdd = () => {
                       return;
                     }
 
-                    setFile(e.target.files);
+                    const localUrl = URL.createObjectURL(
+                      Array.from(e.target.files)[0]
+                    );
+                    setFile({
+                      url: localUrl,
+                      file: e.target.files,
+                    });
                   }}
                 />
               </Hover>
