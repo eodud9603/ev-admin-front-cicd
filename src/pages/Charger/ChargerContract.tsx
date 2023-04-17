@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import { YNType } from "src/api/api.interface";
 import { getStationContractList } from "src/api/station/stationApi";
 import {
   IRequestStationContractList,
+  IStationContractItem,
   IStationContractListResponse,
 } from "src/api/station/stationApi.interface";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -25,7 +26,7 @@ import useInputs from "src/hooks/useInputs";
 import { getPageList } from "src/utils/pagination";
 import styled from "styled-components";
 import { useTabStore } from "src/store/tabStore";
-import { standardDateFormat } from "src/utils/day";
+import useList from "src/hooks/useList";
 
 /* 계약여부 필터 */
 const contractFilterList = [
@@ -48,7 +49,7 @@ const contractFilterList = [
 ];
 
 /* 사용여부 필터 */
-const useList = [
+const useStatusList = [
   {
     label: "전체",
     value: "",
@@ -109,14 +110,15 @@ const ChargerContract = () => {
   /** init 충전소 계약 목록 데이터 */
   const data = useLoaderData() as IStationContractListResponse | null;
 
-  const [list, setList] = useState(data?.elements ?? []);
-  const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
-  const [total, setTotal] = useState(data?.totalElements ?? 0);
-  const [emptyMessage, setEmptyMessage] = useState(
-    "등록된 충전소 계약 정보가 없습니다."
-  );
-  const [time, setTime] = useState(standardDateFormat());
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<IStationContractItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: "등록된 충전소 계약 정보가 없습니다.",
+  });
 
   const {
     sido,
@@ -193,24 +195,16 @@ const ChargerContract = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
-        if (searchParams.page === 0) {
-          setPage(1);
-        }
-        if (data.totalElements === 0) {
-          setEmptyMessage("검색된 충전소 계약 정보가 없습니다.");
-        }
-        setList(data.elements);
-        setMaxPage(data.totalPages);
-        setTotal(data.totalElements);
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 충전소 계약 정보가 없습니다.",
+        });
       } else {
-        setPage(1);
-        setList([]);
-        setMaxPage(1);
-        setTotal(0);
-        setEmptyMessage(message || "오류가 발생하였습니다.");
+        reset({
+          message: message || "오류가 발생하였습니다.",
+        });
       }
-
-      setTime(standardDateFormat());
     };
 
   const tabStore = useTabStore();
@@ -297,7 +291,7 @@ const ChargerContract = () => {
               <RadioGroup
                 title={"사용여부"}
                 name={"isUse"}
-                list={useList.map((use) => ({
+                list={useStatusList.map((use) => ({
                   ...use,
                   checked: isUse === use.value,
                 }))}
@@ -389,8 +383,10 @@ const ChargerContract = () => {
                       <p>{contract.managerPhone || "-"}</p>
                     </td>
                     <td>
-                      {contract.contractStartDt
-                        ? `${contract.contractStartDt}~${contract.contractEndDt}`
+                      {contract.contractStartDt && contract.contractEndDt
+                        ? contract.contractStartDt +
+                          "~" +
+                          contract.contractEndDt
                         : "-"}
                     </td>
                     <td>{contract.contractDt || "-"}</td>
@@ -400,7 +396,7 @@ const ChargerContract = () => {
               ) : (
                 <tr>
                   <td colSpan={14} className={"py-5 text-center text"}>
-                    {emptyMessage}
+                    {message}
                   </td>
                 </tr>
               )}
@@ -411,8 +407,8 @@ const ChargerContract = () => {
             setPage={setPage}
             data={{
               hasPreviousPage: page > 1,
-              hasNextPage: page < maxPage,
-              navigatePageNums: getPageList(page, maxPage),
+              hasNextPage: page < lastPage,
+              navigatePageNums: getPageList(page, lastPage),
               pageNum: page,
               onChangePage: (page) => {
                 void searchHandler({ page })();

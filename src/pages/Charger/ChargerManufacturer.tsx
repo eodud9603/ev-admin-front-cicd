@@ -15,6 +15,7 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import {
+  IManufactureListItem,
   IManufactureListResponse,
   IRequestManufactureList,
 } from "src/api/manufactures/manufactureApi.interface";
@@ -22,7 +23,7 @@ import useInputs from "src/hooks/useInputs";
 import { getPageList } from "src/utils/pagination";
 import { getManufactureList } from "src/api/manufactures/manufactureApi";
 import { useTabStore } from "src/store/tabStore";
-import { standardDateFormat } from "src/utils/day";
+import useList from "src/hooks/useList";
 
 const dropdownGroupSort = [
   {
@@ -68,13 +69,15 @@ export const ChargerManufacturer = () => {
       count: "10",
     });
 
-  const [list, setList] = useState(data?.elements ?? []);
-  const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
-  const [total, setTotal] = useState(data?.totalElements ?? 0);
-  const [emptyMessage, setEmptyMessage] =
-    useState("등록된 제조사 정보가 없습니다.");
-  const [time, setTime] = useState(standardDateFormat());
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<IManufactureListItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: "등록된 제조사 정보가 없습니다.",
+  });
 
   /** 파라미터 빈값 제거 */
   const getParams = (params: Partial<IRequestManufactureList>) => {
@@ -115,24 +118,16 @@ export const ChargerManufacturer = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
-        if (searchParams.page === 0) {
-          setPage(1);
-        }
-        if (data.totalElements === 0) {
-          setEmptyMessage("검색된 제조사 정보가 없습니다.");
-        }
-        setList(data.elements);
-        setMaxPage(data.totalPages);
-        setTotal(data.totalElements);
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 제조사 정보가 없습니다.",
+        });
       } else {
-        setPage(1);
-        setList([]);
-        setMaxPage(1);
-        setTotal(0);
-        setEmptyMessage(message || "오류가 발생하였습니다.");
+        reset({
+          message: message || "오류가 발생하였습니다.",
+        });
       }
-
-      setTime(standardDateFormat());
     };
 
   const moveToRegister = () => {
@@ -270,7 +265,7 @@ export const ChargerManufacturer = () => {
                 <>
                   <tr>
                     <td colSpan={9} className={"py-5 text-center text"}>
-                      {emptyMessage}
+                      {message}
                     </td>
                   </tr>
                 </>
@@ -282,8 +277,8 @@ export const ChargerManufacturer = () => {
           setPage={setPage}
           data={{
             hasPreviousPage: page > 1,
-            hasNextPage: page < maxPage,
-            navigatePageNums: getPageList(page, maxPage),
+            hasNextPage: page < lastPage,
+            navigatePageNums: getPageList(page, lastPage),
             pageNum: page,
             onChangePage: (page) => {
               void searchHandler({ page })();

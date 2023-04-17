@@ -18,6 +18,7 @@ import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import { COUNT_FILTER_LIST, OPERATOR_FILTER_LIST } from "src/constants/list";
 import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
 import {
+  IBrokenListItem,
   IBrokenListResponse,
   IRequestBrokenList,
 } from "src/api/broken/brokenApi.interface";
@@ -25,7 +26,7 @@ import { getPageList } from "src/utils/pagination";
 import useInputs from "src/hooks/useInputs";
 import { getBrokenList } from "src/api/broken/brokenApi";
 import { OperatorType } from "src/api/api.interface";
-import { standardDateFormat } from "src/utils/day";
+import useList from "src/hooks/useList";
 
 const dropdownGroupSearch = [
   { label: "충전소명", value: "StationName" },
@@ -101,14 +102,15 @@ export const ChargerTrouble = () => {
     count: "10",
   });
 
-  const [list, setList] = useState(data?.elements ?? []);
-  const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
-  const [total, setTotal] = useState(data?.totalElements ?? 0);
-  const [emptyMessage, setEmptyMessage] = useState(
-    "등록된 고장/파손 충전기 정보가 없습니다."
-  );
-  const [time, setTime] = useState(standardDateFormat());
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<IBrokenListItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: "등록된 고장/파손 충전기 정보가 없습니다.",
+  });
 
   /** 파라미터 빈값 제거 */
   const getParams = (params: Partial<IRequestBrokenList>) => {
@@ -153,24 +155,16 @@ export const ChargerTrouble = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
-        if (searchParams.page === 0) {
-          setPage(1);
-        }
-        if (data.totalElements === 0) {
-          setEmptyMessage("검색된 고장/파손 충전기 정보가 없습니다.");
-        }
-        setList(data.elements);
-        setMaxPage(data.totalPages);
-        setTotal(data.totalElements);
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 고장/파손 충전기 정보가 없습니다.",
+        });
       } else {
-        setPage(1);
-        setList([]);
-        setMaxPage(1);
-        setTotal(0);
-        setEmptyMessage(message || "오류가 발생하였습니다.");
+        reset({
+          message: message || "오류가 발생하였습니다.",
+        });
       }
-
-      setTime(standardDateFormat());
     };
 
   const moveToDetail = (id: number) => {
@@ -349,7 +343,7 @@ export const ChargerTrouble = () => {
                 <>
                   <tr>
                     <td colSpan={14} className={"py-5 text-center text"}>
-                      {emptyMessage}
+                      {message}
                     </td>
                   </tr>
                 </>
@@ -361,8 +355,8 @@ export const ChargerTrouble = () => {
           setPage={setPage}
           data={{
             hasPreviousPage: page > 1,
-            hasNextPage: page < maxPage,
-            navigatePageNums: getPageList(page, maxPage),
+            hasNextPage: page < lastPage,
+            navigatePageNums: getPageList(page, lastPage),
             pageNum: page,
             onChangePage: (page) => {
               void searchHandler({ page })();

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import { getStationList } from "src/api/station/stationApi";
@@ -26,10 +26,10 @@ import {
 import { getPageList } from "src/utils/pagination";
 import { YNType } from "src/api/api.interface";
 import { useTabStore } from "src/store/tabStore";
-import { standardDateFormat } from "src/utils/day";
+import useList from "src/hooks/useList";
 
 /* 사용여부 필터 */
-const useList = [
+const useStatusList = [
   { label: "전체", value: "" },
   { label: "Y", value: "Y" },
   { label: "N", value: "N" },
@@ -72,14 +72,15 @@ const tableHeader = [
 const ChargingStationManagement = () => {
   const data = useLoaderData() as IStationListResponse | null;
 
-  const [list, setList] = useState<IStationListItem[]>(data?.elements ?? []);
-
-  const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(data?.totalPages ?? 1);
-  const [total, setTotal] = useState(data?.totalElements ?? 0);
-  const [emptyMessage, setEmptyMessage] =
-    useState("등록된 충전소 정보가 없습니다.");
-  const [time, setTime] = useState(standardDateFormat());
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<IStationListItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: "등록된 충전소 정보가 없습니다.",
+  });
 
   const inputs = useInputs({
     sido: "",
@@ -155,24 +156,14 @@ const ChargingStationManagement = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
-        if (searchParams.page === 0) {
-          setPage(1);
-        }
-        if (data.totalElements === 0) {
-          setEmptyMessage("검색된 충전소 정보가 없습니다.");
-        }
-        setList(data.elements);
-        setMaxPage(data.totalPages);
-        setTotal(0);
+        void onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 충전소 정보가 없습니다.",
+        });
       } else {
-        setPage(1);
-        setList([]);
-        setMaxPage(1);
-        setTotal(0);
-        setEmptyMessage(message || "오류가 발생하였습니다.");
+        reset({ message: message || "오류가 발생하였습니다." });
       }
-
-      setTime(standardDateFormat());
     };
 
   const tabStore = useTabStore();
@@ -252,7 +243,7 @@ const ChargingStationManagement = () => {
               <RadioGroup
                 title={"사용여부"}
                 name={"isUse"}
-                list={useList.map((data) => ({
+                list={useStatusList.map((data) => ({
                   ...data,
                   checked: isUse == data.value,
                 }))}
@@ -360,7 +351,7 @@ const ChargingStationManagement = () => {
               ) : (
                 <tr>
                   <td colSpan={10} className={"py-5 text-center text"}>
-                    {emptyMessage}
+                    {message}
                   </td>
                 </tr>
               )}
@@ -371,8 +362,8 @@ const ChargingStationManagement = () => {
             setPage={setPage}
             data={{
               hasPreviousPage: page > 1,
-              hasNextPage: page < maxPage,
-              navigatePageNums: getPageList(page, maxPage),
+              hasNextPage: page < lastPage,
+              navigatePageNums: getPageList(page, lastPage),
               pageNum: page,
               onChangePage: (page) => {
                 void searchHandler({ page })();
