@@ -205,6 +205,7 @@ const ChargerContract = () => {
         });
       } else {
         reset({
+          code,
           message: message || "오류가 발생하였습니다.",
         });
       }

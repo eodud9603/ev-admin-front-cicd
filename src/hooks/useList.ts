@@ -24,11 +24,11 @@ interface IReturnType<T> {
 
 interface IReturnFunction<T> {
   setPage: Dispatch<SetStateAction<number>>;
-  reset: (data: { message: string }) => void;
+  reset: (data: { code?: string; message: string }) => void;
   onChange: (data: Required<IOnChangeProps<T>>) => void;
 }
 
-/** 
+/**
  * * 목록 list 커스텀 훅
  *  */
 const useList = <T,>({
@@ -51,17 +51,25 @@ const useList = <T,>({
   const [time, setTime] = useState(standardDateFormat());
 
   /** 목록 정보 초기화 */
-  const reset = useCallback(({ message }: { message: string }) => {
-    setPage(1);
-    setList([]);
-    setLastPage(1);
-    setTotal(0);
-    setMessage(message || "오류가 발생하였습니다.");
+  const reset = useCallback(
+    ({ code, message }: { code?: string; message: string }) => {
+      /** 이전 호출된 api 취소 후, 재요청 code 무시 */
+      if (code === "ERR_CANCELED") {
+        return;
+      }
 
-    setTime(standardDateFormat());
-  }, []);
+      setPage(1);
+      setList([]);
+      setLastPage(1);
+      setTotal(0);
+      setMessage(message || "오류가 발생하였습니다.");
 
-    /** 목록 데이터 변경 (검색 데이터 반영) */
+      setTime(standardDateFormat());
+    },
+    []
+  );
+
+  /** 목록 데이터 변경 (검색 데이터 반영) */
   const onChange = useCallback((data: Required<IOnChangeProps<T>>) => {
     const { page, totalElements, elements, totalPages, emptyMessage } = data;
 

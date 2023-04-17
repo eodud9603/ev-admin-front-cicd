@@ -182,7 +182,7 @@ const Charger = () => {
           emptyMessage: "검색된 충전소 정보가 없습니다.",
         });
       } else {
-        reset({ message: message || "오류가 발생하였습니다." });
+        reset({ code, message: message || "오류가 발생하였습니다." });
       }
     };
 
