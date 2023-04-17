@@ -387,14 +387,26 @@ const ChargerContract = () => {
                     </td>
                     <td>
                       {contract.contractStartDt && contract.contractEndDt
-                        ? contract.contractStartDt +
-                          "~" +
-                          contract.contractEndDt
+                        ? standardDateFormat(
+                            contract.contractStartDt,
+                            "YYYY.MM.DD"
+                          ) +
+                          " ~ " +
+                          standardDateFormat(
+                            contract.contractEndDt,
+                            "YYYY.MM.DD"
+                          )
                         : "-"}
                     </td>
-                    <td>{contract.contractDt || "-"}</td>
                     <td>
-                      {standardDateFormat(contract.createdDate, "YYYY.MM.DD")}
+                      {contract.contractDt
+                        ? standardDateFormat(contract.contractDt, "YYYY.MM.DD")
+                        : "-"}
+                    </td>
+                    <td>
+                      {contract.createdDate
+                        ? standardDateFormat(contract.createdDate, "YYYY.MM.DD")
+                        : "-"}
                     </td>
                   </tr>
                 ))
