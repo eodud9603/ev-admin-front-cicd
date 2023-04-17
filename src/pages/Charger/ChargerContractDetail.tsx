@@ -30,6 +30,7 @@ import { YNType } from "src/api/api.interface";
 import { useTabStore } from "src/store/tabStore";
 import { postFileUpload } from "src/api/common/commonApi";
 import { TContractStatus } from "src/constants/status";
+import DetailValidCheckModal from "./components/DetailValidCheckModal";
 
 const contractValidation = object({
   id: number().required("필수 값이 누락되었습니다."),
@@ -69,6 +70,8 @@ const ChargerContractDetail = () => {
 
   /** 전역 disabled 처리 */
   const [disabled, setDisabled] = useState(true);
+  /* 미입력 안내 모달 */
+  const [invalidModalOpen, setInvalidModalOpen] = useState(false);
   /* 수정완료 모달 */
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
@@ -192,6 +195,7 @@ const ChargerContractDetail = () => {
     /** 유효성 체크 */
     const valid = await isValid();
     if (!valid) {
+      setInvalidModalOpen(true);
       return;
     }
 
@@ -620,6 +624,10 @@ const ChargerContractDetail = () => {
         />
       </BodyBase>
 
+      <DetailValidCheckModal
+        isOpen={invalidModalOpen}
+        onClose={() => setInvalidModalOpen(false)}
+      />
       <DetailCompleteModal
         isOpen={isEditComplete}
         onClose={() => {

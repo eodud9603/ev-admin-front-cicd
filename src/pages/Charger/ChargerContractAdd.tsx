@@ -27,6 +27,7 @@ import { number, object, string } from "yup";
 import { YNType } from "src/api/api.interface";
 import { postFileUpload } from "src/api/common/commonApi";
 import { TContractStatus } from "src/constants/status";
+import DetailValidCheckModal from "./components/DetailValidCheckModal";
 
 const contractValidation = object({
   place: string().required("계약 장소를 입력해주세요."),
@@ -61,7 +62,8 @@ const contractValidation = object({
 
 const ChargerContractAdd = () => {
   const [tabList, setTabList] = useState([{ label: "충전소 계약 관리" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
+  /* 미입력 안내 모달 */
+  const [invalidModalOpen, setInvalidModalOpen] = useState(false);
   /* 등록완료 모달 */
   const [isAddComplete, setIsAddComplete] = useState(false);
   /* 등록취소 모달 */
@@ -178,6 +180,7 @@ const ChargerContractAdd = () => {
     /** 유효성 체크 */
     const valid = await isValid();
     if (!valid) {
+      setInvalidModalOpen(true);
       return;
     }
 
@@ -204,12 +207,7 @@ const ChargerContractAdd = () => {
     <ContainerBase>
       <HeaderBase></HeaderBase>
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={() => {}}
-        onClose={() => {}}
-      />
+      <TabGroup list={tabList} />
 
       <BodyBase>
         <BreadcrumbBase
@@ -575,6 +573,10 @@ const ChargerContractAdd = () => {
         </div>
       </BodyBase>
 
+      <DetailValidCheckModal
+        isOpen={invalidModalOpen}
+        onClose={() => setInvalidModalOpen(false)}
+      />
       <DetailCompleteModal
         isOpen={isAddComplete}
         onClose={() => {
