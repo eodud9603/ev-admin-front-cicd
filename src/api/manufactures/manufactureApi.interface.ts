@@ -1,5 +1,5 @@
 /* 제조사 목록 조회 */
-/** @see http://218.38.12.31:45081/docs/index.html#_%EC%A0%9C%EC%A1%B0%EC%82%AC_%EC%A1%B0%ED%9A%8C */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%A0%9C%EC%A1%B0%EC%82%AC_%EC%A1%B0%ED%9A%8C */
 export interface IRequestManufactureList {
   /** @TODO 서버 sortDirection 정의 후, 추가 */
   // sortDirection: "ASC" | "DESC";
@@ -30,7 +30,7 @@ export interface IManufactureListResponse {
 }
 
 /* 제조사 상세 조회 */
-/** @see http://218.38.12.31:45081/docs/index.html#_%EC%A0%9C%EC%A1%B0%EC%82%AC_%EC%83%81%EC%84%B8 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%A0%9C%EC%A1%B0%EC%82%AC_%EC%83%81%EC%84%B8 */
 export interface IRequestManufactureDetail {
  id: number;
 }

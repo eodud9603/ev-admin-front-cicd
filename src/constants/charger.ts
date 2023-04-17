@@ -1,6 +1,6 @@
 /**
  * @description 충전기 운영 상태
- * @see http://218.38.12.31:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EA%B8%B0_%EC%9A%B4%EC%98%81_%EC%83%81%ED%83%9C
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EA%B8%B0_%EC%9A%B4%EC%98%81_%EC%83%81%ED%83%9C
  * */
 export const OPERATION_STATUS = {
   TO_BE_INSTALL: "설치예정",
@@ -13,7 +13,7 @@ export type TOperationStatusKeys = keyof typeof OPERATION_STATUS;
 
 /**
  * @description 충전기 모드
- * @see http://218.38.12.31:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EA%B8%B0_%EB%AA%A8%EB%93%9C
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EA%B8%B0_%EB%AA%A8%EB%93%9C
  * */
 export const CHARGER_MODE = {
   S0: "상태미정의",
@@ -38,7 +38,7 @@ export type TChargerModeKeys = keyof typeof CHARGER_MODE;
 
 /**
  * @description 충전기 타입
- * @see http://218.38.12.31:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EA%B8%B0_%ED%83%80%EC%9E%85
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EA%B8%B0_%ED%83%80%EC%9E%85
  * */
 export const CHARGER_TYPE = {
   T00: "알수없음",
@@ -55,7 +55,7 @@ export type TChargerTypeKeys = keyof typeof CHARGER_TYPE;
 
 /**
  * @description 충전기 등급
- * @see http://218.38.12.31:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EA%B8%B0_%EB%93%B1%EA%B8%89
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EA%B8%B0_%EB%93%B1%EA%B8%89
  */
 export const CHARGER_RATION = {
   UNKNOWN: "알수없음",
@@ -64,3 +64,18 @@ export const CHARGER_RATION = {
 } as const;
 /** 충전기 등급 키 타입 */
 export type TChargerRationKeys = keyof typeof CHARGER_RATION;
+
+/**
+ * @description 고장/파손 처리 상태코드 (서버: L1상태와 혼동되어 정리필요)
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%B2%98%EB%A6%AC_%EC%83%81_%ED%83%9C%EC%BD%94%EB%93%9C
+ */
+export const CHARGER_PROCESSING_STATUS = {
+  SUBMIT: "알수없음",
+  CONFIRM: "급속",
+  COMPLETE: "완속",
+  PROGRESS: "진행중", /* (L2추가) */
+  EXCEPT: "접수제외", /* (L2추가) */
+  UNKNOWN: "알수없음"
+} as const;
+/** 고장/파손 처리 상태코드 키 타입 */
+export type TChargerProcessingStatus = keyof typeof CHARGER_PROCESSING_STATUS;
