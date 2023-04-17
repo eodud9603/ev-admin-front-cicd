@@ -7,12 +7,12 @@ import { configureStore } from "./helpers/store/index";
 import "@fullcalendar/react/dist/vdom";
 import { router } from "./App";
 import { ProSidebarProvider } from "react-pro-sidebar";
-const getId: any = document.getElementById("root");
-const root = ReactDOM.createRoot(getId);
-root.render(
-  <Provider store={configureStore({})}>
-    <ProSidebarProvider>
-      <RouterProvider router={router} />
-    </ProSidebarProvider>
-  </Provider>
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <React.StrictMode>
+    <Provider store={configureStore({})}>
+      <ProSidebarProvider>
+        <RouterProvider router={router} />
+      </ProSidebarProvider>
+    </Provider>
+  </React.StrictMode>
 );
