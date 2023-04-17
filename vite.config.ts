@@ -18,6 +18,9 @@ export default defineConfig({
       "@assets": path.resolve(__dirname, "./src/assets"),
     },
   },
+  build: {
+    manifest: true,
+  },
   // server: {
   //   proxy: {
   //     "/api": {

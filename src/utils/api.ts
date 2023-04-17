@@ -65,7 +65,7 @@ axiosInstance.interceptors.response.use((response) => {
 });
 
 const rest = (method: Method) => {
-  return async <T,>(
+  return async <T>(
     url: string,
     { headers = {}, params = {}, body = {} } = {}
   ) => {
