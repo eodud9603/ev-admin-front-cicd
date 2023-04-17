@@ -54,7 +54,8 @@ const contractValidation = object({
   subsidyRevDt: string().required("보조금 수령일를 입력해주세요."),
   costSales: number().required("영업비용을 입력해주세요."),
   costConstruct: number().required("공사비를 입력해주세요."),
-  esafetyMng: string().required("전기 안전 관리를 입력해주세요."),
+  esafetyMng: string().optional(),
+  // .required("전기 안전 관리를 입력해주세요."),
 });
 
 const ChargerContractAdd = () => {
@@ -126,6 +127,38 @@ const ChargerContractAdd = () => {
 
   const navigate = useNavigate();
 
+  /** file upload */
+  const upload = async (
+    uploadFile: Partial<{
+      url?: string | undefined;
+      file: FileList | null;
+    }>
+  ) => {
+    const { url, file } = uploadFile;
+
+    const fileParams = {
+      contractFileName: "",
+      contractFileUrl: "",
+    };
+    if (file) {
+      /* 파일 업로드 요청 */
+      const { code: fileCode, data: fileData } = await postFileUpload(file);
+      /** 성공 */
+      const success = fileCode === "SUCCESS" && !!fileData;
+      if (success) {
+        const [uploadFile] = fileData.elements;
+        fileParams.contractFileName = uploadFile.fileName;
+        fileParams.contractFileUrl = uploadFile.url;
+
+        if (url) {
+          URL.revokeObjectURL(url);
+        }
+      }
+    }
+
+    return fileParams;
+  };
+
   /** 계약 등록 */
   const postRegister = async () => {
     /** 유효성 체크 */
@@ -139,27 +172,8 @@ const ChargerContractAdd = () => {
       return;
     }
 
-    const fileParams = {
-      contractFileName: "",
-      contractFileUrl: "",
-    };
-    if (file.file) {
-      /* 파일 업로드 요청 */
-      const { code: fileCode, data: fileData } = await postFileUpload(
-        file.file
-      );
-      /** 성공 */
-      const success = fileCode === "SUCCESS" && !!fileData;
-      if (success) {
-        const [uploadFile] = fileData.elements;
-        fileParams.contractFileName = uploadFile.fileName;
-        fileParams.contractFileUrl = uploadFile.url;
-
-        if (file.url) {
-          URL.revokeObjectURL(file.url);
-        }
-      }
-    }
+    /** upload file params */
+    const fileParams = await upload(file);
 
     /* 등록 요청 */
     const { code } = await postStationContractRegister({
