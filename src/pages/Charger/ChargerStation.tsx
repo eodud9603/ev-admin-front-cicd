@@ -27,6 +27,7 @@ import { getPageList } from "src/utils/pagination";
 import { YNType } from "src/api/api.interface";
 import { useTabStore } from "src/store/tabStore";
 import useList from "src/hooks/useList";
+import { standardDateFormat } from "src/utils/day";
 
 /* 사용여부 필터 */
 const useStatusList = [
@@ -344,7 +345,7 @@ const ChargingStationManagement = () => {
                       <td>{isOpen}</td>
                       {/** @TODO 데이터 누락 추가 필요 */}
                       <td>-</td>
-                      <td>{createAt}</td>
+                      <td>{standardDateFormat(createAt, "YYYY.MM.DD")}</td>
                     </tr>
                   )
                 )

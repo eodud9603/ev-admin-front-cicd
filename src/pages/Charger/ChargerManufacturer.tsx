@@ -24,6 +24,7 @@ import { getPageList } from "src/utils/pagination";
 import { getManufactureList } from "src/api/manufactures/manufactureApi";
 import { useTabStore } from "src/store/tabStore";
 import useList from "src/hooks/useList";
+import { standardDateFormat } from "src/utils/day";
 
 const dropdownGroupSort = [
   {
@@ -258,7 +259,12 @@ export const ChargerManufacturer = () => {
                     <td>{manufacture.managerPhone ?? "-"}</td>
                     <td>{manufacture.phone ?? "-"}</td>
                     <td>{manufacture.address ?? "-"}</td>
-                    <td>{manufacture.modifiedDate ?? "-"}</td>
+                    <td>
+                      {standardDateFormat(
+                        manufacture.modifiedDate,
+                        "YYYY.MM.DD"
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (

@@ -28,6 +28,7 @@ import styled from "styled-components";
 import { useTabStore } from "src/store/tabStore";
 import useList from "src/hooks/useList";
 import { CONTRACT_STATUS, TContractStatus } from "src/constants/status";
+import { standardDateFormat } from "src/utils/day";
 
 /* 계약여부 필터 */
 const contractFilterList = [
@@ -392,7 +393,9 @@ const ChargerContract = () => {
                         : "-"}
                     </td>
                     <td>{contract.contractDt || "-"}</td>
-                    <td>{contract.createdDate}</td>
+                    <td>
+                      {standardDateFormat(contract.createdDate, "YYYY.MM.DD")}
+                    </td>
                   </tr>
                 ))
               ) : (
