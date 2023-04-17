@@ -34,7 +34,7 @@ import {
   CHARGER_MODE,
   CHARGER_RATION,
   OPERATION_STATUS,
-} from "src/constants/charger";
+} from "src/constants/status";
 import { getChargerStatusColor } from "src/utils/charger";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 

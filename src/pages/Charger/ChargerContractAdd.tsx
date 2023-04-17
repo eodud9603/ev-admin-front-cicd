@@ -26,6 +26,7 @@ import { postStationContractRegister } from "src/api/station/stationApi";
 import { number, object, string } from "yup";
 import { YNType } from "src/api/api.interface";
 import { postFileUpload } from "src/api/common/commonApi";
+import { TContractStatus } from "src/constants/status";
 
 const contractValidation = object({
   place: string().required("계약 장소를 입력해주세요."),
@@ -68,7 +69,7 @@ const ChargerContractAdd = () => {
   const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
     place: "",
     contractorName: "",
-    code: "",
+    code: "" as TContractStatus,
     isMeRoaming: "" as YNType,
     meStationId: "",
     contractStartDt: "",
@@ -252,15 +253,15 @@ const ChargerContractAdd = () => {
                 list={[
                   {
                     label: "계약",
-                    value: "1",
+                    value: "SC01",
                   },
                   {
                     label: "해지대기",
-                    value: "2",
+                    value: "SC80",
                   },
                   {
                     label: "해지",
-                    value: "3",
+                    value: "SC89",
                   },
                 ]}
                 onChange={onChange}

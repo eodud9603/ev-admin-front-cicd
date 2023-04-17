@@ -1,4 +1,5 @@
 import { OperatorType } from "src/api/api.interface";
+import { TChargerProcessingStatus } from "src/constants/status";
 
 /* 충전기 고장/파손 목록 조회 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EC%A1%B0%ED%9A%8C_2 */
@@ -21,7 +22,7 @@ export interface IRequestBrokenList {
   submitStartDate?: string;
   submitEndDate?: string;
   operator?: OperatorType;
-  status?: string;
+  status?: TChargerProcessingStatus;
 }
 
 export interface IBrokenListItem {

@@ -27,6 +27,8 @@ import useInputs from "src/hooks/useInputs";
 import { getBrokenList } from "src/api/broken/brokenApi";
 import { OperatorType } from "src/api/api.interface";
 import useList from "src/hooks/useList";
+import { standardDateFormat } from "src/utils/day";
+import { TChargerProcessingStatus } from "src/constants/status";
 
 const dropdownGroupSearch = [
   { label: "충전소명", value: "StationName" },
@@ -48,9 +50,9 @@ const dropdownGroupSort = [
 ];
 const brokenStatusList = [
   { label: "전체", value: "" },
-  { label: "접수", value: "접수" },
-  { label: "진행중", value: "진행중" },
-  { label: "처리완료", value: "처리완료" },
+  { label: "접수", value: "SUBMIT" },
+  { label: "진행중", value: "PROGRESS" },
+  { label: "처리완료", value: "COMPLETE" },
 ];
 
 const tableHeader = [
@@ -83,11 +85,13 @@ export const ChargerTrouble = () => {
     gugun,
     dong,
     count,
+    startDate,
+    endDate,
     searchRange,
     searchText,
     operator,
     sort,
-    brokenStatus,
+    status,
     onChange,
     onChangeSingle,
   } = useInputs({
@@ -95,10 +99,12 @@ export const ChargerTrouble = () => {
     gugun: "",
     dong: "",
     searchRange: "StationName",
+    startDate: "",
+    endDate: "",
     searchText: "",
     operator: "" as OperatorType,
     sort: "CreatedDate",
-    brokenStatus: "",
+    status: "" as TChargerProcessingStatus,
     count: "10",
   });
 
@@ -136,8 +142,16 @@ export const ChargerTrouble = () => {
         gugun,
         dong,
         operator,
+        status,
         sort: sort as IRequestBrokenList["sort"],
       };
+      if (startDate && endDate) {
+        searchParams.submitStartDate = standardDateFormat(
+          startDate,
+          "YYYY.MM.DD"
+        );
+        searchParams.submitEndDate = standardDateFormat(endDate, "YYYY.MM.DD");
+      }
       if (searchRange && searchText) {
         searchParams.searchType =
           searchRange as IRequestBrokenList["searchType"];
@@ -211,7 +225,7 @@ export const ChargerTrouble = () => {
             </Col>
             <Col>
               {/** @TODO 검색 api 해당 필드 추가 필요 (서버 선 작업 필요) */}
-              <DateGroup label={"접수일"} />
+              <DateGroup label={"접수일"} onChangeDate={onChangeSingle} />
             </Col>
             <Col md={2} />
           </Row>
@@ -262,10 +276,10 @@ export const ChargerTrouble = () => {
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
                 title={"처리여부"}
-                name={"brokenStatus"}
+                name={"status"}
                 list={brokenStatusList.map((data) => ({
                   ...data,
-                  checked: brokenStatus === data.value,
+                  checked: status === data.value,
                 }))}
                 onChange={onChange}
               />

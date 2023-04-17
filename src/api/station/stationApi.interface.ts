@@ -1,5 +1,6 @@
 
 import { YNType } from "src/api/api.interface";
+import { TContractStatus } from "src/constants/status";
 
 /* 충전소 목록 조회 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EB%AA%A9%EB%A1%9D_%EC%A1%B0%ED%9A%8C */
@@ -111,6 +112,7 @@ export interface IRequestStationContractList {
   sido?: string;
   gugun?: string;
   dong?: string;
+  contractCode?: TContractStatus;
   searchType?: "ContractPlace" | "StationKey" | "SalesCompany";
   searchKeyword?: string;
   isUse?: YNType;
@@ -119,7 +121,7 @@ export interface IRequestStationContractList {
 export interface IStationContractItem {
   id: number;
   place: string;
-  code: string;
+  code: TContractStatus;
   isUse: YNType;
   managerName: string;
   managerPhone: string;
@@ -153,7 +155,7 @@ export interface IStationContractDetailResponse {
   id: number;
   place: string;
   contractorName: string;
-  code: string; /* 계약코드 관리 */
+  code: TContractStatus; /* 계약코드 관리 */
   isMeRoaming: YNType;
   // isUse: YNType;
   meStationId?: string;

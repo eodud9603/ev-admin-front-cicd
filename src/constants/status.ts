@@ -79,3 +79,15 @@ export const CHARGER_PROCESSING_STATUS = {
 } as const;
 /** 고장/파손 처리 상태코드 키 타입 */
 export type TChargerProcessingStatus = keyof typeof CHARGER_PROCESSING_STATUS;
+
+/**
+ * @description 계약 상태 코드
+ * @see http://218.38.12.198:45081/docs/index.html#_%EA%B3%84%EC%95%BD_%EC%BD%94%EB%93%9C
+ */
+export const CONTRACT_STATUS = {
+  SC01: "계약",
+  SC80: "해지 대기",
+  SC89: "해지",
+} as const;
+/** 계약 상태 코드 키 타입 */
+export type TContractStatus = keyof typeof CONTRACT_STATUS;

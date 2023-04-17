@@ -31,7 +31,7 @@ import {
   CHARGER_RATION,
   CHARGER_TYPE,
   TOperationStatusKeys,
-} from "src/constants/charger";
+} from "src/constants/status";
 import { getChargerStatusColor } from "src/utils/charger";
 import useList from "src/hooks/useList";
 

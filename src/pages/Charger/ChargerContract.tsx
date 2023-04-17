@@ -27,6 +27,7 @@ import { getPageList } from "src/utils/pagination";
 import styled from "styled-components";
 import { useTabStore } from "src/store/tabStore";
 import useList from "src/hooks/useList";
+import { CONTRACT_STATUS, TContractStatus } from "src/constants/status";
 
 /* 계약여부 필터 */
 const contractFilterList = [
@@ -36,15 +37,15 @@ const contractFilterList = [
   },
   {
     label: "계약",
-    value: "1",
+    value: "SC01",
   },
   {
     label: "해지대기",
-    value: "2",
+    value: "SC80",
   },
   {
     label: "해지",
-    value: "3",
+    value: "SC89",
   },
 ];
 
@@ -124,7 +125,7 @@ const ChargerContract = () => {
     sido,
     gugun,
     dong,
-    contractStatus,
+    contractCode,
     searchRange,
     searchText,
     isUse,
@@ -136,7 +137,7 @@ const ChargerContract = () => {
     sido: "",
     gugun: "",
     dong: "",
-    contractStatus: "",
+    contractCode: "" as TContractStatus,
     searchRange: "ContractPlace",
     searchText: "",
     isUse: "" as YNType,
@@ -173,6 +174,7 @@ const ChargerContract = () => {
         gugun,
         dong,
         isUse,
+        contractCode,
         sort: sort as IRequestStationContractList["sort"],
       };
       /** @TODO 검색어 필터 추가 후, 추가예정 */
@@ -263,10 +265,10 @@ const ChargerContract = () => {
             <Col md={5}>
               <RadioGroup
                 title={"계약여부"}
-                name={"contractStatus"}
+                name={"contractCode"}
                 list={contractFilterList.map((contract) => ({
                   ...contract,
-                  checked: contractStatus === contract.value,
+                  checked: contractCode === contract.value,
                 }))}
                 onChange={onChange}
               />
@@ -359,7 +361,7 @@ const ChargerContract = () => {
                     <td>{contract.id}</td>
                     <td>{contract.isUse === "Y" ? "사용" : "미사용"}</td>
                     {/** @TODO 서버 code 픽스 후, 매칭작업 필요 */}
-                    <td>{contract.code}(코드 매칭 필요)</td>
+                    <td>{CONTRACT_STATUS[contract.code] ?? "-"}</td>
                     <td>
                       <HoverSpan
                         className={"text-turu"}

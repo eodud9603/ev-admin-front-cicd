@@ -29,6 +29,7 @@ import { postStationContractModify } from "src/api/station/stationApi";
 import { YNType } from "src/api/api.interface";
 import { useTabStore } from "src/store/tabStore";
 import { postFileUpload } from "src/api/common/commonApi";
+import { TContractStatus } from "src/constants/status";
 
 const contractValidation = object({
   id: number().required("필수 값이 누락되었습니다."),
@@ -76,7 +77,7 @@ const ChargerContractDetail = () => {
     id: data?.id ?? "",
     place: data?.place ?? "",
     contractorName: data?.contractorName ?? "",
-    code: data?.code ?? "",
+    code: (data?.code ?? "") as TContractStatus,
     isMeRoaming: (data?.isMeRoaming ?? "") as YNType,
     meStationId: data?.meStationId ?? "",
     contractStartDt: data?.contractStartDt ?? "",
@@ -281,20 +282,20 @@ const ChargerContractDetail = () => {
                 list={[
                   {
                     label: "계약",
-                    value: "1",
-                    checked: code === "1",
+                    value: "SC01",
+                    checked: code === "SC01",
                     disabled,
                   },
                   {
                     label: "해지대기",
-                    value: "2",
-                    checked: code === "2",
+                    value: "SC80",
+                    checked: code === "SC80",
                     disabled,
                   },
                   {
                     label: "해지",
-                    value: "3",
-                    checked: code === "3",
+                    value: "SC89",
+                    checked: code === "SC89",
                     disabled,
                   },
                 ]}

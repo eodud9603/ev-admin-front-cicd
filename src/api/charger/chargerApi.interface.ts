@@ -1,6 +1,6 @@
 
 import { OperatorType, YNType } from "src/api/api.interface";
-import { TChargerModeKeys, TChargerRationKeys, TChargerTypeKeys, TOperationStatusKeys } from "src/constants/charger";
+import { TChargerModeKeys, TChargerRationKeys, TChargerTypeKeys, TOperationStatusKeys } from "src/constants/status";
 
 /* 충전기별 충전기 목록 조회 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EC%86%8C%EB%B3%84_%EC%B6%A9%EC%A0%84%EA%B8%B0_%EB%AA%A9%EB%A1%9D_%EC%A1%B0%ED%9A%8C */
