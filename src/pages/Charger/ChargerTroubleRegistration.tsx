@@ -22,7 +22,7 @@ import useInputs from "src/hooks/useInputs";
 import { postBrokenRegister } from "src/api/broken/brokenApi";
 import { BROKEN_LIST } from "src/constants/list";
 import { IRequestBrokenRegister } from "src/api/broken/brokenApi.interface";
-import DetailCompleteModal from "./components/DetailCompleteModal";
+import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
 import { fileUpload } from "src/utils/upload";
 import { object, string } from "yup";
 
@@ -151,10 +151,10 @@ export const ChargerTroubleRegistration = () => {
           list={[
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
-            { label: "충전소 고장/파손 관리", href: "" },
-            { label: "충전소 고장/파손 등록", href: "" },
+            { label: "충전기 고장/파손 관리", href: "" },
+            { label: "충전기 고장/파손 등록", href: "" },
           ]}
-          title={"충전소 고장/파손 등록"}
+          title={"충전기 고장/파손 등록"}
         />
         <RepairSection>
           <Label className={"m-0 fw-semibold font-size-16 mb-3"}>
@@ -249,7 +249,9 @@ export const ChargerTroubleRegistration = () => {
                       : "secondary text-opacity-50"
                   }`}
                   onClick={() => {
-                    window?.open(damagedPart01.url);
+                    if (damagedPart01.url) {
+                      window?.open(damagedPart01.url);
+                    }
                   }}
                 >
                   {damagedPart01.file?.item(0)?.name ||
@@ -265,10 +267,10 @@ export const ChargerTroubleRegistration = () => {
                 />
                 <Input
                   className={"visually-hidden"}
-                  type={"image"}
+                  type={"file"}
                   id={"damagedPart01"}
                   name={"damagedPart01"}
-                  accept={"*"}
+                  accept={"image/png, image/jpeg"}
                   onChange={(e) => {
                     if (!e.target.files) {
                       return;
@@ -308,7 +310,9 @@ export const ChargerTroubleRegistration = () => {
                       : "secondary text-opacity-50"
                   }`}
                   onClick={() => {
-                    window?.open(damagedPart02.url);
+                    if (damagedPart02.url) {
+                      window?.open(damagedPart02.url);
+                    }
                   }}
                 >
                   {damagedPart02.file?.item(0)?.name ||
@@ -324,10 +328,10 @@ export const ChargerTroubleRegistration = () => {
                 />
                 <Input
                   className={"visually-hidden"}
-                  type={"image"}
+                  type={"file"}
                   id={"damagedPart02"}
                   name={"damagedPart02"}
-                  accept={"*"}
+                  accept={"image/png, image/jpeg"}
                   onChange={(e) => {
                     if (!e.target.files) {
                       return;

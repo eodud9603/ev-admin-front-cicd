@@ -19,7 +19,7 @@ export const getBrokenList = (params: IRequestBrokenList) => {
 
 /** 충전기 고장/파손 상세 api */
 export const getBrokenDetail = (params: IRequestBrokenDetail) => {
-  return api.post<IBrokenDetailResponse>(`${brokenUrl}/detail/${params.id}`);
+  return api.get<IBrokenDetailResponse>(`${brokenUrl}/detail/${params.id}`);
 };
 
 /** 충전기 고장/파손 등록 api */

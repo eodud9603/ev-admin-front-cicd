@@ -180,7 +180,7 @@ export const StationSearchModal = (props: IStationSearchModalProps) => {
                     <td>{CHARGER_RATION[data.chargerClass]}</td>
                     <td>{CHARGER_TYPE[data.type]}</td>
                     {/** @TODO 주소필드 추가 필요 */}
-                    <td>{"-"}</td>
+                    <td>{data.stationAddress}</td>
                   </tr>
                 ))
               ) : (

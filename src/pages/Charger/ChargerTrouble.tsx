@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -78,7 +78,6 @@ export const ChargerTrouble = () => {
 
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const [selected, setSelected] = useState("0");
 
   const {
     sido,
@@ -193,11 +192,7 @@ export const ChargerTrouble = () => {
   return (
     <ContainerBase>
       <HeaderBase></HeaderBase>
-      <TabGroup
-      // list={[{ label: "충전소 관리" }]}
-      // selectedIndex={selected}
-      // onClick={(e) => setSelected(e.currentTarget.value)}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase

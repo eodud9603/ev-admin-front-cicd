@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
@@ -17,6 +17,10 @@ import TextInputBase from "src/components/Common/Input/TextInputBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { object, string } from "yup";
+import { useLoaderData } from "react-router";
+import { IBrokenDetailResponse } from "src/api/broken/brokenApi.interface";
+import useInputs from "src/hooks/useInputs";
+import { BROKEN_LIST } from "src/constants/list";
 
 const contractValidation = object({
   stationKey: string().required("충전소 ID를 입력해주세요."),
@@ -26,51 +30,60 @@ const contractValidation = object({
 
 const disabled = true;
 export const ChargerTroubleDetail = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전소 고장/파손 관리" },
-  ]);
+  const data = useLoaderData() as IBrokenDetailResponse | null;
+  console.log(data);
 
-  const [selectedIndex, setSelectedIndex] = useState("0");
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
+  const {
+    stationKey,
+    stationName,
+    chargerKey,
+    reservation,
+    damagedPart01,
+    fileNamePart01,
+    damagedPart02,
+    fileNamePart02,
+    brokenContent,
+    managerMemo,
+    reporterName,
+    createDate,
+    brokenStatus,
+    processDate,
+    processMemo,
+    onChange,
+  } = useInputs({
+    stationKey: data?.stationKey ?? "",
+    stationName: data?.stationName ?? "",
+    chargerKey: data?.chargerKey ?? "",
+    reservation: (data?.reservation ?? "").toString(),
+    /* 고장부위 1/2 */
+    damagedPart01: data?.damagedPart01 ?? "",
+    fileNamePart01: data?.fileNamePart01 ?? "",
+    damagedPart02: data?.damagedPart02 ?? "",
+    fileNamePart02: data?.fileNamePart02 ?? "",
+    brokenContent: data?.brokenContent ?? "",
+    managerMemo: data?.managerMemo ?? "",
+    /* 운영자/처리자/등록자 정보 */
+    reporterName: data?.reporterName ?? "-",
+    createDate: data?.createDate ?? "-",
+    /* 처리상태 */
+    brokenStatus: data?.brokenStatus ?? "",
+    processDate: data?.processDate ?? "-",
+    processMemo: data?.processMemo ?? "",
+  });
 
   return (
     <ContainerBase>
       <HeaderBase />
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
       <BodyBase className={"pb-5"}>
         <BreadcrumbBase
           list={[
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
-            { label: "충전소 고장/파손 관리", href: "" },
-            { label: "충전소 고장/파손 상세", href: "" },
+            { label: "충전기 고장/파손 관리", href: "" },
+            { label: "충전기 고장/파손 상세", href: "" },
           ]}
-          title={"충전소 고장/파손 상세"}
+          title={"충전기 고장/파손 상세"}
         />
         <RepairSection>
           <Label className={"m-0 fw-semibold font-size-16 mb-3"}>
@@ -84,9 +97,9 @@ export const ChargerTroubleDetail = () => {
               }
             >
               <TextInputBase
-                name={"stationId"}
-                value={"1"}
-                disabled={disabled}
+                disabled={true}
+                name={"stationKey"}
+                value={stationKey}
               />
               <ButtonBase
                 label={"충전소 검색"}
@@ -98,9 +111,9 @@ export const ChargerTroubleDetail = () => {
             <DetailContentCol>
               <Col className={"d-flex p-0"}>
                 <TextInputBase
+                  disabled={true}
                   name={"stationName"}
-                  value={"1"}
-                  disabled={disabled}
+                  value={stationName}
                 />
               </Col>
             </DetailContentCol>
@@ -109,28 +122,30 @@ export const ChargerTroubleDetail = () => {
             <DetailLabelCol sm={2}>충전기 ID</DetailLabelCol>
             <DetailContentCol>
               <TextInputBase
-                name={"chargerId"}
-                value={"1"}
-                disabled={disabled}
+                disabled={true}
+                name={"chargerKey"}
+                value={chargerKey}
               />
             </DetailContentCol>
-            <DetailLabelCol sm={2}>충전기명??</DetailLabelCol>
+            <Col sm={6} />
+            {/* <DetailLabelCol sm={2}>충전기명??</DetailLabelCol>
             <DetailContentCol>
               <TextInputBase
                 name={"stationId"}
                 value={"1"}
                 disabled={disabled}
               />
-            </DetailContentCol>
+            </DetailContentCol> */}
           </DetailRow>
           <DetailRow>
             <DetailLabelCol sm={2}>예약번호</DetailLabelCol>
             <DetailContentCol className={"d-flex p-0"}>
               <Col className={"d-flex align-items-center"}>
                 <TextInputBase
-                  name={"reservationNumber"}
-                  value={"1"}
                   disabled={disabled}
+                  name={"reservation"}
+                  value={reservation}
+                  onChange={onChange}
                 />
               </Col>
             </DetailContentCol>
@@ -139,24 +154,33 @@ export const ChargerTroubleDetail = () => {
             <DetailLabelCol sm={2}>고장 부위1</DetailLabelCol>
             <DetailContentCol>
               <DropdownBase
-                menuItems={[{ label: "액정", value: "1" }]}
-                className={"mb-4"}
-              />
-              <u role={"button"} className={"text-turu px-2"}>
-                액정파손01.jpeg
-              </u>
-            </DetailContentCol>
-            <DetailLabelCol sm={2}>고장 부위2</DetailLabelCol>
-            <DetailContentCol>
-              <DropdownBase
-                menuItems={[{ label: "액정", value: "1" }]}
+                disabled={disabled}
+                menuItems={BROKEN_LIST}
                 className={"mb-4"}
               />
               <div
                 role={"button"}
-                className={"text-secondary text-opacity-50 px-2"}
+                className={`text-${
+                  fileNamePart01 ? "turu" : "secondary text-opacity-50"
+                } px-2`}
               >
-                등록된 이미지가 없습니다.
+                {fileNamePart01 || "등록된 이미지가 없습니다."}
+              </div>
+            </DetailContentCol>
+            <DetailLabelCol sm={2}>고장 부위2</DetailLabelCol>
+            <DetailContentCol>
+              <DropdownBase
+                disabled={disabled}
+                menuItems={BROKEN_LIST}
+                className={"mb-4"}
+              />
+              <div
+                role={"button"}
+                className={`text-${
+                  fileNamePart02 ? "turu" : "secondary text-opacity-50"
+                } px-2`}
+              >
+                {fileNamePart02 || "등록된 이미지가 없습니다."}
               </div>
             </DetailContentCol>
           </DetailRow>
@@ -167,16 +191,22 @@ export const ChargerTroubleDetail = () => {
                 type: "textarea",
                 disabled: disabled,
                 titleWidthRatio: 2,
+                name: "brokenContent",
+                content: brokenContent,
+                onChange,
               },
             ]}
           />
           <DetailTextInputRow
             rows={[
               {
+                disabled: disabled,
                 title: "관리자 내용",
                 type: "textarea",
-                disabled: disabled,
                 titleWidthRatio: 2,
+                name: "managerMemo",
+                content: managerMemo,
+                onChange,
               },
             ]}
           />
@@ -200,20 +230,21 @@ export const ChargerTroubleDetail = () => {
             </DetailContentCol>
             <DetailLabelCol sm={2}>처리자ID(처리자명)</DetailLabelCol>
             <DetailContentCol className={"py-0"}>
-              <DropdownBase menuItems={[{ label: "C 코스텔", value: "1" }]} />
+              <DropdownBase
+                disabled={disabled}
+                menuItems={[{ label: "선택", value: "-" }]}
+              />
             </DetailContentCol>
           </DetailRow>
           <DetailRow>
             <DetailLabelCol sm={2}>등록자</DetailLabelCol>
-            <DetailContentCol>홍길동</DetailContentCol>
+            <DetailContentCol>{reporterName}</DetailContentCol>
             <DetailLabelCol sm={2}>등록일</DetailLabelCol>
-            <DetailContentCol>
-              YYYY.MM.DD 00:00:00 (등록 시점의 일시정보 자동 노출)
-            </DetailContentCol>
+            <DetailContentCol>{createDate}</DetailContentCol>
           </DetailRow>
           <DetailRow>
             <DetailLabelCol sm={2}>연락처</DetailLabelCol>
-            <DetailContentCol></DetailContentCol>
+            <DetailContentCol>{"-"}</DetailContentCol>
           </DetailRow>
         </RepairSection>
         <ProcessingSection className={"my-4"}>
@@ -225,20 +256,23 @@ export const ChargerTroubleDetail = () => {
 
             <DetailContentCol className={"py-0"}>
               <RadioGroup
-                name={"processingStatus"}
+                name={"brokenStatus"}
                 list={[
                   { label: "접수", value: "SUBMIT" },
                   { label: "진행중", value: "PROGRESS" },
                   { label: "처리완료", value: "COMPLETE" },
                   { label: "접수제외", value: "EXCEPT" },
-                ]}
+                ].map((data) => ({
+                  ...data,
+                  disabled,
+                  checked: data.value === brokenStatus,
+                }))}
+                onChange={onChange}
               />
             </DetailContentCol>
 
             <DetailLabelCol sm={2}>처리일자</DetailLabelCol>
-            <DetailContentCol>
-              YYYY.MM.DD 00:00:00 (처리가 완료된 시점의 일시정보 자동 노출)
-            </DetailContentCol>
+            <DetailContentCol>{processDate}</DetailContentCol>
           </DetailRow>
           <DetailTextInputRow
             rows={[
@@ -247,6 +281,9 @@ export const ChargerTroubleDetail = () => {
                 type: "textarea",
                 disabled: disabled,
                 titleWidthRatio: 2,
+                name: "processMemo",
+                content: processMemo,
+                onChange,
               },
             ]}
           />

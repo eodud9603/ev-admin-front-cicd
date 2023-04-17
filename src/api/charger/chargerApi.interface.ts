@@ -43,6 +43,7 @@ export interface IChargerListItem {
   region: string;
   operator: OperatorType;
   stationName: string;
+  stationAddress: string;
   stationId: string;
   chargerKey: string; /* 충전소별 충전기 키 */
   searchKey: number; /* 충전기 키(충전기 고유값) */
