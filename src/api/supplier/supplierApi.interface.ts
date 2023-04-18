@@ -40,15 +40,11 @@ export interface IRequestSupplierListResponse {
   elements: ISupplierItem[];
 }
 
-/* 서비스 운영사 관리 상세 조회 */
-/** @see http://218.38.12.198:45081/docs/index.html#_%EC%83%81%EC%84%B8_4 */
-export interface IRequestSupplierDetail {
-  id: number;
-}
-
-export interface ISupplierDetailResponse {
-  id: number;
-  platformType: string;
+/* 서비스 운영사 관리 등록 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_5 */
+export interface IRequestSupplierRegister {
+  id?: number;
+  platformType?: string;
   code: string;
   name: string;
   phoneNumber: string;
@@ -61,9 +57,18 @@ export interface ISupplierDetailResponse {
   isActive: YNType;
   isContracted: YNType;
   contractedDate: string;
-  contractFileId: number;
-  contractFileName: string;
-  contractFileUrl: string;
+  contractFileId?: number;
+  contractFileName?: string;
+  contractFileUrl?: string;
+}
+
+/* 서비스 운영사 관리 상세 조회 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%83%81%EC%84%B8_4 */
+export interface IRequestSupplierDetail {
+  id: number;
+}
+
+export interface ISupplierDetailResponse extends Required<IRequestSupplierRegister> {
   createdDate: string;
 }
 

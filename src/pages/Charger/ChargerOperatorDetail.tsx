@@ -96,7 +96,7 @@ export const ChargerOperatorDetail = () => {
     setDisabled((prev) => !prev);
   };
 
-  /** 우편번호 검색 modal visible */
+  /** 주소 검색 modal visible */
   const onChangeModalVisible = () => {
     setAddrSearchModalOpen((prev) => !prev);
   };
@@ -392,7 +392,12 @@ export const ChargerOperatorDetail = () => {
           </DetailRow>
         </RoamingPriceSection>
         <div className={"d-flex justify-content-center mt-5"}>
-          <ButtonBase label={"목록"} outline={true} className={"w-xs"} />
+          <ButtonBase
+            label={"목록"}
+            outline={true}
+            className={"w-xs"}
+            onClick={goBack}
+          />
           <ButtonBase
             label={"삭제"}
             color={"turu"}
@@ -423,7 +428,6 @@ export const ChargerOperatorDetail = () => {
         isOpen={deleteModalOpen}
         onClose={onChangeDeleteModalVisible}
         deleteHandler={deleteHandler}
-        onClosed={() => {}}
         title={"서비스 운영사 정보 삭제 안내"}
         contents={"서비스 운영사 정보를 삭제하시겠습니까?"}
       />

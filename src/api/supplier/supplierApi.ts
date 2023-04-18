@@ -5,6 +5,7 @@ import {
   IRequestSupplierDetail,
   IRequestSupplierList,
   IRequestSupplierListResponse,
+  IRequestSupplierRegister,
   ISupplierDetailResponse,
 } from "src/api/supplier/supplierApi.interface";
 
@@ -28,5 +29,14 @@ export const getSupplierDetail = (params: IRequestSupplierDetail) => {
 export const deleteSupplier = (params: IRequestSupplierDelete) => {
   return api.get<undefined>(
     `${supplier}/delete/${params.id}`
+  );
+};
+
+/** 운영서비스 업체 관리 등록 api */
+export const postSupplierRegister = (body: IRequestSupplierRegister) => {
+  return api.post<undefined>(
+    `${supplier}/register`,{
+      body
+    }
   );
 };

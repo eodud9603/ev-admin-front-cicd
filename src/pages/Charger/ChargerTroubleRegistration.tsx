@@ -465,7 +465,7 @@ export const ChargerTroubleRegistration = () => {
         onClose={() => {
           setIsAddComplete((prev) => !prev);
         }}
-        onClosed={() => {
+        confirmHandler={() => {
           nav(-1);
         }}
         title={"신규 충전기 고장/파손 정보 등록 완료"}
