@@ -5,7 +5,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import styled from "styled-components";
-import { Col, Label, Row } from "reactstrap";
+import { Col, Input, Label, Row } from "reactstrap";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
 import {
@@ -15,45 +15,72 @@ import {
 } from "src/components/Common/DetailContentRow/Detail";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
+import { useLoaderData } from "react-router";
+import { ISupplierDetailResponse } from "src/api/supplier/supplierApi.interface";
+import useInputs from "src/hooks/useInputs";
+import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 
-const disabled = true;
+const YN_LIST = [
+  { label: "Y", value: "Y" },
+  { label: "N", value: "N" },
+];
+
 export const ChargerOperatorDetail = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "서비스 운영사 관리" },
-  ]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
+  const data = useLoaderData() as Partial<ISupplierDetailResponse>;
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
+  /* 수정모드 */
+  const [disabled, setDisabled] = useState(true);
+  /* 주소검색 모달 */
+  const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
+
+  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+    name: data.name ?? "",
+    supplierId: data.supplierId ?? "",
+    code: data.code ?? "",
+    meAuthKey: data.meAuthKey ?? "",
+    phoneNumber: data.phoneNumber ?? "",
+    mainPhoneNumber: data.mainPhoneNumber ?? "",
+    zipCode: data.zipCode ?? "",
+    address: data.address ?? "",
+    addressDetail: data.addressDetail ?? "",
+    isContracted: data.isContracted ?? "",
+    isActive: data.isActive ?? "",
+    contractedDate: data.contractedDate ?? "",
+    contractFileName: data.contractFileName ?? "",
+    contractFileUrl: data.contractFileUrl ?? "",
+    /** @TODO 로밍담가 데이터 추가 필요 (서버 우선 작업 필요) */
+  });
+  const {
+    name,
+    supplierId,
+    code,
+    meAuthKey,
+    phoneNumber,
+    mainPhoneNumber,
+    zipCode,
+    address,
+    addressDetail,
+    isContracted,
+    isActive,
+    contractedDate,
+    contractFileName,
+    contractFileUrl,
+  } = inputs;
+
+  /** disable change */
+  const onChangeDisabled = () => {
+    setDisabled((prev) => !prev);
   };
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
+  /** 우편번호 검색 modal visible */
+  const onChangeModalVisible = () => {
+    setAddrSearchModalOpen((prev) => !prev);
   };
 
   return (
     <ContainerBase>
       <HeaderBase />
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
       <BodyBase className={"pb-5"}>
         <BreadcrumbBase
           list={[
@@ -71,44 +98,61 @@ export const ChargerOperatorDetail = () => {
 
           <DetailTextInputRow
             rows={[
-              { title: "운영사명", content: "", titleWidthRatio: 4, disabled },
               {
+                disabled,
+                titleWidthRatio: 4,
+                title: "운영사명",
+                name: "name",
+                content: name,
+                onChange,
+              },
+              {
+                disabled,
+                titleWidthRatio: 4,
                 title: "운영사ID",
-                content: "",
-                titleWidthRatio: 4,
-                disabled,
+                name: "supplierId",
+                content: supplierId,
+                onChange,
               },
             ]}
           />
           <DetailTextInputRow
             rows={[
               {
+                disabled,
+                titleWidthRatio: 4,
                 title: "한전기관ID",
-                content: "",
-                titleWidthRatio: 4,
-                disabled,
+                name: "code",
+                content: code,
+                onChange,
               },
               {
-                title: "한전기관인증키(로밍)",
-                content: "",
-                titleWidthRatio: 4,
                 disabled,
+                titleWidthRatio: 4,
+                title: "한전기관인증키(로밍)",
+                name: "meAuthKey",
+                content: meAuthKey,
+                onChange,
               },
             ]}
           />
           <DetailTextInputRow
             rows={[
               {
-                title: "사업자 전화번호",
-                content: "",
-                titleWidthRatio: 4,
                 disabled,
+                titleWidthRatio: 4,
+                title: "사업자 전화번호",
+                name: "phoneNumber",
+                content: phoneNumber,
+                onChange,
               },
               {
-                title: "사업자 대표번호",
-                content: "",
-                titleWidthRatio: 4,
                 disabled,
+                titleWidthRatio: 4,
+                title: "사업자 대표번호",
+                name: "mainPhoneNumber",
+                content: mainPhoneNumber,
+                onChange,
               },
             ]}
           />
@@ -121,9 +165,9 @@ export const ChargerOperatorDetail = () => {
                   bsSize={"lg"}
                   disabled={true}
                   className={"mb-4"}
-                  name={"우편번호"}
-                  value={"우편번호 노출"}
-                  onChange={() => {}}
+                  name={"zipCode"}
+                  value={zipCode}
+                  placeholder={""}
                 />
                 <div style={{ flex: 3 }}>
                   {!disabled && (
@@ -132,7 +176,7 @@ export const ChargerOperatorDetail = () => {
                       outline
                       label={"우편번호 검색"}
                       color={"turu"}
-                      onClick={() => {}}
+                      onClick={onChangeModalVisible}
                     />
                   )}
                 </div>
@@ -141,16 +185,17 @@ export const ChargerOperatorDetail = () => {
                 <TextInputBase
                   bsSize={"lg"}
                   disabled={true}
-                  name={"주소"}
-                  value={"검색된 주소 정보 노출"}
-                  onChange={() => {}}
+                  name={"address"}
+                  value={address}
+                  placeholder={""}
                 />
                 <TextInputBase
                   bsSize={"lg"}
                   disabled={disabled}
-                  name={"상세주소"}
-                  value={"입력한 상세 주소 정보 노출"}
-                  onChange={() => {}}
+                  name={addressDetail}
+                  value={addressDetail}
+                  onChange={onChange}
+                  placeholder={"상세 주소를 입력해주세요"}
                 />
               </div>
             </DetailContentCol>
@@ -159,34 +204,59 @@ export const ChargerOperatorDetail = () => {
             <DetailLabelCol sm={2}>계약여부</DetailLabelCol>
             <DetailContentCol>
               <RadioGroup
-                name={"contract"}
-                list={[
-                  { label: "Y", value: "Y" },
-                  { label: "N", value: "N" },
-                ]}
+                name={"isContracted"}
+                list={YN_LIST.map((data) => ({
+                  ...data,
+                  checked: data.value === isContracted,
+                  disabled,
+                }))}
+                onChange={onChange}
               />
             </DetailContentCol>
             <DetailLabelCol sm={2}>활용여부</DetailLabelCol>
             <DetailContentCol>
               <RadioGroup
-                name={"usage"}
-                list={[
-                  { label: "Y", value: "Y" },
-                  { label: "N", value: "N" },
-                ]}
+                name={"isActive"}
+                list={YN_LIST.map((data) => ({
+                  ...data,
+                  checked: data.value === isActive,
+                  disabled,
+                }))}
+                onChange={onChange}
               />
             </DetailContentCol>
           </DetailRow>
-          <DetailTextInputRow
-            rows={[
-              { title: "계약일자", content: "", titleWidthRatio: 2, disabled },
-            ]}
-          />
+
+          <DetailRow>
+            <DetailLabelCol sm={2}>계약일자</DetailLabelCol>
+            <DetailContentCol>
+              <Input
+                disabled={disabled}
+                type={"date"}
+                name={"contractedDate"}
+                value={contractedDate}
+                onChange={onChange}
+              />
+            </DetailContentCol>
+          </DetailRow>
+
           <DetailRow>
             <DetailLabelCol sm={2}>계약서 파일</DetailLabelCol>
             <DetailContentCol>
-              <u role={"button"} className={"text-turu"}>
-                서비스 운영사 A 계약서 01.pdf
+              <u
+                role={"button"}
+                className={
+                  contractFileName
+                    ? "text-turu"
+                    : "text-secondary text-opacity-50"
+                }
+                onClick={() => {
+                  if (contractFileUrl) {
+                    window?.open(contractFileUrl);
+                  }
+                }}
+              >
+                {contractFileName || "등록된 파일이 없습니다."}
               </u>
             </DetailContentCol>
           </DetailRow>
@@ -207,11 +277,10 @@ export const ChargerOperatorDetail = () => {
                     도매가
                   </Label>
                   <TextInputBase
+                    disabled={true}
                     name={"price"}
-                    value={
-                      "로밍요금 단가 정보 노출(요금 관리 메뉴에 로밍단가 정보가 없을 경우 빈칸으로 노출)"
-                    }
-                    disabled
+                    value={""}
+                    placeholder={""}
                   />
                 </Col>
                 <Col className={"d-flex align-items-center"}>
@@ -219,11 +288,10 @@ export const ChargerOperatorDetail = () => {
                     소매가
                   </Label>
                   <TextInputBase
+                    disabled={true}
                     name={"price"}
-                    value={
-                      "로밍요금 단가 정보 노출(요금 관리 메뉴에 로밍단가 정보가 없을 경우 빈칸으로 노출)"
-                    }
-                    disabled
+                    value={""}
+                    placeholder={""}
                   />
                 </Col>
               </Row>
@@ -238,11 +306,10 @@ export const ChargerOperatorDetail = () => {
                     도매가
                   </Label>
                   <TextInputBase
+                    disabled={true}
                     name={"price"}
-                    value={
-                      "로밍요금 단가 정보 노출(요금 관리 메뉴에 로밍단가 정보가 없을 경우 빈칸으로 노출)"
-                    }
-                    disabled
+                    value={""}
+                    placeholder={""}
                   />
                 </Col>
                 <Col className={"d-flex align-items-center"}>
@@ -250,11 +317,10 @@ export const ChargerOperatorDetail = () => {
                     소매가
                   </Label>
                   <TextInputBase
+                    disabled={true}
                     name={"price"}
-                    value={
-                      "로밍요금 단가 정보 노출(요금 관리 메뉴에 로밍단가 정보가 없을 경우 빈칸으로 노출)"
-                    }
-                    disabled
+                    value={""}
+                    placeholder={""}
                   />
                 </Col>
               </Row>
@@ -269,9 +335,25 @@ export const ChargerOperatorDetail = () => {
             outline={true}
             className={"mx-3 w-xs"}
           />
-          <ButtonBase label={"수정"} color={"turu"} className={"w-xs"} />
+          <ButtonBase
+            label={disabled ? "수정" : "저장"}
+            color={"turu"}
+            className={"w-xs"}
+            onClick={onChangeDisabled}
+          />
         </div>
       </BodyBase>
+
+      <AddressSearchModal
+        isOpen={addrSearchModalOpen}
+        onClose={onChangeModalVisible}
+        onchange={(data) => {
+          onChangeSingle({
+            zipCode: data.zipCode,
+            address: data.address,
+          });
+        }}
+      />
     </ContainerBase>
   );
 };

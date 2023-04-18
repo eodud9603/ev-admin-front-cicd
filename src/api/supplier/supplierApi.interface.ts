@@ -3,6 +3,7 @@
 
 import { YNType } from "src/api/api.interface";
 
+/* 서비스 운영사 관리 목록 조회 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EC%A1%B0%ED%9A%8C_3 */
 export interface IRequestSupplierList {
   /** @TODO 서버 sortDirection 정의 후, 추가 */
@@ -39,3 +40,29 @@ export interface IRequestSupplierListResponse {
   elements: ISupplierItem[];
 }
 
+/* 서비스 운영사 관리 상세 조회 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%83%81%EC%84%B8_4 */
+export interface IRequestSupplierDetail {
+  id: number;
+}
+
+export interface ISupplierDetailResponse {
+  id: number;
+  platformType: string;
+  code: string;
+  name: string;
+  phoneNumber: string;
+  supplierId: string;
+  mainPhoneNumber: string;
+  meAuthKey: string;
+  zipCode: string;
+  address: string;
+  addressDetail: string;
+  isActive: YNType;
+  isContracted: YNType;
+  contractedDate: string;
+  contractFileId: number;
+  contractFileName: string;
+  contractFileUrl: string;
+  createdDate: string;
+}
