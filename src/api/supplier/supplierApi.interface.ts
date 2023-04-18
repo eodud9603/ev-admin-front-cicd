@@ -43,7 +43,7 @@ export interface IRequestSupplierListResponse {
 /* 서비스 운영사 관리 목록 > 활성화 여부 변경 */
 /** @see http://218.38.12.198:45081/docs/index.html#_활성화_여부_변경 */
 export interface IRequestSupplierListActive {
-  isActive: boolean;
+  isActive: YNType;
   ids: number[];
 }
 

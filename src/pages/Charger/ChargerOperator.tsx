@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -25,7 +25,10 @@ import useList from "src/hooks/useList";
 import { getPageList } from "src/utils/pagination";
 import { standardDateFormat } from "src/utils/day";
 import useInputs from "src/hooks/useInputs";
-import { getSupplierList } from "src/api/supplier/supplierApi";
+import {
+  getSupplierList,
+  postSupplierModifyActive,
+} from "src/api/supplier/supplierApi";
 import { YNType } from "src/api/api.interface";
 
 const dropdownGroupSearch = [
@@ -82,6 +85,8 @@ export const ChargerOperator = () => {
     totalElements: data?.totalElements,
     emptyMessage: "등록된 서비스 운영사 정보가 없습니다.",
   });
+  /* 체크 리스트 */
+  const [checkList, setCheckList] = useState<number[]>([]);
 
   const {
     searchRange,
@@ -154,7 +159,33 @@ export const ChargerOperator = () => {
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }
+
+      setCheckList([]);
     };
+
+  /** 전체 체크 변경 콜백 */
+  const onChangeCheck = (check: boolean) => {
+    if (check) {
+      setCheckList(list.map((data) => data.id));
+    } else {
+      setCheckList([]);
+    }
+  };
+
+  /** 활성화 상태로 전환 */
+  const onChangeActive = async () => {
+    /** 활용상태 전환 요청 */
+    const { code } = await postSupplierModifyActive({
+      isActive: "Y",
+      ids: checkList,
+    });
+
+    /** 활용상태 전환 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      void searchHandler({ page })();
+    }
+  };
 
   const nav = useNavigate();
   const { pathname } = useLocation();
@@ -270,7 +301,8 @@ export const ChargerOperator = () => {
                 <ButtonBase
                   label={"활용상태 전환"}
                   color={"turu"}
-                  disabled={true}
+                  disabled={checkList.length === 0}
+                  onClick={onChangeActive}
                 />
                 <ButtonBase
                   label={"신규 등록"}
@@ -281,13 +313,33 @@ export const ChargerOperator = () => {
               </div>
             </Col>
           </Row>
-          <TableBase tableHeader={tableHeader}>
+          <TableBase
+            tableHeader={tableHeader}
+            allCheck={checkList.length === Number(count)}
+            onClickAllCheck={onChangeCheck}
+          >
             <>
               {list.length > 0 ? (
                 list.map((data, index) => (
                   <tr key={data.id}>
                     <td>
-                      <CheckBoxBase name={"check"} label={""} />
+                      <CheckBoxBase
+                        name={"check"}
+                        checked={checkList.indexOf(data.id) > -1}
+                        label={""}
+                        onChange={() => {
+                          const list = [...checkList];
+                          const findIndex = checkList.indexOf(data.id);
+
+                          if (findIndex > -1) {
+                            list.splice(findIndex, 1);
+                          } else {
+                            list.push(data.id);
+                          }
+
+                          setCheckList(list);
+                        }}
+                      />
                     </td>
                     <td>{(page - 1) * Number(count) + index + 1}</td>
                     <td>{data.isActive ?? "-"}</td>

@@ -13,7 +13,8 @@ interface ITableBase {
   children?: ReactElement;
   theadClassName?: string;
   tableClassName?: string;
-  onClickAllCheck?: () => void;
+  allCheck: boolean;
+  onClickAllCheck?: (bool: boolean) => void;
   subtitle?: string;
   maxHeight?: number;
 }
@@ -39,8 +40,15 @@ export const EmptyTableBody = (props: IEmptyTableBody) => {
 };
 
 export const TableBase = (props: ITableBase) => {
-  const { tableHeader, children, theadClassName, tableClassName, maxHeight } =
-    props;
+  const {
+    tableHeader,
+    children,
+    theadClassName,
+    tableClassName,
+    maxHeight,
+    allCheck,
+    onClickAllCheck,
+  } = props;
 
   return (
     <Container fluid={true} style={{ overflowX: "auto", maxHeight }}>
@@ -50,7 +58,13 @@ export const TableBase = (props: ITableBase) => {
             {tableHeader.map((headerOption, index) => (
               <TableHeader key={index}>
                 {headerOption.label === "checkbox" ? (
-                  <input type={"checkbox"} />
+                  <input
+                    type={"checkbox"}
+                    checked={allCheck}
+                    onChange={(e) => {
+                      !!onClickAllCheck && onClickAllCheck(e.target.checked);
+                    }}
+                  />
                 ) : (
                   <div>
                     <div className={"d-flex"}>
