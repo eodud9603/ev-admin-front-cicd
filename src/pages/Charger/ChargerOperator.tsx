@@ -315,7 +315,7 @@ export const ChargerOperator = () => {
           </Row>
           <TableBase
             tableHeader={tableHeader}
-            allCheck={checkList.length === Number(count)}
+            allCheck={checkList.length === list.length}
             onClickAllCheck={onChangeCheck}
           >
             <>
