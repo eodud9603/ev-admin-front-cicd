@@ -8,11 +8,9 @@ import "@fullcalendar/react/dist/vdom";
 import { router } from "./App";
 import { ProSidebarProvider } from "react-pro-sidebar";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <Provider store={configureStore({})}>
-      <ProSidebarProvider>
-        <RouterProvider router={router} />
-      </ProSidebarProvider>
-    </Provider>
-  </React.StrictMode>
+  <Provider store={configureStore({})}>
+    <ProSidebarProvider>
+      <RouterProvider router={router} />
+    </ProSidebarProvider>
+  </Provider>
 );
