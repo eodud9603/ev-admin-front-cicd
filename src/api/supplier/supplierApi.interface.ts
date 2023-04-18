@@ -66,3 +66,7 @@ export interface ISupplierDetailResponse {
   contractFileUrl: string;
   createdDate: string;
 }
+
+/* 서비스 운영사 관리 삭제 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%82%AD%EC%A0%9C_2 */
+export type IRequestSupplierDelete = IRequestSupplierDetail

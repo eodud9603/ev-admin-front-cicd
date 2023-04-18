@@ -15,10 +15,13 @@ import {
 } from "src/components/Common/DetailContentRow/Detail";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import { ISupplierDetailResponse } from "src/api/supplier/supplierApi.interface";
 import useInputs from "src/hooks/useInputs";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
+import DetailDeleteModal from "src/pages/Charger/components/DetailDeleteModal";
+import { deleteSupplier } from "src/api/supplier/supplierApi";
+import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },
@@ -32,6 +35,20 @@ export const ChargerOperatorDetail = () => {
   const [disabled, setDisabled] = useState(true);
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
+  /* 삭제안내 모달 */
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  /* 완료(삭제/수정) 모달 */
+  const [textModal, setTextModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    contents: string;
+    onClosed?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    contents: "",
+    onClosed: undefined,
+  });
 
   const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
     name: data.name ?? "",
@@ -67,6 +84,13 @@ export const ChargerOperatorDetail = () => {
     contractFileUrl,
   } = inputs;
 
+  const navigate = useNavigate();
+
+  /** 뒤로가기 */
+  const goBack = () => {
+    navigate(-1);
+  };
+
   /** disable change */
   const onChangeDisabled = () => {
     setDisabled((prev) => !prev);
@@ -75,6 +99,46 @@ export const ChargerOperatorDetail = () => {
   /** 우편번호 검색 modal visible */
   const onChangeModalVisible = () => {
     setAddrSearchModalOpen((prev) => !prev);
+  };
+
+  /** 삭제안내 모달 handler */
+  const onChangeDeleteModalVisible = () => {
+    setDeleteModalOpen((prev) => !prev);
+  };
+
+  /** 텍스트 모달 handler */
+  const onChangeTextModal =
+    ({
+      title = "",
+      contents = "",
+      onClosed,
+    }: Omit<typeof textModal, "isOpen">) =>
+    () => {
+      setTextModal((prev) => ({
+        isOpen: !prev.isOpen,
+        title: title || prev.title,
+        contents: contents || prev.contents,
+        onClosed,
+      }));
+    };
+
+  /** 삭제 */
+  const deleteHandler = async () => {
+    if (!data.id) {
+      return;
+    }
+
+    /* 삭제 요청 */
+    const { code } = await deleteSupplier({ id: data.id });
+    /* 삭제 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      onChangeTextModal({
+        title: "서비스 운영사 정보 삭제 완료",
+        contents: "서비스 운영사 정보가 삭제되었습니다.",
+        onClosed: goBack,
+      })();
+    }
   };
 
   return (
@@ -334,6 +398,7 @@ export const ChargerOperatorDetail = () => {
             color={"turu"}
             outline={true}
             className={"mx-3 w-xs"}
+            onClick={onChangeDeleteModalVisible}
           />
           <ButtonBase
             label={disabled ? "수정" : "저장"}
@@ -352,6 +417,20 @@ export const ChargerOperatorDetail = () => {
             zipCode: data.zipCode,
             address: data.address,
           });
+        }}
+      />
+      <DetailDeleteModal
+        isOpen={deleteModalOpen}
+        onClose={onChangeDeleteModalVisible}
+        deleteHandler={deleteHandler}
+        onClosed={() => {}}
+        title={"서비스 운영사 정보 삭제 안내"}
+        contents={"서비스 운영사 정보를 삭제하시겠습니까?"}
+      />
+      <DetailCompleteModal
+        {...textModal}
+        onClose={() => {
+          setTextModal((prev) => ({ ...prev, isOpen: !prev.isOpen }));
         }}
       />
     </ContainerBase>
