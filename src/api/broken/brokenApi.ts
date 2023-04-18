@@ -3,8 +3,10 @@ import api from "src/utils/api";
 import {
   IBrokenDetailResponse,
   IBrokenListResponse,
+  IRequestBrokenDelete,
   IRequestBrokenDetail,
   IRequestBrokenList,
+  IRequestBrokenModify,
   IRequestBrokenRegister,
 } from "src/api/broken/brokenApi.interface";
 
@@ -20,6 +22,16 @@ export const getBrokenList = (params: IRequestBrokenList) => {
 /** 충전기 고장/파손 상세 api */
 export const getBrokenDetail = (params: IRequestBrokenDetail) => {
   return api.get<IBrokenDetailResponse>(`${brokenUrl}/detail/${params.id}`);
+};
+
+/** 충전기 고장/파손 수정 api */
+export const postBrokenModify = (body: IRequestBrokenModify) => {
+  return api.post<undefined>(`${brokenUrl}/modify`, { body });
+};
+
+/** 충전기 고장/파손 삭제 api */
+export const deleteBroken = (params: IRequestBrokenDelete) => {
+  return api.get<undefined>(`${brokenUrl}/delete/${params.id}`);
 };
 
 /** 충전기 고장/파손 등록 api */

@@ -263,7 +263,7 @@ export const MESSAGE_TITLE_LIST = [
   },
 ];
 
-/** 고장 파손 부위 */
+/** 고장/파손 부위 */
 export const BROKEN_LIST = [
   { label: "선택", value: "" },
   { label: "액정", value: "SB01" },
@@ -273,4 +273,12 @@ export const BROKEN_LIST = [
   { label: "커넥터", value: "SB05" },
   { label: "충전불가", value: "SB06" },
   { label: "사용불가", value: "SB07" },
+];
+
+/** 고장/파손 처리 상태 */
+export const BROKEN_PROCESS_LIST = [
+  { label: "접수", value: "SUBMIT" },
+  { label: "진행중", value: "PROGRESS" },
+  { label: "처리완료", value: "COMPLETE" },
+  { label: "접수제외", value: "EXCEPT" },
 ];
