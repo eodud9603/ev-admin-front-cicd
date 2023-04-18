@@ -117,6 +117,7 @@ import { manufactureListLoader } from "src/pages/Charger/loader/manufactureListL
 import { manufactureDetailLoader } from "src/pages/Charger/loader/manufactureDetailLoader";
 import SettlementMembership from "src/pages/Settlement/SettlementMembership";
 import { brokenDetailLoader } from "src/pages/Charger/loader/brokenDetailLoader";
+import { supplierListLoader } from "src/pages/Charger/loader/supplierListLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -195,7 +196,11 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargerManufacturerDetail />,
     loader: manufactureDetailLoader,
   },
-  { path: "/charger/operator", element: <ChargerOperator /> },
+  {
+    path: "/charger/operator",
+    element: <ChargerOperator />,
+    loader: supplierListLoader,
+  },
   { path: "/charger/operator/detail/:id", element: <ChargerOperatorDetail /> },
   {
     path: "/charger/operator/registration",

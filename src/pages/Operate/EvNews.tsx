@@ -24,7 +24,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import {
   COUNT_FILTER_LIST,
-  DELETE_FILTER_LIST,
+  YN_FILTER_LIST,
   UPLOAD_FILTER_LIST,
 } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
@@ -206,7 +206,7 @@ const EvNews = () => {
               <RadioGroup
                 title={"삭제 여부"}
                 name={"deleteStatus"}
-                list={DELETE_FILTER_LIST.map((data) => ({
+                list={YN_FILTER_LIST.map((data) => ({
                   ...data,
                   checked: deleteStatus === data.value,
                 }))}

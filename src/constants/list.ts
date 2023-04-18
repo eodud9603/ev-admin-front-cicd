@@ -41,7 +41,7 @@ export const DEMOLITION_FILTER_LIST  = [
 ];
 
 /** 삭제여부 필터 */
-export const DELETE_FILTER_LIST = [
+export const YN_FILTER_LIST = [
   {
     label: "전체",
     value: "",
