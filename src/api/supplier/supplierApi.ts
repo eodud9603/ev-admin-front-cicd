@@ -4,7 +4,9 @@ import {
   IRequestSupplierDelete,
   IRequestSupplierDetail,
   IRequestSupplierList,
+  IRequestSupplierListActive,
   IRequestSupplierListResponse,
+  IRequestSupplierModify,
   IRequestSupplierRegister,
   ISupplierDetailResponse,
 } from "src/api/supplier/supplierApi.interface";
@@ -18,10 +20,26 @@ export const getSupplierList = (params: IRequestSupplierList) => {
   });
 };
 
+/** 운영서비스 업체 관리 목록 > 활성화 여부 변경 api */
+export const postSupplierModifyActive = (body: IRequestSupplierListActive) => {
+  return api.post<undefined>(`${supplier}/modify/active`, {
+    body,
+  });
+};
+
 /** 운영서비스 업체 관리 상세 조회 api */
 export const getSupplierDetail = (params: IRequestSupplierDetail) => {
   return api.get<ISupplierDetailResponse>(
     `${supplier}/detail/${params.id}`
+  );
+};
+
+/** 운영서비스 업체 관리 수정 api */
+export const postSupplierModify = (body: IRequestSupplierModify) => {
+  return api.post<undefined>(
+    `${supplier}/modify`,{
+      body
+    }
   );
 };
 

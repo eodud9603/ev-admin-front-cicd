@@ -40,6 +40,13 @@ export interface IRequestSupplierListResponse {
   elements: ISupplierItem[];
 }
 
+/* 서비스 운영사 관리 목록 > 활성화 여부 변경 */
+/** @see http://218.38.12.198:45081/docs/index.html#_활성화_여부_변경 */
+export interface IRequestSupplierListActive {
+  isActive: boolean;
+  ids: number[];
+}
+
 /* 서비스 운영사 관리 등록 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_5 */
 export interface IRequestSupplierRegister {
@@ -60,6 +67,12 @@ export interface IRequestSupplierRegister {
   contractFileId?: number;
   contractFileName?: string;
   contractFileUrl?: string;
+}
+
+/* 서비스 운영사 관리 수정 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%88%98%EC%A0%95_4 */
+export interface IRequestSupplierModify extends Omit<IRequestSupplierRegister, "id"> {
+  id: string;
 }
 
 /* 서비스 운영사 관리 상세 조회 */

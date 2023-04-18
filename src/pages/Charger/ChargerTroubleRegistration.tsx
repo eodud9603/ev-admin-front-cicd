@@ -46,7 +46,6 @@ export const ChargerTroubleRegistration = () => {
     stationName: "",
     chargerKey: "",
     searchKey: "",
-    chargerName: "",
     reservation: "",
     damagedPart01: "" as TBrokenStatus,
     damagedPart02: "" as TBrokenStatus,

@@ -16,12 +16,20 @@ import {
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { useLoaderData, useNavigate } from "react-router";
-import { ISupplierDetailResponse } from "src/api/supplier/supplierApi.interface";
+import {
+  IRequestSupplierModify,
+  ISupplierDetailResponse,
+} from "src/api/supplier/supplierApi.interface";
 import useInputs from "src/hooks/useInputs";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 import DetailDeleteModal from "src/pages/Charger/components/DetailDeleteModal";
-import { deleteSupplier } from "src/api/supplier/supplierApi";
+import {
+  deleteSupplier,
+  postSupplierModify,
+} from "src/api/supplier/supplierApi";
 import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import { YNType } from "src/api/api.interface";
+import { fileUpload } from "src/utils/upload";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },
@@ -51,6 +59,7 @@ export const ChargerOperatorDetail = () => {
   });
 
   const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+    id: (data.id ?? "").toString(),
     name: data.name ?? "",
     supplierId: data.supplierId ?? "",
     code: data.code ?? "",
@@ -60,9 +69,10 @@ export const ChargerOperatorDetail = () => {
     zipCode: data.zipCode ?? "",
     address: data.address ?? "",
     addressDetail: data.addressDetail ?? "",
-    isContracted: data.isContracted ?? "",
-    isActive: data.isActive ?? "",
+    isContracted: (data.isContracted ?? "") as YNType,
+    isActive: (data.isActive ?? "") as YNType,
     contractedDate: data.contractedDate ?? "",
+    contractFileId: data.contractFileId ?? undefined,
     contractFileName: data.contractFileName ?? "",
     contractFileUrl: data.contractFileUrl ?? "",
     /** @TODO 로밍담가 데이터 추가 필요 (서버 우선 작업 필요) */
@@ -80,9 +90,17 @@ export const ChargerOperatorDetail = () => {
     isContracted,
     isActive,
     contractedDate,
+    contractFileId,
     contractFileName,
     contractFileUrl,
   } = inputs;
+  /* 계약서 파일 */
+  const [contractFile, setContractFile] = useState<
+    Partial<{
+      url?: string;
+      file: FileList | null;
+    }>
+  >({});
 
   const navigate = useNavigate();
 
@@ -91,9 +109,59 @@ export const ChargerOperatorDetail = () => {
     navigate(-1);
   };
 
-  /** disable change */
-  const onChangeDisabled = () => {
-    setDisabled((prev) => !prev);
+  /** 파라미터 빈값 제거 */
+  const getParams = (params: Partial<IRequestSupplierModify>) => {
+    for (const param in params) {
+      const deleteName = param as keyof IRequestSupplierModify;
+      const data = params[deleteName];
+
+      if (data === "") {
+        delete params[deleteName];
+      }
+    }
+  };
+
+  /** disabled 상태 변경 */
+  const onChangeDisabled = async () => {
+    if (!disabled) {
+      /** 파일 업로드 params */
+      const fileParams = await fileUpload(contractFile);
+      fileParams.id = contractFileId;
+      fileParams.name = contractFileName;
+      fileParams.url = contractFileUrl;
+
+      /** 수정 params */
+      const params = {
+        ...inputs,
+        contractFileId: fileParams.id,
+        contractFileName: fileParams.name,
+        contractFileUrl: fileParams.url,
+      };
+      void getParams(params);
+
+      /* 수정 요청 */
+      const { code } = await postSupplierModify(params);
+      /** 성공 */
+      const success = code === "SUCCESS";
+      if (success) {
+        /** 수정완료 모달 open */
+        onChangeTextModal({
+          title: "서비스 운영사 정보 수정 완료 안내",
+          contents: "수정된 서비스 운영사 정보가 저장되었습니다.",
+          onClosed: undefined,
+        })();
+        setContractFile({});
+        onChangeSingle({
+          contractFileId: fileParams.id,
+          contractFileName: fileParams.name,
+          contractFileUrl: fileParams.url,
+        });
+      } else {
+        return;
+      }
+    }
+
+    setDisabled(!disabled);
   };
 
   /** 주소 검색 modal visible */
@@ -306,22 +374,57 @@ export const ChargerOperatorDetail = () => {
 
           <DetailRow>
             <DetailLabelCol sm={2}>계약서 파일</DetailLabelCol>
-            <DetailContentCol>
+            <DetailContentCol
+              className={"d-flex align-items-center justify-content-between"}
+            >
               <u
                 role={"button"}
                 className={
-                  contractFileName
+                  contractFile.file?.item(0)?.name || contractFileName
                     ? "text-turu"
                     : "text-secondary text-opacity-50"
                 }
                 onClick={() => {
-                  if (contractFileUrl) {
-                    window?.open(contractFileUrl);
+                  const url = contractFile.url || contractFileUrl;
+                  if (url) {
+                    window?.open(url);
                   }
                 }}
               >
-                {contractFileName || "등록된 파일이 없습니다."}
+                {contractFile.file?.item(0)?.name ||
+                  contractFileName ||
+                  "등록된 파일이 없습니다."}
               </u>
+              <Input
+                className={"visually-hidden"}
+                type={"file"}
+                id={"contractFile"}
+                name={"contractFile"}
+                accept={"*"}
+                onChange={(e) => {
+                  if (!e.target.files) {
+                    return;
+                  }
+
+                  const localUrl = URL.createObjectURL(
+                    Array.from(e.target.files)[0]
+                  );
+
+                  setContractFile({
+                    url: localUrl,
+                    file: e.target.files,
+                  });
+                }}
+              />
+              <ButtonBase
+                disabled={disabled}
+                label={"업로드"}
+                outline={true}
+                color={"turu"}
+                onClick={() => {
+                  document.getElementById("contractFile")?.click();
+                }}
+              />
             </DetailContentCol>
           </DetailRow>
         </BasicInfoSection>

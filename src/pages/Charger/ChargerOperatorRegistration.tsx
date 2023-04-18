@@ -278,6 +278,7 @@ export const ChargerOperatorRegistration = () => {
                     const localUrl = URL.createObjectURL(
                       Array.from(e.target.files)[0]
                     );
+
                     setContractFile({
                       url: localUrl,
                       file: e.target.files,

@@ -72,9 +72,13 @@ export const ChargerTroubleDetail = () => {
     chargerKey: data?.chargerKey ?? "",
     reservation: (data?.reservation ?? "").toString(),
     damagedPart01: (data?.damagedPart01 ?? "") as TBrokenStatus,
+    fileIdPart01: data?.fileIdPart01 ?? undefined,
     fileNamePart01: data?.fileNamePart01 ?? "",
+    fileUrlPart01: data?.fileUrlPart01 ?? "",
     damagedPart02: (data?.damagedPart02 ?? "") as TBrokenStatus,
+    fileIdPart02: data?.fileIdPart02 ?? undefined,
     fileNamePart02: data?.fileNamePart01 ?? "",
+    fileUrlPart02: data?.fileUrlPart02 ?? "",
     brokenContent: data?.brokenContent ?? "",
     managerMemo: data?.managerMemo ?? "",
     /* 운영자/처리자/등록자 정보 */
@@ -93,9 +97,13 @@ export const ChargerTroubleDetail = () => {
     searchKey,
     reservation,
     damagedPart01,
+    fileIdPart01,
     fileNamePart01,
+    fileUrlPart01,
     damagedPart02,
+    fileIdPart02,
     fileNamePart02,
+    fileUrlPart02,
     brokenContent,
     managerMemo,
     reporterName,
@@ -210,8 +218,12 @@ export const ChargerTroubleDetail = () => {
 
       /** 파일 params */
       const fileParams = {
-        fileIdPart01: fileParams01.id,
-        fileIdPart02: fileParams02.id,
+        fileIdPart01: fileParams01.id || fileIdPart01,
+        fileNamePart01: fileParams01.name || fileNamePart01,
+        fileUrlPart01: fileParams01.url || fileUrlPart01,
+        fileIdPart02: fileParams02.id || fileIdPart02,
+        fileNamePart02: fileParams02.name || fileNamePart02,
+        fileUrlPart02: fileParams02.url || fileUrlPart02,
       };
 
       /** 수정 params */
@@ -238,6 +250,16 @@ export const ChargerTroubleDetail = () => {
           contents: "수정된 충전기 고장/파손 정보가 저장되었습니다.",
           onClosed: undefined,
         })();
+        setDamagedFilePart01({});
+        setDamagedFilePart02({});
+        onChangeSingle({
+          fileIdPart01: fileParams01.id,
+          fileNamePart01: fileParams01.name,
+          fileUrlPart01: fileParams01.url,
+          fileIdPart02: fileParams02.id,
+          fileNamePart02: fileParams02.name,
+          fileUrlPart02: fileParams02.url,
+        });
       }
     }
 
@@ -352,8 +374,9 @@ export const ChargerTroubleDetail = () => {
                     : "secondary text-opacity-50"
                 } px-2`}
                 onClick={() => {
-                  if (damagedFilePart01.url) {
-                    window.open(damagedFilePart01.url);
+                  const url = damagedFilePart01.url || fileUrlPart01;
+                  if (url) {
+                    window.open(url);
                   }
                 }}
               >
@@ -386,8 +409,9 @@ export const ChargerTroubleDetail = () => {
                     : "secondary text-opacity-50"
                 } px-2`}
                 onClick={() => {
-                  if (damagedFilePart02.url) {
-                    window.open(damagedFilePart02.url);
+                  const url = damagedFilePart02.url || fileUrlPart02;
+                  if (url) {
+                    window.open(url);
                   }
                 }}
               >
