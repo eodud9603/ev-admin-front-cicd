@@ -77,7 +77,7 @@ export const ChargerTroubleDetail = () => {
     fileUrlPart01: data?.fileUrlPart01 ?? "",
     damagedPart02: (data?.damagedPart02 ?? "") as TBrokenStatus,
     fileIdPart02: data?.fileIdPart02 ?? undefined,
-    fileNamePart02: data?.fileNamePart01 ?? "",
+    fileNamePart02: data?.fileNamePart02 ?? "",
     fileUrlPart02: data?.fileUrlPart02 ?? "",
     brokenContent: data?.brokenContent ?? "",
     managerMemo: data?.managerMemo ?? "",
