@@ -126,9 +126,9 @@ export const ChargerOperatorDetail = () => {
     if (!disabled) {
       /** 파일 업로드 params */
       const fileParams = await fileUpload(contractFile);
-      fileParams.id = contractFileId;
-      fileParams.name = contractFileName;
-      fileParams.url = contractFileUrl;
+      fileParams.id = fileParams.id || contractFileId;
+      fileParams.name = fileParams.name || contractFileName;
+      fileParams.url = fileParams.url || contractFileUrl;
 
       /** 수정 params */
       const params = {
