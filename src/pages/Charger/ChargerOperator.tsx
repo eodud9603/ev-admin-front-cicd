@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -14,35 +14,52 @@ import SearchTextInput from "src/components/Common/Filter/component/SearchTextIn
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
-import { useLocation, useNavigate } from "react-router-dom";
-
-const dropdownData = [
-  { label: "10개씩 보기", value: "1" },
-  { label: "20개씩 보기", value: "2" },
-  { label: "50개씩 보기", value: "3" },
-];
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import {
+  IRequestSupplierList,
+  IRequestSupplierListResponse,
+  ISupplierItem,
+} from "src/api/supplier/supplierApi.interface";
+import { COUNT_FILTER_LIST, YN_FILTER_LIST } from "src/constants/list";
+import useList from "src/hooks/useList";
+import { getPageList } from "src/utils/pagination";
+import { standardDateFormat } from "src/utils/day";
+import useInputs from "src/hooks/useInputs";
+import { getSupplierList } from "src/api/supplier/supplierApi";
+import { YNType } from "src/api/api.interface";
 
 const dropdownGroupSearch = [
-  { label: "운영사명", value: "1" },
-  { label: "운영사 ID", value: "1" },
+  {
+    label: "운영사명",
+    placeholderKeyword: "운영사명을",
+    value: "SupplierName",
+  },
+  {
+    label: "운영사 ID",
+    placeholderKeyword: "운영사 ID를",
+    value: "SupplierId",
+  },
 ];
 
 const dropdownGroupSort = [
   {
     menuItems: [
-      { label: "기본", value: "1" },
-      { label: "운영사명", value: "1" },
-      { label: "최근 등록일", value: "1" },
+      { label: "기본", value: "CreatedDate" },
+      { label: "운영사명", value: "SupplierName" },
+      { label: "최근 등록일", value: "CreatedDate" },
     ],
   },
 ];
 
-const applyRadio = [{ label: "전체" }, { label: "활용" }, { label: "미활용" }];
-const contractRadio = [{ label: "전체" }, { label: "Y" }, { label: "N" }];
+const applyRadio = [
+  { label: "전체", value: "" },
+  { label: "활용", value: "Y" },
+  { label: "미활용", value: "N" },
+];
 
 const tableHeader = [
   { label: "checkbox" },
-  { label: "번호", sort: () => {} },
+  { label: "번호" },
   { label: "활용여부" },
   { label: "운영사 ID" },
   { label: "운영사명" },
@@ -53,37 +70,94 @@ const tableHeader = [
   { label: "등록일" },
 ];
 
-const data = [
-  {
-    operatorSeq: 1,
-    useYn: "Y",
-    operatorId: "운영사 ID",
-    operatorName: "운영사명",
-    companyId: "한전기관 아이디",
-    companyAuthKey: "인증키",
-    contractYn: "Y",
-    representNumber: "0000-000",
-    createDt: "YYYY.MM.DD",
-  },
-  {
-    operatorSeq: 2,
-    useYn: "N",
-    operatorId: "운영사 ID",
-    operatorName: "운영사명",
-    companyId: "한전기관 아이디",
-    companyAuthKey: "인증키",
-    contractYn: "Y",
-    representNumber: "0000-000",
-    createDt: "YYYY.MM.DD",
-  },
-];
-
 export const ChargerOperator = () => {
+  const data = useLoaderData() as IRequestSupplierListResponse | null;
+
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<ISupplierItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: "등록된 서비스 운영사 정보가 없습니다.",
+  });
+
+  const {
+    searchRange,
+    searchText,
+    isActive,
+    sort,
+    isContracted,
+    count,
+    onChange,
+    onChangeSingle,
+  } = useInputs({
+    searchRange: "SupplierName",
+    searchText: "",
+    isActive: "" as YNType,
+    sort: "CreatedDate",
+    isContracted: "" as YNType,
+    count: "10",
+  });
+  const searchKeyword =
+    dropdownGroupSearch.find((data) => searchRange === data.value)
+      ?.placeholderKeyword ?? "검색어를";
+
+  /** 파라미터 빈값 제거 */
+  const getParams = (params: Partial<IRequestSupplierList>) => {
+    for (const param in params) {
+      const deleteName = param as keyof IRequestSupplierList;
+      const data = params[deleteName];
+
+      if (data === "") {
+        delete params[deleteName];
+      }
+    }
+  };
+
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestSupplierList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams: IRequestSupplierList = {
+        size: Number(count),
+        page,
+        isActive,
+        isContracted,
+        sort: sort as IRequestSupplierList["sort"],
+      };
+      if (searchRange && searchText) {
+        searchParams.searchType =
+          searchRange as IRequestSupplierList["searchType"];
+        searchParams.searchKeyword = searchText;
+      }
+      searchParams = {
+        ...searchParams,
+        ...params,
+
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
+
+      /* 검색  */
+      const { code, data, message } = await getSupplierList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 서비스 운영사 정보가 없습니다.",
+        });
+      } else {
+        reset({ code, message: message || "오류가 발생하였습니다." });
+      }
+    };
+
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const [page, setPage] = useState(1);
-  const [selected, setSelected] = useState<string>("0");
-  const [text, setText] = useState("");
 
   const moveToRegistration = () => {
     nav(`${pathname}/registration`);
@@ -95,11 +169,7 @@ export const ChargerOperator = () => {
   return (
     <ContainerBase>
       <HeaderBase />
-      <TabGroup
-      // list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
-      // selectedIndex={selected}
-      // onClick={(e) => setSelected(e.currentTarget.value)}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -118,18 +188,28 @@ export const ChargerOperator = () => {
               <SearchTextInput
                 title={"검색어"}
                 menuItems={dropdownGroupSearch}
-                placeholder={"제조사 ID를 입력해주세요"}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({
+                    searchRange: value,
+                  });
+                }}
+                placeholder={`${searchKeyword} 입력해주세요`}
                 name={"searchText"}
                 className={""}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                value={searchText}
+                onChange={onChange}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
                 title={"활용여부"}
-                name={"radioGroup1"}
-                list={applyRadio}
+                name={"isActive"}
+                list={applyRadio.map((data) => ({
+                  ...data,
+                  checked: data.value === isActive,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -137,19 +217,33 @@ export const ChargerOperator = () => {
             <Col>
               <DropboxGroup
                 label={"정렬기준"}
-                dropdownItems={dropdownGroupSort}
+                dropdownItems={dropdownGroupSort.map((data) => ({
+                  ...data,
+                  onClickDropdownItem: (label, value) => {
+                    onChangeSingle({
+                      sort: value,
+                    });
+                    void searchHandler({
+                      page: 1,
+                      sort: value as IRequestSupplierList["sort"],
+                    })();
+                  },
+                }))}
                 className={"me-2"}
               />
             </Col>
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
                 title={"계약여부"}
-                name={"radioGroup2"}
-                list={contractRadio}
+                name={"isContracted"}
+                list={YN_FILTER_LIST.map((data) => ({
+                  ...data,
+                  checked: data.value === isContracted,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
-          {/*  */}
         </FilterSection>
         <Separator />
 
@@ -157,16 +251,22 @@ export const ChargerOperator = () => {
           <Row className={"mb-4"}>
             <Col>
               <AmountInfo className={"text-size-13 fw-bold"}>
-                총 <AmountInfo className={"text-turu"}>0건</AmountInfo>의 서비스
-                운영사 정보가 있습니다.
+                총 <AmountInfo className={"text-turu"}>{total}건</AmountInfo>의
+                서비스 운영사 정보가 있습니다.
               </AmountInfo>
             </Col>
             <Col className={"d-flex justify-content-end"}>
               <div className={"d-flex align-items-center gap-3"}>
-                <span className={"font-size-10 text-muted"}>
-                  2023-04-01 14:51기준
-                </span>
-                <DropdownBase menuItems={dropdownData} />
+                <span className={"font-size-10 text-muted"}>{time}기준</span>
+                <DropdownBase
+                  menuItems={COUNT_FILTER_LIST}
+                  onClickDropdownItem={(_, value) => {
+                    onChangeSingle({
+                      count: value,
+                    });
+                    void searchHandler({ page: 1, size: Number(value) })();
+                  }}
+                />
                 <ButtonBase
                   label={"활용상태 전환"}
                   color={"turu"}
@@ -183,35 +283,57 @@ export const ChargerOperator = () => {
           </Row>
           <TableBase tableHeader={tableHeader}>
             <>
-              {data.length > 0 &&
-                data.map((e, i) => (
-                  <tr key={i}>
+              {list.length > 0 ? (
+                list.map((data, index) => (
+                  <tr key={data.id}>
                     <td>
                       <CheckBoxBase name={"check"} label={""} />
                     </td>
-                    <td>{}</td>
-                    <td>{e.useYn}</td>
+                    <td>{(page - 1) * Number(count) + index + 1}</td>
+                    <td>{data.isActive ?? "-"}</td>
                     <td>
                       <u
                         role={"button"}
                         className={"text-turu"}
-                        onClick={() => moveToDetail(e.operatorSeq)}
+                        onClick={() => moveToDetail(data.id)}
                       >
-                        {e.operatorId}
+                        {data.supplierId ?? "-"}
                       </u>
                     </td>
-                    <td>{e.operatorName}</td>
-                    <td>{e.companyId}</td>
-                    <td>{e.companyAuthKey}</td>
-                    <td>{e.contractYn}</td>
-                    <td>{e.representNumber}</td>
-                    <td>{e.createDt}</td>
+                    <td>{data.name}</td>
+                    <td>{data.code}</td>
+                    <td>{data.meAuthKey ?? "-"}</td>
+                    <td>{data.isContracted ?? "-"}</td>
+                    <td>{data.mainPhoneNumber ?? "-"}</td>
+                    <td>
+                      {data.createdDate
+                        ? standardDateFormat(data.createdDate, "YYYY.MM.DD")
+                        : "-"}
+                    </td>
                   </tr>
-                ))}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={10} className={"py-5 text-center text"}>
+                    {message}
+                  </td>
+                </tr>
+              )}
             </>
           </TableBase>
         </ListSection>
-        <PaginationBase setPage={setPage} data={{}} />
+        <PaginationBase
+          setPage={setPage}
+          data={{
+            hasPreviousPage: page > 1,
+            hasNextPage: page < lastPage,
+            navigatePageNums: getPageList(page, lastPage),
+            pageNum: page,
+            onChangePage: (page) => {
+              void searchHandler({ page })();
+            },
+          }}
+        />
       </BodyBase>
     </ContainerBase>
   );
