@@ -79,7 +79,7 @@ const ChargerStationAdd = () => {
     chargerLocation: "",
     addressRoad: "",
     zoneCode: "",
-    addr: "" /* 수정 필요 필드 */,
+    addressJibun: "",
     addrDetail: "" /* 수정 필요 필드 */,
     significant: "",
     nonRechargeable: "",
@@ -119,7 +119,7 @@ const ChargerStationAdd = () => {
     chargerLocation,
     addressRoad,
     zoneCode,
-    addr /* 수정 필요 필드 */,
+    addressJibun,
     addrDetail /* 수정 필요 필드 */,
     significant,
     nonRechargeable,
@@ -162,7 +162,6 @@ const ChargerStationAdd = () => {
       quickChargerCount: Number(quickChargerCount),
       standardChargerCount: Number(standardChargerCount),
       powerSocketCount: Number(powerSocketCount),
-      billDivision: undefined,
     };
     getParams(registrationParams);
     /* valid 체크 */
@@ -452,11 +451,11 @@ const ChargerStationAdd = () => {
                         list: [
                           {
                             label: "모자",
-                            value: "1",
+                            value: "Y",
                           },
                           {
                             label: "자가",
-                            value: "2",
+                            value: "N",
                           },
                         ],
                         onChange,
@@ -583,8 +582,8 @@ const ChargerStationAdd = () => {
                             bsSize={"lg"}
                             disabled={true}
                             placeholder={""}
-                            name={"addr"}
-                            value={addr}
+                            name={"addressJibun"}
+                            value={addressJibun}
                             onChange={onChange}
                           />
                           <TextInputBase
@@ -904,7 +903,7 @@ const ChargerStationAdd = () => {
           onChangeSingle({
             zoneCode: data.zipCode,
             addressRoad: data.road,
-            addr: data.jibun,
+            addressJibun: data.jibun,
           });
         }}
       />
