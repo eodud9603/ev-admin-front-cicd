@@ -85,9 +85,6 @@ const tableHeader = [
 const Charger = () => {
   const data = useLoaderData() as IChargerListResponse | null;
 
-  const [tabList, setTabList] = useState([{ label: "충전기 관리" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
-
   const [
     { list, page, lastPage, total, message, time },
     { setPage, onChange: onChangeList, reset },
@@ -178,12 +175,7 @@ const Charger = () => {
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={() => {}}
-        onClose={() => {}}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase

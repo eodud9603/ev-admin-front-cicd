@@ -26,6 +26,16 @@ import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModa
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import useInputs from "src/hooks/useInputs";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
+import { postChargerRegister } from "src/api/charger/chargerApi";
+import {
+  TChargerModeKeys,
+  TChargerRationKeys,
+  TChargerTypeKeys,
+  TOperationStatusKeys,
+} from "src/constants/status";
+import { YNType } from "src/api/api.interface";
+import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
+import { getParams } from "src/utils/params";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -33,11 +43,6 @@ const DefaultDropdownData = {
 };
 
 const ChargerAdd = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전기 관리" },
-  ]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 설치정보 drop */
@@ -49,133 +54,169 @@ const ChargerAdd = () => {
   /* 충전소검색 모달 */
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
 
+  /* 기본정보 */
+  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+    searchKey: "", // 서버 확인 (id 필드가 아닌 충전소별 고유 키가 맞는지)
+    assetNumber: "",
+    chargerClass: "" as TChargerRationKeys,
+    installType: "" as TChargerTypeKeys, // 서버 확인
+    capacity: "",
+    isDualChannel: "" as YNType,
+    channelType01: "",
+    channelType02: "",
+    envVersion: "",
+    consignmentGubun: "",
+    useCode: "", // 서버 확인
+    consignmentName: "",
+    manufacturerName: "", // 서버 확인
+    manufacturerModel: "", // 서버 확인
+    operationStatus: "" as TOperationStatusKeys, // 서버 확인
+    connectorType: "", // 서버 확인
+    isBroken: "" as YNType,
+    status: "" as TChargerModeKeys,
+    hasPgTerm: "",
+    pgName: "",
+    infProtocol: "",
+    maxChargeTime: "",
+    idleCommunicationTime: "",
+    busyCommunicationTime: "",
+    isRoaming: "" as YNType,
+    isKepcoRoaming: "" as YNType,
+    rechargeAppAvailable: "", // 서버 확인
+    contractPrice: "", // 서버 확인
+    qrType: "",
+    reservationType: "",
+    etcInfo: "",
+  });
   const {
-    chargerStationName,
-    chargerId,
-    chargerAssetNumber,
-    chargerType,
-    /* 듀얼형 */
-    dualType,
-    dualCh2,
+    searchKey,
+    assetNumber,
+    chargerClass,
+    installType,
+    isDualChannel,
+    channelType02,
     envVersion,
     manufacturerName,
-    rapidTime,
-    unusedCycle,
-    chargingCycle,
+    status,
+    maxChargeTime,
+    idleCommunicationTime,
+    busyCommunicationTime,
     contractPrice,
-    significant,
-    installer,
-    installationYear,
-    installationMonth,
-    serverDomain,
-    serverPort,
-    chargerSN,
-    chargerFirmware,
-    currentChargerFirmware,
-    modemNumber,
-    modemManufacturer,
-    modemManufacturerTel,
-    modemName,
-    modemSN,
-    carrier,
-    communicationFee,
-    openCarrier,
-    openCarrierTel,
-    onChange,
-    onChangeSingle,
+    etcInfo,
+  } = inputs;
+
+  /* 충전소 정보 */
+  const {
+    onChange: onChangeStation,
+    onChangeSingle: onChangeStationSingle,
+    reset: resetStation,
+    ...stationInputs
   } = useInputs({
-    /* 기본정보 */
     chargerStationName: "",
-    chargerId: "",
-    chargerAssetNumber: "",
-    chargerType: "",
-    installType: "",
-    chargerVolume: "",
-    /* 듀얼형 */
-    dualType: "",
-    dualCh1: "",
-    dualCh2: "",
-    envVersion: "",
-    companyType: "",
-    useStatus: "",
-    consignmentName: "",
-    manufacturerName: "",
-    manufacturerModel: "",
-    installStatus: "",
-    connectorType: "",
-    breakdownStatus: "",
-    chargerStatus: "",
-    paymentTerminalStatus: "",
-    pg: "",
-    interlockingStandard: "",
-    rapidTime: "",
-    unusedCycle: "",
-    chargingCycle: "",
-    syncEnvironment: "",
-    syncKEPCO: "",
-    rechargeAppAvailable: "",
-    contractPrice: "",
-    syncQR: "",
-    reservationAvailable: "",
-    significant: "",
-    /* 계약정보 */
-    installationCategory: "",
+    stationKey: "",
+  });
+  const { chargerStationName } = stationInputs;
+
+  /* 설치 정보 */
+  const {
+    onChange: onChangeInstall,
+    onChangeSingle: onChangeInstallSingle,
+    reset: resetInstall,
+    ...installInputs
+  } = useInputs({
+    gubun: "",
+    companyName: "",
     installer: "",
-    installationYear: "",
-    installationMonth: "",
+    yyyy: "",
+    mm: "",
     serverDomain: "",
     serverPort: "",
-    chargerSN: "",
-    installationTR: "",
-    chargerFirmware: "",
-    currentChargerFirmware: "",
-    /* 모뎀  */
-    modemNumber: "",
-    modemManufacturer: "",
-    modemManufacturerTel: "",
-    modemName: "",
-    modemSN: "",
-    /* 통신사  */
-    carrier: "",
-    communicationFee: "",
-    /* 개통사  */
-    openCarrier: "",
-    openCarrierTel: "",
+    sn: "",
+    hasTr: "",
+    fwVer: "",
+    fwVerCurrent: "",
   });
+  const {
+    companyName,
+    yyyy,
+    mm,
+    serverDomain,
+    serverPort,
+    fwVer,
+    fwVerCurrent,
+  } = installInputs;
+
+  /* 모뎀 정보 */
+  const {
+    onChange: onChangeModem,
+    onChangeSingle: onChangeModemSingle,
+    reset: resetModem,
+    ...modemInputs
+  } = useInputs({
+    /* 모뎀  */
+    openNumber: "",
+    company: "",
+    companyPhone: "",
+    name: "",
+    sn: "",
+    /* 통신사  */
+    carrierName: "",
+    commFee: "",
+    /* 개통사  */
+    openCompany: "",
+    openCompanyPhone: "",
+  });
+  const {
+    openNumber,
+    company,
+    companyPhone,
+    name,
+    carrierName,
+    commFee,
+    openCompany,
+    openCompanyPhone,
+  } = modemInputs;
 
   const navigate = useNavigate();
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
+  /** 등록 */
+  const register = async () => {
+    const registerParams: IRequestChargerRegister = {
+      /* 기본 정보 */
+      ...inputs,
+      searchKey: Number(searchKey),
+      maxChargeTime: Number(maxChargeTime),
+      idleCommunicationTime: Number(idleCommunicationTime),
+      busyCommunicationTime: Number(busyCommunicationTime),
+      /* 충전소 정보 */
+      station: {
+        stationKey: stationInputs.stationKey,
+      },
+      /* 설치 정보 */
+      install: {
+        ...installInputs,
+        /* 모뎀 정보 */
+        modem: modemInputs,
+      },
+      chargerKey: undefined,
+    };
+    getParams(registerParams);
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
+    /* 등록 요청 */
+    const { code } = await postChargerRegister(registerParams);
+    /* 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      /* 저장 성공 */
+      setIsCompleteComplete(true);
     }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
   };
 
   return (
     <ContainerBase>
       <HeaderBase></HeaderBase>
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -234,8 +275,8 @@ const ChargerAdd = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
-                    name={"chargerId"}
-                    value={chargerId}
+                    name={"searchKey"}
+                    value={searchKey}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -246,34 +287,34 @@ const ChargerAdd = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
-                    name={"chargerAssetNumber"}
-                    value={chargerAssetNumber}
+                    name={"assetNumber"}
+                    value={assetNumber}
                     onChange={onChange}
                   />
                 </DetailContentCol>
                 <DetailLabelCol sm={2}>종별</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"chargerType"}
+                    name={"chargerClass"}
                     list={[
                       {
                         label: "급속",
-                        value: "1",
+                        value: "QUICK",
                       },
                       {
                         label: "완속",
-                        value: "2",
+                        value: "STANDARD",
                       },
                       {
                         label: "과금형 콘센트",
-                        value: "3",
+                        value: "",
                       },
                     ]}
                     onChange={(e) => {
                       onChange(e);
                       /* 급속 충전이 아닐경우, 최대 충전시간 데이터 초기화 */
                       if (e.target.value !== "1") {
-                        onChangeSingle({ rapidTime: "" });
+                        onChangeSingle({ maxChargeTime: "" });
                       }
                     }}
                   />
@@ -295,7 +336,9 @@ const ChargerAdd = () => {
                           },
                         ],
                         onClickDropdownItem: (label, value) => {
-                          onChangeSingle({ installType: value });
+                          onChangeSingle({
+                            installType: value as typeof installType,
+                          });
                         },
                       },
                     ],
@@ -313,7 +356,7 @@ const ChargerAdd = () => {
                           },
                         ],
                         onClickDropdownItem: (label, value) => {
-                          onChangeSingle({ chargerVolume: value });
+                          onChangeSingle({ capacity: value });
                         },
                       },
                     ],
@@ -328,11 +371,12 @@ const ChargerAdd = () => {
                     <CheckBoxBase
                       name={"듀얼형"}
                       label={"듀얼형"}
-                      value={"1"}
+                      value={"Y"}
                       onChange={() => {
                         onChangeSingle({
-                          dualType: dualType === "1" ? "" : "1",
-                          dualCh2: dualType === "1" ? "" : dualCh2,
+                          isDualChannel: isDualChannel === "Y" ? "N" : "Y",
+                          channelType02:
+                            isDualChannel === "N" ? "" : channelType02,
                         });
                       }}
                     />
@@ -346,12 +390,12 @@ const ChargerAdd = () => {
                       ]}
                       onClickDropdownItem={(_, value) => {
                         onChangeSingle({
-                          dualCh1: value,
+                          channelType01: value,
                         });
                       }}
                     />
                     <>
-                      {dualType === "1" && (
+                      {isDualChannel === "Y" && (
                         <DropdownBase
                           menuItems={[
                             DefaultDropdownData,
@@ -362,7 +406,7 @@ const ChargerAdd = () => {
                           ]}
                           onClickDropdownItem={(_, value) => {
                             onChangeSingle({
-                              dualCh2: value,
+                              channelType02: value,
                             });
                           }}
                         />
@@ -385,7 +429,7 @@ const ChargerAdd = () => {
                 rows={[
                   {
                     title: "자사/위탁 구분",
-                    name: "companyType",
+                    name: "consignmentGubun",
                     list: [
                       {
                         label: "자사",
@@ -400,7 +444,7 @@ const ChargerAdd = () => {
                   },
                   {
                     title: "사용/전용 구분",
-                    name: "useStatus",
+                    name: "useCode",
                     list: [
                       {
                         label: "사용",
@@ -473,7 +517,7 @@ const ChargerAdd = () => {
                 <DetailLabelCol sm={2}>충전기 설치 상태</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"installStatus"}
+                    name={"operationStatus"}
                     list={[
                       {
                         label: "정상",
@@ -516,7 +560,7 @@ const ChargerAdd = () => {
                 <DetailLabelCol sm={2}>고장유무</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"breakdownStatus"}
+                    name={"isBroken"}
                     list={[
                       {
                         label: "정상",
@@ -541,7 +585,7 @@ const ChargerAdd = () => {
                       },
                     ]}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ chargerStatus: value });
+                      onChangeSingle({ status: value as typeof status });
                     }}
                   />
                 </DetailContentCol>
@@ -551,7 +595,7 @@ const ChargerAdd = () => {
                 <DetailLabelCol sm={2}>결제단말기 여부</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"paymentTerminalStatus"}
+                    name={"hasPgTerm"}
                     list={[
                       {
                         label: "Y",
@@ -576,7 +620,7 @@ const ChargerAdd = () => {
                       },
                     ]}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ pg: value });
+                      onChangeSingle({ pgName: value });
                     }}
                   />
                 </DetailContentCol>
@@ -591,7 +635,7 @@ const ChargerAdd = () => {
                       { label: "OCPP 1.6", value: "1" },
                     ]}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ interlockingStandard: value });
+                      onChangeSingle({ infProtocol: value });
                     }}
                   />
                 </DetailContentCol>
@@ -601,10 +645,10 @@ const ChargerAdd = () => {
                 {/** @TODO 완속 또는 과금형인 경우 해당 텍스트 필드 미노출, 입력 비활성화 분기처리 필요 */}
                 <DetailContentCol>
                   <TextInputBase
-                    disabled={chargerType !== "1"}
+                    disabled={chargerClass !== "QUICK"}
                     bsSize={"lg"}
-                    name={"rapidTime"}
-                    value={rapidTime}
+                    name={"maxChargeTime"}
+                    value={maxChargeTime}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -615,15 +659,15 @@ const ChargerAdd = () => {
                   {
                     titleWidthRatio: 4,
                     title: "미사용 전송 주기(분)",
-                    name: "unusedCycle",
-                    content: unusedCycle,
+                    name: "idleCommunicationTime",
+                    content: idleCommunicationTime,
                     onChange,
                   },
                   {
                     titleWidthRatio: 4,
                     title: "충전중 전송 주기(분)",
-                    name: "chargingCycle",
-                    content: chargingCycle,
+                    name: "busyCommunicationTime",
+                    content: busyCommunicationTime,
                     onChange,
                   },
                 ]}
@@ -633,7 +677,7 @@ const ChargerAdd = () => {
                 rows={[
                   {
                     title: "환경부 연동 여부",
-                    name: "syncEnvironment",
+                    name: "isRoaming",
                     list: [
                       {
                         label: "연동",
@@ -648,7 +692,7 @@ const ChargerAdd = () => {
                   },
                   {
                     title: "한전 연동 여부",
-                    name: "syncKEPCO",
+                    name: "isKepcoRoaming",
                     list: [
                       {
                         label: "연동",
@@ -697,7 +741,7 @@ const ChargerAdd = () => {
                 rows={[
                   {
                     title: "QR 연동여부",
-                    name: "syncQR",
+                    name: "qrType",
                     list: [
                       {
                         label: "없음",
@@ -720,7 +764,7 @@ const ChargerAdd = () => {
                   },
                   {
                     title: "예약 가능 여부",
-                    name: "reservationAvailable",
+                    name: "reservationType",
                     list: [
                       {
                         label: "비예약",
@@ -745,8 +789,8 @@ const ChargerAdd = () => {
                   {
                     titleWidthRatio: 2,
                     title: "특이사항",
-                    name: "significant",
-                    content: significant,
+                    name: "etcInfo",
+                    content: etcInfo,
                     onChange,
                   },
                 ]}
@@ -771,7 +815,7 @@ const ChargerAdd = () => {
                 <DetailLabelCol sm={2}>설치구분</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"installationCategory"}
+                    name={"gubun"}
                     list={[
                       {
                         label: "자체",
@@ -790,16 +834,16 @@ const ChargerAdd = () => {
                         value: "4",
                       },
                     ]}
-                    onChange={onChange}
+                    onChange={onChangeInstall}
                   />
                 </DetailContentCol>
                 <DetailLabelCol sm={2}>설치업체</DetailLabelCol>
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
-                    name={"installer"}
-                    value={installer}
-                    onChange={onChange}
+                    name={"companyName"}
+                    value={companyName}
+                    onChange={onChangeInstall}
                   />
                 </DetailContentCol>
               </DetailRow>
@@ -810,19 +854,19 @@ const ChargerAdd = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "설치 연도",
-                    name: "installationYear",
-                    content: installationYear,
-                    onChange,
+                    name: "yyyy",
+                    content: yyyy,
+                    onChange: onChangeInstall,
                     placeholder: "숫자만 입력해주세요 (ex. 2023)",
                   },
                   {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "설치 월",
-                    name: "installationMonth",
-                    content: installationMonth,
-                    onChange,
                     placeholder: "숫자만 입력해주세요 (ex. 06)",
+                    name: "mm",
+                    content: mm,
+                    onChange: onChangeInstall,
                   },
                 ]}
               />
@@ -834,14 +878,14 @@ const ChargerAdd = () => {
                     title: "서버 도메인",
                     name: "serverDomain",
                     content: serverDomain,
-                    onChange,
+                    onChange: onChangeInstall,
                   },
                   {
                     titleWidthRatio: 4,
                     title: "서버 PORT",
                     name: "serverPort",
                     content: serverPort,
-                    onChange,
+                    onChange: onChangeInstall,
                   },
                 ]}
               />
@@ -851,15 +895,19 @@ const ChargerAdd = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
-                    name={"chargerSN"}
-                    value={chargerSN}
-                    onChange={onChange}
+                    name={"installSN"}
+                    value={installInputs.sn}
+                    onChange={(e) => {
+                      onChangeInstallSingle({
+                        sn: e.target.value,
+                      });
+                    }}
                   />
                 </DetailContentCol>
                 <DetailLabelCol sm={2}>TR 설치여부</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"installationTR"}
+                    name={"hasTr"}
                     list={[
                       {
                         label: "Y",
@@ -870,7 +918,7 @@ const ChargerAdd = () => {
                         value: "2",
                       },
                     ]}
-                    onChange={onChange}
+                    onChange={onChangeInstall}
                   />
                 </DetailContentCol>
               </DetailRow>
@@ -880,18 +928,18 @@ const ChargerAdd = () => {
                   {
                     titleWidthRatio: 4,
                     title: "충전기 펌웨어",
-                    name: "chargerFirmware",
-                    content: chargerFirmware,
-                    onChange,
+                    name: "fwVer",
+                    content: fwVer,
+                    onChange: onChangeInstall,
                   },
                   /** @TODO 자동 노출 표시로 disabled true 고정 */
                   {
                     titleWidthRatio: 4,
                     disabled: true,
                     title: "현재 충전기 펌웨어",
-                    name: "currentChargerFirmware",
-                    content: currentChargerFirmware,
-                    onChange,
+                    name: "fwVerCurrent",
+                    content: fwVerCurrent,
+                    onChange: onChangeInstall,
                   },
                 ]}
               />
@@ -901,9 +949,9 @@ const ChargerAdd = () => {
                   {
                     titleWidthRatio: 2,
                     title: "모뎀개통 번호",
-                    name: "modemNumber",
-                    content: modemNumber,
-                    onChange,
+                    name: "openNumber",
+                    content: openNumber,
+                    onChange: onChangeModem,
                   },
                 ]}
               />
@@ -913,16 +961,16 @@ const ChargerAdd = () => {
                   {
                     titleWidthRatio: 4,
                     title: "모뎀 제조사",
-                    name: "modemManufacturer",
-                    content: modemManufacturer,
-                    onChange,
+                    name: "company",
+                    content: company,
+                    onChange: onChangeModem,
                   },
                   {
                     titleWidthRatio: 4,
                     title: "모뎀 제조사 연락처",
-                    name: "modemManufacturerTel",
-                    content: modemManufacturerTel,
-                    onChange,
+                    name: "companyPhone",
+                    content: companyPhone,
+                    onChange: onChangeModem,
                   },
                 ]}
               />
@@ -932,16 +980,20 @@ const ChargerAdd = () => {
                   {
                     titleWidthRatio: 4,
                     title: "모뎀명",
-                    name: "modemName",
-                    content: modemName,
-                    onChange,
+                    name: "name",
+                    content: name,
+                    onChange: onChangeModem,
                   },
                   {
                     titleWidthRatio: 4,
                     title: "모뎀 S/N",
-                    name: "modemSN",
-                    content: modemSN,
-                    onChange,
+                    name: "modelSN",
+                    content: modemInputs.sn,
+                    onChange: (e) => {
+                      onChangeModemSingle({
+                        sn: e.target.value,
+                      });
+                    },
                   },
                 ]}
               />
@@ -951,16 +1003,16 @@ const ChargerAdd = () => {
                   {
                     titleWidthRatio: 4,
                     title: "통신사",
-                    name: "carrier",
-                    content: carrier,
-                    onChange,
+                    name: "carrierName",
+                    content: carrierName,
+                    onChange: onChangeModem,
                   },
                   {
                     titleWidthRatio: 4,
                     title: "통신요금",
-                    name: "communicationFee",
-                    content: communicationFee,
-                    onChange,
+                    name: "commFee",
+                    content: commFee,
+                    onChange: onChangeModem,
                   },
                 ]}
               />
@@ -970,16 +1022,16 @@ const ChargerAdd = () => {
                   {
                     titleWidthRatio: 4,
                     title: "개통사",
-                    name: "openCarrier",
-                    content: openCarrier,
-                    onChange,
+                    name: "openCompany",
+                    content: openCompany,
+                    onChange: onChangeModem,
                   },
                   {
                     titleWidthRatio: 4,
                     title: "개통사 연락처",
-                    name: "openCarrierTel",
-                    content: openCarrierTel,
-                    onChange,
+                    name: "openCompanyPhone",
+                    content: openCompanyPhone,
+                    onChange: onChangeModem,
                   },
                 ]}
               />
@@ -991,14 +1043,9 @@ const ChargerAdd = () => {
           containerClassName={"my-5"}
           rightButtonTitle={"등록"}
           listHandler={() => {
-            navigate("/charger/charger");
+            setIsCompleteCancel(true);
           }}
-          rightButtonHandler={() => {
-            /** @TODO 저장 로직 추가 필요 */
-
-            /* 저장 성공 */
-            setIsCompleteComplete(true);
-          }}
+          rightButtonHandler={register}
         />
       </BodyBase>
 
@@ -1027,11 +1074,18 @@ const ChargerAdd = () => {
         }
       />
       <StationSearchModal
+        type={"STATION"}
+        size={"xl"}
         isOpen={isStationSearchModal}
         onClose={() => {
           setIsStationSearchModal((prev) => !prev);
         }}
-        size={"xl"}
+        onChangeSelected={(data) => {
+          onChangeStationSingle({
+            chargerStationName: data?.stationName ?? "",
+            stationKey: data?.stationId ?? "",
+          });
+        }}
       />
     </ContainerBase>
   );

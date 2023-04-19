@@ -32,8 +32,6 @@ const ChargerDetail = () => {
   /** init 충전기 상세 데이터 */
   const charger = useLoaderData() as Partial<IChargerDetailResponse>;
 
-  const [tabList, setTabList] = useState([{ label: "충전기 관리" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 설치정보 drop */
@@ -95,7 +93,7 @@ const ChargerDetail = () => {
     /* 기본정보 */
     stationName: charger.station?.stationName ?? "",
     id: (charger.id ?? "").toString(),
-    assetsNumber: charger.assetsNumber ?? "",
+    assetsNumber: charger.assetNumber ?? "",
     chargerClass: charger.chargerClass ?? "",
     installType: charger.installType ?? "",
     capacity: charger.capacity ?? "",
@@ -157,12 +155,7 @@ const ChargerDetail = () => {
     <ContainerBase>
       <HeaderBase></HeaderBase>
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={() => {}}
-        onClose={() => {}}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -1122,6 +1115,7 @@ const ChargerDetail = () => {
         }
       />
       <StationSearchModal
+        type={"STATION"}
         isOpen={isStationSearchModal}
         onClose={() => {
           setIsStationSearchModal((prev) => !prev);
