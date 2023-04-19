@@ -77,12 +77,13 @@ export interface IStationDetailResponse {
   chargerLocation?: string;
   addressRoad?: string;
   addressJibun?: string;
+  addressJibunDetail?: string;
   sido?: string;
   sigugun?: string;
   dongmyun?: string;
   zoneCode?: string;
-  memo?: null;
-  etcInfo?: null;
+  memo?: string | null; // 특이사항
+  etcInfo?: string | null; // 충전불가 차량
   /* 운영 정보 */
   baseOperationTimeFrom?: string;
   baseOperationTimeTo?: string;
@@ -91,6 +92,7 @@ export interface IStationDetailResponse {
   saturdayOperationTimeFrom?: string;
   saturdayOperationTimeTo?: string;
   isParkFeeFree?: string;
+  contractId?: number;
 }
 
 /* 충전소 등록 */

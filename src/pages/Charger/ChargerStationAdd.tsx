@@ -80,9 +80,9 @@ const ChargerStationAdd = () => {
     addressRoad: "",
     zoneCode: "",
     addressJibun: "",
-    addrDetail: "" /* 수정 필요 필드 */,
-    significant: "" /* 수정 필요 필드 */,
-    nonRechargeable: "" /* 수정 필요 필드 */,
+    addressJibunDetail: "",
+    memo: "",
+    etcInfo: "",
     /* 운영정보 */
     baseOperationTimeFrom: "",
     baseOperationTimeTo: "",
@@ -96,7 +96,7 @@ const ChargerStationAdd = () => {
     lat: "",
     lng: "",
     /* 계약정보 */
-    contractNumber: "" /* 수정 필요 필드 */,
+    contractId: "",
   });
   const {
     /* 기본정보 */
@@ -120,9 +120,9 @@ const ChargerStationAdd = () => {
     addressRoad,
     zoneCode,
     addressJibun,
-    addrDetail /* 수정 필요 필드 */,
-    significant /* 수정 필요 필드 */,
-    nonRechargeable /* 수정 필요 필드 */,
+    addressJibunDetail,
+    memo,
+    etcInfo,
     /* 운영정보 */
     baseOperationTimeFrom,
     baseOperationTimeTo,
@@ -132,6 +132,7 @@ const ChargerStationAdd = () => {
     saturdayOperationTimeTo,
     isParkFeeFree,
     parkingFeeDetail /* 수정 필요 필드 */,
+    contractId,
     lat,
     lng,
   } = inputs;
@@ -162,6 +163,7 @@ const ChargerStationAdd = () => {
       quickChargerCount: Number(quickChargerCount),
       standardChargerCount: Number(standardChargerCount),
       powerSocketCount: Number(powerSocketCount),
+      contractId: Number(contractId),
     };
     getParams(registrationParams);
 
@@ -590,8 +592,8 @@ const ChargerStationAdd = () => {
                           <TextInputBase
                             bsSize={"lg"}
                             placeholder={"상세 주소를 입력해주세요"}
-                            name={"addrDetail"}
-                            value={addrDetail}
+                            name={"addressJibunDetail"}
+                            value={addressJibunDetail}
                             onChange={onChange}
                           />
                         </div>
@@ -604,8 +606,8 @@ const ChargerStationAdd = () => {
                       {
                         titleWidthRatio: 2,
                         title: "충전소 특이사항",
-                        name: "significant",
-                        content: significant,
+                        name: "memo",
+                        content: memo,
                         onChange,
                       },
                     ]}
@@ -616,8 +618,8 @@ const ChargerStationAdd = () => {
                       {
                         titleWidthRatio: 2,
                         title: "충전불가 차량",
-                        name: "nonRechargeable",
-                        content: nonRechargeable,
+                        name: "etcInfo",
+                        content: etcInfo,
                         onChange,
                         placeholder:
                           "‘,’로 구분해 작성해주세요 (ex. 차량명A, 차량명B)",
@@ -757,6 +759,9 @@ const ChargerStationAdd = () => {
                       disabled={true}
                       onChange={(data) => {
                         /** @TODO 계약장소 데이터 state 추가  */
+                        onChangeSingle({
+                          contractId: (data.id ?? "").toString(),
+                        });
                       }}
                     />
                   </DetailContentCol>
