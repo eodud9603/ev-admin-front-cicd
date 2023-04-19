@@ -18,10 +18,7 @@ import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { number, object, string } from "yup";
 import { useLoaderData, useNavigate } from "react-router";
-import {
-  IBrokenDetailResponse,
-  IRequestBrokenModify,
-} from "src/api/broken/brokenApi.interface";
+import { IBrokenDetailResponse } from "src/api/broken/brokenApi.interface";
 import useInputs from "src/hooks/useInputs";
 import { BROKEN_LIST, BROKEN_PROCESS_LIST } from "src/constants/list";
 import { BROKEN_STATUS, TBrokenStatus } from "src/constants/status";
@@ -249,6 +246,8 @@ export const ChargerTroubleDetail = () => {
           fileNamePart02: fileParams02.name,
           fileUrlPart02: fileParams02.url,
         });
+      } else {
+        return;
       }
     }
 

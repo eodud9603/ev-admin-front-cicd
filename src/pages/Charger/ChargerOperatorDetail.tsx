@@ -16,10 +16,7 @@ import {
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { useLoaderData, useNavigate } from "react-router";
-import {
-  IRequestSupplierModify,
-  ISupplierDetailResponse,
-} from "src/api/supplier/supplierApi.interface";
+import { ISupplierDetailResponse } from "src/api/supplier/supplierApi.interface";
 import useInputs from "src/hooks/useInputs";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 import DetailDeleteModal from "src/pages/Charger/components/DetailDeleteModal";

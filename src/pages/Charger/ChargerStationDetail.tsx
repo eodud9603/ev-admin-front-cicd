@@ -44,6 +44,7 @@ import { number, object, string } from "yup";
 import { getParams } from "src/utils/params";
 import { YNType } from "src/api/api.interface";
 import { postStationModify } from "src/api/station/stationApi";
+import ContractDropdown from "src/pages/Charger/components/ContractDropdown";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -252,6 +253,8 @@ const ChargerStationDetail = () => {
       if (success) {
         /* 저장 성공시 완료모달 오픈 */
         setIsEditComplete(true);
+      } else {
+        return;
       }
     }
 
@@ -897,25 +900,39 @@ const ChargerStationDetail = () => {
               </DropArea>
               {isContractDrop && (
                 <Row className={"me-1 border-bottom border-2 mb-4"}>
-                  <DetailTextInputRow
-                    rows={[
-                      {
-                        titleWidthRatio: 4,
-                        title: "계약번호",
-                        name: "contractNumber",
-                        content: contractNumber,
-                        disabled: true,
-                        children: (
-                          <ButtonBase
-                            label={"계약 상세"}
-                            color={"turu"}
-                            outline
-                          />
-                        ),
-                      },
-                      null,
-                    ]}
-                  />
+                  {disabled ? (
+                    <DetailTextInputRow
+                      rows={[
+                        {
+                          titleWidthRatio: 4,
+                          title: "계약번호",
+                          name: "contractNumber",
+                          content: contractNumber,
+                          disabled: true,
+                          children: (
+                            <ButtonBase
+                              label={"계약 상세"}
+                              color={"turu"}
+                              outline
+                            />
+                          ),
+                        },
+                        null,
+                      ]}
+                    />
+                  ) : (
+                    <>
+                      <DetailLabelCol sm={2}>계약번호</DetailLabelCol>
+                      <DetailContentCol>
+                        <ContractDropdown
+                          disabled={true}
+                          onChange={(data) => {
+                            /** @TODO 계약장소 데이터 state 추가  */
+                          }}
+                        />
+                      </DetailContentCol>
+                    </>
+                  )}
                 </Row>
               )}
             </Col>
