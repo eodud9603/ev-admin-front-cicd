@@ -1127,8 +1127,8 @@ const ChargerStationDetail = () => {
         onClose={() => {
           setIsEditComplete((prev) => !prev);
         }}
-        title={"충전 정보 수정 완료 안내"}
-        contents={"수정된 충전기 정보가 저장되었습니다."}
+        title={"충전소 정보 수정 완료 안내"}
+        contents={"수정된 충전소 정보가 저장되었습니다."}
       />
       <DetailCancelModal
         isOpen={isEditCancel}

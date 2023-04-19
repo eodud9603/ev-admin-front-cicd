@@ -58,8 +58,7 @@ const searchList = [
 const sortList = [
   { label: "기본", value: "CreatedDate" },
   { label: "충전소명", value: "StationName" },
-  { label: "충전소 ID", value: "StationId" },
-  { label: "급/완속(기)", value: "" },
+  { label: "충전소 ID", value: "StationKey" },
   { label: "등록일", value: "CreatedDate" },
 ];
 
