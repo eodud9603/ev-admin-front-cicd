@@ -18,6 +18,7 @@ import {
   IRequestChargerList,
 } from "src/api/charger/chargerApi.interface";
 import { CHARGER_RATION, CHARGER_TYPE } from "src/constants/status";
+import { getParams } from "src/utils/params";
 
 const dropdownGroupSearch = [{ label: "충전소명", value: "StationName" }];
 
@@ -64,18 +65,6 @@ export const StationSearchModal = (props: IStationSearchModalProps) => {
     searchRange: "StationName",
     searchText: "",
   });
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestChargerList>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestChargerList;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
-  };
 
   /** 검색 핸들러 */
   const searchHandler =

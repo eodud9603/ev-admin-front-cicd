@@ -13,7 +13,7 @@ interface ITableBase {
   children?: ReactElement;
   theadClassName?: string;
   tableClassName?: string;
-  allCheck: boolean;
+  allCheck?: boolean;
   onClickAllCheck?: (bool: boolean) => void;
   subtitle?: string;
   maxHeight?: number;

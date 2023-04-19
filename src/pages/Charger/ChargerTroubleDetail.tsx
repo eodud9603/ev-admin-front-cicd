@@ -32,6 +32,7 @@ import DetailValidCheckModal from "./components/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
 import { standardDateFormat } from "src/utils/day";
 import { StationSearchModal } from "./components/StationSearchModal";
+import { getParams } from "src/utils/params";
 
 const contractValidation = object({
   stationKey: string().required("충전소 ID를 입력해주세요."),
@@ -188,18 +189,6 @@ export const ChargerTroubleDetail = () => {
     const valid = await contractValidation.isValid(inputs);
 
     return valid;
-  };
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestBrokenModify>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestBrokenModify;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
   };
 
   /** disabled 상태 변경 */

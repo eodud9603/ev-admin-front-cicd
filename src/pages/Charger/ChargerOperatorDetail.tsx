@@ -30,6 +30,7 @@ import {
 import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
 import { YNType } from "src/api/api.interface";
 import { fileUpload } from "src/utils/upload";
+import { getParams } from "src/utils/params";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },
@@ -107,18 +108,6 @@ export const ChargerOperatorDetail = () => {
   /** 뒤로가기 */
   const goBack = () => {
     navigate(-1);
-  };
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestSupplierModify>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestSupplierModify;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
   };
 
   /** disabled 상태 변경 */

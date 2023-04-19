@@ -30,6 +30,7 @@ import {
   postSupplierModifyActive,
 } from "src/api/supplier/supplierApi";
 import { YNType } from "src/api/api.interface";
+import { getParams } from "src/utils/params";
 
 const dropdownGroupSearch = [
   {
@@ -108,18 +109,6 @@ export const ChargerOperator = () => {
   const searchKeyword =
     dropdownGroupSearch.find((data) => searchRange === data.value)
       ?.placeholderKeyword ?? "검색어를";
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestSupplierList>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestSupplierList;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
-  };
 
   /** 검색 핸들러 */
   const searchHandler =

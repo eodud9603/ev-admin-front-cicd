@@ -29,6 +29,7 @@ import { OperatorType } from "src/api/api.interface";
 import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
 import { TChargerProcessingStatus } from "src/constants/status";
+import { getParams } from "src/utils/params";
 
 const dropdownGroupSearch = [
   { label: "충전소명", value: "StationName" },
@@ -116,18 +117,6 @@ export const ChargerTrouble = () => {
     totalElements: data?.totalElements,
     emptyMessage: "등록된 고장/파손 충전기 정보가 없습니다.",
   });
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestBrokenList>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestBrokenList;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
-  };
 
   /** 검색 핸들러 */
   const searchHandler =

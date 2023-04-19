@@ -28,6 +28,7 @@ import { YNType } from "src/api/api.interface";
 import { useTabStore } from "src/store/tabStore";
 import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
+import { getParams } from "src/utils/params";
 
 /* 사용여부 필터 */
 const useStatusList = [
@@ -112,18 +113,6 @@ const ChargingStationManagement = () => {
     "";
 
   const navigate = useNavigate();
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestStationList>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestStationList;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
-  };
 
   /** 검색 핸들러 */
   const searchHandler =

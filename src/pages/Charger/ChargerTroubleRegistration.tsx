@@ -26,6 +26,7 @@ import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModa
 import { fileUpload } from "src/utils/upload";
 import { number, object, string } from "yup";
 import { TBrokenStatus } from "src/constants/status";
+import { getParams } from "src/utils/params";
 
 const contractValidation = object({
   stationKey: string().required("충전소 ID를 입력해주세요."),
@@ -87,18 +88,6 @@ export const ChargerTroubleRegistration = () => {
 
   const handleStationSearchModal = () => {
     setIsStationSearchModal((prev) => !prev);
-  };
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestBrokenRegister>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestBrokenRegister;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
   };
 
   /** 등록

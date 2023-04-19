@@ -25,6 +25,7 @@ import { getManufactureList } from "src/api/manufactures/manufactureApi";
 import { useTabStore } from "src/store/tabStore";
 import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
+import { getParams } from "src/utils/params";
 
 const dropdownGroupSort = [
   {
@@ -79,18 +80,6 @@ export const ChargerManufacturer = () => {
     totalElements: data?.totalElements,
     emptyMessage: "등록된 제조사 정보가 없습니다.",
   });
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestManufactureList>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestManufactureList;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
-  };
 
   /** 검색 핸들러 */
   const searchHandler =
