@@ -97,6 +97,13 @@ export interface IStationDetailResponse {
  */
 export type IRequestStationRegister  = IStationDetailResponse
 
+/* 충전소 수정 */
+/**
+ * @see 
+ * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ */
+export type IRequestStationModify  = IStationDetailResponse
+
 /* 충전소 계약 목록 조회 */
 /**
  * @see http://218.38.12.198:45081/docs/index.html#_%EC%A1%B0%ED%9A%8C

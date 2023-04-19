@@ -39,7 +39,12 @@ export const postStationRegistration = (body: IRequestStationRegister) => {
   });
 };
 
-/** @TODO 충전소 수정 api */
+/** 충전소 수정 api */
+export const postStationModify = (body: IRequestStationRegister) => {
+  return api.post<undefined>(`${stationUrl}/modify`, {
+    body,
+  });
+};
 
 /* 계약 관리 */
 

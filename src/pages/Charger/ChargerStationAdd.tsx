@@ -81,8 +81,8 @@ const ChargerStationAdd = () => {
     zoneCode: "",
     addressJibun: "",
     addrDetail: "" /* 수정 필요 필드 */,
-    significant: "",
-    nonRechargeable: "",
+    significant: "" /* 수정 필요 필드 */,
+    nonRechargeable: "" /* 수정 필요 필드 */,
     /* 운영정보 */
     baseOperationTimeFrom: "",
     baseOperationTimeTo: "",
@@ -91,12 +91,12 @@ const ChargerStationAdd = () => {
     saturdayOperationTimeFrom: "",
     saturdayOperationTimeTo: "",
     isParkFeeFree: "",
-    parkingFeeDetail: "",
+    parkingFeeDetail: "" /* 수정 필요 필드 */,
     /* 지도 좌표 */
     lat: "",
     lng: "",
     /* 계약정보 */
-    contractNumber: "",
+    contractNumber: "" /* 수정 필요 필드 */,
   });
   const {
     /* 기본정보 */
@@ -121,8 +121,8 @@ const ChargerStationAdd = () => {
     zoneCode,
     addressJibun,
     addrDetail /* 수정 필요 필드 */,
-    significant,
-    nonRechargeable,
+    significant /* 수정 필요 필드 */,
+    nonRechargeable /* 수정 필요 필드 */,
     /* 운영정보 */
     baseOperationTimeFrom,
     baseOperationTimeTo,
@@ -131,7 +131,7 @@ const ChargerStationAdd = () => {
     saturdayOperationTimeFrom,
     saturdayOperationTimeTo,
     isParkFeeFree,
-    parkingFeeDetail,
+    parkingFeeDetail /* 수정 필요 필드 */,
     lat,
     lng,
   } = inputs;
@@ -164,6 +164,7 @@ const ChargerStationAdd = () => {
       powerSocketCount: Number(powerSocketCount),
     };
     getParams(registrationParams);
+
     /* valid 체크 */
     const isValid = await stationRegistrationValidation.isValid(
       registrationParams
