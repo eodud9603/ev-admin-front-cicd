@@ -21,11 +21,13 @@ export interface IRequestStationList {
 }
 
 export interface IStationListItem {
+  id: number;
+  stationKey: string;
   region: string;
   stationNm: string;
-  stationId: string;
   address: string;
-  isOpen: string;
+  isOpen: YNType;
+  iseUse: YNType;
   operation: string;
   fastCharger: number;
   fullCharger: number;
@@ -47,6 +49,7 @@ export interface IRequestStationDetail {
 }
 
 export interface IStationDetailResponse {
+  id?: number;
   /* 지도 */
   lat: number;
   lng: number;
@@ -99,7 +102,7 @@ export type IRequestStationRegister  = IStationDetailResponse
 
 /* 충전소 수정 */
 /**
- * @see 
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%88%98%EC%A0%95
  * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
  */
 export type IRequestStationModify  = IStationDetailResponse

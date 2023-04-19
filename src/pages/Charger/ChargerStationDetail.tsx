@@ -122,6 +122,7 @@ const ChargerStationDetail = () => {
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
 
   const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+    id: detail?.id ?? undefined,
     /* 기본정보 */
     stationName: detail?.stationName ?? "",
     stationKey: detail?.stationKey ?? "",
@@ -172,7 +173,8 @@ const ChargerStationDetail = () => {
     contractNumber: "" /* 수정 필요 필드 */,
   });
   const {
-    /* 기본정보 */ stationName,
+    /* 기본정보 */
+    stationName,
     stationKey,
     location,
     operator,
@@ -354,13 +356,13 @@ const ChargerStationDetail = () => {
                             {
                               disabled,
                               label: "HEV",
-                              value: "1",
+                              value: "HEV",
                               checked: operator === "HEV",
                             },
                             {
                               disabled,
                               label: "JEV",
-                              value: "2",
+                              value: "JEV",
                               checked: operator === "JEV",
                             },
                           ]}
