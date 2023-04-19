@@ -64,9 +64,9 @@ export interface IStationDetailResponse {
   powerSocketCount?: number;
   isHidden?: YNType;
   supplyMethod?: string;
-  billDivision?: null;
+  billDivision?: YNType; // 타입 확인 필요
   kepcoCustomerNum?: string;
-  meterNum?: null;
+  meterNum?: string; // 타입 확인 필요
   kepcoFee?: string;
   kepcoOffice?: string;
   kepcoPayment?: string;

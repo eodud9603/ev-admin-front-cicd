@@ -9,11 +9,12 @@ interface IItemProps extends IStationContractItem {
 }
 
 interface IContractDropdownProps {
+  disabled?: boolean;
   onChange?: (data: Partial<IItemProps>) => void;
 }
 
 const ContractDropdown = (props: IContractDropdownProps) => {
-  const { onChange } = props;
+  const { disabled, onChange } = props;
   const [list, setList] = useState<IItemProps[]>([]);
   const [selectedData, setSelectedData] = useState<Partial<IItemProps>>({});
 
@@ -56,6 +57,7 @@ const ContractDropdown = (props: IContractDropdownProps) => {
 
   return (
     <SearchDropdownBase
+      disabled={disabled}
       placeholder={"계약장소명 또는 계약번호를 입력해주세요"}
       emptyMessage={
         "검색 결과가 없습니다.\n계약장소명 또는 계약번호를 다시 확인해주세요."
