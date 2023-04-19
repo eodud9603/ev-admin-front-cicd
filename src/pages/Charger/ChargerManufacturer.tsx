@@ -40,7 +40,6 @@ const dropdownGroupSort = [
 const dropdownGroupSearch = [
   { label: "제조사 ID", value: "CompanyId" },
   { label: "제조사명", value: "CompanyName" },
-  { label: "충전소 ID", value: "" } /** @TODO 서버 충전소 ID 추가 필요 */,
   { label: "담당자명", value: "ManagerName" },
 ];
 
