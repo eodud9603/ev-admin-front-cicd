@@ -32,7 +32,7 @@ import { postStationRegistration } from "src/api/station/stationApi";
 import { OPERATOR_FILTER_LIST } from "src/constants/list";
 import { object, string, number } from "yup";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
-import ContractDropdown from "./components/ContractDropdown";
+import ContractDropdown from "src/pages/Charger/components/ContractDropdown";
 import { IRequestStationRegister } from "src/api/station/stationApi.interface";
 import { YNType } from "src/api/api.interface";
 import { getParams } from "src/utils/params";

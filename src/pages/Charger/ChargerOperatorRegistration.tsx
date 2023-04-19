@@ -22,7 +22,7 @@ import { useNavigate } from "react-router";
 import { IRequestSupplierRegister } from "src/api/supplier/supplierApi.interface";
 import { YNType } from "src/api/api.interface";
 import { fileUpload } from "src/utils/upload";
-import DetailCompleteModal from "./components/DetailCompleteModal";
+import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },

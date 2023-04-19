@@ -29,7 +29,7 @@ import { postStationContractModify } from "src/api/station/stationApi";
 import { YNType } from "src/api/api.interface";
 import { useTabStore } from "src/store/tabStore";
 import { TContractStatus } from "src/constants/status";
-import DetailValidCheckModal from "./components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
 
 const contractValidation = object({

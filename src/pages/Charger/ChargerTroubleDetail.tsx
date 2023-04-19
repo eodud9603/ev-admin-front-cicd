@@ -25,10 +25,10 @@ import { BROKEN_STATUS, TBrokenStatus } from "src/constants/status";
 import { deleteBroken, postBrokenModify } from "src/api/broken/brokenApi";
 import DetailDeleteModal from "src/pages/Charger/components/DetailDeleteModal";
 import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
-import DetailValidCheckModal from "./components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
 import { standardDateFormat } from "src/utils/day";
-import { StationSearchModal } from "./components/StationSearchModal";
+import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 import { getParams } from "src/utils/params";
 
 const contractValidation = object({

@@ -21,7 +21,6 @@ import { StationSearchModal } from "src/pages/Charger/components/StationSearchMo
 import useInputs from "src/hooks/useInputs";
 import { postBrokenRegister } from "src/api/broken/brokenApi";
 import { BROKEN_LIST } from "src/constants/list";
-import { IRequestBrokenRegister } from "src/api/broken/brokenApi.interface";
 import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
 import { fileUpload } from "src/utils/upload";
 import { number, object, string } from "yup";
