@@ -26,7 +26,7 @@ import EvModelModal, {
   IEvModelModalProps,
 } from "src/pages/Operate/components/EvModelModal";
 import useInputs from "src/hooks/useInputs";
-import OperateTextModal from "./components/OperateTextModal";
+import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 
 /* 급/완속 필터 */
 const speedList = [

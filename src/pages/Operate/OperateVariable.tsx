@@ -24,7 +24,7 @@ import { COUNT_FILTER_LIST, YN_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
 import VariableModal from "src/pages/Operate/components/VariableModal";
 import useInputs from "src/hooks/useInputs";
-import OperateTextModal from "./components/OperateTextModal";
+import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 import { YNType } from "src/api/api.interface";
 
 /* 검색어 필터 */

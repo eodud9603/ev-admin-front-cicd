@@ -30,7 +30,7 @@ import {
 import styled from "styled-components";
 import CategoryModal from "src/pages/Operate/components/CategoryModal";
 import useInputs from "src/hooks/useInputs";
-import OperateTextModal from "./components/OperateTextModal";
+import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 
 /* 검색어 필터 */
 const searchList = [

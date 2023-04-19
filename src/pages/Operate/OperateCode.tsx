@@ -24,7 +24,7 @@ import styled from "styled-components";
 import CodeModal from "src/pages/Operate/components/CodeModal";
 import useInputs from "src/hooks/useInputs";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
-import OperateTextModal from "./components/OperateTextModal";
+import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 import { YNType } from "src/api/api.interface";
 
 /* 검색어 필터 */
