@@ -39,6 +39,8 @@ import { YNType } from "src/api/api.interface";
 import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
 import { getParams } from "src/utils/params";
 import { objectToArray } from "src/utils/convert";
+import ManufacturerDropdown from "./components/ManufacturerDropdown";
+import ManufacturerModelDropdown from "./components/ManufacturerModelDropdown";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -71,8 +73,10 @@ const ChargerAdd = () => {
     consignmentGubun: "",
     useCode: "", // 서버 확인
     consignmentName: "",
+    manufacturerId: "", // 서버 확인
     manufacturerName: "", // 서버 확인
-    manufacturerModel: "", // 서버 확인
+    manufacturerModeId: "", // 서버 확인
+    manufacturerModelName: "", // 서버 확인
     operationStatus: "" as TOperationStatusKeys, // 서버 확인
     connectorType: "", // 서버 확인
     isBroken: "" as YNType,
@@ -99,6 +103,7 @@ const ChargerAdd = () => {
     isDualChannel,
     channelType02,
     envVersion,
+    manufacturerId,
     manufacturerName,
     status,
     maxChargeTime,
@@ -175,6 +180,15 @@ const ChargerAdd = () => {
 
   /** 등록 */
   const register = async () => {
+    /** 설치 정보 */
+    const installParams = { ...installInputs };
+    /** 모뎀 정보 */
+    const modemParams = { ...modemInputs };
+
+    getParams(installParams);
+    getParams(modemParams);
+
+    /** 등록 정보 */
     const registerParams: IRequestChargerRegister = {
       /* 기본 정보 */
       ...inputs,
@@ -185,11 +199,11 @@ const ChargerAdd = () => {
       station: {
         stationKey: stationInputs.stationKey,
       },
-      /* 설치 정보 */
+
       install: {
-        ...installInputs,
-        /* 모뎀 정보 */
-        modem: modemInputs,
+        ...installParams,
+
+        modem: modemParams,
       },
     };
     getParams(registerParams);
@@ -216,9 +230,9 @@ const ChargerAdd = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 관리", href: "" },
-            { label: "충전기 상세", href: "" },
+            { label: "충전기 등록", href: "" },
           ]}
-          title={"충전기 상세"}
+          title={"충전기 등록"}
         />
 
         <div>
@@ -417,15 +431,15 @@ const ChargerAdd = () => {
                     list: [
                       {
                         label: "사용",
-                        value: "1",
+                        value: "Y",
                       },
                       {
                         label: "미사용",
-                        value: "2",
+                        value: "N",
                       },
                       {
                         label: "전용",
-                        value: "3",
+                        value: "",
                       },
                     ],
                     onChange,
@@ -445,19 +459,26 @@ const ChargerAdd = () => {
                   />
                 </DetailContentCol>
                 <DetailLabelCol sm={2}>제조사</DetailLabelCol>
-                <DetailContentCol>
+                <DetailContentCol sm={4}>
                   <DetailGroupCol className={"gap-4"}>
-                    <DropdownBase
-                      menuItems={[DefaultDropdownData]}
-                      onClickDropdownItem={(label, value) => {
-                        onChangeSingle({ manufacturerName: value });
+                    <ManufacturerDropdown
+                      onChange={(data) => {
+                        onChangeSingle({
+                          manufacturerId: data.id?.toString(),
+                          manufacturerName: data.name,
+                          manufacturerModeId: "",
+                          manufacturerModelName: "",
+                        });
                       }}
                     />
-                    <DropdownBase
+                    <ManufacturerModelDropdown
                       disabled={!manufacturerName}
-                      menuItems={[DefaultDropdownData]}
-                      onClickDropdownItem={(label, value) => {
-                        onChangeSingle({ manufacturerModel: value });
+                      id={Number(manufacturerId || -1)}
+                      onChange={(data) => {
+                        onChangeSingle({
+                          manufacturerModeId: data.id?.toString(),
+                          manufacturerModelName: data.modelName,
+                        });
                       }}
                     />
                   </DetailGroupCol>
@@ -512,11 +533,11 @@ const ChargerAdd = () => {
                     list={[
                       {
                         label: "정상",
-                        value: "1",
+                        value: "N",
                       },
                       {
                         label: "고장",
-                        value: "2",
+                        value: "Y",
                       },
                     ]}
                     onChange={onChange}

@@ -48,3 +48,28 @@ export interface IManufactureDetailResponse {
   zipCode: string;
   managerExtPhone: string;
 }
+
+/* 제조사 모델 목록 조회 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%A0%9C%EC%A1%B0%EC%82%AC_%EB%AA%A8%EB%8D%B8_%EC%A1%B0%ED%9A%8C */
+export interface IRequestManufactureModelList {
+  id: number;
+}
+
+export interface IManufactureModelItem {
+  id: number;
+  modelName: string
+  manufactureId: number;
+  size: number;
+  version: string;
+  firmwareId: number;
+  firmwareFileName: string;
+  firmwareFileUrl: string;
+  imageId: number;
+  imageFileName: string;
+  imageUrl: string;
+}
+ export interface IManufactureModelListResponse {
+  elements: IManufactureModelItem[];
+  totalElements: number;
+  totalPages: number;
+ }

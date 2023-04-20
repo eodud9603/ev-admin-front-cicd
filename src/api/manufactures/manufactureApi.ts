@@ -5,6 +5,8 @@ import {
   IManufactureListResponse,
   IRequestManufactureDetail,
   IManufactureDetailResponse,
+  IRequestManufactureModelList,
+  IManufactureModelListResponse,
 } from "src/api/manufactures/manufactureApi.interface";
 
 const { manufactureUrl } = API_URL;
@@ -27,5 +29,12 @@ export const getManufactureDetail = (params: IRequestManufactureDetail) => {
 export const deleteManufacture = (params: IRequestManufactureDetail) => {
   return api.get<undefined>(
     `${manufactureUrl}/delete/${params.id}`
+  );
+};
+
+/** 제조사 모델 목록 조회 api */
+export const getManufactureModelList = (params: IRequestManufactureModelList) => {
+  return api.get<IManufactureModelListResponse>(
+    `${manufactureUrl}/model/list/${params.id}`
   );
 };

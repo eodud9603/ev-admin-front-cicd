@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { getStationContractList } from "src/api/station/stationApi";
-import { IStationContractItem } from "src/api/station/stationApi.interface";
+import { getManufactureList } from "src/api/manufactures/manufactureApi";
+import { IManufactureListItem } from "src/api/manufactures/manufactureApi.interface";
 import { SearchDropdownBase } from "src/components/Common/Dropdown/SearchDropdownBase";
 
-interface IItemProps extends IStationContractItem {
+interface IItemProps extends IManufactureListItem {
   label: string;
   value: string;
 }
 
-interface IContractDropdownProps {
+interface IManufactureDropdownProps {
   disabled?: boolean;
   onChange?: (data: Partial<IItemProps>) => void;
 }
 
-const ContractDropdown = (props: IContractDropdownProps) => {
+const ManufacturerDropdown = (props: IManufactureDropdownProps) => {
   const { disabled, onChange } = props;
   const [list, setList] = useState<IItemProps[]>([]);
   const [selectedData, setSelectedData] = useState<Partial<IItemProps>>({});
@@ -22,10 +22,10 @@ const ContractDropdown = (props: IContractDropdownProps) => {
   useEffect(() => {
     const init = async () => {
       /** @TODO api 변경 */
-      const { code, data } = await getStationContractList({
+      const { code, data } = await getManufactureList({
         size: 30,
         page: 0,
-        sort: "ContractedDate",
+        sort: "ModifiedDate",
       });
 
       const success = code === "SUCCESS";
@@ -37,20 +37,20 @@ const ContractDropdown = (props: IContractDropdownProps) => {
     void init();
   }, []);
 
-  /** 선택한 계약 데이터 콜백 */
+  /** 선택한 제조사 데이터 콜백 */
   const onChangeData = (data: Partial<IItemProps>) => {
     !!onChange && onChange(data);
     setSelectedData(data);
   };
 
-  /** 계약 목록 조회 검색 핸들러 */
+  /** 제조사 목록 조회 검색 핸들러 */
   const searchHandler = async (text: string) => {
     /** @TODO api 변경 */
-    const { code, data } = await getStationContractList({
+    const { code, data } = await getManufactureList({
       size: 30,
       page: 0,
-      sort: "ContractedDate",
-      searchType: "ContractPlace",
+      sort: "ModifiedDate",
+      searchType: "CompanyName",
       searchKeyword: text,
     });
 
@@ -63,15 +63,15 @@ const ContractDropdown = (props: IContractDropdownProps) => {
   return (
     <SearchDropdownBase
       disabled={disabled}
-      placeholder={"계약장소명 또는 계약번호를 입력해주세요"}
+      placeholder={"제조사명 또는 코드를 입력해주세요"}
       emptyMessage={
-        "검색 결과가 없습니다.\n계약장소명 또는 계약번호를 다시 확인해주세요."
+        "검색 결과가 없습니다.\n제조사명 또는 코드를 다시 확인해주세요."
       }
       list={list}
       selectedLabel={
-        !selectedData?.place || !selectedData?.id
+        !selectedData?.code || !selectedData?.name
           ? "선택"
-          : `${selectedData.place}(${selectedData.id})`
+          : `${selectedData.code} ${selectedData.name}`
       }
       onClickItem={onChangeData}
       searchHandler={searchHandler}
@@ -79,12 +79,12 @@ const ContractDropdown = (props: IContractDropdownProps) => {
   );
 };
 
-export default ContractDropdown;
+export default ManufacturerDropdown;
 
-const format = (list: IStationContractItem[]) => {
+const format = (list: IManufactureListItem[]) => {
   return list.map((data) => ({
     ...data,
-    label: `${data.place}(${data.id})`,
+    label: `${data.code} ${data.name}`,
     value: data.id.toString(),
   }));
 };
