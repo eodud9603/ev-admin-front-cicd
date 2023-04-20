@@ -14,7 +14,6 @@ import SearchTextInput from "src/components/Common/Filter/component/SearchTextIn
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useTabs } from "src/hooks/useTabs";
 
 const dropdownData = [
@@ -186,7 +185,6 @@ export const ChargerOperator = () => {
 
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const [page, setPage] = useState(1);
   const [text, setText] = useState("");
 
   const moveToRegistration = () => {
