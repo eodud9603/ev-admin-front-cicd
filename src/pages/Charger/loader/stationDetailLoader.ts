@@ -13,9 +13,7 @@ export const stationDetailLoader = async ({ params }: IStationDetailParams) => {
     return null;
   }
 
-  const loadData: [] | undefined = loadTabData(
-    `/charger/chargerStation/detail/${params.id}`
-  );
+  const loadData = loadTabData(`/charger/chargerStation/detail/${params.id}`);
   if (loadData) {
     return loadData;
   }

@@ -20,7 +20,7 @@ RUN yarn build
 # new base image
 FROM nginx:1.19.0
 # copy dist folder from build image to nginx container
-COPY --from=build app/dist /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 # expose port
 EXPOSE 80

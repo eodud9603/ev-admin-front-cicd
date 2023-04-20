@@ -8,7 +8,8 @@ export const loadTabData = (path: string) => {
       (e: tabType) => e.path === path
     ) ?? [];
   if (tabData && tabData.length > 0) {
-    const data: [] | { [key: string]: string | number } = tabData[0].data;
+    const data: [] | { [key: string]: string | number } | undefined =
+      tabData[0].data;
 
     return data;
   }

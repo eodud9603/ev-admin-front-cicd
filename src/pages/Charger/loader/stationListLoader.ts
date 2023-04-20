@@ -13,7 +13,7 @@ const defaultParams: IRequestStationList = {
 };
 
 export const stationListLoader = async () => {
-  const loadData: [] | undefined = loadTabData("/charger/ChargerStation");
+  const loadData = loadTabData("/charger/ChargerStation");
   if (loadData) {
     return loadData;
   }

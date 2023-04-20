@@ -1,9 +1,7 @@
 import { loadTabData } from "src/utils/loadTabData";
 
 export const chargerAddLoader = () => {
-  const loadData: { [key: string]: string | number } | undefined = loadTabData(
-    "/charger/charger/add"
-  ) as { [key: string]: string | number };
+  const loadData = loadTabData("/charger/charger/add");
 
   return (
     loadData ?? {
