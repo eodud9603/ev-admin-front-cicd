@@ -63,8 +63,8 @@ export interface IRequestBrokenRegister {
   reporterName?: string;
   searchKey: number; /* 충전기 고유값 */
   chargerKey: string; /* 충전소별 충전기키 */
-  damagedPart01: string;
-  damagedPart02?: string;
+  damagedPart01: TBrokenStatus;
+  damagedPart02?: TBrokenStatus;
   stationName: string;
   stationKey: string; /* 충전소 고유 키 */
   brokenContent?: string; /* 신고자 메모 */
@@ -88,12 +88,28 @@ export interface IRequestBrokenDetail {
 }
 
 export interface IBrokenDetailResponse extends IRequestBrokenRegister {
+  id: number;
   stationOperator: string;
   stationRegion: string;
-  brokenStatus: TBrokenStatus;
+  brokenStatus: TChargerProcessingStatus;
   fileNamePart01: string;
   fileNamePart02: string;
   fileUrlPart01: string;
   fileUrlPart02: string;
   createDate: string;
 }
+
+/* 충전기 고장/파손 삭제 */
+/** 
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%82%AD%EC%A0%9C
+ *  */
+export interface IRequestBrokenDelete {
+  id: number;
+}
+
+/* 충전기 고장/파손 수정 */
+/** 
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%88%98%EC%A0%95_3
+ *  */
+export type IRequestBrokenModify = IRequestBrokenRegister
+

@@ -10,7 +10,7 @@ export interface IRequestChargerListByStation {
 
 export interface IChargerListByStationItem {
   id: number;
-  station: null;
+  station: string;
   chargerKey: string;
   operationStatus: TOperationStatusKeys;
   mode: TChargerModeKeys;
@@ -72,7 +72,7 @@ export interface IRequestChargerDetail {
 }
 
 interface IStationItem {
-  id: number; /* 충전소 내부 관리 ID */
+  id?: number; /* 충전소 내부 관리 ID */
   stationKey: string; /* 충전기 고유키 */
   stationName: string;
   operationStatus: TOperationStatusKeys;
@@ -93,12 +93,12 @@ interface IStationItem {
 }
 
 interface IModemItem {
-  id: number; /* 모뎀 관리 ID 등록시 없어야함 */
+  id?: number; /* 모뎀 관리 ID 등록시 없어야함 */
   openNumber: string;
   company: string;
   companyPhone: string;
   name: string;
-  sn: null;
+  sn: string;
   carrierName: string;
   commFee: string;
   openCompany: string;
@@ -106,24 +106,24 @@ interface IModemItem {
 }
 
 interface IInstallItem {
-  id: number; /* 설치 관리 ID 등록시 없어야함 */
+  id?: number; /* 설치 관리 ID 등록시 없어야함 */
   gubun: string;
   companyName: string;
   yyyy: string;
   mm: string;
   serverDomain: string;
   serverPort: string;
-  sn: null;
-  hasTr: null;
+  sn: string;
+  hasTr: string;
   fwVer: string;
   fwVerCurrent: string;
   modem?: IModemItem;
 
 }
 export interface IChargerDetailResponse {
-  id: number; /* 충전기 고유 ID 등록시 없어야함 */
-  assetsNumber: string;
-  chargerKey: string;
+  id?: number; /* 충전기 고유 ID 등록시 없어야함 */
+  assetNumber: string;
+  chargerKey?: string;
   chargerClass: TChargerRationKeys;
   installType: TChargerTypeKeys;
   capacity: string;
@@ -144,7 +144,7 @@ export interface IChargerDetailResponse {
   idleCommunicationTime: number;
   busyCommunicationTime: number;
   isKepcoRoaming: YNType;
-  searchKey: number; /* 충전기 고유 키 */
+  searchKey?: number; /* 충전기 고유 키 */
   qrType: string;
   reservationType: string;
   etcInfo: string; /* 특이사항 */
@@ -152,3 +152,11 @@ export interface IChargerDetailResponse {
   station?: IStationItem;
   install?: IInstallItem;
 }
+
+/* 충전기 등록 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_3 */
+export interface IRequestChargerRegister extends Omit<IChargerDetailResponse, "station"> {
+  station?: {
+    stationKey: string;
+  }
+};

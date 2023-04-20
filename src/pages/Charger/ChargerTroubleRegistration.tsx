@@ -21,15 +21,17 @@ import { StationSearchModal } from "src/pages/Charger/components/StationSearchMo
 import useInputs from "src/hooks/useInputs";
 import { postBrokenRegister } from "src/api/broken/brokenApi";
 import { BROKEN_LIST } from "src/constants/list";
-import { IRequestBrokenRegister } from "src/api/broken/brokenApi.interface";
 import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
 import { fileUpload } from "src/utils/upload";
-import { object, string } from "yup";
+import { number, object, string } from "yup";
+import { TBrokenStatus } from "src/constants/status";
+import { getParams } from "src/utils/params";
 
 const contractValidation = object({
   stationKey: string().required("충전소 ID를 입력해주세요."),
   stationName: string().required("충전소명을 입력해주세요."),
   chargerKey: string().required("충전기 ID를 입력해주세요."),
+  reservation: number().required("예약번호를 입력해주세요."),
 });
 
 export const ChargerTroubleRegistration = () => {
@@ -44,10 +46,9 @@ export const ChargerTroubleRegistration = () => {
     stationName: "",
     chargerKey: "",
     searchKey: "",
-    chargerName: "",
     reservation: "",
-    damagedPart01: "",
-    damagedPart02: "",
+    damagedPart01: "" as TBrokenStatus,
+    damagedPart02: "" as TBrokenStatus,
     managerMemo: "",
     brokenContent: "",
     managerName: "",
@@ -55,7 +56,6 @@ export const ChargerTroubleRegistration = () => {
   const {
     stationKey,
     stationName,
-    chargerKey,
     searchKey,
     reservation,
     managerMemo,
@@ -63,14 +63,14 @@ export const ChargerTroubleRegistration = () => {
     managerName,
   } = inputs;
   /* 고장1 */
-  const [damagedPart01, setDamagedPart01] = useState<
+  const [damagedFilePart01, setDamagedFilePart01] = useState<
     Partial<{
       url?: string;
       file: FileList | null;
     }>
   >({});
   /* 고장2 */
-  const [damagedPart02, setDamagedPart02] = useState<
+  const [damagedFilePart02, setDamagedFilePart02] = useState<
     Partial<{
       url?: string;
       file: FileList | null;
@@ -89,20 +89,8 @@ export const ChargerTroubleRegistration = () => {
     setIsStationSearchModal((prev) => !prev);
   };
 
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestBrokenRegister>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestBrokenRegister;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
-  };
-
   /** 등록
-   * @TODO 운영자ID 검색(데이터), 처리자ID(dropdown data), 고장 부위 파일 필드 2개
+   * @TODO 운영자ID 검색(데이터), 처리자ID(dropdown data)
    */
   const registerHandler = async () => {
     const isValid = await contractValidation.isValid(inputs);
@@ -111,8 +99,8 @@ export const ChargerTroubleRegistration = () => {
     }
 
     /* 파일 업로드 */
-    const fileParams01 = await fileUpload(damagedPart01);
-    const fileParams02 = await fileUpload(damagedPart02);
+    const fileParams01 = await fileUpload(damagedFilePart01);
+    const fileParams02 = await fileUpload(damagedFilePart02);
 
     /** 파일 params */
     const fileParams = {
@@ -126,7 +114,6 @@ export const ChargerTroubleRegistration = () => {
       ...params,
       reservation: Number(reservation),
       searchKey: Number(searchKey),
-      ...fileParams,
     });
 
     /** 등록 요청 */
@@ -134,6 +121,7 @@ export const ChargerTroubleRegistration = () => {
       ...params,
       reservation: Number(reservation),
       searchKey: Number(searchKey),
+      ...fileParams,
     });
     /** 성공 */
     const success = code === "SUCCESS";
@@ -197,8 +185,8 @@ export const ChargerTroubleRegistration = () => {
             <DetailContentCol>
               <TextInputBase
                 disabled={true}
-                name={"chargerKey"}
-                value={chargerKey}
+                name={"searchKey"}
+                value={searchKey}
                 placeholder={"충전소 검색 내역 중 관리자가 선택한 정보 노출"}
               />
             </DetailContentCol>
@@ -234,7 +222,7 @@ export const ChargerTroubleRegistration = () => {
                 menuItems={BROKEN_LIST}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({
-                    damagedPart01: value,
+                    damagedPart01: value as TBrokenStatus,
                   });
                 }}
               />
@@ -244,17 +232,17 @@ export const ChargerTroubleRegistration = () => {
                 <div
                   role={"button"}
                   className={`px-2 text-${
-                    damagedPart01.file?.item(0)?.name
+                    damagedFilePart01.file?.item(0)?.name
                       ? "turu"
                       : "secondary text-opacity-50"
                   }`}
                   onClick={() => {
-                    if (damagedPart01.url) {
-                      window?.open(damagedPart01.url);
+                    if (damagedFilePart01.url) {
+                      window?.open(damagedFilePart01.url);
                     }
                   }}
                 >
-                  {damagedPart01.file?.item(0)?.name ||
+                  {damagedFilePart01.file?.item(0)?.name ||
                     "이미지 파일을 등록해주세요."}
                 </div>
                 <ButtonBase
@@ -279,7 +267,7 @@ export const ChargerTroubleRegistration = () => {
                     const localUrl = URL.createObjectURL(
                       Array.from(e.target.files)[0]
                     );
-                    setDamagedPart01({
+                    setDamagedFilePart01({
                       url: localUrl,
                       file: e.target.files,
                     });
@@ -294,7 +282,7 @@ export const ChargerTroubleRegistration = () => {
                 menuItems={BROKEN_LIST}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({
-                    damagedPart02: value,
+                    damagedPart02: value as TBrokenStatus,
                   });
                 }}
               />
@@ -305,17 +293,17 @@ export const ChargerTroubleRegistration = () => {
                 <div
                   role={"button"}
                   className={`px-2 text-${
-                    damagedPart02.file?.item(0)?.name
+                    damagedFilePart02.file?.item(0)?.name
                       ? "turu"
                       : "secondary text-opacity-50"
                   }`}
                   onClick={() => {
-                    if (damagedPart02.url) {
-                      window?.open(damagedPart02.url);
+                    if (damagedFilePart02.url) {
+                      window?.open(damagedFilePart02.url);
                     }
                   }}
                 >
-                  {damagedPart02.file?.item(0)?.name ||
+                  {damagedFilePart02.file?.item(0)?.name ||
                     "이미지 파일을 등록해주세요."}
                 </div>
                 <ButtonBase
@@ -340,7 +328,7 @@ export const ChargerTroubleRegistration = () => {
                     const localUrl = URL.createObjectURL(
                       Array.from(e.target.files)[0]
                     );
-                    setDamagedPart02({
+                    setDamagedFilePart02({
                       url: localUrl,
                       file: e.target.files,
                     });
@@ -464,7 +452,7 @@ export const ChargerTroubleRegistration = () => {
         onClose={() => {
           setIsAddComplete((prev) => !prev);
         }}
-        onClosed={() => {
+        confirmHandler={() => {
           nav(-1);
         }}
         title={"신규 충전기 고장/파손 정보 등록 완료"}

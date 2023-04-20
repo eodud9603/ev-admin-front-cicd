@@ -29,7 +29,7 @@ import { postStationContractModify } from "src/api/station/stationApi";
 import { YNType } from "src/api/api.interface";
 import { useTabStore } from "src/store/tabStore";
 import { TContractStatus } from "src/constants/status";
-import DetailValidCheckModal from "./components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
 
 const contractValidation = object({
@@ -94,6 +94,8 @@ const ChargerContractDetail = () => {
     salesManagerName: data?.salesManagerName ?? "",
     salesManagerPhone: data?.salesManagerPhone ?? "",
     contractInfo: data?.contractInfo ?? "",
+    contractFileName: data?.contractFileName ?? "",
+    contractFileUrl: data?.contractFileUrl ?? "",
     contractDt: data?.contractDt ?? "",
     subsidyAgency: data?.subsidyAgency ?? "",
     subsidyYyyy: data?.subsidyYyyy ?? "",
@@ -121,6 +123,8 @@ const ChargerContractDetail = () => {
     salesManagerName,
     salesManagerPhone,
     contractInfo,
+    contractFileName,
+    contractFileUrl,
     contractDt,
     subsidyAgency,
     subsidyYyyy,
@@ -168,6 +172,8 @@ const ChargerContractDetail = () => {
 
     /** upload file params */
     const fileParams = await fileUpload(file);
+    fileParams.name = fileParams.name || contractFileName;
+    fileParams.url = fileParams.url || contractFileUrl;
 
     /* 수정 요청 */
     const { code } = await postStationContractModify({
@@ -186,6 +192,11 @@ const ChargerContractDetail = () => {
       /* 수정 완료 모달 오픈 */
       setIsEditComplete(true);
       setDisabled((prev) => !prev);
+      setFile({});
+      onChangeSingle({
+        contractFileName: fileParams.name,
+        contractFileUrl: fileParams.url,
+      });
     }
   };
 
@@ -434,13 +445,16 @@ const ChargerContractDetail = () => {
             <DetailContentCol
               className={"d-flex align-items-center justify-content-between"}
             >
-              <Hover className={"font-size-14 text-turu"} onClick={() => {}}>
+              <Hover className={"font-size-14 text-turu"}>
                 <u
                   onClick={() => {
-                    window?.open(file.url || data?.contractFileUrl);
+                    const url = file.url || contractFileUrl;
+                    if (url) {
+                      window?.open(url);
+                    }
                   }}
                 >
-                  {file.file?.item(0)?.name || data?.contractFileName}
+                  {file.file?.item(0)?.name || contractFileName}
                 </u>
                 <Input
                   className={"visually-hidden"}

@@ -24,13 +24,13 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import {
   CATEGORY_LIST,
   COUNT_FILTER_LIST,
-  DELETE_FILTER_LIST,
+  YN_FILTER_LIST,
   UPLOAD_FILTER_LIST,
 } from "src/constants/list";
 import styled from "styled-components";
 import CategoryModal from "src/pages/Operate/components/CategoryModal";
 import useInputs from "src/hooks/useInputs";
-import OperateTextModal from "./components/OperateTextModal";
+import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 
 /* 검색어 필터 */
 const searchList = [
@@ -218,7 +218,7 @@ const OperateFAQ = () => {
               <RadioGroup
                 title={"삭제 여부"}
                 name={"deleteStatus"}
-                list={DELETE_FILTER_LIST.map((data) => ({
+                list={YN_FILTER_LIST.map((data) => ({
                   ...data,
                   checked: deleteStatus === data.value,
                 }))}

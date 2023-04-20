@@ -26,7 +26,7 @@ import { postStationContractRegister } from "src/api/station/stationApi";
 import { number, object, string } from "yup";
 import { YNType } from "src/api/api.interface";
 import { TContractStatus } from "src/constants/status";
-import DetailValidCheckModal from "./components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
 
 const contractValidation = object({

@@ -35,6 +35,7 @@ import {
 import { getChargerStatusColor } from "src/utils/charger";
 import useList from "src/hooks/useList";
 import { useTabs } from "src/hooks/useTabs";
+import { getParams } from "src/utils/params";
 
 /* 철거여부 필터 */
 const operationStatusList = [
@@ -58,8 +59,7 @@ const searchList = [
 const sortList = [
   { label: "기본", value: "CreatedDate" },
   { label: "충전소명", value: "StationName" },
-  { label: "충전소 ID", value: "StationId" },
-  { label: "급/완속(기)", value: "" },
+  { label: "충전소 ID", value: "StationKey" },
   { label: "등록일", value: "CreatedDate" },
 ];
 
@@ -129,18 +129,6 @@ const Charger = () => {
     "";
 
   const navigate = useNavigate();
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestChargerList>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestChargerList;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
-  };
 
   /** 검색 핸들러 */
   const searchHandler =

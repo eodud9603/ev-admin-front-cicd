@@ -21,11 +21,13 @@ export interface IRequestStationList {
 }
 
 export interface IStationListItem {
+  id: number;
+  stationKey: string;
   region: string;
   stationNm: string;
-  stationId: string;
   address: string;
-  isOpen: string;
+  isOpen: YNType;
+  iseUse: YNType;
   operation: string;
   fastCharger: number;
   fullCharger: number;
@@ -47,6 +49,7 @@ export interface IRequestStationDetail {
 }
 
 export interface IStationDetailResponse {
+  id?: number;
   /* 지도 */
   lat: number;
   lng: number;
@@ -64,9 +67,9 @@ export interface IStationDetailResponse {
   powerSocketCount?: number;
   isHidden?: YNType;
   supplyMethod?: string;
-  billDivision?: null;
+  billDivision?: YNType; // 타입 확인 필요
   kepcoCustomerNum?: string;
-  meterNum?: null;
+  meterNum?: string; // 타입 확인 필요
   kepcoFee?: string;
   kepcoOffice?: string;
   kepcoPayment?: string;
@@ -74,12 +77,13 @@ export interface IStationDetailResponse {
   chargerLocation?: string;
   addressRoad?: string;
   addressJibun?: string;
+  addressJibunDetail?: string;
   sido?: string;
   sigugun?: string;
   dongmyun?: string;
   zoneCode?: string;
-  memo?: null;
-  etcInfo?: null;
+  memo?: string | null; // 특이사항
+  etcInfo?: string | null; // 충전불가 차량
   /* 운영 정보 */
   baseOperationTimeFrom?: string;
   baseOperationTimeTo?: string;
@@ -88,6 +92,7 @@ export interface IStationDetailResponse {
   saturdayOperationTimeFrom?: string;
   saturdayOperationTimeTo?: string;
   isParkFeeFree?: string;
+  contractId?: number;
 }
 
 /* 충전소 등록 */
@@ -96,6 +101,13 @@ export interface IStationDetailResponse {
  * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
  */
 export type IRequestStationRegister  = IStationDetailResponse
+
+/* 충전소 수정 */
+/**
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%88%98%EC%A0%95
+ * 타입 및 필수값 미확정 & string 타입 중 Y/N 등 서버 enum 확인 필요
+ */
+export type IRequestStationModify  = IStationDetailResponse
 
 /* 충전소 계약 목록 조회 */
 /**

@@ -19,12 +19,12 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { COUNT_FILTER_LIST, DELETE_FILTER_LIST } from "src/constants/list";
+import { COUNT_FILTER_LIST, YN_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
 import CodeModal from "src/pages/Operate/components/CodeModal";
 import useInputs from "src/hooks/useInputs";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
-import OperateTextModal from "./components/OperateTextModal";
+import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 import { YNType } from "src/api/api.interface";
 
 /* 검색어 필터 */
@@ -194,7 +194,7 @@ const OperateCode = () => {
               <RadioGroup
                 title={"삭제 여부"}
                 name={"deleteStatus"}
-                list={DELETE_FILTER_LIST.map((data) => ({
+                list={YN_FILTER_LIST.map((data) => ({
                   ...data,
                   checked: deleteStatus === data.value,
                 }))}

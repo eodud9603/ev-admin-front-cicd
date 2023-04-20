@@ -29,6 +29,7 @@ import useList from "src/hooks/useList";
 import { CONTRACT_STATUS, TContractStatus } from "src/constants/status";
 import { standardDateFormat } from "src/utils/day";
 import { useTabs } from "src/hooks/useTabs";
+import { getParams } from "src/utils/params";
 
 /* 계약여부 필터 */
 const contractFilterList = [
@@ -150,18 +151,6 @@ const ChargerContract = () => {
       ?.placeholderKeyword ?? "";
 
   const navigate = useNavigate();
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestStationContractList>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestStationContractList;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
-  };
 
   /** 검색 핸들러 */
   const searchHandler =

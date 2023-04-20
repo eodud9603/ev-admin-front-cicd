@@ -27,8 +27,8 @@ const DetailCompleteModal = (props: IDetailCompleteModalProps) => {
   } = props;
 
   const confirm = () => {
-    !!confirmHandler && confirmHandler();
     onClose();
+    !!confirmHandler && confirmHandler();
   };
 
   return (

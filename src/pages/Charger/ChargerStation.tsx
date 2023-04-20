@@ -28,6 +28,7 @@ import { YNType } from "src/api/api.interface";
 import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
 import { useTabs } from "src/hooks/useTabs";
+import { getParams } from "src/utils/params";
 
 /* 사용여부 필터 */
 const useStatusList = [
@@ -52,7 +53,6 @@ const sortList = [
   { label: "기본", value: "CreatedDate" },
   { label: "충전소명", value: "StationName" },
   { label: "충전소 ID", value: "StationKey" },
-  { label: "급/완속(기)", value: "" },
   { label: "등록일", value: "CreatedDate" },
 ];
 
@@ -109,21 +109,9 @@ const ChargingStationManagement = () => {
   } = inputs;
   const searchKeyword =
     searchList.find((data) => searchRange === data.value)?.placeholderKeyword ??
-    "";
+    "검색어를";
 
   const navigate = useNavigate();
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestStationList>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestStationList;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
-  };
 
   /** 검색 핸들러 */
   const searchHandler =
@@ -296,7 +284,8 @@ const ChargingStationManagement = () => {
                 list.map(
                   (
                     {
-                      stationId,
+                      id,
+                      stationKey,
                       region,
                       operation,
                       stationNm,
@@ -304,11 +293,12 @@ const ChargingStationManagement = () => {
                       fastCharger,
                       fullCharger,
                       isOpen,
+                      iseUse,
                       createAt,
                     },
                     index
                   ) => (
-                    <tr key={stationId}>
+                    <tr key={id}>
                       <td>{(page - 1) * Number(count) + index + 1}</td>
                       <td>{region}</td>
                       <td>{operation ?? "전체"}</td>
@@ -316,22 +306,19 @@ const ChargingStationManagement = () => {
                         <HoverSpan
                           className={"text-turu"}
                           onClick={() => {
-                            navigate(
-                              `/charger/chargerStation/detail/${stationId}`
-                            );
+                            navigate(`/charger/chargerStation/detail/${id}`);
                           }}
                         >
                           <u>{stationNm}</u>
                         </HoverSpan>
                       </td>
-                      <td>{stationId}</td>
+                      <td>{stationKey}</td>
                       <td>{address}</td>
                       <td>
                         {fastCharger} / {fullCharger - fastCharger}
                       </td>
                       <td>{isOpen}</td>
-                      {/** @TODO 데이터 누락 추가 필요 */}
-                      <td>-</td>
+                      <td>{iseUse ?? "-"}</td>
                       <td>{standardDateFormat(createAt, "YYYY.MM.DD")}</td>
                     </tr>
                   )

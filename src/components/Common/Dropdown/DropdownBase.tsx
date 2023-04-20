@@ -10,6 +10,7 @@ import {
 interface IDropdownBaseProps {
   disabled?: boolean;
   label?: string;
+  initSelectedValue?: { label: string; value: string };
   onClickDropdownItem?: (label: string, value: string) => void;
   menuItems: Array<{
     label: string;
@@ -22,6 +23,7 @@ export const DropdownBase = (props: IDropdownBaseProps) => {
   const {
     label,
     disabled,
+    initSelectedValue,
     onClickDropdownItem,
     menuItems,
     className,
@@ -31,7 +33,10 @@ export const DropdownBase = (props: IDropdownBaseProps) => {
   const [selectedValue, setSelectedValue] = useState<{
     label: string;
     value: string;
-  }>({ label: menuItems[0].label, value: menuItems[0].value });
+  }>({
+    label: initSelectedValue?.label ?? menuItems[0].label,
+    value: initSelectedValue?.value ?? menuItems[0].value,
+  });
 
   const onToggleDropdown = () => {
     setIsOpen(!isOpen);

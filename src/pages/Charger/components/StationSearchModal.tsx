@@ -18,10 +18,11 @@ import {
   IRequestChargerList,
 } from "src/api/charger/chargerApi.interface";
 import { CHARGER_RATION, CHARGER_TYPE } from "src/constants/status";
+import { getParams } from "src/utils/params";
 
 const dropdownGroupSearch = [{ label: "충전소명", value: "StationName" }];
 
-const tableHeader = [
+const allTableHeader = [
   { label: "번호" },
   { label: "충전소명" },
   { label: "충전소ID" },
@@ -30,14 +31,29 @@ const tableHeader = [
   { label: "커넥터 종류" },
   { label: "주소" },
 ];
+
+const stationTableHeader = [
+  { label: "번호" },
+  { label: "충전소명" },
+  { label: "충전소ID" },
+  { label: "주소" },
+];
 const count = 10;
 
 interface IStationSearchModalProps extends IModalBaseProps {
+  type?: "ALL" | "STATION";
   onChangeSelected?: (data?: IChargerListItem) => void;
 }
 
 export const StationSearchModal = (props: IStationSearchModalProps) => {
-  const { isOpen, onClose, title, size, onChangeSelected } = props;
+  const {
+    type = "ALL",
+    isOpen,
+    onClose,
+    title,
+    size,
+    onChangeSelected,
+  } = props;
 
   const [
     { list, page, lastPage, message },
@@ -64,18 +80,6 @@ export const StationSearchModal = (props: IStationSearchModalProps) => {
     searchRange: "StationName",
     searchText: "",
   });
-
-  /** 파라미터 빈값 제거 */
-  const getParams = (params: Partial<IRequestChargerList>) => {
-    for (const param in params) {
-      const deleteName = param as keyof IRequestChargerList;
-      const data = params[deleteName];
-
-      if (data === "") {
-        delete params[deleteName];
-      }
-    }
-  };
 
   /** 검색 핸들러 */
   const searchHandler =
@@ -164,7 +168,9 @@ export const StationSearchModal = (props: IStationSearchModalProps) => {
           <Label className={"fw-bold font-size-16 my-4 m-0"}>
             충전소(충전기) 선택
           </Label>
-          <TableBase tableHeader={tableHeader}>
+          <TableBase
+            tableHeader={type === "ALL" ? allTableHeader : stationTableHeader}
+          >
             <>
               {list.length > 0 ? (
                 list.map((data, index) => (
@@ -176,9 +182,14 @@ export const StationSearchModal = (props: IStationSearchModalProps) => {
                       </HoverSpan>
                     </td>
                     <td>{data.stationId}</td>
-                    <td>{data.searchKey}</td>
-                    <td>{CHARGER_RATION[data.chargerClass]}</td>
-                    <td>{CHARGER_TYPE[data.type]}</td>
+                    {type === "ALL" && (
+                      <>
+                        <td>{data.searchKey}</td>
+                        <td>{CHARGER_RATION[data.chargerClass]}</td>
+                        <td>{CHARGER_TYPE[data.type]}</td>
+                      </>
+                    )}
+
                     {/** @TODO 주소필드 추가 필요 */}
                     <td>{data.stationAddress}</td>
                   </tr>

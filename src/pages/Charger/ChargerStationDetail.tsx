@@ -28,7 +28,10 @@ import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
 import SingleMapBase from "src/components/Common/Map/SingleMapBase";
 import useMapStore from "src/store/mapStore";
-import { IStationDetailResponse } from "src/api/station/stationApi.interface";
+import {
+  IRequestStationModify,
+  IStationDetailResponse,
+} from "src/api/station/stationApi.interface";
 import { IChargerListByStationResponse } from "src/api/charger/chargerApi.interface";
 import {
   CHARGER_MODE,
@@ -38,6 +41,11 @@ import {
 import { getChargerStatusColor } from "src/utils/charger";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 import { useTabs } from "src/hooks/useTabs";
+import { number, object, string } from "yup";
+import { getParams } from "src/utils/params";
+import { YNType } from "src/api/api.interface";
+import { postStationModify } from "src/api/station/stationApi";
+import ContractDropdown from "src/pages/Charger/components/ContractDropdown";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -77,6 +85,13 @@ const chargerTableHeader = [
   },
 ];
 
+const stationModifyValidation = object({
+  stationName: string().required("Please Enter stationName"),
+  stationKey: string().min(6).max(8).required("Please Enter stationKey"),
+  lat: number().min(35).max(38).required("Please Enter lat"),
+  lng: number().min(125).max(128).required("Please Enter lng"),
+});
+
 const ChargerStationDetail = () => {
   /** init api response */
   const initData = useLoaderData() as {
@@ -107,6 +122,57 @@ const ChargerStationDetail = () => {
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
 
+  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+    id: detail?.id ?? undefined,
+    /* 기본정보 */
+    stationName: detail?.stationName ?? "",
+    stationKey: detail?.stationKey ?? "",
+    location: detail?.location ?? "",
+    operator: detail?.operator ?? "",
+    isUse: (detail?.isUse ?? "") as YNType,
+    business: "" /* 위탁사업자 > dropdown */,
+    directInput:
+      detail?.consignmentCompany ?? ""
+        ? "1"
+        : "0" /* 직접입력 check "1": 체크, "0": "미체크" */,
+    consignmentCompany:
+      detail?.consignmentCompany ?? "" /* 위탁사업자명 (input text) */,
+    isOpen: (detail?.isOpen ?? "") as YNType,
+    quickChargerCount: (detail?.quickChargerCount ?? "").toString(),
+    standardChargerCount: (detail?.standardChargerCount ?? "").toString() ?? "",
+    powerSocket: detail?.powerSocket ?? "",
+    powerSocketCount: (detail?.powerSocketCount ?? "").toString(),
+    isHidden: (detail?.isHidden ?? "") as YNType,
+    supplyMethod: detail?.supplyMethod ?? "",
+    billDivision: (detail?.billDivision ?? "") as YNType,
+    kepcoCustomerNum: detail?.kepcoCustomerNum ?? "",
+    meterNum: detail?.meterNum ?? "",
+    kepcoFee: detail?.kepcoFee ?? "",
+    kepcoOffice: detail?.kepcoOffice ?? "",
+    kepcoPayment: detail?.kepcoPayment ?? "",
+    entryDate: detail?.entryDate ?? "",
+    chargerLocation: detail?.chargerLocation ?? "",
+    addressRoad: detail?.addressRoad ?? "",
+    zoneCode: detail?.zoneCode ?? "",
+    addressJibun: detail?.addressJibun ?? "",
+    addressJibunDetail: detail?.addressJibunDetail ?? "",
+    memo: detail?.memo ?? "",
+    etcInfo: detail?.etcInfo ?? "",
+    /* 운영정보 */
+    baseOperationTimeFrom: detail?.baseOperationTimeFrom ?? "",
+    baseOperationTimeTo: detail?.baseOperationTimeTo ?? "",
+    holidayOperationTimeFrom: detail?.holidayOperationTimeFrom ?? "",
+    holidayOperationTimeTo: detail?.holidayOperationTimeTo ?? "",
+    saturdayOperationTimeFrom: detail?.saturdayOperationTimeFrom ?? "",
+    saturdayOperationTimeTo: detail?.saturdayOperationTimeTo ?? "",
+    isParkFeeFree: detail?.isParkFeeFree ?? "",
+    parkingFeeDetail: "" /* 수정 필요 필드 */,
+    /* 지도 좌표 */
+    lat: (detail?.lat ?? "").toString(),
+    lng: (detail?.lng ?? "").toString(),
+    /* 계약정보 */
+    contractId: (detail?.contractId ?? "").toString(),
+  });
   const {
     /* 기본정보 */
     stationName,
@@ -133,11 +199,11 @@ const ChargerStationDetail = () => {
     entryDate,
     chargerLocation,
     addressRoad,
-    zipCode,
-    addr,
-    addrDetail,
-    significant,
-    nonRechargeable,
+    zoneCode,
+    addressJibun,
+    addressJibunDetail,
+    memo,
+    etcInfo,
     /* 운영정보 */
     baseOperationTimeFrom,
     baseOperationTimeTo,
@@ -146,64 +212,14 @@ const ChargerStationDetail = () => {
     saturdayOperationTimeFrom,
     saturdayOperationTimeTo,
     isParkFeeFree,
-    parkingFeeDetail,
+    parkingFeeDetail /* 수정 필요 필드 */,
     /* 지도 좌표 */
     lat,
     lng,
     /* 계약정보 */
-    contractNumber,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
-    /* 기본정보 */
-    stationName: detail?.stationName ?? "",
-    stationKey: detail?.stationKey ?? "",
-    location: detail?.location ?? "",
-    operator: detail?.operator ?? "",
-    isUse: detail?.isUse ?? "",
-    business: "" /* 위탁사업자 > dropdown */,
-    directInput:
-      detail?.consignmentCompany ?? ""
-        ? "1"
-        : "0" /* 직접입력 check "1": 체크, "0": "미체크" */,
-    consignmentCompany:
-      detail?.consignmentCompany ?? "" /* 위탁사업자명 (input text) */,
-    isOpen: detail?.isOpen ?? "",
-    quickChargerCount: (detail?.quickChargerCount ?? "").toString(),
-    standardChargerCount: (detail?.standardChargerCount ?? "").toString() ?? "",
-    powerSocket: detail?.powerSocket ?? "",
-    powerSocketCount: (detail?.powerSocketCount ?? "").toString(),
-    isHidden: detail?.isHidden ?? "",
-    supplyMethod: detail?.supplyMethod ?? "",
-    billDivision: detail?.billDivision ?? "",
-    kepcoCustomerNum: detail?.kepcoCustomerNum ?? "",
-    meterNum: detail?.meterNum ?? "",
-    kepcoFee: detail?.kepcoFee ?? "",
-    kepcoOffice: detail?.kepcoOffice ?? "",
-    kepcoPayment: detail?.kepcoPayment ?? "",
-    entryDate: detail?.entryDate ?? "",
-    chargerLocation: detail?.chargerLocation ?? "",
-    addressRoad: detail?.addressRoad ?? "",
-    zipCode: "",
-    addr: "",
-    addrDetail: "",
-    significant: "",
-    nonRechargeable: "",
-    /* 운영정보 */
-    baseOperationTimeFrom: detail?.baseOperationTimeFrom ?? "",
-    baseOperationTimeTo: detail?.baseOperationTimeTo ?? "",
-    holidayOperationTimeFrom: detail?.holidayOperationTimeFrom ?? "",
-    holidayOperationTimeTo: detail?.holidayOperationTimeTo ?? "",
-    saturdayOperationTimeFrom: detail?.saturdayOperationTimeFrom ?? "",
-    saturdayOperationTimeTo: detail?.saturdayOperationTimeTo ?? "",
-    isParkFeeFree: detail?.isParkFeeFree ?? "",
-    parkingFeeDetail: "",
-    /* 지도 좌표 */
-    lat: (detail?.lat ?? "").toString(),
-    lng: (detail?.lng ?? "").toString(),
-    /* 계약정보 */
-    contractNumber: "",
-  });
+    contractId,
+  } = inputs;
+
   /* 지도 컨트롤러 */
   const { setZoom, createMarker } = useMapStore();
 
@@ -213,6 +229,42 @@ const ChargerStationDetail = () => {
     setAddrSearchModalOpen((prev) => !prev);
   };
   useTabs({ data: detail, pageTitle: "충전소 상세", pageType: "detail" });
+
+  /** 수정 */
+  const modify = async () => {
+    /* 등록 params */
+    const modifyParams: IRequestStationModify = {
+      ...inputs,
+      lat: Number(inputs.lat),
+      lng: Number(inputs.lng),
+      quickChargerCount: Number(quickChargerCount),
+      standardChargerCount: Number(standardChargerCount),
+      powerSocketCount: Number(powerSocketCount),
+      contractId: Number(contractId),
+    };
+    getParams(modifyParams);
+
+    if (!disabled) {
+      /* valid 체크 */
+      const valid = await stationModifyValidation.isValid(modifyParams);
+      if (!valid) {
+        return;
+      }
+
+      /** @TODO 서버 수정 api 추가후, 테스트 및 수정 필요 */
+      const { code } = await postStationModify(modifyParams);
+      /** 저장 성공 */
+      const success = code === "SUCCESS";
+      if (success) {
+        /* 저장 성공시 완료모달 오픈 */
+        setIsEditComplete(true);
+      } else {
+        return;
+      }
+    }
+
+    setDisabled((prev) => !prev);
+  };
 
   return (
     <ContainerBase>
@@ -276,7 +328,7 @@ const ChargerStationDetail = () => {
                       {
                         titleWidthRatio: 4,
                         title: "충전소ID",
-                        disabled: true,
+                        disabled,
                         name: "stationKey",
                         content: stationKey,
                         onChange,
@@ -307,14 +359,14 @@ const ChargerStationDetail = () => {
                             {
                               disabled,
                               label: "HEV",
-                              value: "1",
-                              checked: operator === "1",
+                              value: "HEV",
+                              checked: operator === "HEV",
                             },
                             {
                               disabled,
                               label: "JEV",
-                              value: "2",
-                              checked: operator === "2",
+                              value: "JEV",
+                              checked: operator === "JEV",
                             },
                           ]}
                           onChange={onChange}
@@ -652,8 +704,8 @@ const ChargerStationDetail = () => {
                             bsSize={"lg"}
                             className={"mb-4"}
                             placeholder={""}
-                            name={"zipCode"}
-                            value={zipCode}
+                            name={"zoneCode"}
+                            value={zoneCode}
                             onChange={onChange}
                           />
                           <div style={{ flex: 3 }}>
@@ -673,16 +725,16 @@ const ChargerStationDetail = () => {
                             disabled={true}
                             bsSize={"lg"}
                             placeholder={""}
-                            name={"addr"}
-                            value={addr}
+                            name={"addressJibun"}
+                            value={addressJibun}
                             onChange={onChange}
                           />
                           <TextInputBase
                             bsSize={"lg"}
                             disabled={disabled}
                             placeholder={"상세 주소를 입력해주세요"}
-                            name={"addrDetail"}
-                            value={addrDetail}
+                            name={"addressJibunDetail"}
+                            value={addressJibunDetail}
                             onChange={onChange}
                           />
                         </div>
@@ -696,8 +748,8 @@ const ChargerStationDetail = () => {
                         disabled,
                         titleWidthRatio: 2,
                         title: "충전소 특이사항",
-                        name: "significant",
-                        content: significant,
+                        name: "memo",
+                        content: memo,
                         onChange,
                       },
                     ]}
@@ -709,8 +761,8 @@ const ChargerStationDetail = () => {
                         disabled,
                         titleWidthRatio: 2,
                         title: "충전불가 차량",
-                        name: "nonRechargeable",
-                        content: nonRechargeable,
+                        name: "etcInfo",
+                        content: etcInfo,
                         onChange,
                         placeholder:
                           "‘,’로 구분해 작성해주세요 (ex. 차량명A, 차량명B)",
@@ -853,25 +905,41 @@ const ChargerStationDetail = () => {
               </DropArea>
               {isContractDrop && (
                 <Row className={"me-1 border-bottom border-2 mb-4"}>
-                  <DetailTextInputRow
-                    rows={[
-                      {
-                        titleWidthRatio: 4,
-                        title: "계약번호",
-                        name: "contractNumber",
-                        content: contractNumber,
-                        disabled: true,
-                        children: (
-                          <ButtonBase
-                            label={"계약 상세"}
-                            color={"turu"}
-                            outline
-                          />
-                        ),
-                      },
-                      null,
-                    ]}
-                  />
+                  {disabled ? (
+                    <DetailTextInputRow
+                      rows={[
+                        {
+                          titleWidthRatio: 4,
+                          title: "계약번호",
+                          name: "contractId",
+                          content: contractId,
+                          disabled: true,
+                          children: (
+                            <ButtonBase
+                              label={"계약 상세"}
+                              color={"turu"}
+                              outline
+                            />
+                          ),
+                        },
+                        null,
+                      ]}
+                    />
+                  ) : (
+                    <>
+                      <DetailLabelCol sm={2}>계약번호</DetailLabelCol>
+                      <DetailContentCol>
+                        <ContractDropdown
+                          disabled={true}
+                          onChange={(data) => {
+                            onChangeSingle({
+                              contractId: (data.id ?? "").toString(),
+                            });
+                          }}
+                        />
+                      </DetailContentCol>
+                    </>
+                  )}
                 </Row>
               )}
             </Col>
@@ -1055,15 +1123,7 @@ const ChargerStationDetail = () => {
 
             navigate("/charger/chargerStation");
           }}
-          rightButtonHandler={() => {
-            if (!disabled) {
-              /** @TODO 저장 로직 추가 필요 */
-              /* 저장 성공시 완료모달 오픈 */
-              setIsEditComplete(true);
-            }
-
-            setDisabled((prev) => !prev);
-          }}
+          rightButtonHandler={modify}
         />
       </BodyBase>
 
@@ -1072,8 +1132,8 @@ const ChargerStationDetail = () => {
         onClose={() => {
           setIsEditComplete((prev) => !prev);
         }}
-        title={"충전 정보 수정 완료 안내"}
-        contents={"수정된 충전기 정보가 저장되었습니다."}
+        title={"충전소 정보 수정 완료 안내"}
+        contents={"수정된 충전소 정보가 저장되었습니다."}
       />
       <DetailCancelModal
         isOpen={isEditCancel}
@@ -1093,8 +1153,8 @@ const ChargerStationDetail = () => {
         onClose={onChangeModalVisible}
         onchange={(data) => {
           onChangeSingle({
-            zipCode: data.zipCode,
-            addr: data.address,
+            zoneCode: data.zipCode,
+            addressJibun: data.address,
           });
         }}
       />
