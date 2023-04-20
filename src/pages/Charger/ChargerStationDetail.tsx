@@ -122,7 +122,7 @@ const ChargerStationDetail = () => {
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
 
-  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
     id: detail?.id ?? undefined,
     /* 기본정보 */
     stationName: detail?.stationName ?? "",
@@ -131,10 +131,10 @@ const ChargerStationDetail = () => {
     operator: detail?.operator ?? "",
     isUse: (detail?.isUse ?? "") as YNType,
     business: "" /* 위탁사업자 > dropdown */,
-    directInput:
-      detail?.consignmentCompany ?? ""
-        ? "1"
-        : "0" /* 직접입력 check "1": 체크, "0": "미체크" */,
+    directInput: "1",
+    // detail?.consignmentCompany ?? ""
+    //   ? "1"
+    //   : "0" /* 직접입력 check "1": 체크, "0": "미체크" */,
     consignmentCompany:
       detail?.consignmentCompany ?? "" /* 위탁사업자명 (input text) */,
     isOpen: (detail?.isOpen ?? "") as YNType,
@@ -428,7 +428,7 @@ const ChargerStationDetail = () => {
                         )}
                         <CheckBoxBase
                           label={"직접입력"}
-                          disabled={disabled}
+                          disabled={true}
                           name={"directInput"}
                           value={"1"}
                           checked={directInput === "1"}
@@ -930,7 +930,6 @@ const ChargerStationDetail = () => {
                       <DetailLabelCol sm={2}>계약번호</DetailLabelCol>
                       <DetailContentCol>
                         <ContractDropdown
-                          disabled={true}
                           onChange={(data) => {
                             onChangeSingle({
                               contractId: (data.id ?? "").toString(),

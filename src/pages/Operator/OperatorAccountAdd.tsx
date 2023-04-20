@@ -59,25 +59,26 @@ const OperatorAccountAdd = () => {
     { label: "계정 관리" },
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const {
-    name,
-    id,
-    /* dropdown */
-    // agencyGroup,
-    password,
-    /* radio */
-    roleLevel,
-    tel,
-    mobileTel,
-    department,
-    /* radio */
-    // accountStatus,
-    // mobileAccess,
-    // externalAccess,
-    etc,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    {
+      name,
+      id,
+      /* dropdown */
+      // agencyGroup,
+      password,
+      /* radio */
+      roleLevel,
+      tel,
+      mobileTel,
+      department,
+      /* radio */
+      // accountStatus,
+      // mobileAccess,
+      // externalAccess,
+      etc,
+    },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     name: "",
     id: "",
     agencyGroup: "",

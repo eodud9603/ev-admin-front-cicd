@@ -19,18 +19,19 @@ const CorporateNoticeDetail = () => {
 
   const initContents =
     "<pre>안녕하세요! 모빌리티로 통하는 세상 트루입니다.</pre>";
-  const {
-    date,
-    deleteStatus,
-    writer,
-    views,
-    corporateName,
-    uploadTarget,
-    title,
-    attachmentList,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    {
+      date,
+      deleteStatus,
+      writer,
+      views,
+      corporateName,
+      uploadTarget,
+      title,
+      attachmentList,
+    },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     date: "2022-11-31 12:00:00",
     deleteStatus: "Y",
     writer: "홍길동",

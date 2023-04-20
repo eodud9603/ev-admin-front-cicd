@@ -81,21 +81,22 @@ export const ChargerTrouble = () => {
   const nav = useNavigate();
   const { pathname } = useLocation();
 
-  const {
-    sido,
-    gugun,
-    dong,
-    count,
-    startDate,
-    endDate,
-    searchRange,
-    searchText,
-    operator,
-    sort,
-    status,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    {
+      sido,
+      gugun,
+      dong,
+      count,
+      startDate,
+      endDate,
+      searchRange,
+      searchText,
+      operator,
+      sort,
+      status,
+    },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     sido: "",
     gugun: "",
     dong: "",

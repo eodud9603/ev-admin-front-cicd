@@ -155,16 +155,18 @@ const BillingHistory = () => {
   const [tabList, setTabList] = useState([{ label: PAGE_NAME }]);
   const [page, setPage] = useState(1);
 
-  const { searchText, claimType, settlementType, onChange, onChangeSingle } =
-    useInputs({
-      billingYear: "",
-      billingMonth: "",
-      settlementType: "",
-      searchRange: "",
-      searchText: "",
-      claimType: "",
-      count: "1",
-    });
+  const [
+    { searchText, claimType, settlementType },
+    { onChange, onChangeSingle },
+  ] = useInputs({
+    billingYear: "",
+    billingMonth: "",
+    settlementType: "",
+    searchRange: "",
+    searchText: "",
+    claimType: "",
+    count: "1",
+  });
 
   return (
     <ContainerBase>

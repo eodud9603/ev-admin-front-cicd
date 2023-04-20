@@ -96,16 +96,10 @@ export const ChargerOperator = () => {
   /* 체크 리스트 */
   const [checkList, setCheckList] = useState<number[]>([]);
 
-  const {
-    searchRange,
-    searchText,
-    isActive,
-    sort,
-    isContracted,
-    count,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { searchRange, searchText, isActive, sort, isContracted, count },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     searchRange: "SupplierName",
     searchText: "",
     isActive: "" as YNType,

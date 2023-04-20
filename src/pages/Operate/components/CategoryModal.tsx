@@ -31,7 +31,7 @@ interface ICategoryItemRef {
 /** @TODO 추가/수정/삭제 핸들러 props 추가 및 연결 필요 */
 const CategoryModal = (props: ICategoryModalProps) => {
   const { isOpen, onClose, list = [] } = props;
-  const { categoryText, onChange } = useInputs({
+  const [{ categoryText }, { onChange }] = useInputs({
     categoryText: "",
   });
   const [page, setPage] = useState(1);
@@ -124,7 +124,7 @@ const CategoryItem = forwardRef<ICategoryItemRef, ICategoryItemProps>(
   (props, ref) => {
     const { text } = props;
     const [checked, setChecked] = useState(false);
-    const { categoryItemName: categoryItemText, onChange } = useInputs({
+    const [{ categoryItemName: categoryItemText }, { onChange }] = useInputs({
       categoryItemName: text,
     });
 

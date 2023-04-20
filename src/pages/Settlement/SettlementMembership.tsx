@@ -121,13 +121,14 @@ const SettlementMembership = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
 
-  const { paymentStatus, searchText, onChange, onChangeSingle } = useInputs({
-    paymentStatus: "",
-    searchText: "",
-    searchRange: "",
-    sort: "",
-    count: "1",
-  });
+  const [{ paymentStatus, searchText }, { onChange, onChangeSingle }] =
+    useInputs({
+      paymentStatus: "",
+      searchText: "",
+      searchRange: "",
+      sort: "",
+      count: "1",
+    });
 
   return (
     <ContainerBase>

@@ -23,16 +23,10 @@ const InstallChargerDetail = () => {
   /* 수정모드 비활성화 */
   const [disabled, setDisabled] = useState(true);
   /** @TODO 상세정보 불러오면 initial값 넣어주기 */
-  const {
-    personalAgreement,
-    contents,
-    managerName,
-    telStart,
-    telMiddle,
-    telEnd,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { personalAgreement, contents, managerName, telStart, telMiddle, telEnd },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     personalAgreement: "1",
     application: "1",
     self: "1",

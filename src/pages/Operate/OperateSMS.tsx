@@ -218,15 +218,16 @@ const SMSList = (props: { navigate: NavigateFunction }) => {
 
   const [page, setPage] = useState(1);
 
-  const { progressStatus, searchText, onChange, onChangeSingle } = useInputs({
-    progressStatus: "",
-    classification: "",
-    searchRange: "",
-    searchText: "",
-    category: "",
-    sort: "",
-    count: "1",
-  });
+  const [{ progressStatus, searchText }, { onChange, onChangeSingle }] =
+    useInputs({
+      progressStatus: "",
+      classification: "",
+      searchRange: "",
+      searchText: "",
+      category: "",
+      sort: "",
+      count: "1",
+    });
 
   return (
     <>

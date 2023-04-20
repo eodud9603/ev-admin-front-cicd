@@ -23,7 +23,7 @@ export const Login = () => {
   const [firstAuth, setFirstAuth] = useState(false);
   const [seq, setSeq] = useState(-1);
 
-  const { id, pw, code, onChange } = useInputs({
+  const [{ id, pw, code }, { onChange }] = useInputs({
     id: "",
     pw: "",
     code: "",

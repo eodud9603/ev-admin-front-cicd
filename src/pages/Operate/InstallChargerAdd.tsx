@@ -21,16 +21,10 @@ const InstallChargerAdd = () => {
   const [tabList, setTabList] = useState([{ label: "충전기 설치 신청 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   /** @TODO 상세정보 불러오면 initial값 넣어주기 */
-  const {
-    personalAgreement,
-    contents,
-    managerName,
-    telStart,
-    telMiddle,
-    telEnd,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { personalAgreement, contents, managerName, telStart, telMiddle, telEnd },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     personalAgreement: "",
     application: "",
     self: "",

@@ -34,22 +34,23 @@ const OperatorCounselorDetail = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 수정 비활성화 */
   const [disabled, setDisabled] = useState(true);
-  const {
-    name,
-    id,
-    password,
-    // agencyGroup,
-    agency,
-    cti,
-    acd,
-    extension,
-    zipCode,
-    address,
-    addressDetail,
-    etc,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    {
+      name,
+      id,
+      password,
+      // agencyGroup,
+      agency,
+      cti,
+      acd,
+      extension,
+      zipCode,
+      address,
+      addressDetail,
+      etc,
+    },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     name: "강상담",
     id: "KKS@humaxev.com",
     password: "1234",

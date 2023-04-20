@@ -17,16 +17,10 @@ const OperatePopupAdd = () => {
   const [tabList, setTabList] = useState([{ label: "팝업 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
-  const {
-    date,
-    startDate,
-    endDate,
-    writer,
-    uploadTarget,
-    title,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { date, startDate, endDate, writer, uploadTarget, title },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     date: "",
     startDate: "",
     endDate: "",

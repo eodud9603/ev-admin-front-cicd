@@ -92,14 +92,15 @@ const CorporateQnA = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
 
-  const { answerStatus, searchText, onChange, onChangeSingle } = useInputs({
-    answerStatus: "",
-    searchRange: "",
-    searchText: "",
-    category: "",
-    sort: "",
-    count: "1",
-  });
+  const [{ answerStatus, searchText }, { onChange, onChangeSingle }] =
+    useInputs({
+      answerStatus: "",
+      searchRange: "",
+      searchText: "",
+      category: "",
+      sort: "",
+      count: "1",
+    });
 
   const navigate = useNavigate();
 

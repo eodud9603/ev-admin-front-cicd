@@ -61,13 +61,15 @@ export const ChargerManufacturer = () => {
   const nav = useNavigate();
   const { pathname } = useLocation();
 
-  const { count, searchRange, searchText, sort, onChange, onChangeSingle } =
-    useInputs({
-      searchRange: "CompanyId",
-      searchText: "",
-      sort: "CompanyId",
-      count: "10",
-    });
+  const [
+    { count, searchRange, searchText, sort },
+    { onChange, onChangeSingle },
+  ] = useInputs({
+    searchRange: "CompanyId",
+    searchText: "",
+    sort: "CompanyId",
+    count: "10",
+  });
 
   const [
     { list, page, lastPage, total, message, time },

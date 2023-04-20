@@ -46,19 +46,19 @@ const EvModelModal = (props: IEvModelModalProps) => {
   } = props;
   const isEditMode = type === "EDIT";
 
-  const {
-    chargerType,
-    connectorType,
-    manufacturer,
-    modelName,
-    year,
-    battery,
-    regName,
-    regDate,
-    onChange,
-    onChangeSingle,
-    reset,
-  } = useInputs({
+  const [
+    {
+      chargerType,
+      connectorType,
+      manufacturer,
+      modelName,
+      year,
+      battery,
+      regName,
+      regDate,
+    },
+    { onChange, onChangeSingle, reset },
+  ] = useInputs({
     chargerType: data?.chargerType ?? "",
     connectorType: data?.connectorType ?? "",
     manufacturer: data?.manufacturer ?? "",

@@ -96,13 +96,14 @@ const OperateCode = () => {
   /* 선택삭제 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const { deleteStatus, searchText, onChange, onChangeSingle } = useInputs({
-    deleteStatus: "",
-    searchRange: "",
-    searchText: "",
-    sort: "",
-    count: "1",
-  });
+  const [{ deleteStatus, searchText }, { onChange, onChangeSingle }] =
+    useInputs({
+      deleteStatus: "",
+      searchRange: "",
+      searchText: "",
+      sort: "",
+      count: "1",
+    });
 
   const listRef = useRef<IListRefProps[]>([]);
 

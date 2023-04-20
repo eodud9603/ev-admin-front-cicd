@@ -16,7 +16,7 @@ const EvNewsAdd = () => {
   const [tabList, setTabList] = useState([{ label: "EV 뉴스" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
-  const { date, writer, uploadTarget, title, onChange, onChangeSingle } =
+  const [{ date, writer, uploadTarget, title }, { onChange, onChangeSingle }] =
     useInputs({
       date: "",
       writer: "",

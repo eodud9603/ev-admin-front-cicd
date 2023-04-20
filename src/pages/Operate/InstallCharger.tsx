@@ -127,16 +127,15 @@ const InstallCharger = () => {
 
   const listRef = useRef<IListRefProps[]>([]);
 
-  const { applicationStatus, searchText, onChange, onChangeSingle } = useInputs(
-    {
+  const [{ applicationStatus, searchText }, { onChange, onChangeSingle }] =
+    useInputs({
       applicationStatus: "",
       region: "",
       searchRange: "",
       searchText: "",
       sort: "",
       count: "1",
-    }
-  );
+    });
 
   const navigate = useNavigate();
 

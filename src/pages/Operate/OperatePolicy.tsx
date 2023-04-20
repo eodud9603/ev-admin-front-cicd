@@ -89,7 +89,7 @@ const OperatePolicy = () => {
   /* 선택삭제 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const { searchText, onChange, onChangeSingle } = useInputs({
+  const [{ searchText }, { onChange, onChangeSingle }] = useInputs({
     searchRange: "",
     searchText: "",
     version: "",

@@ -79,7 +79,7 @@ export const DropdownBase = <T,>(props: IDropdownBaseProps<T>) => {
     className,
   } = props;
   const [isOpen, setIsOpen] = useState(false);
-  const { text, onChange } = useInputs({
+  const [{ text }, { onChange }] = useInputs({
     text: "",
   });
 

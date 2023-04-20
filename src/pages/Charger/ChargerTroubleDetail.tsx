@@ -62,7 +62,7 @@ export const ChargerTroubleDetail = () => {
   /* 미입력 안내 모달 */
   const [invalidModalOpen, setInvalidModalOpen] = useState(false);
 
-  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
     id: (data?.id ?? "").toString(),
     stationKey: data?.stationKey ?? "",
     stationName: data?.stationName ?? "",

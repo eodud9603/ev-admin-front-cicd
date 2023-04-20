@@ -73,7 +73,7 @@ const UsageHistoryRoaming = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
 
-  const { startDate, endDate, searchText, onChange, onChangeSingle } =
+  const [{ startDate, endDate, searchText }, { onChange, onChangeSingle }] =
     useInputs({
       startDate: "",
       endDate: "",

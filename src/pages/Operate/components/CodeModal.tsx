@@ -29,16 +29,10 @@ interface ICodeModalProps {
 const CodeModal = (props: ICodeModalProps) => {
   const { isOpen, onClose, data } = props;
   /** @TODO initial props 데이터 매칭하여 추가 필요, 현재 등록자명 추가  */
-  const {
-    mainCode,
-    code,
-    varName,
-    varValue,
-    regName,
-    regDate,
-    onChange,
-    reset,
-  } = useInputs({
+  const [
+    { mainCode, code, varName, varValue, regName, regDate },
+    { onChange, reset },
+  ] = useInputs({
     mainCode: "",
     code: data.groupCode ?? "",
     varName: "",

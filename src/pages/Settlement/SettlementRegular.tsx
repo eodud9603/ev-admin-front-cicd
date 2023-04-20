@@ -192,15 +192,17 @@ const SettlementRegular = () => {
     id: null,
   });
 
-  const { usageStatus, paymentStatus, searchText, onChange, onChangeSingle } =
-    useInputs({
-      usageStatus: "",
-      paymentStatus: "",
-      searchText: "",
-      searchRange: "",
-      sort: "",
-      count: "1",
-    });
+  const [
+    { usageStatus, paymentStatus, searchText },
+    { onChange, onChangeSingle },
+  ] = useInputs({
+    usageStatus: "",
+    paymentStatus: "",
+    searchText: "",
+    searchRange: "",
+    sort: "",
+    count: "1",
+  });
 
   const onChangeCancelModal = (id?: string) => {
     setCancelModalOpen((prev) => ({

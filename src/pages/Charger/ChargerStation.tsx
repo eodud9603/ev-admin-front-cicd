@@ -94,19 +94,20 @@ const ChargingStationManagement = () => {
     sort: "StationName",
     count: "10",
   });
-  const {
-    count,
-    sido,
-    gugun,
-    dong,
-    operation,
-    searchRange,
-    searchText,
-    isUse,
-    sort,
-    onChange,
-    onChangeSingle,
-  } = inputs;
+  const [
+    {
+      count,
+      sido,
+      gugun,
+      dong,
+      operation,
+      searchRange,
+      searchText,
+      isUse,
+      sort,
+    },
+    { onChange, onChangeSingle },
+  ] = inputs;
   const searchKeyword =
     searchList.find((data) => searchRange === data.value)?.placeholderKeyword ??
     "검색어를";

@@ -31,25 +31,26 @@ const OperatorAccountDetail = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   /* 수정 비활성화 */
   const [disabled, setDisabled] = useState(true);
-  const {
-    name,
-    id,
-    /* dropdown */
-    // agencyGroup,
-    password,
-    /* radio */
-    roleLevel,
-    tel,
-    mobileTel,
-    department,
-    /* radio */
-    accountStatus,
-    mobileAccess,
-    externalAccess,
-    etc,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    {
+      name,
+      id,
+      /* dropdown */
+      // agencyGroup,
+      password,
+      /* radio */
+      roleLevel,
+      tel,
+      mobileTel,
+      department,
+      /* radio */
+      accountStatus,
+      mobileAccess,
+      externalAccess,
+      etc,
+    },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     name: "이팀장",
     id: "K05@humaxev.com",
     agencyGroup: "1",

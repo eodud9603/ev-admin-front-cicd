@@ -136,16 +136,18 @@ const TotalSettlement = () => {
   const [tabList, setTabList] = useState([{ label: PAGE_NAME }]);
   const [page, setPage] = useState(1);
 
-  const { searchText, userType, settlementType, onChange, onChangeSingle } =
-    useInputs({
-      billingYear: "",
-      billingMonth: "",
-      settlementType: "",
-      searchRange: "",
-      searchText: "",
-      userType: "",
-      count: "1",
-    });
+  const [
+    { searchText, userType, settlementType },
+    { onChange, onChangeSingle },
+  ] = useInputs({
+    billingYear: "",
+    billingMonth: "",
+    settlementType: "",
+    searchRange: "",
+    searchText: "",
+    userType: "",
+    count: "1",
+  });
 
   return (
     <ContainerBase>

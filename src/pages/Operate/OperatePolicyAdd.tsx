@@ -14,15 +14,10 @@ const OperatePolicyAdd = () => {
   const [tabList, setTabList] = useState([{ label: "정책 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
-  const {
-    date,
-    writer,
-    version,
-    title,
-    attachmentList,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { date, writer, version, title, attachmentList },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     date: "",
     writer: "",
     version: "",

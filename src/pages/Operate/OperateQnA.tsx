@@ -98,12 +98,13 @@ const OperateQnA = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
 
-  const { answerStatus, searchText, onChange, onChangeSingle } = useInputs({
-    answerStatus: "",
-    searchRange: "",
-    searchText: "",
-    sort: "",
-  });
+  const [{ answerStatus, searchText }, { onChange, onChangeSingle }] =
+    useInputs({
+      answerStatus: "",
+      searchRange: "",
+      searchText: "",
+      sort: "",
+    });
 
   /* 카테고리 모달 */
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);

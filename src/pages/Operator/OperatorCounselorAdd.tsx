@@ -32,23 +32,24 @@ const OperatorCounselorAdd = () => {
     { label: "상담사 정보 관리" },
   ]);
   const [selectedIndex, setSelectedIndex] = useState("0");
-  const {
-    name,
-    id,
-    password,
-    /* dropdown */
-    // agencyGroup,
-    agency,
-    cti,
-    acd,
-    extension,
-    zipCode,
-    address,
-    addressDetail,
-    etc,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    {
+      name,
+      id,
+      password,
+      /* dropdown */
+      // agencyGroup,
+      agency,
+      cti,
+      acd,
+      extension,
+      zipCode,
+      address,
+      addressDetail,
+      etc,
+    },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     name: "",
     id: "",
     password: "",

@@ -103,7 +103,7 @@ const EvModel = () => {
   /* 선택삭제 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const { speed, searchText, onChange, onChangeSingle } = useInputs({
+  const [{ speed, searchText }, { onChange, onChangeSingle }] = useInputs({
     speed: "",
     searchRange: "",
     searchText: "",

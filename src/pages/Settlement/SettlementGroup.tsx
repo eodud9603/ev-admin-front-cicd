@@ -187,14 +187,10 @@ const SettlementGroup = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
 
-  const {
-    deadLineStatus,
-    searchText,
-    claimStatus,
-    paymentMethod,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { deadLineStatus, searchText, claimStatus, paymentMethod },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     deadLineStatus: "",
     searchText: "",
     searchRange: "",

@@ -195,14 +195,10 @@ const ChargerControl = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
 
-  const {
-    operator,
-    searchRange,
-    searchText,
-    chargerType,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { operator, searchRange, searchText, chargerType },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     operator: "",
     searchRange: "1",
     searchText: "",

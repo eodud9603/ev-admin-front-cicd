@@ -113,15 +113,16 @@ const OperateNotice = () => {
   /* 선택삭제 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const {
-    // startDate,
-    // endDate,
-    deleteStatus,
-    uploadTarget,
-    searchText,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    {
+      // startDate,
+      // endDate,
+      deleteStatus,
+      uploadTarget,
+      searchText,
+    },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     startDate: "",
     endDate: "",
     deleteStatus: "",

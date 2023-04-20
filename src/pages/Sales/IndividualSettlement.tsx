@@ -154,14 +154,10 @@ const IndividualSettlement = () => {
   const [tabList, setTabList] = useState([{ label: PAGE_NAME }]);
   const [page, setPage] = useState(1);
 
-  const {
-    searchText,
-    userType,
-    settlementType,
-    operator,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { searchText, userType, settlementType, operator },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     roaming: "",
     searchRange: "",
     searchText: "",

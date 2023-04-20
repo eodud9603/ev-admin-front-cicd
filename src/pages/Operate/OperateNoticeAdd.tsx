@@ -22,15 +22,10 @@ const OperateNoticeAdd = () => {
 
   const navigate = useNavigate();
 
-  const {
-    date,
-    writer,
-    uploadTarget,
-    title,
-    attachmentList,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { date, writer, uploadTarget, title, attachmentList },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     date: "",
     writer: "",
     uploadTarget: "",

@@ -16,16 +16,10 @@ const CorporateNoticeAdd = () => {
   const [tabList, setTabList] = useState([{ label: "법인 공지사항" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
-  const {
-    date,
-    writer,
-    corporateName,
-    uploadTarget,
-    title,
-    attachmentList,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { date, writer, corporateName, uploadTarget, title, attachmentList },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     date: "",
     writer: "",
     views: "",

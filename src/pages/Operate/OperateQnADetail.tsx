@@ -25,24 +25,26 @@ const OperateQnADetail = () => {
   /* 수정 비활성화 여부 */
   const [disabled, setDisabled] = useState(true);
   /* 회원이 입력한 정보 (변경X) */
-  const {
-    regDate,
-    category,
-    userName,
-    userId,
-    answerDate,
-    answerStatus,
-    answerName,
-    title,
-    contents,
-    chargerStationName,
-    chargerId,
-    startDate,
-    endDate,
-    chargeAmount,
-    chargeFee,
-    questionImages,
-  } = useInputs({
+  const [
+    {
+      regDate,
+      category,
+      userName,
+      userId,
+      answerDate,
+      answerStatus,
+      answerName,
+      title,
+      contents,
+      chargerStationName,
+      chargerId,
+      startDate,
+      endDate,
+      chargeAmount,
+      chargeFee,
+      questionImages,
+    },
+  ] = useInputs({
     regDate: "2022-11-31 12:00:00",
     category: "가입 승인",
     userName: "홍길동",
@@ -67,7 +69,7 @@ const OperateQnADetail = () => {
     ],
   });
   /* 변경 가능 정보 */
-  const { answerContent, onChange } = useInputs({
+  const [{ answerContent }, { onChange }] = useInputs({
     answerContent: "안녕하세요! 모빌리티로 통하는 세상 트루입니다.",
   });
   const {

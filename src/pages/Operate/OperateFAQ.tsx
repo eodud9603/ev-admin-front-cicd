@@ -118,16 +118,18 @@ const OperateFAQ = () => {
 
   const listRef = useRef<IListRefProps[]>([]);
 
-  const { deleteStatus, uploadTarget, searchText, onChange, onChangeSingle } =
-    useInputs({
-      deleteStatus: "",
-      uploadTarget: "",
-      searchRange: "",
-      searchText: "",
-      category: "",
-      sort: "",
-      count: "1",
-    });
+  const [
+    { deleteStatus, uploadTarget, searchText },
+    { onChange, onChangeSingle },
+  ] = useInputs({
+    deleteStatus: "",
+    uploadTarget: "",
+    searchRange: "",
+    searchText: "",
+    category: "",
+    sort: "",
+    count: "1",
+  });
 
   const navigate = useNavigate();
 

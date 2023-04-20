@@ -194,14 +194,10 @@ const SettlementNon = () => {
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
 
-  const {
-    usageStatus,
-    paymentStatus,
-    searchText,
-    paymentMethod,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { usageStatus, paymentStatus, searchText, paymentMethod },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     usageStatus: "",
     paymentStatus: "",
     searchText: "",

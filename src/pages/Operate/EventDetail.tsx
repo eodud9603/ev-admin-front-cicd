@@ -27,19 +27,20 @@ const EventDetail = () => {
 
   const initContents =
     "<pre>안녕하세요! 모빌리티로 통하는 세상 트루입니다.</pre>";
-  const {
-    date,
-    startDate,
-    endDate,
-    progressStatus,
-    writer,
-    views,
-    uploadTarget,
-    title,
-    attachmentList,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    {
+      date,
+      startDate,
+      endDate,
+      progressStatus,
+      writer,
+      views,
+      uploadTarget,
+      title,
+      attachmentList,
+    },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     date: "2022-11-31 12:00:00",
     startDate: "2022-01-07",
     endDate: "2022-02-06",

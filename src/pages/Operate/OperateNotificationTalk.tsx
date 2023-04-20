@@ -250,17 +250,19 @@ const TalkList = (props: { navigate: NavigateFunction }) => {
 
   const [page, setPage] = useState(1);
 
-  const { progressStatus, division, searchText, onChange, onChangeSingle } =
-    useInputs({
-      progressStatus: "",
-      division: "",
-      classification: "",
-      searchRange: "",
-      searchText: "",
-      category: "",
-      sort: "",
-      count: "1",
-    });
+  const [
+    { progressStatus, division, searchText },
+    { onChange, onChangeSingle },
+  ] = useInputs({
+    progressStatus: "",
+    division: "",
+    classification: "",
+    searchRange: "",
+    searchText: "",
+    category: "",
+    sort: "",
+    count: "1",
+  });
 
   return (
     <>

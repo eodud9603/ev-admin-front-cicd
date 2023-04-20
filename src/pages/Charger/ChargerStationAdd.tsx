@@ -52,7 +52,7 @@ const ChargerStationAdd = () => {
   /* 계약정보 drop */
   const [isContractDrop, setIsContractDrop] = useState(true);
 
-  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
     /* 기본정보 */
     stationName: "",
     stationKey: "",
@@ -60,7 +60,7 @@ const ChargerStationAdd = () => {
     operator: "HEV",
     isUse: "" as YNType,
     business: "" /* 위탁사업자 > dropdown */,
-    directInput: "0" /* 직접입력 check "1": 체크, "0": "미체크" */,
+    directInput: "1" /* 직접입력 check "1": 체크, "0": "미체크" */,
     consignmentCompany: "" /* 위탁사업자명 (input text) */,
     isOpen: "" as YNType,
     quickChargerCount: "",
@@ -319,6 +319,7 @@ const ChargerStationAdd = () => {
                         <CheckBoxBase
                           label={"직접입력"}
                           name={"directInput"}
+                          disabled={true}
                           value={"1"}
                           checked={directInput === "1"}
                           onChange={() => {
@@ -756,7 +757,6 @@ const ChargerStationAdd = () => {
                   <DetailLabelCol sm={2}>계약번호</DetailLabelCol>
                   <DetailContentCol>
                     <ContractDropdown
-                      disabled={true}
                       onChange={(data) => {
                         /** @TODO 계약장소 데이터 state 추가  */
                         onChangeSingle({

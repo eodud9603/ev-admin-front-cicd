@@ -68,7 +68,7 @@ const ChargerContractAdd = () => {
   const [isAddComplete, setIsAddComplete] = useState(false);
   /* 등록취소 모달 */
   const [isAddCancel, setIsAddCancel] = useState(false);
-  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
     place: "",
     contractorName: "",
     code: "" as TContractStatus,

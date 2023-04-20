@@ -32,7 +32,7 @@ export const DateGroup = (props: IDateInputProps) => {
     onChangeDate,
     ...extraProps
   } = props;
-  const { startDate, endDate, onChange } = useInputs({
+  const [{ startDate, endDate }, { onChange }] = useInputs({
     startDate: "",
     endDate: "",
   });

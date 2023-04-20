@@ -65,15 +65,10 @@ export const StationSearchModal = (props: IStationSearchModalProps) => {
     emptyMessage: "충전소를 검색해주세요.",
   });
 
-  const {
-    sido,
-    gugun,
-    dong,
-    searchRange,
-    searchText,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { sido, gugun, dong, searchRange, searchText },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     sido: "",
     gugun: "",
     dong: "",

@@ -148,15 +148,17 @@ const OperatePopup = () => {
 
   const listRef = useRef<IListRefProps[]>([]);
 
-  const { progressStatus, uploadTarget, searchText, onChange, onChangeSingle } =
-    useInputs({
-      progressStatus: "",
-      uploadTarget: "",
-      searchRange: "",
-      searchText: "",
-      sort: "",
-      count: "1",
-    });
+  const [
+    { progressStatus, uploadTarget, searchText },
+    { onChange, onChangeSingle },
+  ] = useInputs({
+    progressStatus: "",
+    uploadTarget: "",
+    searchRange: "",
+    searchText: "",
+    sort: "",
+    count: "1",
+  });
 
   const navigate = useNavigate();
 

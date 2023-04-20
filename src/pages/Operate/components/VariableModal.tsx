@@ -23,17 +23,10 @@ interface IVariableModalProps {
 const VariableModal = (props: IVariableModalProps) => {
   const { isOpen, onClose, data } = props;
   /** @TODO initial props 데이터 매칭하여 추가 필요, 현재 등록자명 추가  */
-  const {
-    mainCode,
-    code,
-    varName,
-    varValue,
-    regName,
-    regDate,
-    contents,
-    onChange,
-    reset,
-  } = useInputs({
+  const [
+    { mainCode, code, varName, varValue, regName, regDate, contents },
+    { onChange, reset },
+  ] = useInputs({
     mainCode: data?.mainCode ?? "",
     code: "",
     varName: "",

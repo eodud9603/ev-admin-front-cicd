@@ -123,19 +123,20 @@ const ChargerContract = () => {
     emptyMessage: "등록된 충전소 계약 정보가 없습니다.",
   });
 
-  const {
-    sido,
-    gugun,
-    dong,
-    contractCode,
-    searchRange,
-    searchText,
-    isUse,
-    sort,
-    count,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    {
+      sido,
+      gugun,
+      dong,
+      contractCode,
+      searchRange,
+      searchText,
+      isUse,
+      sort,
+      count,
+    },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     sido: "",
     gugun: "",
     dong: "",

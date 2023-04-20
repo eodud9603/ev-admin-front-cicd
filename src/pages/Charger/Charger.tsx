@@ -101,19 +101,20 @@ const Charger = () => {
   /* 단일 제어 모달 */
   const [singleControlModalOpen, setSingleControlModalOpen] = useState(false);
 
-  const {
-    sido,
-    gugun,
-    dong,
-    operation,
-    searchRange,
-    searchText,
-    operationStatus,
-    sort,
-    count,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    {
+      sido,
+      gugun,
+      dong,
+      operation,
+      searchRange,
+      searchText,
+      operationStatus,
+      sort,
+      count,
+    },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     sido: "",
     gugun: "",
     dong: "",

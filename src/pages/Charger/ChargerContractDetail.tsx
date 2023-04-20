@@ -76,7 +76,7 @@ const ChargerContractDetail = () => {
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
   const [isEditCancel, setIsEditCancel] = useState(false);
-  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
     id: data?.id ?? "",
     place: data?.place ?? "",
     contractorName: data?.contractorName ?? "",

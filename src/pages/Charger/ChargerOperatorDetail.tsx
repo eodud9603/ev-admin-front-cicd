@@ -56,7 +56,7 @@ export const ChargerOperatorDetail = () => {
     onClosed: undefined,
   });
 
-  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
     id: (data.id ?? "").toString(),
     name: data.name ?? "",
     supplierId: data.supplierId ?? "",

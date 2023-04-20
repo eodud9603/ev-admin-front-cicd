@@ -41,13 +41,10 @@ const SendMessage = (props: ISendMessageProps) => {
     sendHandler,
     registrationHandler,
   } = props;
-  const {
-    addNumber,
-    sendContent,
-    newTemplateContent,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { addNumber, sendContent, newTemplateContent },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     addNumber: "",
     sendContent: "템플릿 등록 내용 표시",
     newTemplateContent: "",

@@ -35,7 +35,7 @@ export const ChargerOperatorRegistration = () => {
   /* 등록완료 모달 */
   const [isAddComplete, setIsAddComplete] = useState(false);
 
-  const { onChange, onChangeSingle, reset, ...inputs } = useInputs({
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
     name: "",
     supplierId: "",
     code: "",

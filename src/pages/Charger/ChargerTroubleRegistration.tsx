@@ -41,7 +41,7 @@ export const ChargerTroubleRegistration = () => {
   /* 등록완료 모달 */
   const [isAddComplete, setIsAddComplete] = useState(false);
 
-  const { onChangeSingle, onChange, reset, ...inputs } = useInputs({
+  const [inputs, { onChangeSingle, onChange }] = useInputs({
     stationKey: "",
     stationName: "",
     chargerKey: "",

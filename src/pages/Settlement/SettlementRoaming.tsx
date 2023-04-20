@@ -127,13 +127,14 @@ const SettlementRoaming = () => {
     id: null,
   });
 
-  const { deadLineStatus, searchText, onChange, onChangeSingle } = useInputs({
-    deadLineStatus: "",
-    searchText: "",
-    searchRange: "",
-    sort: "",
-    count: "1",
-  });
+  const [{ deadLineStatus, searchText }, { onChange, onChangeSingle }] =
+    useInputs({
+      deadLineStatus: "",
+      searchText: "",
+      searchRange: "",
+      sort: "",
+      count: "1",
+    });
   const navigate = useNavigate();
 
   const onChangeCancelModal = (id?: string) => {

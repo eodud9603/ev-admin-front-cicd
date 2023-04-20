@@ -24,17 +24,10 @@ const EventAdd = () => {
   const [tabList, setTabList] = useState([{ label: "이벤트" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
 
-  const {
-    date,
-    startDate,
-    endDate,
-    writer,
-    uploadTarget,
-    title,
-    attachmentList,
-    onChange,
-    onChangeSingle,
-  } = useInputs({
+  const [
+    { date, startDate, endDate, writer, uploadTarget, title, attachmentList },
+    { onChange, onChangeSingle },
+  ] = useInputs({
     date: "",
     startDate: "",
     endDate: "",

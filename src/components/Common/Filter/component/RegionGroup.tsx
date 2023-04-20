@@ -47,7 +47,7 @@ export const RegionGroup = (props: IRegionGroupProps) => {
     { label: string; value: string }[]
   >([DEFAULT_REGION_ITEM]);
   /* init/선택한 값 */
-  const { sido, sigugun, dongmyun, onChangeSingle } = useInputs({
+  const [{ sido, sigugun, dongmyun }, { onChangeSingle }] = useInputs({
     sido: init?.sido ?? "",
     sigugun: init?.sigugun ?? "",
     dongmyun: init?.dongmyun ?? "",

@@ -72,7 +72,7 @@ const UsageHistoryClaimDetail = () => {
   const [page, setPage] = useState(1);
   const disabled = true;
 
-  const { onChangeSingle } = useInputs({
+  const [_, { onChangeSingle }] = useInputs({
     count: "1",
   });
 
