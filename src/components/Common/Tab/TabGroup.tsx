@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import TabBase from "src/components/Common/Tab/TabBase";
 import { useTabStore } from "src/store/tabStore";
@@ -16,10 +16,6 @@ const TabGroup = (props: any) => {
 
   const nav = useNavigate();
   const tabState = useTabStore();
-
-  useEffect(() => {
-    console.log("state::", tabState.data);
-  }, [tabState.data]);
 
   const handleTabClick = (path: string) => {
     tabState.setActive(path);

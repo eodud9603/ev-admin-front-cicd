@@ -37,6 +37,7 @@ import {
 } from "src/constants/status";
 import { getChargerStatusColor } from "src/utils/charger";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
+import { useTabs } from "src/hooks/useTabs";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -90,8 +91,6 @@ const ChargerStationDetail = () => {
   const { fast, slow, total, communication, valid, ing, etc } =
     getChargerStatusStatistics(chargers);
 
-  const [tabList, setTabList] = useState([{ label: "충전소 관리" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 운영정보 drop */
@@ -213,17 +212,13 @@ const ChargerStationDetail = () => {
   const onChangeModalVisible = () => {
     setAddrSearchModalOpen((prev) => !prev);
   };
+  useTabs({ data: detail, pageTitle: "충전소 상세", pageType: "detail" });
 
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={() => {}}
-        onClose={() => {}}
-      />
+      <TabGroup />
 
       <BodyBase className={"pb-5"}>
         <BreadcrumbBase
@@ -257,7 +252,7 @@ const ChargerStationDetail = () => {
               color={"turu"}
               outline
               onClick={() => {
-                navigate("/charger/add");
+                navigate("/charger/charger/add");
               }}
             />
           </div>

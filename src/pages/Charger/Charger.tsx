@@ -34,6 +34,7 @@ import {
 } from "src/constants/status";
 import { getChargerStatusColor } from "src/utils/charger";
 import useList from "src/hooks/useList";
+import { useTabs } from "src/hooks/useTabs";
 
 /* 철거여부 필터 */
 const operationStatusList = [
@@ -84,9 +85,6 @@ const tableHeader = [
 
 const Charger = () => {
   const data = useLoaderData() as IChargerListResponse | null;
-
-  const [tabList, setTabList] = useState([{ label: "충전기 관리" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
 
   const [
     { list, page, lastPage, total, message, time },
@@ -186,16 +184,13 @@ const Charger = () => {
       }
     };
 
+  useTabs({ data: data, pageTitle: "충전기 관리" });
+
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={() => {}}
-        onClose={() => {}}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -306,7 +301,7 @@ const Charger = () => {
                 label={"신규 등록"}
                 color={"turu"}
                 onClick={() => {
-                  navigate("/charger/add");
+                  navigate("/charger/charger/add");
                 }}
               />
               <ButtonBase

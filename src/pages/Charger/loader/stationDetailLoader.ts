@@ -1,5 +1,6 @@
 import { getChargerListByStation } from "src/api/charger/chargerApi";
 import { getStationDetail } from "src/api/station/stationApi";
+import { loadTabData } from "src/utils/loadTabData";
 
 interface IStationDetailParams {
   params: {
@@ -10,6 +11,13 @@ interface IStationDetailParams {
 export const stationDetailLoader = async ({ params }: IStationDetailParams) => {
   if (!params?.id) {
     return null;
+  }
+
+  const loadData: [] | undefined = loadTabData(
+    `/charger/chargerStation/detail/${params.id}`
+  );
+  if (loadData) {
+    return loadData;
   }
 
   /* 충전소 상세 정보 조회 */

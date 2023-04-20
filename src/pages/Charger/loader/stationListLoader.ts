@@ -1,9 +1,6 @@
 import { getStationList } from "src/api/station/stationApi";
-import {
-  IRequestStationList,
-  IStationListResponse,
-} from "src/api/station/stationApi.interface";
-import { tabType } from "src/store/tabStore";
+import { IRequestStationList } from "src/api/station/stationApi.interface";
+import { loadTabData } from "src/utils/loadTabData";
 
 const defaultParams: IRequestStationList = {
   /** @TODO 서버 sortDirection 정의 후, 추가 */
@@ -12,20 +9,13 @@ const defaultParams: IRequestStationList = {
   page: 0,
   sort: "CreatedDate",
   searchType: "StationName",
-  searchKeyword: "서울"
+  searchKeyword: "서울",
 };
 
 export const stationListLoader = async () => {
-  const tabStorage: string | null = sessionStorage.getItem("tab-storage");
-
-  const tabData: Array<tabType> =
-    JSON.parse(tabStorage ?? "")?.state?.data?.filter(
-      (e: tabType) => e.path === "/charger/ChargerStation"
-    ) ?? [];
-  if (tabData && tabData.length > 0) {
-    const listData: IStationListResponse = tabData[0].data;
-
-    return listData ?? null;
+  const loadData: [] | undefined = loadTabData("/charger/ChargerStation");
+  if (loadData) {
+    return loadData;
   }
   /* 검색  */
   const { code, data } = await getStationList(defaultParams);

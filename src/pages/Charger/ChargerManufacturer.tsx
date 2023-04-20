@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -22,9 +22,9 @@ import {
 import useInputs from "src/hooks/useInputs";
 import { getPageList } from "src/utils/pagination";
 import { getManufactureList } from "src/api/manufactures/manufactureApi";
-import { useTabStore } from "src/store/tabStore";
 import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
+import { useTabs } from "src/hooks/useTabs";
 
 const dropdownGroupSort = [
   {
@@ -60,7 +60,6 @@ export const ChargerManufacturer = () => {
 
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const [selected, setSelected] = useState("0");
 
   const { count, searchRange, searchText, sort, onChange, onChangeSingle } =
     useInputs({
@@ -139,20 +138,7 @@ export const ChargerManufacturer = () => {
     nav(`${pathname}/detail/${id}`);
   };
 
-  const tabStore = useTabStore();
-
-  useEffect(() => {
-    const index = tabStore.data.findIndex((e) => e.path === location.pathname);
-    if (index < 0) {
-      tabStore.setData({
-        data: [],
-        label: "충전기 제조사 관리",
-        path: "/charger/manufacturer",
-        rootPath: location.pathname,
-      });
-    }
-    tabStore.setActive(location.pathname);
-  }, []);
+  useTabs({ data: data, pageTitle: "충전기 제조사 관리" });
 
   return (
     <ContainerBase>

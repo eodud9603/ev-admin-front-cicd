@@ -1,5 +1,6 @@
-import {  getStationContractList } from "src/api/station/stationApi";
+import { getStationContractList } from "src/api/station/stationApi";
 import { IRequestStationContractList } from "src/api/station/stationApi.interface";
+import { loadTabData } from "src/utils/loadTabData";
 
 const defaultParams: IRequestStationContractList = {
   /** @TODO 서버 sortDirection 정의 후, 추가 */
@@ -10,10 +11,15 @@ const defaultParams: IRequestStationContractList = {
 };
 
 export const stationContractListLoader = async () => {
-   /* 검색  */
-   const { code, data } = await getStationContractList(defaultParams);
-   /** 검색 성공 */
-   const success = code === "SUCCESS" && !!data;
- 
-   return success ? data : null;
+  const loadData: [] | undefined = loadTabData("/charger/contract");
+  if (loadData) {
+    return loadData;
+  }
+
+  /* 검색  */
+  const { code, data } = await getStationContractList(defaultParams);
+  /** 검색 성공 */
+  const success = code === "SUCCESS" && !!data;
+
+  return success ? data : null;
 };

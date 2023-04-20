@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import { YNType } from "src/api/api.interface";
@@ -25,10 +25,10 @@ import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import { getPageList } from "src/utils/pagination";
 import styled from "styled-components";
-import { useTabStore } from "src/store/tabStore";
 import useList from "src/hooks/useList";
 import { CONTRACT_STATUS, TContractStatus } from "src/constants/status";
 import { standardDateFormat } from "src/utils/day";
+import { useTabs } from "src/hooks/useTabs";
 
 /* 계약여부 필터 */
 const contractFilterList = [
@@ -211,23 +211,7 @@ const ChargerContract = () => {
       }
     };
 
-  const tabStore = useTabStore();
-
-  useEffect(() => {
-    const index = tabStore.data.findIndex((e) =>
-      location.pathname.includes(e.path)
-    );
-    if (index < 0) {
-      console.log(location.pathname);
-      tabStore.setData({
-        data: [],
-        label: "충전소 계약 관리",
-        path: location.pathname,
-        rootPath: location.pathname,
-      });
-    }
-    tabStore.setActive(location.pathname);
-  }, []);
+  useTabs({ data: data, pageTitle: "충전소 계약 관리" });
 
   return (
     <ContainerBase>

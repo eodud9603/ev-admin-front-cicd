@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import { getStationList } from "src/api/station/stationApi";
@@ -25,9 +25,9 @@ import {
 } from "src/api/station/stationApi.interface";
 import { getPageList } from "src/utils/pagination";
 import { YNType } from "src/api/api.interface";
-import { useTabStore } from "src/store/tabStore";
 import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
+import { useTabs } from "src/hooks/useTabs";
 
 /* 사용여부 필터 */
 const useStatusList = [
@@ -167,20 +167,7 @@ const ChargingStationManagement = () => {
       }
     };
 
-  const tabStore = useTabStore();
-
-  useEffect(() => {
-    const index = tabStore.data.findIndex((e) => e.path === location.pathname);
-    if (index < 0) {
-      tabStore.setData({
-        data: data,
-        label: "충전소 관리",
-        path: location.pathname,
-        rootPath: location.pathname,
-      });
-    }
-    tabStore.setActive(location.pathname);
-  }, []);
+  useTabs({ data: data, pageTitle: "충전소 관리" });
 
   return (
     <ContainerBase>

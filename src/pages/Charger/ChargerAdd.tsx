@@ -26,6 +26,8 @@ import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModa
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import useInputs from "src/hooks/useInputs";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
+import { useTabs } from "src/hooks/useTabs";
+import { useLoaderData } from "react-router-dom";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -33,11 +35,8 @@ const DefaultDropdownData = {
 };
 
 const ChargerAdd = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전기 관리" },
-  ]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
+  const data = useLoaderData() as { [key: string]: string };
+
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 설치정보 drop */
@@ -48,6 +47,14 @@ const ChargerAdd = () => {
   const [isCompleteCancel, setIsCompleteCancel] = useState(false);
   /* 충전소검색 모달 */
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
+
+  const inputs = useInputs(data);
+  const { changeTabData, tabStoreData } = useTabs({
+    data: data,
+    pageTitle: "충전기 상세",
+    pageType: "add",
+    inputData: inputs,
+  });
 
   const {
     chargerStationName,
@@ -83,99 +90,15 @@ const ChargerAdd = () => {
     openCarrierTel,
     onChange,
     onChangeSingle,
-  } = useInputs({
-    /* 기본정보 */
-    chargerStationName: "",
-    chargerId: "",
-    chargerAssetNumber: "",
-    chargerType: "",
-    installType: "",
-    chargerVolume: "",
-    /* 듀얼형 */
-    dualType: "",
-    dualCh1: "",
-    dualCh2: "",
-    envVersion: "",
-    companyType: "",
-    useStatus: "",
-    consignmentName: "",
-    manufacturerName: "",
-    manufacturerModel: "",
-    installStatus: "",
-    connectorType: "",
-    breakdownStatus: "",
-    chargerStatus: "",
-    paymentTerminalStatus: "",
-    pg: "",
-    interlockingStandard: "",
-    rapidTime: "",
-    unusedCycle: "",
-    chargingCycle: "",
-    syncEnvironment: "",
-    syncKEPCO: "",
-    rechargeAppAvailable: "",
-    contractPrice: "",
-    syncQR: "",
-    reservationAvailable: "",
-    significant: "",
-    /* 계약정보 */
-    installationCategory: "",
-    installer: "",
-    installationYear: "",
-    installationMonth: "",
-    serverDomain: "",
-    serverPort: "",
-    chargerSN: "",
-    installationTR: "",
-    chargerFirmware: "",
-    currentChargerFirmware: "",
-    /* 모뎀  */
-    modemNumber: "",
-    modemManufacturer: "",
-    modemManufacturerTel: "",
-    modemName: "",
-    modemSN: "",
-    /* 통신사  */
-    carrier: "",
-    communicationFee: "",
-    /* 개통사  */
-    openCarrier: "",
-    openCarrierTel: "",
-  });
+  } = inputs;
 
   const navigate = useNavigate();
-
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
 
   return (
     <ContainerBase>
       <HeaderBase></HeaderBase>
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase

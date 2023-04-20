@@ -15,6 +15,7 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTabs } from "src/hooks/useTabs";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -82,7 +83,6 @@ export const ChargerOperator = () => {
   const nav = useNavigate();
   const { pathname } = useLocation();
   const [page, setPage] = useState(1);
-  const [selected, setSelected] = useState<string>("0");
   const [text, setText] = useState("");
 
   const moveToRegistration = () => {
@@ -92,14 +92,12 @@ export const ChargerOperator = () => {
     nav(`${pathname}/detail/${id}`);
   };
 
+  useTabs({ data: data, pageTitle: "서비스 운영사 관리" });
+
   return (
     <ContainerBase>
       <HeaderBase />
-      <TabGroup
-      // list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
-      // selectedIndex={selected}
-      // onClick={(e) => setSelected(e.currentTarget.value)}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase

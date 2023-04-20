@@ -29,6 +29,7 @@ import { OperatorType } from "src/api/api.interface";
 import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
 import { TChargerProcessingStatus } from "src/constants/status";
+import { useTabs } from "src/hooks/useTabs";
 
 const dropdownGroupSearch = [
   { label: "충전소명", value: "StationName" },
@@ -188,6 +189,8 @@ export const ChargerTrouble = () => {
   const moveToRegistration = () => {
     nav(`${pathname}/registration`);
   };
+
+  useTabs({ data: data, pageTitle: "충전기 고장/파손 관리" });
 
   return (
     <ContainerBase>
