@@ -39,8 +39,8 @@ import { YNType } from "src/api/api.interface";
 import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
 import { getParams } from "src/utils/params";
 import { objectToArray } from "src/utils/convert";
-import ManufacturerDropdown from "./components/ManufacturerDropdown";
-import ManufacturerModelDropdown from "./components/ManufacturerModelDropdown";
+import ManufacturerDropdown from "src/pages/Charger/components/ManufacturerDropdown";
+import ManufacturerModelDropdown from "src/pages/Charger/components/ManufacturerModelDropdown";
 
 const DefaultDropdownData = {
   label: "선택",
