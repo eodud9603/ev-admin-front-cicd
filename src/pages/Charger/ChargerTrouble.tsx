@@ -43,7 +43,7 @@ const dropdownGroupSearch = [
 const dropdownGroupSort = [
   {
     menuItems: [
-      { label: "기본", value: "StationName" },
+      { label: "기본", value: "CreatedDate" },
       { label: "충전소명", value: "StationName" },
       { label: "충전소ID", value: "StationKey" },
       { label: "등록일", value: "CreatedDate" },
