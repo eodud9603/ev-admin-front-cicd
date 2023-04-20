@@ -28,6 +28,7 @@ import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModa
 import { YNType } from "src/api/api.interface";
 import { fileUpload } from "src/utils/upload";
 import { getParams } from "src/utils/params";
+import DetailCancelModal from "./components/DetailCancelModal";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },
@@ -39,6 +40,8 @@ export const ChargerOperatorDetail = () => {
 
   /* 수정모드 */
   const [disabled, setDisabled] = useState(true);
+  /* 수정취소 모달 */
+  const [isEditCancel, setIsEditCancel] = useState(false);
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
   /* 삭제안내 모달 */
@@ -485,7 +488,15 @@ export const ChargerOperatorDetail = () => {
             label={"목록"}
             outline={true}
             className={"w-xs"}
-            onClick={goBack}
+            onClick={() => {
+              /* 수정모드 상태에서 목록 버튼 클릭 */
+              if (!disabled) {
+                setIsEditCancel(true);
+                return;
+              }
+
+              goBack();
+            }}
           />
           <ButtonBase
             label={"삭제"}
@@ -525,6 +536,17 @@ export const ChargerOperatorDetail = () => {
         onClose={() => {
           setTextModal((prev) => ({ ...prev, isOpen: !prev.isOpen }));
         }}
+      />
+      <DetailCancelModal
+        isOpen={isEditCancel}
+        onClose={() => {
+          setIsEditCancel((prev) => !prev);
+        }}
+        cancelHandler={goBack}
+        title={"서비스 운영사 신규 등록 취소 안내"}
+        contents={
+          "입력된 서비스 운영사 정보가 저장되지 않습니다.\n신규 등록을 취소하시겠습니까?"
+        }
       />
     </ContainerBase>
   );

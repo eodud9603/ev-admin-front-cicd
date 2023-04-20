@@ -112,9 +112,9 @@ export const ChargerOperatorRegistration = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "서비스 운영사 관리", href: "" },
-            { label: "서비스 운영사 상세", href: "" },
+            { label: "서비스 운영사 등록", href: "" },
           ]}
-          title={"서비스 운영사 상세"}
+          title={"서비스 운영사 등록"}
         />
         <BasicInfoSection className={"mt-3"}>
           <Label className={"fw-semibold font-size-16 m-0 mb-2"}>
