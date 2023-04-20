@@ -41,7 +41,7 @@ const EventAdd = () => {
     attachmentList: [],
   });
   /* 배너 이미지 */
-  const { images, upload, drop, remove } = useImages([]);
+  const [images, { upload, drop, remove }] = useImages([]);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);

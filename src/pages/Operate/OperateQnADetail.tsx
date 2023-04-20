@@ -72,13 +72,7 @@ const OperateQnADetail = () => {
   const [{ answerContent }, { onChange }] = useInputs({
     answerContent: "안녕하세요! 모빌리티로 통하는 세상 트루입니다.",
   });
-  const {
-    images: answerImages,
-    upload,
-    drop,
-    dropBlock,
-    remove,
-  } = useImages([]);
+  const [answerImages, { upload, drop, dropBlock, remove }] = useImages([]);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);

@@ -8,7 +8,18 @@ interface IImageItemProps {
 /**
  * * 이미지 리스트 custom hook
  */
-const useImages = (list: IImageItemProps[]) => {
+const useImages = (
+  list: IImageItemProps[]
+): [
+  IImageItemProps[],
+  {
+    upload: React.ChangeEventHandler<HTMLInputElement>;
+    dropBlock: React.DragEventHandler<HTMLDivElement>;
+    drop: React.DragEventHandler<HTMLDivElement>;
+    remove: (index: number) => void;
+    reset: () => void;
+  }
+] => {
   const [images, setImages] = useState<IImageItemProps[]>(list);
 
   /** 이미지 업로드 */
@@ -32,16 +43,16 @@ const useImages = (list: IImageItemProps[]) => {
   );
 
   /** drag and drop block (새창으로 파일 열리는 것 방지) */
-  const dropBlock :React.DragEventHandler<HTMLDivElement> = useCallback((e) => {
+  const dropBlock: React.DragEventHandler<HTMLDivElement> = useCallback((e) => {
     e.nativeEvent.preventDefault();
   }, []);
 
   /** drag and drop하여 이미지 파일 추가 */
-  const drop:React.DragEventHandler<HTMLDivElement> = useCallback((e) => {
+  const drop: React.DragEventHandler<HTMLDivElement> = useCallback((e) => {
     e.nativeEvent.preventDefault();
 
     const files = e?.nativeEvent.dataTransfer?.files;
-    if(!files) {
+    if (!files) {
       return;
     }
 
@@ -50,7 +61,7 @@ const useImages = (list: IImageItemProps[]) => {
     for (const image of uploadImages) {
       /** 이미지 타입 여부 체크 */
       const isImageType = image.type.includes("image");
-      if(!isImageType) {
+      if (!isImageType) {
         continue;
       }
 
@@ -64,7 +75,7 @@ const useImages = (list: IImageItemProps[]) => {
   const remove = useCallback(
     (index: number) => {
       const isNumber = !isNaN(index);
-      if(!isNumber) {
+      if (!isNumber) {
         return;
       }
 
@@ -81,21 +92,23 @@ const useImages = (list: IImageItemProps[]) => {
   /** 이미지 데이터 초기화 */
   const reset = useCallback(() => {
     /* 생성한 기존 URL을 폐기 (메모리 누수 방지) */
-    for(const image of images) {
+    for (const image of images) {
       URL.revokeObjectURL(image.src);
     }
 
     setImages(list);
   }, [images, list]);
 
-  return {
+  return [
     images,
-    upload,
-    dropBlock,
-    drop,
-    remove,
-    reset,
-  };
+    {
+      upload,
+      dropBlock,
+      drop,
+      remove,
+      reset,
+    },
+  ];
 };
 
 export default useImages;

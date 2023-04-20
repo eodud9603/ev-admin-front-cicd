@@ -54,7 +54,7 @@ const EventDetail = () => {
     attachmentList: [{ name: "2023.01.07 개인정보 처리 방침.pdf" }],
   });
   /* 배너 이미지 */
-  const { images, upload, drop, dropBlock, remove } = useImages([]);
+  const [images, { upload, drop, dropBlock, remove }] = useImages([]);
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setSelectedIndex(e.currentTarget.value);

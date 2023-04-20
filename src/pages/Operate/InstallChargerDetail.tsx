@@ -37,7 +37,7 @@ const InstallChargerDetail = () => {
     telMiddle: "0000",
     telEnd: "0000",
   });
-  const { images, upload, drop, dropBlock, reset } = useImages([]);
+  const [images, { upload, drop, dropBlock, reset }] = useImages([]);
   const navigate = useNavigate();
 
   const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {

@@ -21,7 +21,7 @@ export const AuthCodeForm = ({
   resendHandler,
   authCodeHandler,
 }: IAuthCodeForm) => {
-  const { startTimer, remain } = useTimer({
+  const [{ remain }, { startTimer }] = useTimer({
     timer: 1000 * 60 * 5,
   });
   const startTimerRef = useRef(startTimer);

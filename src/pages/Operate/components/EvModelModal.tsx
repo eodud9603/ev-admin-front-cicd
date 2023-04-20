@@ -68,7 +68,7 @@ const EvModelModal = (props: IEvModelModalProps) => {
     regName: data?.manager ?? "",
     regDate: data?.regDate ?? "",
   });
-  const { images, upload, remove, reset: resetImages } = useImages([]);
+  const [images, { upload, remove, reset: resetImages }] = useImages([]);
 
   const clear = () => {
     reset();

@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface ITimerProps {
-  timer?: number
+  timer?: number;
 }
 
 /* 기본 단위: 1초 */
@@ -9,14 +9,19 @@ const UNIT_TIME = 1000;
 /* 기본 타이머 시간: 5분 */
 const DEFAULT_TIME = UNIT_TIME * 60 * 5;
 
-const useTimer = ({ timer = DEFAULT_TIME }: ITimerProps) => {
+const useTimer = ({
+  timer = DEFAULT_TIME,
+}: ITimerProps): [
+  { remain: number; progress: string },
+  { startTimer: () => void; stopTimer: () => void }
+] => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const saveTimeRef = useRef(timer);
 
   const [remainedTime, setRemainedTime] = useState(timer);
   const [start, setStart] = useState(false);
 
-  const progress = start ? 'ING' : 'END';
+  const progress = start ? "ING" : "END";
 
   useEffect(() => {
     /* 타이머 종료 */
@@ -71,12 +76,13 @@ const useTimer = ({ timer = DEFAULT_TIME }: ITimerProps) => {
   /** * 타이머 종료 */
   const stopTimer = useCallback(() => setStart(false), []);
 
-  return {
-    startTimer,
-    stopTimer,
-    remain: remainedTime,
-    progress,
-  };
+  return [
+    { remain: remainedTime, progress },
+    {
+      startTimer,
+      stopTimer,
+    },
+  ];
 };
 
 export default useTimer;
