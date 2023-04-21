@@ -46,6 +46,9 @@ import { getParams } from "src/utils/params";
 import { YNType } from "src/api/api.interface";
 import { postStationModify } from "src/api/station/stationApi";
 import ContractDropdown from "src/pages/Charger/components/ContractDropdown";
+import createValidation from "src/utils/validate";
+import { YUP_CHARGER_STATION } from "src/constants/valid/charger";
+import DetailValidCheckModal from "./components/DetailValidCheckModal";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -115,6 +118,11 @@ const ChargerStationDetail = () => {
 
   /* 전역 disabled 처리 */
   const [disabled, setDisabled] = useState(true);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
   /* 수정완료 모달 */
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
@@ -232,6 +240,11 @@ const ChargerStationDetail = () => {
 
   /** 수정 */
   const modify = async () => {
+    if (disabled) {
+      setDisabled(false);
+      return;
+    }
+
     /* 등록 params */
     const modifyParams: IRequestStationModify = {
       ...inputs,
@@ -243,6 +256,19 @@ const ChargerStationDetail = () => {
       contractId: Number(contractId),
     };
     getParams(modifyParams);
+
+    /* valid 체크 */
+    /* 유효성 체크 */
+    const scheme = createValidation(YUP_CHARGER_STATION);
+    const [invalid] = scheme(modifyParams);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
 
     if (!disabled) {
       /* valid 체크 */
@@ -1126,6 +1152,12 @@ const ChargerStationDetail = () => {
         />
       </BodyBase>
 
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
       <DetailCompleteModal
         isOpen={isEditComplete}
         onClose={() => {
