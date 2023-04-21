@@ -1,9 +1,11 @@
-import * as yup from "yup";
+import { StringSchema, ValidationError, object } from "yup";
 import { RequiredStringSchema } from "yup/lib/string";
 import { AnyObject } from "yup/lib/types";
 
 export type FieldValidation = {
-  validation: RequiredStringSchema<string | undefined, AnyObject>;
+  validation:
+    | RequiredStringSchema<string | undefined, AnyObject>
+    | StringSchema<string | undefined, AnyObject>;
 };
 
 type FieldSchemaMap<T> = {
@@ -11,7 +13,7 @@ type FieldSchemaMap<T> = {
 };
 
 const createValidation = <T extends FieldSchemaMap<T>>(fieldSchemaMap: T) => {
-  const schema = yup.object().shape(
+  const schema = object().shape(
     Object.entries(fieldSchemaMap).reduce((acc, [fieldName, fieldSchema]) => {
       const schema = fieldSchema as FieldValidation;
 
@@ -19,7 +21,7 @@ const createValidation = <T extends FieldSchemaMap<T>>(fieldSchemaMap: T) => {
         ...acc,
         [fieldName]: schema.validation,
       };
-    }, {} as { [key in keyof T]: yup.StringSchema<string> })
+    }, {} as { [key in keyof T]: StringSchema<string> })
   );
 
   return <T,>(values: T) => {
@@ -27,7 +29,7 @@ const createValidation = <T extends FieldSchemaMap<T>>(fieldSchemaMap: T) => {
       schema.validateSync(values, { abortEarly: false });
       return [undefined];
     } catch (err) {
-      if (err instanceof yup.ValidationError) {
+      if (err instanceof ValidationError) {
         return err.inner.reduce(
           (acc: { field: string; message: string }[], validationError) => {
             acc.push({

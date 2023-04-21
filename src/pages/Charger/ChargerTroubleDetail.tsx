@@ -16,7 +16,6 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
-import { number, object, string } from "yup";
 import { useLoaderData, useNavigate } from "react-router";
 import { IBrokenDetailResponse } from "src/api/broken/brokenApi.interface";
 import useInputs from "src/hooks/useInputs";
@@ -30,13 +29,11 @@ import { fileUpload } from "src/utils/upload";
 import { standardDateFormat } from "src/utils/day";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 import { getParams } from "src/utils/params";
-
-const contractValidation = object({
-  stationKey: string().required("충전소 ID를 입력해주세요."),
-  stationName: string().required("충전소명을 입력해주세요."),
-  chargerKey: string().required("충전기 ID를 입력해주세요."),
-  reservation: number().required("예약번호를 입력해주세요."),
-});
+import createValidation from "src/utils/validate";
+import {
+  YUP_CHARGER_BROKEN,
+  YUP_CHARGER_BROKEN_EXTRA,
+} from "src/constants/valid/charger";
 
 export const ChargerTroubleDetail = () => {
   const data = useLoaderData() as IBrokenDetailResponse | null;
@@ -60,7 +57,10 @@ export const ChargerTroubleDetail = () => {
     onClosed: undefined,
   });
   /* 미입력 안내 모달 */
-  const [invalidModalOpen, setInvalidModalOpen] = useState(false);
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
 
   const [inputs, { onChange, onChangeSingle }] = useInputs({
     id: (data?.id ?? "").toString(),
@@ -180,21 +180,21 @@ export const ChargerTroubleDetail = () => {
     }
   };
 
-  /** valid check */
-  const isValid = async () => {
-    /** 유효성 체크 */
-    const valid = await contractValidation.isValid(inputs);
-
-    return valid;
-  };
-
   /** disabled 상태 변경 */
   const onChangeDisabled = async () => {
     if (!disabled) {
-      /** 유효성 체크 */
-      const valid = await isValid();
-      if (!valid) {
-        setInvalidModalOpen(true);
+      /* 유효성 체크 */
+      const scheme = createValidation({
+        ...YUP_CHARGER_BROKEN,
+        ...YUP_CHARGER_BROKEN_EXTRA,
+      });
+      const [invalid] = scheme(inputs);
+
+      if (invalid) {
+        setInvalidModal({
+          isOpen: true,
+          content: invalid.message,
+        });
         return;
       }
 
@@ -444,6 +444,7 @@ export const ChargerTroubleDetail = () => {
             >
               <TextInputBase disabled={true} name={"stationId"} value={""} />
               <ButtonBase
+                disabled={true}
                 label={"관리자 검색"}
                 className={"mx-2 w-md"}
                 outline={true}
@@ -546,16 +547,19 @@ export const ChargerTroubleDetail = () => {
           });
         }}
       />
-      <DetailValidCheckModal
-        isOpen={invalidModalOpen}
-        onClose={() => setInvalidModalOpen(false)}
-      />
+
       <DetailDeleteModal
         isOpen={deleteModalOpen}
         onClose={onChangeDeleteModalVisible}
         deleteHandler={deleteHandler}
         title={"충전기 고장/파손 정보 삭제 안내"}
         contents={"충전기 고장/파손 정보를 삭제하시겠습니까?"}
+      />
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
       />
       <DetailCompleteModal
         {...textModal}

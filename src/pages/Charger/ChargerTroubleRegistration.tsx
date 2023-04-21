@@ -23,21 +23,21 @@ import { postBrokenRegister } from "src/api/broken/brokenApi";
 import { BROKEN_LIST } from "src/constants/list";
 import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
 import { fileUpload } from "src/utils/upload";
-import { number, object, string } from "yup";
 import { TBrokenStatus } from "src/constants/status";
 import { getParams } from "src/utils/params";
-
-const contractValidation = object({
-  stationKey: string().required("충전소 ID를 입력해주세요."),
-  stationName: string().required("충전소명을 입력해주세요."),
-  chargerKey: string().required("충전기 ID를 입력해주세요."),
-  reservation: number().required("예약번호를 입력해주세요."),
-});
+import createValidation from "src/utils/validate";
+import { YUP_CHARGER_BROKEN } from "src/constants/valid/charger";
+import DetailValidCheckModal from "./components/DetailValidCheckModal";
 
 export const ChargerTroubleRegistration = () => {
   const nav = useNavigate();
   const [isChangeOperatorModal, setIsChangeOperatorModal] = useState(false);
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
   /* 등록완료 모달 */
   const [isAddComplete, setIsAddComplete] = useState(false);
 
@@ -93,8 +93,15 @@ export const ChargerTroubleRegistration = () => {
    * @TODO 운영자ID 검색(데이터), 처리자ID(dropdown data)
    */
   const registerHandler = async () => {
-    const isValid = await contractValidation.isValid(inputs);
-    if (!isValid) {
+    /* 유효성 체크 */
+    const scheme = createValidation(YUP_CHARGER_BROKEN);
+    const [invalid] = scheme(inputs);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
       return;
     }
 
@@ -378,6 +385,7 @@ export const ChargerTroubleRegistration = () => {
                 onChange={onChange}
               />
               <ButtonBase
+                disabled={true}
                 label={"관리자 검색"}
                 className={"mx-2 w-md"}
                 onClick={handleChangeOperatorModal}
@@ -446,6 +454,12 @@ export const ChargerTroubleRegistration = () => {
             chargerKey: (data?.chargerKey ?? "").toString(),
           });
         }}
+      />
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
       />
       <DetailCompleteModal
         isOpen={isAddComplete}
