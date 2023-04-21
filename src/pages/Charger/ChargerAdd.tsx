@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -41,6 +41,7 @@ import { getParams } from "src/utils/params";
 import { objectToArray } from "src/utils/convert";
 import ManufacturerDropdown from "src/pages/Charger/components/ManufacturerDropdown";
 import ManufacturerModelDropdown from "src/pages/Charger/components/ManufacturerModelDropdown";
+import { useTemps } from "src/hooks/useTemps";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -217,6 +218,20 @@ const ChargerAdd = () => {
       setIsCompleteComplete(true);
     }
   };
+
+  /** focus시, unmounted됐을 때, 가장 최신 데이터 가져오는 콜백 함수 */
+  const { dataCallback } = useTemps({
+    data: { inputs },
+    pageTitle: "충전기 등록",
+    pageType: "registration",
+  });
+
+  /** focus시, unmounted됐을 때, 가장 최신 데이터로 input값 저장 */
+  useEffect(() => {
+    const test = dataCallback();
+
+    onChangeSingle(test.inputs);
+  }, [dataCallback]);
 
   return (
     <ContainerBase>
