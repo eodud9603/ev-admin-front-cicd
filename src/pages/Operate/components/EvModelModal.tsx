@@ -207,8 +207,6 @@ const EvModelModal = (props: IEvModelModalProps) => {
     removeParams(modifyParams);
     getParams(modifyParams);
 
-    console.log(modifyParams);
-
     /* 유효성 체크 */
     const scheme = createValidation({
       ...YUP_OPERATE_EV_MODEL,
