@@ -22,7 +22,7 @@ import { useNavigate } from "react-router";
 import { IRequestSupplierRegister } from "src/api/supplier/supplierApi.interface";
 import { YNType } from "src/api/api.interface";
 import { fileUpload } from "src/utils/upload";
-import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_OPERATOR } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";

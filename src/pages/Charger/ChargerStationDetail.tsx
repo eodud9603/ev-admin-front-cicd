@@ -22,7 +22,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
-import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
@@ -48,7 +48,7 @@ import { postStationModify } from "src/api/station/stationApi";
 import ContractDropdown from "src/pages/Charger/components/ContractDropdown";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_STATION } from "src/constants/valid/charger";
-import DetailValidCheckModal from "./components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [

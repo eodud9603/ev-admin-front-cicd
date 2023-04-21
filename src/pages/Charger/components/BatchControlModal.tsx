@@ -8,7 +8,7 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import { ModalBody } from "reactstrap";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
-import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 
 interface IAlarmAddMemberModal {
   isOpen: boolean;

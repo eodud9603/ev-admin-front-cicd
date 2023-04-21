@@ -21,7 +21,7 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import styled from "styled-components";
 import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
-import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";

@@ -91,7 +91,9 @@ export const ChargerOperator = () => {
     elements: data?.elements,
     totalPages: data?.totalPages,
     totalElements: data?.totalElements,
-    emptyMessage: "등록된 서비스 운영사 정보가 없습니다.",
+    emptyMessage: !data?.elements
+      ? "오류가 발생하였습니다."
+      : "등록된 서비스 운영사 정보가 없습니다.",
   });
   /* 체크 리스트 */
   const [checkList, setCheckList] = useState<number[]>([]);

@@ -27,34 +27,49 @@ import EvModelModal, {
 } from "src/pages/Operate/components/EvModelModal";
 import useInputs from "src/hooks/useInputs";
 import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
+import { useLoaderData } from "react-router";
+import {
+  IEvModelItem,
+  IEvModelListResponse,
+  IRequestEvModelList,
+} from "src/api/ev/evModelApi.interface";
+import useList from "src/hooks/useList";
+import { getPageList } from "src/utils/pagination";
+import { getParams } from "src/utils/params";
+import { getEvModelList } from "src/api/ev/evModelApi";
+import { objectToArray } from "src/utils/convert";
+import { CHARGER_RATION, CHARGER_TYPE } from "src/constants/status";
+import { standardDateFormat } from "src/utils/day";
+
+const defaultDropItem = {
+  label: "전체",
+  value: "",
+};
 
 /* 급/완속 필터 */
-const speedList = [
-  {
-    label: "전체",
-    value: "",
-  },
+const chargerClassList = [
+  defaultDropItem,
   {
     label: "급속",
-    value: "1",
+    value: "QUICK",
   },
   {
     label: "완속",
-    value: "2",
+    value: "STANDARD",
   },
 ];
-/* 검색어 필터 */
-const searchList = [{ label: "전체", value: "" }];
 
-/* 충전기 타입 필터 */
-const typeList = [{ label: "전체", value: "" }];
+/* 검색어 필터 */
+const searchList = [
+  { label: "차량모델명", value: "EvModelName" },
+  { label: "차량모델 ID", value: "EvModelId" },
+];
 
 /** 정렬 필터 */
 const sortList = [
-  {
-    label: "기본",
-    value: "",
-  },
+  { label: "기본", value: "CreatedDate" },
+  { label: "차량모델명", value: "EvModelName" },
+  { label: "생성일", value: "CreatedDate" },
 ];
 
 /* 목록 헤더 */
@@ -71,69 +86,99 @@ const tableHeader = [
   { label: "등록일" },
 ];
 
-/* 임시 목록 데이터 */
-const modelList = [
-  {
-    id: "1",
-    chargerType: "급속",
-    connectorType: "DC 콤보",
-    manufacturer: "현대",
-    carModel: "코나 EV",
-    carYear: "2023",
-    battery: "58",
-    manager: "백민규",
-    regDate: "2022.01.07",
-  },
-];
-
 const EvModel = () => {
-  const [tabList, setTabList] = useState([{ label: "전기차 모델 관리" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
-  const [page, setPage] = useState(1);
+  const data = useLoaderData() as IEvModelListResponse | null;
+
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<IEvModelItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: !data?.elements
+      ? "오류가 발생하였습니다."
+      : "등록된 모델이 없습니다.",
+  });
+
   /* 모델 등록/수정 모달 */
   const [modelModal, setModelModal] = useState<
-    Pick<IEvModelModalProps, "type" | "isOpen" | "data">
+    Pick<IEvModelModalProps, "type" | "isOpen" | "id">
   >({
     type: "REGISTRATION",
     isOpen: false,
-    data: undefined,
+    id: undefined,
   });
   /* 선택삭제 버튼 활성화 여부 */
   const [isActive, setIsActive] = useState(false);
   /* 선택삭제 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const [{ speed, searchText }, { onChange, onChangeSingle }] = useInputs({
-    speed: "",
-    searchRange: "",
+  const [
+    {
+      startDate,
+      endDate,
+      chargerClass,
+      searchRange,
+      searchText,
+      chargerType,
+      sort,
+      count,
+    },
+    { onChange, onChangeSingle },
+  ] = useInputs({
+    startDate: "",
+    endDate: "",
+    chargerClass: "",
+    searchRange: "EvModelName",
     searchText: "",
     chargerType: "",
-    sort: "",
-    count: "1",
+    sort: "CreatedDate",
+    count: "10",
   });
 
   const itemsRef = useRef<IEvModelItemRef[]>([]);
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestEvModelList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams: IRequestEvModelList = {
+        regStartDate: startDate,
+        regEndDate: endDate,
+        size: Number(count),
+        page,
+        sort: sort as IRequestEvModelList["sort"],
+        chargerClass: chargerClass as IRequestEvModelList["chargerClass"],
+        chargerType: chargerType as IRequestEvModelList["chargerType"],
+      };
+      if (searchRange && searchText) {
+        searchParams.searchType =
+          searchRange as IRequestEvModelList["searchType"];
+        searchParams.searchKeyword = searchText;
+      }
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
+      /* 검색  */
+      const { code, data, message } = await getEvModelList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 모델이 없습니다.",
+        });
+      } else {
+        reset({ code, message: message || "오류가 발생하였습니다." });
+      }
+    };
 
   /** 선택항목 삭제 */
   const deleteHandler = () => {
@@ -175,12 +220,7 @@ const EvModel = () => {
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -195,16 +235,20 @@ const EvModel = () => {
         <SearchSection className={"pt-2 pb-4 border-top border-bottom"}>
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col md={4}>
-              <DateGroup className={"mb-0"} label={"등록일"} />
+              <DateGroup
+                className={"mb-0"}
+                label={"등록일"}
+                onChangeDate={onChangeSingle}
+              />
             </Col>
             <Col md={4} />
             <Col md={4}>
               <RadioGroup
                 title={"급속 / 완속"}
-                name={"speed"}
-                list={speedList.map((data) => ({
+                name={"chargerClass"}
+                list={chargerClassList.map((data) => ({
                   ...data,
-                  checked: speed === data.value,
+                  checked: chargerClass === data.value,
                 }))}
                 onChange={onChange}
               />
@@ -222,6 +266,7 @@ const EvModel = () => {
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
             <Col className={"d-flex"} md={4}>
@@ -232,7 +277,10 @@ const EvModel = () => {
                     onClickDropdownItem: (_, value) => {
                       onChangeSingle({ chargerType: value });
                     },
-                    menuItems: typeList,
+                    menuItems: [
+                      defaultDropItem,
+                      ...objectToArray(CHARGER_TYPE),
+                    ],
                   },
                 ]}
                 className={"me-2 w-xs"}
@@ -249,6 +297,10 @@ const EvModel = () => {
                   {
                     onClickDropdownItem: (_, value) => {
                       onChangeSingle({ sort: value });
+                      void searchHandler({
+                        page: 1,
+                        sort: value as IRequestEvModelList["sort"],
+                      })();
                     },
                     menuItems: sortList,
                   },
@@ -263,18 +315,17 @@ const EvModel = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{modelList.length}개</span>의
-              모델이 있습니다.
+              총 <span className={"text-turu"}>{total}개</span>의 모델이
+              있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
-              <span className={"font-size-10 text-muted"}>
-                2023-04-01 14:51기준
-              </span>
+              <span className={"font-size-10 text-muted"}>{time}</span>
               <DropdownBase
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ count: value });
+                  void searchHandler({ page: 1, size: Number(value) })();
                 }}
               />
               <ButtonBase
@@ -284,7 +335,7 @@ const EvModel = () => {
                   setModelModal({
                     isOpen: true,
                     type: "REGISTRATION",
-                    data: undefined,
+                    id: undefined,
                   });
                 }}
               />
@@ -302,19 +353,19 @@ const EvModel = () => {
 
           <TableBase tableHeader={tableHeader}>
             <>
-              {modelList.length > 0 ? (
-                modelList.map((evModel, index) => (
+              {list.length > 0 ? (
+                list.map((evModel, index) => (
                   <EvModelItem
                     ref={(ref: IEvModelItemRef) =>
                       (itemsRef.current[index] = ref)
                     }
-                    key={index}
+                    key={evModel.id}
                     index={index}
                     rowClickHandler={() => {
                       setModelModal({
                         isOpen: true,
                         type: "EDIT",
-                        data: evModel,
+                        id: evModel.id,
                       });
                     }}
                     onChangeActive={onChangeActive}
@@ -324,14 +375,25 @@ const EvModel = () => {
               ) : (
                 <tr>
                   <td colSpan={10} className={"py-5 text-center text"}>
-                    등록된 모델이 없습니다.
+                    {message}
                   </td>
                 </tr>
               )}
             </>
           </TableBase>
 
-          <PaginationBase setPage={setPage} data={{}} />
+          <PaginationBase
+            setPage={setPage}
+            data={{
+              hasPreviousPage: page > 1,
+              hasNextPage: page < lastPage,
+              navigatePageNums: getPageList(page, lastPage),
+              pageNum: page,
+              onChangePage: (page) => {
+                void searchHandler({ page })();
+              },
+            }}
+          />
         </ListSection>
       </BodyBase>
 
@@ -384,20 +446,11 @@ const HoverTr = styled.tr`
 interface IEvModelItemRef {
   check: boolean;
   onChange: (bool: boolean) => void;
-  data: IEvModelItemProps;
+  data: IEvModelItem;
 }
 
-interface IEvModelItemProps {
+interface IEvModelItemProps extends IEvModelItem {
   index: number;
-  id: string;
-  chargerType: string;
-  connectorType: string;
-  manufacturer: string;
-  carModel: string;
-  carYear: string;
-  battery: string;
-  manager: string;
-  regDate: string;
   rowClickHandler?: () => void;
 }
 
@@ -409,24 +462,24 @@ const EvModelItem = forwardRef<
     index,
     id,
     chargerType,
-    connectorType,
-    manufacturer,
-    carModel,
-    carYear,
-    battery,
-    manager,
-    regDate,
-
+    chargerClass,
+    manufactureName,
+    modelName,
+    year,
+    capacity,
+    managerName,
+    createdDate,
     rowClickHandler,
     onChangeActive,
   } = props;
+
   const [check, setChecked] = useState(false);
 
-  const onChange = () => {
+  const onChange = useCallback(() => {
     onChangeActive(!check);
 
     setChecked((prev) => !prev);
-  };
+  }, [onChangeActive, check]);
 
   useImperativeHandle(
     ref,
@@ -435,7 +488,7 @@ const EvModelItem = forwardRef<
       onChange,
       data: props,
     }),
-    [check, props]
+    [check, onChange, props]
   );
 
   return (
@@ -443,20 +496,20 @@ const EvModelItem = forwardRef<
       <td onClick={(e) => e.stopPropagation()}>
         <CheckBoxBase
           label={""}
-          name={id}
+          name={id.toString()}
           checked={check}
           onChange={onChange}
         />
       </td>
       <td>{index + 1}</td>
-      <td>{chargerType}</td>
-      <td>{connectorType}</td>
-      <td>{manufacturer}</td>
-      <td>{carModel}</td>
-      <td>{carYear}</td>
-      <td>{battery}Kwh</td>
-      <td>{manager}</td>
-      <td>{regDate}</td>
+      <td>{CHARGER_RATION[chargerClass] ?? "-"}</td>
+      <td>{CHARGER_TYPE[chargerType] ?? "-"}</td>
+      <td>{manufactureName ?? "-"}</td>
+      <td>{modelName ?? "-"}</td>
+      <td>{year ?? "-"}</td>
+      <td>{capacity ?? "-"}Kwh</td>
+      <td>{managerName ?? "-"}</td>
+      <td>{standardDateFormat(createdDate, "YYYY.MM.DD")}</td>
     </HoverTr>
   );
 });
