@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -36,11 +36,15 @@ import {
   TOperationStatusKeys,
 } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
-import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
+import {
+  IChargerDetailResponse,
+  IRequestChargerRegister,
+} from "src/api/charger/chargerApi.interface";
 import { getParams } from "src/utils/params";
 import { objectToArray } from "src/utils/convert";
 import ManufacturerDropdown from "src/pages/Charger/components/ManufacturerDropdown";
 import ManufacturerModelDropdown from "src/pages/Charger/components/ManufacturerModelDropdown";
+import { useTabs } from "src/hooks/useTabs";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -58,7 +62,6 @@ const ChargerAdd = () => {
   const [isCompleteCancel, setIsCompleteCancel] = useState(false);
   /* 충전소검색 모달 */
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
-
   /* 기본정보 */
   const [inputs, { onChange, onChangeSingle }] = useInputs({
     chargerKey: "",
@@ -95,6 +98,7 @@ const ChargerAdd = () => {
     reservationType: "",
     etcInfo: "",
   });
+
   const {
     chargerKey,
     assetNumber,
@@ -217,6 +221,20 @@ const ChargerAdd = () => {
       setIsCompleteComplete(true);
     }
   };
+
+  /** focus시, unmounted됐을 때, 가장 최신 데이터 가져오는 콜백 함수 */
+  const { dataCallback } = useTabs({
+    data: inputs,
+    pageTitle: "충전기 등록",
+    pageType: "add",
+  });
+
+  /** focus시, unmounted됐을 때, 가장 최신 데이터로 input값 저장 */
+  useEffect(() => {
+    // @ts-ignore
+    //TODO:: type 지정
+    onChangeSingle(dataCallback());
+  }, [dataCallback]);
 
   return (
     <ContainerBase>
