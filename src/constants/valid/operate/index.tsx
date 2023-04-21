@@ -26,6 +26,9 @@ export const YUP_OPERATE_EV_MODEL: FieldSchemaMap = {
     validation: number().required("배터리 용량은 필수 입력 항목입니다."),
   },
   memo: { validation: string().required("차량 이슈는 필수 입력 항목입니다.") },
+  fileId: {
+    validation: number().required("차량 이미지는 필수 입력 항목입니다."),
+  },
 };
 
 /** 전기차 모델 수정 yup */

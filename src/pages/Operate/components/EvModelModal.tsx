@@ -49,6 +49,7 @@ import {
   YUP_OPERATE_EV_MODEL_EXTRA,
 } from "src/constants/valid/operate";
 import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import { fileUpload } from "src/utils/upload";
 
 export interface IEvModelModalProps {
   type: "EDIT" | "REGISTRATION";
@@ -95,11 +96,15 @@ const EvModelModal = (props: IEvModelModalProps) => {
     year,
     capacity,
     managerName,
+    fileId,
+    fileUrl,
+    fileName,
     createdDate,
     memo,
   } = inputs;
 
-  const [images, { upload, remove, reset: resetImages }] = useImages([]);
+  const [images, { upload, remove, reset: resetImages, convertFileList }] =
+    useImages([]);
 
   /* 미입력 안내 모달 */
   const [invalidModal, setInvalidModal] = useState({
@@ -135,74 +140,74 @@ const EvModelModal = (props: IEvModelModalProps) => {
     resetImages();
   };
 
-  /* 모달 open -> id 데이터 있을 경우, 상세 조회 */
-  useEffect(() => {
-    if (!isOpen || !searchId || isNaN(searchId)) {
-      return;
+  /** 이미지 업로드 */
+  const imageUpload = async () => {
+    const [uploadImage] = images;
+
+    if (!uploadImage) {
+      return {
+        fileId: undefined,
+      };
     }
 
-    const init = async () => {
-      const { data } = await getEvModelDetail({ id: searchId });
+    const files = convertFileList();
+    /** 파일 업로드 params */
+    const fileParams = await fileUpload({
+      url: uploadImage.src,
+      file: files,
+    });
+    fileParams.id = fileParams.id || Number(fileId);
+    fileParams.name = fileParams.name || fileName;
+    fileParams.url = fileParams.url || fileUrl;
 
-      if (data) {
-        onChangeSingle({
-          chargerType: data.chargerType ?? "",
-          modelChargerClass: data.chargerClass ?? "",
-          manufactureName: data.manufactureName ?? "",
-          modelName: data.modelName ?? "",
-          year: data.year ?? "",
-          managerId: data.managerId ?? "",
-          managerName: data.managerName ?? "",
-          memo: data.memo ?? "",
-          fileUrl: data.fileUrl ?? "",
-          fileName: data.fileName ?? "",
-          id: (data.id ?? "").toString(),
-          manufactureId: (data.manufactureId ?? "").toString(),
-          capacity: (data.capacity ?? "").toString(),
-          fileId: (data.fileId ?? "").toString(),
-          createdDate: data.createdDate
-            ? standardDateFormat(data.createdDate, "YYYY-MM-DD")
-            : "",
-        });
-      }
+    return {
+      fileId: fileParams.id,
+      fileName: fileParams.name,
+      fileUrl: fileParams.url,
     };
+  };
 
-    void init();
-  }, [isOpen, searchId, onChangeSingle]);
+  /** 등록/수정시, 불필요한 params 제거 */
+  const removeParams = (
+    params: IRequestEvModelModify | IRequestEvModelRegister
+  ) => {
+    if (!inputs.managerId) {
+      delete params.managerId;
+      delete params.managerName;
+    }
+    if (!inputs.manufactureId) {
+      delete params.manufactureId;
+      delete params.manufactureName;
+    }
+    if (!params.fileId) {
+      delete params.fileId;
+      delete params.fileName;
+      delete params.fileUrl;
+    }
+    delete params.createdDate;
+  };
 
   /** 수정 */
   const modify = async () => {
-    /** @TODO 이미지 업로드 추가 필요 (작업예정) */
+    /** 이미지 params */
+    const imageParams = await imageUpload();
 
     /** 수정 params */
     const modifyParams: IRequestEvModelModify = {
       ...inputs,
+      ...imageParams,
       chargerType: chargerType as TChargerTypeKeys,
       chargerClass: modelChargerClass as TChargerRationKeys,
       id: Number(inputs.id),
       manufactureId: Number(inputs.manufactureId),
       capacity: Number(inputs.capacity),
-      fileId: Number(inputs.fileId),
     };
 
-    if (!inputs.managerId) {
-      delete modifyParams.managerId;
-      delete modifyParams.managerName;
-    }
-    if (!inputs.manufactureId) {
-      delete modifyParams.manufactureId;
-      delete modifyParams.manufactureName;
-    }
-    if (!inputs.fileId) {
-      delete modifyParams.fileId;
-      delete modifyParams.fileName;
-    }
-    delete modifyParams.fileName;
-    delete modifyParams.fileUrl;
-    delete modifyParams.manufactureName;
-    delete modifyParams.createdDate;
-
+    /* params 제거 */
+    removeParams(modifyParams);
     getParams(modifyParams);
+
+    console.log(modifyParams);
 
     /* 유효성 체크 */
     const scheme = createValidation({
@@ -234,37 +239,23 @@ const EvModelModal = (props: IEvModelModalProps) => {
 
   /** 등록 */
   const register = async () => {
-    /** @TODO 이미지 업로드 추가 필요 (작업예정) */
+    /** 이미지 params */
+    const imageParams = await imageUpload();
 
     /** 등록 params */
     const registerParams: IRequestEvModelRegister = {
       ...inputs,
+      ...imageParams,
       id: Number(id),
       chargerType: chargerType as TChargerTypeKeys,
       chargerClass: modelChargerClass as TChargerRationKeys,
       manufactureId: Number(inputs.manufactureId),
       capacity: Number(inputs.capacity),
-      fileId: Number(inputs.fileId),
     };
 
-    if (!inputs.managerId) {
-      delete registerParams.managerId;
-      delete registerParams.managerName;
-    }
-    if (!inputs.manufactureId) {
-      delete registerParams.manufactureId;
-      delete registerParams.manufactureName;
-    }
-    if (!inputs.fileId) {
-      delete registerParams.fileId;
-      delete registerParams.fileName;
-    }
+    /* params 제거 */
+    removeParams(registerParams);
     delete registerParams.id;
-    delete registerParams.fileName;
-    delete registerParams.fileUrl;
-    delete registerParams.manufactureName;
-    delete registerParams.createdDate;
-
     getParams(registerParams);
 
     /* 유효성 체크 */
@@ -291,6 +282,41 @@ const EvModelModal = (props: IEvModelModalProps) => {
       });
     }
   };
+
+  /* 모달 open -> id 데이터 있을 경우, 상세 조회 */
+  useEffect(() => {
+    if (!isOpen || !searchId || isNaN(searchId)) {
+      return;
+    }
+
+    const init = async () => {
+      const { data } = await getEvModelDetail({ id: searchId });
+
+      if (data) {
+        onChangeSingle({
+          chargerType: data.chargerType ?? "",
+          modelChargerClass: data.chargerClass ?? "",
+          manufactureName: data.manufactureName ?? "",
+          modelName: data.modelName ?? "",
+          year: data.year ?? "",
+          managerId: data.managerId ?? "",
+          managerName: data.managerName ?? "",
+          memo: data.memo ?? "",
+          fileId: (data.fileId ?? "").toString(),
+          fileUrl: data.fileUrl ?? "",
+          fileName: data.fileName ?? "",
+          id: (data.id ?? "").toString(),
+          manufactureId: (data.manufactureId ?? "").toString(),
+          capacity: (data.capacity ?? "").toString(),
+          createdDate: data.createdDate
+            ? standardDateFormat(data.createdDate, "YYYY-MM-DD")
+            : "",
+        });
+      }
+    };
+
+    void init();
+  }, [isOpen, searchId, onChangeSingle]);
 
   return (
     <ModalBase
@@ -472,7 +498,7 @@ const EvModelModal = (props: IEvModelModalProps) => {
 
           <DetailLabelCol className={"d-flex justify-content-end"}>
             <>
-              {images.length === 0 && (
+              {images.length === 0 && !fileUrl && (
                 <ButtonBase
                   outline
                   label={"추가"}
@@ -485,10 +511,17 @@ const EvModelModal = (props: IEvModelModalProps) => {
             </>
           </DetailLabelCol>
         </DetailRow>
-        {images.map((image, index) => (
+        {[
+          ...(fileUrl ? [{ src: fileUrl, file: { name: fileName } }] : []),
+          ...images,
+        ].map((image, index) => (
           <Row key={image.src} className={"m-0 py-4 border-top border-2"}>
             <Col className={"position-relative"} sm={12}>
-              <img width={"100%"} src={image.src} alt={image.file.name} />
+              <img
+                width={"100%"}
+                src={image.src}
+                alt={(image.file.name || fileName) + " 이미지 파일 깨짐"}
+              />
 
               <Icon
                 className={
@@ -496,6 +529,15 @@ const EvModelModal = (props: IEvModelModalProps) => {
                   "font-size-24 mdi mdi-close"
                 }
                 onClick={() => {
+                  if (fileUrl) {
+                    onChangeSingle({
+                      fileId: undefined,
+                      fileUrl: undefined,
+                      fileName: undefined,
+                    });
+                    return;
+                  }
+
                   remove(index);
                 }}
               />
