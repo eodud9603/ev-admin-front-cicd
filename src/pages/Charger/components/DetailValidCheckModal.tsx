@@ -6,6 +6,7 @@ import styled from "styled-components";
 interface IDetailValidCheckModalProps {
   isOpen: boolean;
   onClose: () => void;
+  content?: string;
 
   onClosed?: () => void;
   confirmHandler?: () => void;
@@ -15,6 +16,7 @@ const DetailValidCheckModal = (props: IDetailValidCheckModalProps) => {
   const {
     isOpen,
     onClose,
+    content,
 
     onClosed,
     confirmHandler,
@@ -36,8 +38,12 @@ const DetailValidCheckModal = (props: IDetailValidCheckModalProps) => {
       <PWrapper
         className={"p-4 font-size-16 border-bottom border-2 fw-semibold"}
       >
-        <span className={"text-turu fw-bold"}>필수 정보(*)</span>를
-        입력해주세요.
+        {content || (
+          <>
+            <span className={"text-turu fw-bold"}>필수 정보(*)</span>를
+            입력해주세요.
+          </>
+        )}
       </PWrapper>
       <div className={"d-flex justify-content-end"}>
         <ButtonBase

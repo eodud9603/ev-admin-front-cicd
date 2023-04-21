@@ -23,6 +23,9 @@ import { IRequestSupplierRegister } from "src/api/supplier/supplierApi.interface
 import { YNType } from "src/api/api.interface";
 import { fileUpload } from "src/utils/upload";
 import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import createValidation from "src/utils/validate";
+import { YUP_CHARGER_OPERATOR } from "src/constants/valid/charger";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },
@@ -32,6 +35,11 @@ const YN_LIST = [
 export const ChargerOperatorRegistration = () => {
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
   /* 등록완료 모달 */
   const [isAddComplete, setIsAddComplete] = useState(false);
 
@@ -92,6 +100,18 @@ export const ChargerOperatorRegistration = () => {
       contractFileName: fileParams.name,
       contractFileUrl: fileParams.url,
     };
+
+    /* 유효성 체크 */
+    const scheme = createValidation(YUP_CHARGER_OPERATOR);
+    const [invalid] = scheme(params);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
 
     /* 등록 요청 */
     const { code: registerCode } = await postSupplierRegister(params);
@@ -388,6 +408,12 @@ export const ChargerOperatorRegistration = () => {
             address: data.address,
           });
         }}
+      />
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
       />
       <DetailCompleteModal
         isOpen={isAddComplete}

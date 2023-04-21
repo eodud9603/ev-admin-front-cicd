@@ -11,18 +11,18 @@ import {
   ISupplierDetailResponse,
 } from "src/api/supplier/supplierApi.interface";
 
-const { supplier } = API_URL;
+const { supplierUrl } = API_URL;
 
 /** 운영서비스 업체 관리 목록 조회 api */
 export const getSupplierList = (params: IRequestSupplierList) => {
-  return api.get<IRequestSupplierListResponse>(`${supplier}/list`, {
+  return api.get<IRequestSupplierListResponse>(`${supplierUrl}/list`, {
     params,
   });
 };
 
 /** 운영서비스 업체 관리 목록 > 활성화 여부 변경 api */
 export const postSupplierModifyActive = (body: IRequestSupplierListActive) => {
-  return api.post<undefined>(`${supplier}/modify/active`, {
+  return api.post<undefined>(`${supplierUrl}/modify/active`, {
     body,
   });
 };
@@ -30,14 +30,14 @@ export const postSupplierModifyActive = (body: IRequestSupplierListActive) => {
 /** 운영서비스 업체 관리 상세 조회 api */
 export const getSupplierDetail = (params: IRequestSupplierDetail) => {
   return api.get<ISupplierDetailResponse>(
-    `${supplier}/detail/${params.id}`
+    `${supplierUrl}/detail/${params.id}`
   );
 };
 
 /** 운영서비스 업체 관리 수정 api */
 export const postSupplierModify = (body: IRequestSupplierModify) => {
   return api.post<undefined>(
-    `${supplier}/modify`,{
+    `${supplierUrl}/modify`,{
       body
     }
   );
@@ -46,14 +46,14 @@ export const postSupplierModify = (body: IRequestSupplierModify) => {
 /** 운영서비스 업체 관리 삭제 api */
 export const deleteSupplier = (params: IRequestSupplierDelete) => {
   return api.get<undefined>(
-    `${supplier}/delete/${params.id}`
+    `${supplierUrl}/delete/${params.id}`
   );
 };
 
 /** 운영서비스 업체 관리 등록 api */
 export const postSupplierRegister = (body: IRequestSupplierRegister) => {
   return api.post<undefined>(
-    `${supplier}/register`,{
+    `${supplierUrl}/register`,{
       body
     }
   );

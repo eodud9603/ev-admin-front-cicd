@@ -29,6 +29,9 @@ import { YNType } from "src/api/api.interface";
 import { fileUpload } from "src/utils/upload";
 import { getParams } from "src/utils/params";
 import DetailCancelModal from "./components/DetailCancelModal";
+import createValidation from "src/utils/validate";
+import { YUP_CHARGER_OPERATOR } from "src/constants/valid/charger";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },
@@ -46,6 +49,11 @@ export const ChargerOperatorDetail = () => {
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
   /* 삭제안내 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
   /* 완료(삭제/수정) 모달 */
   const [textModal, setTextModal] = useState<{
     isOpen: boolean;
@@ -127,6 +135,18 @@ export const ChargerOperatorDetail = () => {
         contractFileUrl: fileParams.url,
       };
       void getParams(params);
+
+      /* 유효성 체크 */
+      const scheme = createValidation(YUP_CHARGER_OPERATOR);
+      const [invalid] = scheme(params);
+
+      if (invalid) {
+        setInvalidModal({
+          isOpen: true,
+          content: invalid.message,
+        });
+        return;
+      }
 
       /* 수정 요청 */
       const { code } = await postSupplierModify(params);
@@ -313,7 +333,7 @@ export const ChargerOperatorDetail = () => {
                 <TextInputBase
                   bsSize={"lg"}
                   disabled={disabled}
-                  name={addressDetail}
+                  name={"addressDetail"}
                   value={addressDetail}
                   onChange={onChange}
                   placeholder={"상세 주소를 입력해주세요"}
@@ -530,6 +550,12 @@ export const ChargerOperatorDetail = () => {
         deleteHandler={deleteHandler}
         title={"서비스 운영사 정보 삭제 안내"}
         contents={"서비스 운영사 정보를 삭제하시겠습니까?"}
+      />
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
       />
       <DetailCompleteModal
         {...textModal}
