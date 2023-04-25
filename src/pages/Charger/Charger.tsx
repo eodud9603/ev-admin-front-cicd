@@ -13,7 +13,11 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { COUNT_FILTER_LIST, OPERATOR_FILTER_LIST } from "src/constants/list";
+import {
+  COUNT_FILTER_LIST,
+  DEMOLITION_FILTER_LIST,
+  OPERATOR_FILTER_LIST,
+} from "src/constants/list";
 import styled from "styled-components";
 import BatchControlModal from "src/pages/Charger/components/BatchControlModal";
 import SingleControlModal from "src/pages/Charger/components/SingleControlModal";
@@ -36,13 +40,6 @@ import { getChargerStatusColor } from "src/utils/charger";
 import useList from "src/hooks/useList";
 import { useTabs } from "src/hooks/useTabs";
 import { getParams } from "src/utils/params";
-
-/* 철거여부 필터 */
-const operationStatusList = [
-  { label: "전체", value: "" },
-  { label: "철거예정", value: "TO_BE_DEMOLISH" },
-  { label: "철거완료", value: "DEMOLISHED" },
-];
 
 /* 검색어 필터 */
 const searchList = [
@@ -238,7 +235,7 @@ const Charger = () => {
               <RadioGroup
                 title={"철거여부"}
                 name={"operationStatus"}
-                list={operationStatusList.map((data) => ({
+                list={DEMOLITION_FILTER_LIST.map((data) => ({
                   ...data,
                   checked: operationStatus == data.value,
                 }))}

@@ -36,15 +36,13 @@ import {
   TOperationStatusKeys,
 } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
-import {
-  IChargerDetailResponse,
-  IRequestChargerRegister,
-} from "src/api/charger/chargerApi.interface";
+import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
 import { getParams } from "src/utils/params";
 import { objectToArray } from "src/utils/convert";
 import ManufacturerDropdown from "src/pages/Charger/components/ManufacturerDropdown";
 import ManufacturerModelDropdown from "src/pages/Charger/components/ManufacturerModelDropdown";
 import { useTabs } from "src/hooks/useTabs";
+import { CAPACITY_LIST, CHANNEL_TYPE_LIST } from "src/constants/list";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -76,12 +74,12 @@ const ChargerAdd = () => {
     consignmentGubun: "",
     useCode: "", // 서버 확인
     consignmentName: "",
-    manufacturerId: "", // 서버 확인
-    manufacturerName: "", // 서버 확인
-    manufacturerModeId: "", // 서버 확인
+    manufactureCode: "",
+    manufactureName: "",
+    manufacturerModelId: "", // 서버 확인
     manufacturerModelName: "", // 서버 확인
     operationStatus: "" as TOperationStatusKeys, // 서버 확인
-    connectorType: "", // 서버 확인
+    type: "",
     isBroken: "" as YNType,
     status: "" as TChargerModeKeys,
     hasPgTerm: "",
@@ -93,7 +91,7 @@ const ChargerAdd = () => {
     isRoaming: "" as YNType,
     isKepcoRoaming: "" as YNType,
     rechargeAppAvailable: "", // 서버 확인
-    contractPrice: "", // 서버 확인
+    unitPrice: "",
     qrType: "",
     reservationType: "",
     etcInfo: "",
@@ -107,13 +105,13 @@ const ChargerAdd = () => {
     isDualChannel,
     channelType02,
     envVersion,
-    manufacturerId,
-    manufacturerName,
+    manufactureCode,
+    manufactureName,
     status,
     maxChargeTime,
     idleCommunicationTime,
     busyCommunicationTime,
-    contractPrice,
+    unitPrice,
     etcInfo,
   } = inputs;
 
@@ -367,7 +365,7 @@ const ChargerAdd = () => {
                     title: "충전 용량",
                     dropdownItems: [
                       {
-                        menuItems: [DefaultDropdownData],
+                        menuItems: [DefaultDropdownData, ...CAPACITY_LIST],
                         onClickDropdownItem: (label, value) => {
                           onChangeSingle({ capacity: value });
                         },
@@ -394,7 +392,7 @@ const ChargerAdd = () => {
                       }}
                     />
                     <DropdownBase
-                      menuItems={[DefaultDropdownData]}
+                      menuItems={[DefaultDropdownData, ...CHANNEL_TYPE_LIST]}
                       onClickDropdownItem={(_, value) => {
                         onChangeSingle({
                           channelType01: value,
@@ -404,7 +402,10 @@ const ChargerAdd = () => {
                     <>
                       {isDualChannel === "Y" && (
                         <DropdownBase
-                          menuItems={[DefaultDropdownData]}
+                          menuItems={[
+                            DefaultDropdownData,
+                            ...CHANNEL_TYPE_LIST,
+                          ]}
                           onClickDropdownItem={(_, value) => {
                             onChangeSingle({
                               channelType02: value,
@@ -482,19 +483,19 @@ const ChargerAdd = () => {
                     <ManufacturerDropdown
                       onChange={(data) => {
                         onChangeSingle({
-                          manufacturerId: data.id?.toString(),
-                          manufacturerName: data.name,
-                          manufacturerModeId: "",
+                          manufactureCode: data.id?.toString(),
+                          manufactureName: data.name,
+                          manufacturerModelId: "",
                           manufacturerModelName: "",
                         });
                       }}
                     />
                     <ManufacturerModelDropdown
-                      disabled={!manufacturerName}
-                      id={Number(manufacturerId || -1)}
+                      disabled={!manufactureName}
+                      id={Number(manufactureCode || -1)}
                       onChange={(data) => {
                         onChangeSingle({
-                          manufacturerModeId: data.id?.toString(),
+                          manufacturerModelId: data.id?.toString(),
                           manufacturerModelName: data.modelName,
                         });
                       }}
@@ -511,11 +512,11 @@ const ChargerAdd = () => {
                     list={[
                       {
                         label: "정상",
-                        value: "",
+                        value: "INSTALLED",
                       },
                       {
                         label: "수리중",
-                        value: "",
+                        value: "REPAIR",
                       },
                       {
                         label: "철거",
@@ -537,7 +538,7 @@ const ChargerAdd = () => {
                       ...objectToArray(CHARGER_TYPE),
                     ]}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ connectorType: value });
+                      onChangeSingle({ type: value });
                     }}
                   />
                 </DetailContentCol>
@@ -705,8 +706,8 @@ const ChargerAdd = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
-                    name={"contractPrice"}
-                    value={contractPrice}
+                    name={"unitPrice"}
+                    value={unitPrice}
                     onChange={onChange}
                   />
                 </DetailContentCol>
