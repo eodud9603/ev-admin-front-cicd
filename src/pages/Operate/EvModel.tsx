@@ -61,15 +61,18 @@ const chargerClassList = [
 
 /* 검색어 필터 */
 const searchList = [
-  { label: "차량모델명", value: "EvModelName" },
-  { label: "차량모델 ID", value: "EvModelId" },
+  { label: "관리자", value: "ManagerName" },
+  { label: "제조사명", value: "ManufactureName" },
+  { label: "차량모델명", value: "ModelName" },
 ];
 
 /** 정렬 필터 */
 const sortList = [
-  { label: "기본", value: "CreatedDate" },
-  { label: "차량모델명", value: "EvModelName" },
-  { label: "생성일", value: "CreatedDate" },
+  { label: "기본", value: "Year" },
+  { label: "제조사명", value: "ManufactureName" },
+  { label: "차량모델명", value: "ModelName" },
+  { label: "연식", value: "Year" },
+  { label: "배터리 용량", value: "Capacity" },
 ];
 
 /* 목록 헤더 */
@@ -130,10 +133,10 @@ const EvModel = () => {
     startDate: "",
     endDate: "",
     chargerClass: "",
-    searchRange: "EvModelName",
+    searchRange: "ManagerName",
     searchText: "",
     chargerType: "",
-    sort: "CreatedDate",
+    sort: "Year",
     count: "10",
   });
 
@@ -145,14 +148,16 @@ const EvModel = () => {
     async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestEvModelList = {
-        regStartDate: startDate,
-        regEndDate: endDate,
         size: Number(count),
         page,
         sort: sort as IRequestEvModelList["sort"],
         chargerClass: chargerClass as IRequestEvModelList["chargerClass"],
         chargerType: chargerType as IRequestEvModelList["chargerType"],
       };
+      if (startDate && endDate) {
+        searchParams.regStartDate = startDate;
+        searchParams.regEndDate = endDate;
+      }
       if (searchRange && searchText) {
         searchParams.searchType =
           searchRange as IRequestEvModelList["searchType"];

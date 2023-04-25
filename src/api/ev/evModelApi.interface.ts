@@ -9,9 +9,9 @@ export interface IRequestEvModelList {
   // sortDirection: "ASC" | "DESC";
   size: number;
   page: number; // 0부터 시작
-  sort: "EvModelName" | "CreatedDate";
+  sort: "ManufactureName" | "ModelName" | "Year" | "Capacity";
 
-  searchType?: "EvModelName" | "EvModelId";
+  searchType?: "ManagerName" | "ManufactureName" | "ModelName";
   searchKeyword?: string;
   regStartDate?: string;
   regEndDate?: string;

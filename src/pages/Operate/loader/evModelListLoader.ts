@@ -6,7 +6,7 @@ const defaultParams: IRequestEvModelList = {
   // sortDirection: "ASC",
   size: 10,
   page: 0,
-  sort: "CreatedDate",
+  sort: "Year",
 };
 
 export const evModelListLoader = async () => {
