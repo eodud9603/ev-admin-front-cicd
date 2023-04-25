@@ -41,7 +41,6 @@ import {
 import { getChargerStatusColor } from "src/utils/charger";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 import { useTabs } from "src/hooks/useTabs";
-import { number, object, string } from "yup";
 import { getParams } from "src/utils/params";
 import { YNType } from "src/api/api.interface";
 import { postStationModify } from "src/api/station/stationApi";
@@ -87,13 +86,6 @@ const chargerTableHeader = [
     label: "통신상태",
   },
 ];
-
-const stationModifyValidation = object({
-  stationName: string().required("Please Enter stationName"),
-  stationKey: string().min(6).max(8).required("Please Enter stationKey"),
-  lat: number().min(35).max(38).required("Please Enter lat"),
-  lng: number().min(125).max(128).required("Please Enter lng"),
-});
 
 const ChargerStationDetail = () => {
   /** init api response */
@@ -273,12 +265,6 @@ const ChargerStationDetail = () => {
     }
 
     if (!disabled) {
-      /* valid 체크 */
-      const valid = await stationModifyValidation.isValid(modifyParams);
-      if (!valid) {
-        return;
-      }
-
       /** @TODO 서버 수정 api 추가후, 테스트 및 수정 필요 */
       const { code } = await postStationModify(modifyParams);
       /** 저장 성공 */
