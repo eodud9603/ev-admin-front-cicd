@@ -105,6 +105,7 @@ const ChargerAdd = () => {
     assetNumber,
     chargerClass,
     installType,
+    capacity,
     isDualChannel,
     channelType02,
     envVersion,
@@ -196,6 +197,8 @@ const ChargerAdd = () => {
     const registerParams: IRequestChargerRegister = {
       /* 기본 정보 */
       ...inputs,
+      capacity: Number(capacity),
+      chargerKey: Number(chargerKey),
       maxChargeTime: Number(maxChargeTime),
       idleCommunicationTime: Number(idleCommunicationTime),
       busyCommunicationTime: Number(busyCommunicationTime),

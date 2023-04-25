@@ -123,10 +123,10 @@ interface IInstallItem {
 export interface IChargerDetailResponse {
   id?: number; /* 충전기 고유 ID 등록시 없어야함 */
   assetNumber: string;
-  chargerKey?: string;
+  chargerKey?: number;
   chargerClass: TChargerRationKeys;
   installType: TChargerTypeKeys;
-  capacity: string;
+  capacity: number;
   isDualChannel: YNType;
   channelType01: string;
   channelType02: string;

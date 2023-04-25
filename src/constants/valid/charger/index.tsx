@@ -196,7 +196,7 @@ export const YUP_CHARGER_STATION: FieldSchemaMap = {
 /** 충전기 > 기본정보 yup */
 export const YUP_CHARGER: FieldSchemaMap = {
   chargerKey: {
-    validation: string().required("충전기 ID는 필수 입력 항목입니다."),
+    validation: number().required("충전기 ID는 필수 입력 항목입니다."),
   },
   assetNumber: {
     validation: string().required("충전기 자산번호는 필수 입력 항목입니다."),
