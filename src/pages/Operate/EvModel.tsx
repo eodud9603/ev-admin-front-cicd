@@ -155,8 +155,8 @@ const EvModel = () => {
         chargerType: chargerType as IRequestEvModelList["chargerType"],
       };
       if (startDate && endDate) {
-        searchParams.regStartDate = startDate;
-        searchParams.regEndDate = endDate;
+        searchParams.regStartDate = standardDateFormat(startDate, "YYYY.MM.DD");
+        searchParams.regEndDate = standardDateFormat(endDate, "YYYY.MM.DD");
       }
       if (searchRange && searchText) {
         searchParams.searchType =
