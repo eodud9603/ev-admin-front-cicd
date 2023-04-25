@@ -67,41 +67,6 @@ const ChargerAdd = () => {
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
   /* 기본정보 */
   const [inputs, { onChange, onChangeSingle }] = useInputs(data.inputs);
-  const [inputs, { onChange, onChangeSingle }] = useInputs({
-    chargerKey: "",
-    assetNumber: "",
-    chargerClass: "" as TChargerRationKeys,
-    installType: "" as TChargerTypeKeys, // 서버 확인
-    capacity: "",
-    isDualChannel: "N" as YNType,
-    channelType01: "",
-    channelType02: "",
-    envVersion: "",
-    consignmentGubun: "",
-    useCode: "", // 서버 확인
-    consignmentName: "",
-    manufactureCode: "",
-    manufactureName: "",
-    manufacturerModelId: "", // 서버 확인
-    manufacturerModelName: "", // 서버 확인
-    operationStatus: "" as TOperationStatusKeys, // 서버 확인
-    type: "",
-    isBroken: "" as YNType,
-    status: "" as TChargerModeKeys,
-    hasPgTerm: "",
-    pgName: "",
-    infProtocol: "" as TInfprotocolStatusKeys,
-    maxChargeTime: "",
-    idleCommunicationTime: "",
-    busyCommunicationTime: "",
-    isRoaming: "" as YNType,
-    isKepcoRoaming: "" as YNType,
-    rechargeAppAvailable: "", // 서버 확인
-    unitPrice: "",
-    qrType: "",
-    reservationType: "",
-    etcInfo: "",
-  });
 
   const {
     chargerKey,
@@ -132,18 +97,7 @@ const ChargerAdd = () => {
   const [
     installInputs,
     { onChange: onChangeInstall, onChangeSingle: onChangeInstallSingle },
-  ] = useInputs({
-    gubun: "",
-    companyName: "",
-    yyyy: "",
-    mm: "",
-    serverDomain: "",
-    serverPort: "",
-    sn: "",
-    hasTr: "",
-    fwVer: "",
-    fwVerCurrent: "",
-  });
+  ] = useInputs(data.installInputs);
   const {
     companyName,
     yyyy,
@@ -227,10 +181,10 @@ const ChargerAdd = () => {
   });
 
   /** focus시, unmounted됐을 때, 가장 최신 데이터로 input값 저장 */
-  useEffect(() => {
-    //TODO:: type 지정
-    // onChangeSingle(dataCallback());
-  }, [dataCallback]);
+  // useEffect(() => {
+  //   //TODO:: type 지정
+  //   // onChangeSingle(dataCallback());
+  // }, [dataCallback]);
 
   return (
     <ContainerBase>

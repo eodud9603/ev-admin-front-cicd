@@ -117,18 +117,19 @@ const ChargerContractAdd = () => {
       file: FileList | null;
     }>
   >({
-    url: data?.file?.file
-      ? URL.createObjectURL(
-          JSON.parse(data.file.file)
-            .map((info) => new File([], info.name, { type: info.type }))
-            .map((file) =>
-              Object.assign(file, {
-                preview: URL.createObjectURL(file),
-                formattedSize: formatBytes(file.size),
-              })
-            )[0]
-        )
-      : "",
+    url: "",
+    // url: data?.file?.file
+    //   ? URL.createObjectURL(
+    //       JSON.parse(data.file.file)
+    //         .map((info) => new File([], info.name, { type: info.type }))
+    //         .map((file) =>
+    //           Object.assign(file, {
+    //             preview: URL.createObjectURL(file),
+    //             formattedSize: formatBytes(file.size),
+    //           })
+    //         )[0]
+    //     )
+    //   : "",
     file: data?.file?.file
       ? JSON.parse(data.file.file).map(
           (info) => new File([], info.name, { type: info.type })

@@ -3,6 +3,7 @@ import {
   TChargerModeKeys,
   TChargerRationKeys,
   TChargerTypeKeys,
+  TInfprotocolStatusKeys,
   TOperationStatusKeys,
 } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
@@ -19,31 +20,31 @@ export const chargerAddLoader = () => {
         chargerClass: "" as TChargerRationKeys,
         installType: "" as TChargerTypeKeys, // 서버 확인
         capacity: "",
-        isDualChannel: "" as YNType,
+        isDualChannel: "N" as YNType,
         channelType01: "",
         channelType02: "",
         envVersion: "",
         consignmentGubun: "",
         useCode: "", // 서버 확인
         consignmentName: "",
-        manufacturerId: "", // 서버 확인
-        manufacturerName: "", // 서버 확인
-        manufacturerModeId: "", // 서버 확인
+        manufactureCode: "",
+        manufactureName: "",
+        manufacturerModelId: "", // 서버 확인
         manufacturerModelName: "", // 서버 확인
         operationStatus: "" as TOperationStatusKeys, // 서버 확인
-        connectorType: "", // 서버 확인
+        type: "",
         isBroken: "" as YNType,
         status: "" as TChargerModeKeys,
         hasPgTerm: "",
         pgName: "",
-        infProtocol: "",
+        infProtocol: "" as TInfprotocolStatusKeys,
         maxChargeTime: "",
         idleCommunicationTime: "",
         busyCommunicationTime: "",
         isRoaming: "" as YNType,
         isKepcoRoaming: "" as YNType,
         rechargeAppAvailable: "", // 서버 확인
-        contractPrice: "", // 서버 확인
+        unitPrice: "",
         qrType: "",
         reservationType: "",
         etcInfo: "",
@@ -57,7 +58,6 @@ export const chargerAddLoader = () => {
       installInputs: {
         gubun: "",
         companyName: "",
-        installer: "",
         yyyy: "",
         mm: "",
         serverDomain: "",
