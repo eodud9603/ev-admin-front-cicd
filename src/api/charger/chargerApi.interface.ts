@@ -33,7 +33,7 @@ export interface IRequestChargerList {
   sido?: string;
   gugun?: string;
   dong?: string;
-  searchType?: "StationName" | "StationKey";
+  searchType?: "StationName" | "StationKey" | "Address";
   searchKeyword?: string;
   operation?: string;
   operationStatus?: TOperationStatusKeys;

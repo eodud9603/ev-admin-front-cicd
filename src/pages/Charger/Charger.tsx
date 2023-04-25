@@ -52,7 +52,7 @@ const searchList = [
     placeholderKeyword: "충전소 ID를",
     value: "StationKey",
   },
-  { label: "주소", placeholderKeyword: "주소를", value: "" },
+  { label: "주소", placeholderKeyword: "주소를", value: "Address" },
 ];
 
 /* 정렬기준 */

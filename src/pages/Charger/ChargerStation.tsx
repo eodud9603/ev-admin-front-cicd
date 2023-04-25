@@ -45,7 +45,7 @@ const searchList = [
     placeholderKeyword: "충전소 ID를",
     value: "StationKey",
   },
-  { label: "주소", placeholderKeyword: "주소를", value: "" },
+  { label: "주소", placeholderKeyword: "주소를", value: "Address" },
 ];
 
 /** @TODO 정렬기준, 빈 value값 추가 필요 */
