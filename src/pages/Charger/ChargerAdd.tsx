@@ -70,7 +70,7 @@ const ChargerAdd = () => {
     chargerClass: "" as TChargerRationKeys,
     installType: "" as TChargerTypeKeys, // 서버 확인
     capacity: "",
-    isDualChannel: "" as YNType,
+    isDualChannel: "N" as YNType,
     channelType01: "",
     channelType02: "",
     envVersion: "",
@@ -132,7 +132,6 @@ const ChargerAdd = () => {
   ] = useInputs({
     gubun: "",
     companyName: "",
-    installer: "",
     yyyy: "",
     mm: "",
     serverDomain: "",
