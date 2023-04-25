@@ -31,7 +31,7 @@ const ContractDropdown = (props: IContractDropdownProps) => {
       size: 30,
       page: 0,
       sort: "ContractedDate",
-      searchType: "ContractPlace",
+      searchType: "PlaceOrId",
       searchKeyword: text,
     });
 

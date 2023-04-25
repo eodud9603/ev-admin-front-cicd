@@ -283,14 +283,6 @@ export const BROKEN_PROCESS_LIST = [
   { label: "접수제외", value: "EXCEPT" },
 ];
 
-/** 배터리 용량 목록 */
-export const CAPACITY_LIST = [
-  { label: "3", value: "3" },
-  { label: "7", value: "7" },
-  { label: "50", value: "50" },
-  { label: "100", value: "100" },
-];
-
 /** 채널 타입 목록 */
 export const CHANNEL_TYPE_LIST = [
   { label: "CH1", value: "CH1" },

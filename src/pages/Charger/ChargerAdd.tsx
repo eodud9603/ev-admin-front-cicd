@@ -28,11 +28,14 @@ import useInputs from "src/hooks/useInputs";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 import { postChargerRegister } from "src/api/charger/chargerApi";
 import {
+  CAPACITY,
   CHARGER_MODE,
   CHARGER_TYPE,
+  INFPROTOCOL_STATUS,
   TChargerModeKeys,
   TChargerRationKeys,
   TChargerTypeKeys,
+  TInfprotocolStatusKeys,
   TOperationStatusKeys,
 } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
@@ -42,7 +45,7 @@ import { objectToArray } from "src/utils/convert";
 import ManufacturerDropdown from "src/pages/Charger/components/ManufacturerDropdown";
 import ManufacturerModelDropdown from "src/pages/Charger/components/ManufacturerModelDropdown";
 import { useTabs } from "src/hooks/useTabs";
-import { CAPACITY_LIST, CHANNEL_TYPE_LIST } from "src/constants/list";
+import { CHANNEL_TYPE_LIST } from "src/constants/list";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -84,7 +87,7 @@ const ChargerAdd = () => {
     status: "" as TChargerModeKeys,
     hasPgTerm: "",
     pgName: "",
-    infProtocol: "",
+    infProtocol: "" as TInfprotocolStatusKeys,
     maxChargeTime: "",
     idleCommunicationTime: "",
     busyCommunicationTime: "",
@@ -229,9 +232,8 @@ const ChargerAdd = () => {
 
   /** focus시, unmounted됐을 때, 가장 최신 데이터로 input값 저장 */
   useEffect(() => {
-    // @ts-ignore
     //TODO:: type 지정
-    onChangeSingle(dataCallback());
+    // onChangeSingle(dataCallback());
   }, [dataCallback]);
 
   return (
@@ -365,7 +367,10 @@ const ChargerAdd = () => {
                     title: "충전 용량",
                     dropdownItems: [
                       {
-                        menuItems: [DefaultDropdownData, ...CAPACITY_LIST],
+                        menuItems: [
+                          DefaultDropdownData,
+                          ...objectToArray(CAPACITY),
+                        ],
                         onClickDropdownItem: (label, value) => {
                           onChangeSingle({ capacity: value });
                         },
@@ -391,29 +396,31 @@ const ChargerAdd = () => {
                         });
                       }}
                     />
-                    <DropdownBase
-                      menuItems={[DefaultDropdownData, ...CHANNEL_TYPE_LIST]}
-                      onClickDropdownItem={(_, value) => {
-                        onChangeSingle({
-                          channelType01: value,
-                        });
-                      }}
-                    />
-                    <>
-                      {isDualChannel === "Y" && (
-                        <DropdownBase
-                          menuItems={[
-                            DefaultDropdownData,
-                            ...CHANNEL_TYPE_LIST,
-                          ]}
-                          onClickDropdownItem={(_, value) => {
-                            onChangeSingle({
-                              channelType02: value,
-                            });
-                          }}
-                        />
-                      )}
-                    </>
+                    <div className={"d-flex gap-2"}>
+                      <DropdownBase
+                        menuItems={[DefaultDropdownData, ...CHANNEL_TYPE_LIST]}
+                        onClickDropdownItem={(_, value) => {
+                          onChangeSingle({
+                            channelType01: value,
+                          });
+                        }}
+                      />
+                      <>
+                        {isDualChannel === "Y" && (
+                          <DropdownBase
+                            menuItems={[
+                              DefaultDropdownData,
+                              ...CHANNEL_TYPE_LIST,
+                            ]}
+                            onClickDropdownItem={(_, value) => {
+                              onChangeSingle({
+                                channelType02: value,
+                              });
+                            }}
+                          />
+                        )}
+                      </>
+                    </div>
                   </DetailGroupCol>
                 </DetailContentCol>
                 <DetailLabelCol sm={2}>환경변수버전</DetailLabelCol>
@@ -469,7 +476,26 @@ const ChargerAdd = () => {
               {/** @TODO (CPO, 계약된 법인, 개인회원-미확정 선택 가능) */}
               <DetailRow>
                 <DetailLabelCol sm={2}>위탁사명</DetailLabelCol>
-                <DetailContentCol>
+                <DetailContentCol className={"d-flex align-items-center"}>
+                  {/** @TODO 서버 api 추가후, 작업예정  */}
+                  {/* <RadioGroup
+                    title={""}
+                    name={"consignmentGubunType"}
+                    list={[
+                      {
+                        label: "충전운영사",
+                        value: "충전운영사",
+                      },
+                      {
+                        label: "그룹(법인)",
+                        value: "그룹(법인)",
+                      },
+                      {
+                        label: "개인",
+                        value: "개인",
+                      },
+                    ]}
+                  /> */}
                   <DropdownBase
                     menuItems={[DefaultDropdownData]}
                     onClickDropdownItem={(label, value) => {
@@ -609,9 +635,14 @@ const ChargerAdd = () => {
                 <DetailLabelCol sm={2}>연동 규격</DetailLabelCol>
                 <DetailContentCol>
                   <DropdownBase
-                    menuItems={[DefaultDropdownData]}
+                    menuItems={[
+                      DefaultDropdownData,
+                      ...objectToArray(INFPROTOCOL_STATUS),
+                    ]}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ infProtocol: value });
+                      onChangeSingle({
+                        infProtocol: value as TInfprotocolStatusKeys,
+                      });
                     }}
                   />
                 </DetailContentCol>

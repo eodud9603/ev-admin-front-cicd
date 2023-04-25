@@ -126,7 +126,7 @@ export interface IRequestStationContractList {
   gugun?: string;
   dong?: string;
   contractCode?: TContractStatus;
-  searchType?: "ContractPlace" | "StationKey" | "SalesCompany";
+  searchType?: "ContractPlace" | "StationKey" | "SalesCompany" | "PlaceOrId";
   searchKeyword?: string;
   isUse?: YNType;
 }
