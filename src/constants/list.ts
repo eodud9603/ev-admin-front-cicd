@@ -32,11 +32,11 @@ export const DEMOLITION_FILTER_LIST  = [
   },
   {
     label: "철거",
-    value: "1"
+    value: "DEMOLISHED"
   },
   {
     label: "철거예정",
-    value: "2"
+    value: "TO_BE_DEMOLISH"
   },
 ];
 
@@ -281,4 +281,14 @@ export const BROKEN_PROCESS_LIST = [
   { label: "진행중", value: "PROGRESS" },
   { label: "처리완료", value: "COMPLETE" },
   { label: "접수제외", value: "EXCEPT" },
+];
+
+/** 채널 타입 목록 */
+export const CHANNEL_TYPE_LIST = [
+  { label: "CH1", value: "CH1" },
+  { label: "CH2", value: "CH2" },
+  { label: "CH3", value: "CH3" },
+  { label: "CH4", value: "CH4" },
+  { label: "CH5", value: "CH5" },
+  { label: "CH6", value: "CH6" },
 ];

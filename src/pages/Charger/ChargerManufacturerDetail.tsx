@@ -17,7 +17,7 @@ import { deleteManufacture } from "src/api/manufactures/manufactureApi";
 import { IManufactureDetailResponse } from "src/api/manufactures/manufactureApi.interface";
 import { number } from "yup";
 import DetailDeleteModal from "src/pages/Charger/components/DetailDeleteModal";
-import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 
 const idValidation = number().required("id값이 없습니다.");
 

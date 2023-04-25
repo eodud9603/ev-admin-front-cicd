@@ -21,13 +21,13 @@ import { StationSearchModal } from "src/pages/Charger/components/StationSearchMo
 import useInputs from "src/hooks/useInputs";
 import { postBrokenRegister } from "src/api/broken/brokenApi";
 import { BROKEN_LIST } from "src/constants/list";
-import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import { fileUpload } from "src/utils/upload";
 import { TBrokenStatus } from "src/constants/status";
 import { getParams } from "src/utils/params";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_BROKEN } from "src/constants/valid/charger";
-import DetailValidCheckModal from "./components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 
 export const ChargerTroubleRegistration = () => {
   const nav = useNavigate();

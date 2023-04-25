@@ -1,11 +1,12 @@
-import { StringSchema, ValidationError, object } from "yup";
+import { NumberSchema, StringSchema, ValidationError, object } from "yup";
 import { RequiredStringSchema } from "yup/lib/string";
 import { AnyObject } from "yup/lib/types";
 
 export type FieldValidation = {
   validation:
     | RequiredStringSchema<string | undefined, AnyObject>
-    | StringSchema<string | undefined, AnyObject>;
+    | StringSchema<string | undefined, AnyObject>
+    | NumberSchema<number | undefined, AnyObject>;
 };
 
 type FieldSchemaMap<T> = {

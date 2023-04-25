@@ -78,7 +78,9 @@ export const ChargerManufacturer = () => {
     elements: data?.elements,
     totalPages: data?.totalPages,
     totalElements: data?.totalElements,
-    emptyMessage: "등록된 제조사 정보가 없습니다.",
+    emptyMessage: !data?.elements
+      ? "오류가 발생하였습니다."
+      : "등록된 제조사 정보가 없습니다.",
   });
 
   /** 검색 핸들러 */

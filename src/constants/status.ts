@@ -106,3 +106,26 @@ export const BROKEN_STATUS = {
 } as const;
 /** 계약 상태 코드 키 타입 */
 export type TBrokenStatus = keyof typeof BROKEN_STATUS;
+
+/**
+ * @description 연동규격
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%97%B0%EB%8F%99_%EA%B7%9C%EA%B2%A9
+ */
+export const INFPROTOCOL_STATUS = {
+  IF01: "TCP",
+  IF02: "OCPP 1.6",
+} as const;
+/** 계약 상태 코드 키 타입 */
+export type TInfprotocolStatusKeys = keyof typeof INFPROTOCOL_STATUS;
+
+/**
+ * @description 배터리 용량
+ */
+export const CAPACITY = {
+  3: "3",
+  7: "7",
+  50: "50",
+  100: "100",
+} as const;
+/** 계약 상태 코드 키 타입 */
+export type TCapacityKeys = keyof typeof CAPACITY;

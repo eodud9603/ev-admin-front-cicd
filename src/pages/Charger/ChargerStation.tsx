@@ -45,7 +45,7 @@ const searchList = [
     placeholderKeyword: "충전소 ID를",
     value: "StationKey",
   },
-  { label: "주소", placeholderKeyword: "주소를", value: "" },
+  { label: "주소", placeholderKeyword: "주소를", value: "Address" },
 ];
 
 /** @TODO 정렬기준, 빈 value값 추가 필요 */
@@ -80,7 +80,9 @@ const ChargingStationManagement = () => {
     elements: data?.elements,
     totalPages: data?.totalPages,
     totalElements: data?.totalElements,
-    emptyMessage: "등록된 충전소 정보가 없습니다.",
+    emptyMessage: !data?.elements
+      ? "오류가 발생하였습니다."
+      : "등록된 충전소 정보가 없습니다.",
   });
 
   const inputs = useInputs({

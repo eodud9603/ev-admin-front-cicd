@@ -24,11 +24,11 @@ import {
   deleteSupplier,
   postSupplierModify,
 } from "src/api/supplier/supplierApi";
-import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import { YNType } from "src/api/api.interface";
 import { fileUpload } from "src/utils/upload";
 import { getParams } from "src/utils/params";
-import DetailCancelModal from "./components/DetailCancelModal";
+import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_OPERATOR } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";

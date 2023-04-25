@@ -27,9 +27,12 @@ export const fileUpload = async (
     const success = fileCode === "SUCCESS" && !!fileData;
     if (success) {
       const [uploadedFile] = fileData.elements;
-      fileParams.id = uploadedFile.id;
-      fileParams.name = uploadedFile.fileName;
-      fileParams.url = uploadedFile.url;
+
+      if(uploadedFile) {
+        fileParams.id = uploadedFile.id;
+        fileParams.name = uploadedFile.fileName;
+        fileParams.url = uploadedFile.url;
+      }
 
       if (url) {
         URL.revokeObjectURL(url);

@@ -22,12 +22,23 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import styled from "styled-components";
 import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
-import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import useInputs from "src/hooks/useInputs";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 import { postChargerRegister } from "src/api/charger/chargerApi";
-import { CHARGER_MODE, CHARGER_TYPE } from "src/constants/status";
+import {
+  CAPACITY,
+  CHARGER_MODE,
+  CHARGER_TYPE,
+  INFPROTOCOL_STATUS,
+  TChargerModeKeys,
+  TChargerRationKeys,
+  TChargerTypeKeys,
+  TInfprotocolStatusKeys,
+  TOperationStatusKeys,
+} from "src/constants/status";
+import { YNType } from "src/api/api.interface";
 import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
 import { getParams } from "src/utils/params";
 import { objectToArray } from "src/utils/convert";
@@ -35,6 +46,7 @@ import ManufacturerDropdown from "src/pages/Charger/components/ManufacturerDropd
 import ManufacturerModelDropdown from "src/pages/Charger/components/ManufacturerModelDropdown";
 import { useTabs } from "src/hooks/useTabs";
 import { useLoaderData } from "react-router-dom";
+import { CHANNEL_TYPE_LIST } from "src/constants/list";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -55,22 +67,58 @@ const ChargerAdd = () => {
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
   /* 기본정보 */
   const [inputs, { onChange, onChangeSingle }] = useInputs(data.inputs);
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
+    chargerKey: "",
+    assetNumber: "",
+    chargerClass: "" as TChargerRationKeys,
+    installType: "" as TChargerTypeKeys, // 서버 확인
+    capacity: "",
+    isDualChannel: "N" as YNType,
+    channelType01: "",
+    channelType02: "",
+    envVersion: "",
+    consignmentGubun: "",
+    useCode: "", // 서버 확인
+    consignmentName: "",
+    manufactureCode: "",
+    manufactureName: "",
+    manufacturerModelId: "", // 서버 확인
+    manufacturerModelName: "", // 서버 확인
+    operationStatus: "" as TOperationStatusKeys, // 서버 확인
+    type: "",
+    isBroken: "" as YNType,
+    status: "" as TChargerModeKeys,
+    hasPgTerm: "",
+    pgName: "",
+    infProtocol: "" as TInfprotocolStatusKeys,
+    maxChargeTime: "",
+    idleCommunicationTime: "",
+    busyCommunicationTime: "",
+    isRoaming: "" as YNType,
+    isKepcoRoaming: "" as YNType,
+    rechargeAppAvailable: "", // 서버 확인
+    unitPrice: "",
+    qrType: "",
+    reservationType: "",
+    etcInfo: "",
+  });
 
   const {
     chargerKey,
     assetNumber,
     chargerClass,
     installType,
+    capacity,
     isDualChannel,
     channelType02,
     envVersion,
-    manufacturerId,
-    manufacturerName,
+    manufactureCode,
+    manufactureName,
     status,
     maxChargeTime,
     idleCommunicationTime,
     busyCommunicationTime,
-    contractPrice,
+    unitPrice,
     etcInfo,
   } = inputs;
 
@@ -84,7 +132,18 @@ const ChargerAdd = () => {
   const [
     installInputs,
     { onChange: onChangeInstall, onChangeSingle: onChangeInstallSingle },
-  ] = useInputs(data.installInputs);
+  ] = useInputs({
+    gubun: "",
+    companyName: "",
+    yyyy: "",
+    mm: "",
+    serverDomain: "",
+    serverPort: "",
+    sn: "",
+    hasTr: "",
+    fwVer: "",
+    fwVerCurrent: "",
+  });
   const {
     companyName,
     yyyy,
@@ -127,6 +186,8 @@ const ChargerAdd = () => {
     const registerParams: IRequestChargerRegister = {
       /* 기본 정보 */
       ...inputs,
+      capacity: Number(capacity),
+      chargerKey: Number(chargerKey),
       maxChargeTime: Number(maxChargeTime),
       idleCommunicationTime: Number(idleCommunicationTime),
       busyCommunicationTime: Number(busyCommunicationTime),
@@ -164,6 +225,12 @@ const ChargerAdd = () => {
     pageTitle: "충전기 등록",
     pageType: "add",
   });
+
+  /** focus시, unmounted됐을 때, 가장 최신 데이터로 input값 저장 */
+  useEffect(() => {
+    //TODO:: type 지정
+    // onChangeSingle(dataCallback());
+  }, [dataCallback]);
 
   return (
     <ContainerBase>
@@ -301,7 +368,10 @@ const ChargerAdd = () => {
                     title: "충전 용량",
                     dropdownItems: [
                       {
-                        menuItems: [DefaultDropdownData],
+                        menuItems: [
+                          DefaultDropdownData,
+                          ...objectToArray(CAPACITY),
+                        ],
                         onClickDropdownItem: (label, value) => {
                           onChangeSingle({ capacity: value });
                         },
@@ -327,26 +397,31 @@ const ChargerAdd = () => {
                         });
                       }}
                     />
-                    <DropdownBase
-                      menuItems={[DefaultDropdownData]}
-                      onClickDropdownItem={(_, value) => {
-                        onChangeSingle({
-                          channelType01: value,
-                        });
-                      }}
-                    />
-                    <>
-                      {isDualChannel === "Y" && (
-                        <DropdownBase
-                          menuItems={[DefaultDropdownData]}
-                          onClickDropdownItem={(_, value) => {
-                            onChangeSingle({
-                              channelType02: value,
-                            });
-                          }}
-                        />
-                      )}
-                    </>
+                    <div className={"d-flex gap-2"}>
+                      <DropdownBase
+                        menuItems={[DefaultDropdownData, ...CHANNEL_TYPE_LIST]}
+                        onClickDropdownItem={(_, value) => {
+                          onChangeSingle({
+                            channelType01: value,
+                          });
+                        }}
+                      />
+                      <>
+                        {isDualChannel === "Y" && (
+                          <DropdownBase
+                            menuItems={[
+                              DefaultDropdownData,
+                              ...CHANNEL_TYPE_LIST,
+                            ]}
+                            onClickDropdownItem={(_, value) => {
+                              onChangeSingle({
+                                channelType02: value,
+                              });
+                            }}
+                          />
+                        )}
+                      </>
+                    </div>
                   </DetailGroupCol>
                 </DetailContentCol>
                 <DetailLabelCol sm={2}>환경변수버전</DetailLabelCol>
@@ -402,7 +477,26 @@ const ChargerAdd = () => {
               {/** @TODO (CPO, 계약된 법인, 개인회원-미확정 선택 가능) */}
               <DetailRow>
                 <DetailLabelCol sm={2}>위탁사명</DetailLabelCol>
-                <DetailContentCol>
+                <DetailContentCol className={"d-flex align-items-center"}>
+                  {/** @TODO 서버 api 추가후, 작업예정  */}
+                  {/* <RadioGroup
+                    title={""}
+                    name={"consignmentGubunType"}
+                    list={[
+                      {
+                        label: "충전운영사",
+                        value: "충전운영사",
+                      },
+                      {
+                        label: "그룹(법인)",
+                        value: "그룹(법인)",
+                      },
+                      {
+                        label: "개인",
+                        value: "개인",
+                      },
+                    ]}
+                  /> */}
                   <DropdownBase
                     menuItems={[DefaultDropdownData]}
                     onClickDropdownItem={(label, value) => {
@@ -416,19 +510,19 @@ const ChargerAdd = () => {
                     <ManufacturerDropdown
                       onChange={(data) => {
                         onChangeSingle({
-                          manufacturerId: data.id?.toString(),
-                          manufacturerName: data.name,
-                          manufacturerModeId: "",
+                          manufactureCode: data.id?.toString(),
+                          manufactureName: data.name,
+                          manufacturerModelId: "",
                           manufacturerModelName: "",
                         });
                       }}
                     />
                     <ManufacturerModelDropdown
-                      disabled={!manufacturerName}
-                      id={Number(manufacturerId || -1)}
+                      disabled={!manufactureName}
+                      id={Number(manufactureCode || -1)}
                       onChange={(data) => {
                         onChangeSingle({
-                          manufacturerModeId: data.id?.toString(),
+                          manufacturerModelId: data.id?.toString(),
                           manufacturerModelName: data.modelName,
                         });
                       }}
@@ -445,11 +539,11 @@ const ChargerAdd = () => {
                     list={[
                       {
                         label: "정상",
-                        value: "",
+                        value: "INSTALLED",
                       },
                       {
                         label: "수리중",
-                        value: "",
+                        value: "REPAIR",
                       },
                       {
                         label: "철거",
@@ -471,7 +565,7 @@ const ChargerAdd = () => {
                       ...objectToArray(CHARGER_TYPE),
                     ]}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ connectorType: value });
+                      onChangeSingle({ type: value });
                     }}
                   />
                 </DetailContentCol>
@@ -542,9 +636,14 @@ const ChargerAdd = () => {
                 <DetailLabelCol sm={2}>연동 규격</DetailLabelCol>
                 <DetailContentCol>
                   <DropdownBase
-                    menuItems={[DefaultDropdownData]}
+                    menuItems={[
+                      DefaultDropdownData,
+                      ...objectToArray(INFPROTOCOL_STATUS),
+                    ]}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ infProtocol: value });
+                      onChangeSingle({
+                        infProtocol: value as TInfprotocolStatusKeys,
+                      });
                     }}
                   />
                 </DetailContentCol>
@@ -639,8 +738,8 @@ const ChargerAdd = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
-                    name={"contractPrice"}
-                    value={contractPrice}
+                    name={"unitPrice"}
+                    value={unitPrice}
                     onChange={onChange}
                   />
                 </DetailContentCol>

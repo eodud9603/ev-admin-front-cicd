@@ -13,7 +13,11 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { COUNT_FILTER_LIST, OPERATOR_FILTER_LIST } from "src/constants/list";
+import {
+  COUNT_FILTER_LIST,
+  DEMOLITION_FILTER_LIST,
+  OPERATOR_FILTER_LIST,
+} from "src/constants/list";
 import styled from "styled-components";
 import BatchControlModal from "src/pages/Charger/components/BatchControlModal";
 import SingleControlModal from "src/pages/Charger/components/SingleControlModal";
@@ -37,13 +41,6 @@ import useList from "src/hooks/useList";
 import { useTabs } from "src/hooks/useTabs";
 import { getParams } from "src/utils/params";
 
-/* 철거여부 필터 */
-const operationStatusList = [
-  { label: "전체", value: "" },
-  { label: "철거예정", value: "TO_BE_DEMOLISH" },
-  { label: "철거완료", value: "DEMOLISHED" },
-];
-
 /* 검색어 필터 */
 const searchList = [
   { label: "충전소명", placeholderKeyword: "충전소명을", value: "StationName" },
@@ -52,7 +49,7 @@ const searchList = [
     placeholderKeyword: "충전소 ID를",
     value: "StationKey",
   },
-  { label: "주소", placeholderKeyword: "주소를", value: "" },
+  { label: "주소", placeholderKeyword: "주소를", value: "Address" },
 ];
 
 /* 정렬기준 */
@@ -93,7 +90,9 @@ const Charger = () => {
     elements: data?.elements,
     totalPages: data?.totalPages,
     totalElements: data?.totalElements,
-    emptyMessage: "등록된 충전기 정보가 없습니다.",
+    emptyMessage: !data?.elements
+      ? "오류가 발생하였습니다."
+      : "등록된 충전기 정보가 없습니다.",
   });
 
   /* 일괄 제어 모달 */
@@ -236,7 +235,7 @@ const Charger = () => {
               <RadioGroup
                 title={"철거여부"}
                 name={"operationStatus"}
-                list={operationStatusList.map((data) => ({
+                list={DEMOLITION_FILTER_LIST.map((data) => ({
                   ...data,
                   checked: operationStatus == data.value,
                 }))}

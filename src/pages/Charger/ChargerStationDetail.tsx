@@ -22,7 +22,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
-import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
@@ -46,6 +46,9 @@ import { getParams } from "src/utils/params";
 import { YNType } from "src/api/api.interface";
 import { postStationModify } from "src/api/station/stationApi";
 import ContractDropdown from "src/pages/Charger/components/ContractDropdown";
+import createValidation from "src/utils/validate";
+import { YUP_CHARGER_STATION } from "src/constants/valid/charger";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -115,6 +118,11 @@ const ChargerStationDetail = () => {
 
   /* 전역 disabled 처리 */
   const [disabled, setDisabled] = useState(true);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
   /* 수정완료 모달 */
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
@@ -166,7 +174,7 @@ const ChargerStationDetail = () => {
     saturdayOperationTimeFrom: detail?.saturdayOperationTimeFrom ?? "",
     saturdayOperationTimeTo: detail?.saturdayOperationTimeTo ?? "",
     isParkFeeFree: detail?.isParkFeeFree ?? "",
-    parkingFeeDetail: "" /* 수정 필요 필드 */,
+    parkFee: detail?.parkFee ?? "" /* 수정 필요 필드 */,
     /* 지도 좌표 */
     lat: (detail?.lat ?? "").toString(),
     lng: (detail?.lng ?? "").toString(),
@@ -212,7 +220,7 @@ const ChargerStationDetail = () => {
     saturdayOperationTimeFrom,
     saturdayOperationTimeTo,
     isParkFeeFree,
-    parkingFeeDetail /* 수정 필요 필드 */,
+    parkFee,
     /* 지도 좌표 */
     lat,
     lng,
@@ -232,6 +240,11 @@ const ChargerStationDetail = () => {
 
   /** 수정 */
   const modify = async () => {
+    if (disabled) {
+      setDisabled(false);
+      return;
+    }
+
     /* 등록 params */
     const modifyParams: IRequestStationModify = {
       ...inputs,
@@ -243,6 +256,21 @@ const ChargerStationDetail = () => {
       contractId: Number(contractId),
     };
     getParams(modifyParams);
+
+    console.log(modifyParams);
+
+    /* valid 체크 */
+    /* 유효성 체크 */
+    const scheme = createValidation(YUP_CHARGER_STATION);
+    const [invalid] = scheme(modifyParams);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
 
     if (!disabled) {
       /* valid 체크 */
@@ -884,8 +912,8 @@ const ChargerStationDetail = () => {
                       <TextInputBase
                         bsSize={"lg"}
                         disabled={disabled}
-                        name={"parkingFeeDetail"}
-                        value={parkingFeeDetail}
+                        name={"parkFee"}
+                        value={parkFee}
                         onChange={onChange}
                       />
                     </DetailContentCol>
@@ -1126,6 +1154,12 @@ const ChargerStationDetail = () => {
         />
       </BodyBase>
 
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
       <DetailCompleteModal
         isOpen={isEditComplete}
         onClose={() => {

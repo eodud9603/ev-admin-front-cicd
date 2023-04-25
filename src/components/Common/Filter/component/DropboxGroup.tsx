@@ -5,8 +5,10 @@ import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 interface IDropboxGroupProps {
   label?: string;
   className?: string;
+
   dropdownItems: Array<{
     disabled?: boolean;
+    initSelectedValue?: { label: string; value: string };
     onClickDropdownItem?: (label: string, value: string) => void;
     menuItems: Array<{
       label: string;

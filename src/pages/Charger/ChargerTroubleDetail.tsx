@@ -23,7 +23,7 @@ import { BROKEN_LIST, BROKEN_PROCESS_LIST } from "src/constants/list";
 import { BROKEN_STATUS, TBrokenStatus } from "src/constants/status";
 import { deleteBroken, postBrokenModify } from "src/api/broken/brokenApi";
 import DetailDeleteModal from "src/pages/Charger/components/DetailDeleteModal";
-import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
 import { standardDateFormat } from "src/utils/day";

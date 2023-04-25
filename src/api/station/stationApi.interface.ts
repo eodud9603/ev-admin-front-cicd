@@ -14,7 +14,7 @@ export interface IRequestStationList {
   sido?: string;
   gugun?: string;
   dong?: string;
-  searchType?: "StationName" | "StationKey";
+  searchType?: "StationName" | "StationKey" | "Address";
   searchKeyword?: string;
   operation?: string;
   isUse?: YNType
@@ -93,6 +93,7 @@ export interface IStationDetailResponse {
   saturdayOperationTimeTo?: string;
   isParkFeeFree?: string;
   contractId?: number;
+  parkFee?: string;
 }
 
 /* 충전소 등록 */
@@ -125,7 +126,7 @@ export interface IRequestStationContractList {
   gugun?: string;
   dong?: string;
   contractCode?: TContractStatus;
-  searchType?: "ContractPlace" | "StationKey" | "SalesCompany";
+  searchType?: "ContractPlace" | "StationKey" | "SalesCompany" | "PlaceOrId";
   searchKeyword?: string;
   isUse?: YNType;
 }

@@ -121,6 +121,7 @@ import { supplierListLoader } from "src/pages/Charger/loader/supplierListLoader"
 import { supplierDetailLoader } from "src/pages/Charger/loader/supplierDetailLoader";
 import { chargerAddLoader } from "src/pages/Charger/loader/chargerAddLoader";
 import { chargerContractAddLoader } from "src/pages/Charger/loader/chargerContractAddLoader";
+import { evModelListLoader } from "src/pages/Operate/loader/evModelListLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -264,7 +265,7 @@ const userRoutes: Array<RouteProps> = [
     path: "/operate/installCharger/detail/:id",
     element: <InstallChargerDetail />,
   },
-  { path: "/operate/evModel", element: <EvModel /> },
+  { path: "/operate/evModel", element: <EvModel />, loader: evModelListLoader },
   { path: "/operate/policy", element: <OperatePolicy /> },
   { path: "/operate/policy/add", element: <OperatePolicyAdd /> },
   { path: "/operate/policy/detail/:id", element: <OperatePolicyDetail /> },

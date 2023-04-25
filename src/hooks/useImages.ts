@@ -18,6 +18,7 @@ const useImages = (
     drop: React.DragEventHandler<HTMLDivElement>;
     remove: (index: number) => void;
     reset: () => void;
+    convertFileList: () => FileList;
   }
 ] => {
   const [images, setImages] = useState<IImageItemProps[]>(list);
@@ -35,6 +36,7 @@ const useImages = (
         const src = URL.createObjectURL(image);
         imageList.push({ file: image, src });
       }
+
       setImages((prev) => [...prev, ...imageList]);
       /* 파일 업로드 -> 제거 -> 같은 파일 재업로드 시, onChange동작이 없으므로, value값을 초기화하여 onChange event가 동작하도록 해당 코드 추가 */
       e.target.value = "";
@@ -68,6 +70,7 @@ const useImages = (
       const src = URL.createObjectURL(image);
       imageList.push({ file: image, src });
     }
+
     setImages((prev) => [...prev, ...imageList]);
   }, []);
 
@@ -99,6 +102,19 @@ const useImages = (
     setImages(list);
   }, [images, list]);
 
+  /** File 타입 FileList 타입 변환 */
+  const convertFileList = useCallback(() => {
+    // 변환된 배열을 사용하여 DataTransfer 객체 생성
+    const dataTransfer = new DataTransfer();
+    images.forEach((data) => {
+      dataTransfer.items.add(data.file);
+    });
+    // DataTransfer 객체에서 files 프로퍼티를 사용하여 새로운 FileList 생성
+    const updatedFileList = dataTransfer.files;
+
+    return updatedFileList;
+  }, [images]);
+
   return [
     images,
     {
@@ -107,6 +123,7 @@ const useImages = (
       drop,
       remove,
       reset,
+      convertFileList,
     },
   ];
 };

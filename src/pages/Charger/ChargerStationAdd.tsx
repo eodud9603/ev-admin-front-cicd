@@ -21,7 +21,7 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import styled from "styled-components";
 import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
-import DetailCompleteModal from "src/pages/Charger/components/DetailCompleteModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
@@ -30,19 +30,13 @@ import SingleMapBase from "src/components/Common/Map/SingleMapBase";
 import useMapStore from "src/store/mapStore";
 import { postStationRegistration } from "src/api/station/stationApi";
 import { OPERATOR_FILTER_LIST } from "src/constants/list";
-import { object, string, number } from "yup";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 import ContractDropdown from "src/pages/Charger/components/ContractDropdown";
 import { IRequestStationRegister } from "src/api/station/stationApi.interface";
 import { YNType } from "src/api/api.interface";
 import { getParams } from "src/utils/params";
-
-const stationRegistrationValidation = object({
-  stationName: string().required("Please Enter stationName"),
-  stationKey: string().min(6).max(8).required("Please Enter stationKey"),
-  lat: number().min(35).max(38).required("Please Enter lat"),
-  lng: number().min(125).max(128).required("Please Enter lng"),
-});
+import createValidation from "src/utils/validate";
+import { YUP_CHARGER_STATION } from "src/constants/valid/charger";
 
 const ChargerStationAdd = () => {
   /* 기본정보 drop */
@@ -91,7 +85,7 @@ const ChargerStationAdd = () => {
     saturdayOperationTimeFrom: "",
     saturdayOperationTimeTo: "",
     isParkFeeFree: "",
-    parkingFeeDetail: "" /* 수정 필요 필드 */,
+    parkFee: "" /* 수정 필요 필드 */,
     /* 지도 좌표 */
     lat: "",
     lng: "",
@@ -131,15 +125,19 @@ const ChargerStationAdd = () => {
     saturdayOperationTimeFrom,
     saturdayOperationTimeTo,
     isParkFeeFree,
-    parkingFeeDetail /* 수정 필요 필드 */,
+    parkFee,
     contractId,
     lat,
     lng,
   } = inputs;
+
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
   /* 등록완료 모달 */
   const [isRegistrationComplete, setIsRegistrationComplete] = useState(false);
-  /* 미입력 안내 모달 */
-  const [isValidCheckModalOpen, setIsValidCheckModalOpen] = useState(false);
   /* 등록취소 모달 */
   const [isRegistrationCancel, setIsRegistrationCancel] = useState(false);
   /* 주소검색 모달 */
@@ -168,11 +166,16 @@ const ChargerStationAdd = () => {
     getParams(registrationParams);
 
     /* valid 체크 */
-    const isValid = await stationRegistrationValidation.isValid(
-      registrationParams
-    );
-    if (!isValid) {
-      setIsValidCheckModalOpen(true);
+    /* 유효성 체크 */
+    const scheme = createValidation(YUP_CHARGER_STATION);
+    const [invalid] = scheme(registrationParams);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
     }
 
     const { code } = await postStationRegistration(registrationParams);
@@ -733,8 +736,8 @@ const ChargerStationAdd = () => {
                     <DetailContentCol>
                       <TextInputBase
                         bsSize={"lg"}
-                        name={"parkingFeeDetail"}
-                        value={parkingFeeDetail}
+                        name={"parkFee"}
+                        value={parkFee}
                         onChange={onChange}
                       />
                     </DetailContentCol>
@@ -897,10 +900,10 @@ const ChargerStationAdd = () => {
         }
       />
       <DetailValidCheckModal
-        isOpen={isValidCheckModalOpen}
-        onClose={() => {
-          setIsValidCheckModalOpen((prev) => !prev);
-        }}
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
       />
       <AddressSearchModal
         isOpen={addrSearchModalOpen}
