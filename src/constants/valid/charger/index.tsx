@@ -170,7 +170,7 @@ export const YUP_CHARGER_STATION: FieldSchemaMap = {
       .optional()
       .oneOf(["", "Y", "N"], "활용 여부는 Y 또는 N 중 하나여야 합니다."),
   },
-  parkingFeeDetail: {
+  parkFee: {
     validation: string().required("주차비 상세는 필수 입력 항목입니다."),
   },
   /* 지도 좌표 */

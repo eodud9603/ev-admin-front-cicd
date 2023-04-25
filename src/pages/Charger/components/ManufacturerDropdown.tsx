@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { getManufactureList } from "src/api/manufactures/manufactureApi";
 import { IManufactureListItem } from "src/api/manufactures/manufactureApi.interface";
 import { SearchDropdownBase } from "src/components/Common/Dropdown/SearchDropdownBase";
@@ -18,25 +18,6 @@ const ManufacturerDropdown = (props: IManufactureDropdownProps) => {
   const [list, setList] = useState<IItemProps[]>([]);
   const [selectedData, setSelectedData] = useState<Partial<IItemProps>>({});
 
-  /** init 제조사 목록 조회 */
-  useEffect(() => {
-    const init = async () => {
-      /** @TODO api 변경 */
-      const { code, data } = await getManufactureList({
-        size: 30,
-        page: 0,
-        sort: "ModifiedDate",
-      });
-
-      const success = code === "SUCCESS";
-      if (success) {
-        setList(format(data?.elements ?? []));
-      }
-    };
-
-    void init();
-  }, []);
-
   /** 선택한 제조사 데이터 콜백 */
   const onChangeData = (data: Partial<IItemProps>) => {
     !!onChange && onChange(data);
@@ -50,7 +31,7 @@ const ManufacturerDropdown = (props: IManufactureDropdownProps) => {
       size: 30,
       page: 0,
       sort: "ModifiedDate",
-      searchType: "CompanyName",
+      searchType: "NameOrCode",
       searchKeyword: text,
     });
 

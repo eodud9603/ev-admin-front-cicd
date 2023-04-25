@@ -6,7 +6,7 @@ export interface IRequestManufactureList {
   size: number;
   page: number; // 0부터 시작
   sort: "CompanyId" | "Name" | "ModifiedDate";
-  searchType?: "CompanyName" | "ManagerName" | "CompanyId";
+  searchType?: "CompanyName" | "ManagerName" | "CompanyId" | "NameOrCode";
   searchKeyword?: string
 }
 

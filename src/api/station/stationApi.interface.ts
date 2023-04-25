@@ -93,6 +93,7 @@ export interface IStationDetailResponse {
   saturdayOperationTimeTo?: string;
   isParkFeeFree?: string;
   contractId?: number;
+  parkFee?: string;
 }
 
 /* 충전소 등록 */

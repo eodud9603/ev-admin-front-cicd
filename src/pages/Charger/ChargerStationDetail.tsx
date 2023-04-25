@@ -174,7 +174,7 @@ const ChargerStationDetail = () => {
     saturdayOperationTimeFrom: detail?.saturdayOperationTimeFrom ?? "",
     saturdayOperationTimeTo: detail?.saturdayOperationTimeTo ?? "",
     isParkFeeFree: detail?.isParkFeeFree ?? "",
-    parkingFeeDetail: "" /* 수정 필요 필드 */,
+    parkFee: detail?.parkFee ?? "" /* 수정 필요 필드 */,
     /* 지도 좌표 */
     lat: (detail?.lat ?? "").toString(),
     lng: (detail?.lng ?? "").toString(),
@@ -220,7 +220,7 @@ const ChargerStationDetail = () => {
     saturdayOperationTimeFrom,
     saturdayOperationTimeTo,
     isParkFeeFree,
-    parkingFeeDetail /* 수정 필요 필드 */,
+    parkFee,
     /* 지도 좌표 */
     lat,
     lng,
@@ -256,6 +256,8 @@ const ChargerStationDetail = () => {
       contractId: Number(contractId),
     };
     getParams(modifyParams);
+
+    console.log(modifyParams);
 
     /* valid 체크 */
     /* 유효성 체크 */
@@ -910,8 +912,8 @@ const ChargerStationDetail = () => {
                       <TextInputBase
                         bsSize={"lg"}
                         disabled={disabled}
-                        name={"parkingFeeDetail"}
-                        value={parkingFeeDetail}
+                        name={"parkFee"}
+                        value={parkFee}
                         onChange={onChange}
                       />
                     </DetailContentCol>

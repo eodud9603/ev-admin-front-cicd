@@ -85,7 +85,7 @@ const ChargerStationAdd = () => {
     saturdayOperationTimeFrom: "",
     saturdayOperationTimeTo: "",
     isParkFeeFree: "",
-    parkingFeeDetail: "" /* 수정 필요 필드 */,
+    parkFee: "" /* 수정 필요 필드 */,
     /* 지도 좌표 */
     lat: "",
     lng: "",
@@ -125,7 +125,7 @@ const ChargerStationAdd = () => {
     saturdayOperationTimeFrom,
     saturdayOperationTimeTo,
     isParkFeeFree,
-    parkingFeeDetail /* 수정 필요 필드 */,
+    parkFee,
     contractId,
     lat,
     lng,
@@ -736,8 +736,8 @@ const ChargerStationAdd = () => {
                     <DetailContentCol>
                       <TextInputBase
                         bsSize={"lg"}
-                        name={"parkingFeeDetail"}
-                        value={parkingFeeDetail}
+                        name={"parkFee"}
+                        value={parkFee}
                         onChange={onChange}
                       />
                     </DetailContentCol>
