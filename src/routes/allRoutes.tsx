@@ -120,6 +120,7 @@ import { brokenDetailLoader } from "src/pages/Charger/loader/brokenDetailLoader"
 import { supplierListLoader } from "src/pages/Charger/loader/supplierListLoader";
 import { supplierDetailLoader } from "src/pages/Charger/loader/supplierDetailLoader";
 import { chargerAddLoader } from "src/pages/Charger/loader/chargerAddLoader";
+import { chargerContractAddLoader } from "src/pages/Charger/loader/chargerContractAddLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -165,6 +166,7 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/contract/add",
     element: <ChargerContractAdd />,
+    loader: chargerContractAddLoader,
   },
   {
     path: "/charger/contract/detail/:id",

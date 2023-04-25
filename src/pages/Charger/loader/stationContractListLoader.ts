@@ -12,8 +12,8 @@ const defaultParams: IRequestStationContractList = {
 
 export const stationContractListLoader = async () => {
   const loadData = loadTabData("/charger/contract");
-  if (loadData) {
-    return loadData;
+  if (loadData?.data) {
+    return loadData?.data;
   }
 
   /* 검색  */

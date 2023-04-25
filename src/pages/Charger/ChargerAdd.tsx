@@ -27,24 +27,14 @@ import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import useInputs from "src/hooks/useInputs";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 import { postChargerRegister } from "src/api/charger/chargerApi";
-import {
-  CHARGER_MODE,
-  CHARGER_TYPE,
-  TChargerModeKeys,
-  TChargerRationKeys,
-  TChargerTypeKeys,
-  TOperationStatusKeys,
-} from "src/constants/status";
-import { YNType } from "src/api/api.interface";
-import {
-  IChargerDetailResponse,
-  IRequestChargerRegister,
-} from "src/api/charger/chargerApi.interface";
+import { CHARGER_MODE, CHARGER_TYPE } from "src/constants/status";
+import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
 import { getParams } from "src/utils/params";
 import { objectToArray } from "src/utils/convert";
 import ManufacturerDropdown from "src/pages/Charger/components/ManufacturerDropdown";
 import ManufacturerModelDropdown from "src/pages/Charger/components/ManufacturerModelDropdown";
 import { useTabs } from "src/hooks/useTabs";
+import { useLoaderData } from "react-router-dom";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -52,6 +42,7 @@ const DefaultDropdownData = {
 };
 
 const ChargerAdd = () => {
+  const data: any = useLoaderData();
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 설치정보 drop */
@@ -63,41 +54,7 @@ const ChargerAdd = () => {
   /* 충전소검색 모달 */
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
   /* 기본정보 */
-  const [inputs, { onChange, onChangeSingle }] = useInputs({
-    chargerKey: "",
-    assetNumber: "",
-    chargerClass: "" as TChargerRationKeys,
-    installType: "" as TChargerTypeKeys, // 서버 확인
-    capacity: "",
-    isDualChannel: "" as YNType,
-    channelType01: "",
-    channelType02: "",
-    envVersion: "",
-    consignmentGubun: "",
-    useCode: "", // 서버 확인
-    consignmentName: "",
-    manufacturerId: "", // 서버 확인
-    manufacturerName: "", // 서버 확인
-    manufacturerModeId: "", // 서버 확인
-    manufacturerModelName: "", // 서버 확인
-    operationStatus: "" as TOperationStatusKeys, // 서버 확인
-    connectorType: "", // 서버 확인
-    isBroken: "" as YNType,
-    status: "" as TChargerModeKeys,
-    hasPgTerm: "",
-    pgName: "",
-    infProtocol: "",
-    maxChargeTime: "",
-    idleCommunicationTime: "",
-    busyCommunicationTime: "",
-    isRoaming: "" as YNType,
-    isKepcoRoaming: "" as YNType,
-    rechargeAppAvailable: "", // 서버 확인
-    contractPrice: "", // 서버 확인
-    qrType: "",
-    reservationType: "",
-    etcInfo: "",
-  });
+  const [inputs, { onChange, onChangeSingle }] = useInputs(data.inputs);
 
   const {
     chargerKey,
@@ -118,29 +75,16 @@ const ChargerAdd = () => {
   } = inputs;
 
   /* 충전소 정보 */
-  const [stationInputs, { onChangeSingle: onChangeStationSingle }] = useInputs({
-    chargerStationName: "",
-    stationKey: "",
-  });
+  const [stationInputs, { onChangeSingle: onChangeStationSingle }] = useInputs(
+    data.stationInputs
+  );
   const { chargerStationName } = stationInputs;
 
   /* 설치 정보 */
   const [
     installInputs,
     { onChange: onChangeInstall, onChangeSingle: onChangeInstallSingle },
-  ] = useInputs({
-    gubun: "",
-    companyName: "",
-    installer: "",
-    yyyy: "",
-    mm: "",
-    serverDomain: "",
-    serverPort: "",
-    sn: "",
-    hasTr: "",
-    fwVer: "",
-    fwVerCurrent: "",
-  });
+  ] = useInputs(data.installInputs);
   const {
     companyName,
     yyyy,
@@ -155,20 +99,7 @@ const ChargerAdd = () => {
   const [
     modemInputs,
     { onChange: onChangeModem, onChangeSingle: onChangeModemSingle },
-  ] = useInputs({
-    /* 모뎀  */
-    openNumber: "",
-    company: "",
-    companyPhone: "",
-    name: "",
-    sn: "",
-    /* 통신사  */
-    carrierName: "",
-    commFee: "",
-    /* 개통사  */
-    openCompany: "",
-    openCompanyPhone: "",
-  });
+  ] = useInputs(data.modemInputs);
   const {
     openNumber,
     company,
@@ -223,18 +154,16 @@ const ChargerAdd = () => {
   };
 
   /** focus시, unmounted됐을 때, 가장 최신 데이터 가져오는 콜백 함수 */
-  const { dataCallback } = useTabs({
-    data: inputs,
+  useTabs({
+    data: {
+      inputs: inputs,
+      stationInputs: stationInputs,
+      installInputs: installInputs,
+      modemInputs: modemInputs,
+    },
     pageTitle: "충전기 등록",
     pageType: "add",
   });
-
-  /** focus시, unmounted됐을 때, 가장 최신 데이터로 input값 저장 */
-  useEffect(() => {
-    // @ts-ignore
-    //TODO:: type 지정
-    onChangeSingle(dataCallback());
-  }, [dataCallback]);
 
   return (
     <ContainerBase>
@@ -324,24 +253,29 @@ const ChargerAdd = () => {
                       {
                         label: "급속",
                         value: "QUICK",
+                        checked: chargerClass === "QUICK",
                       },
                       {
                         label: "완속",
                         value: "STANDARD",
+                        checked: chargerClass === "STANDARD",
                       },
                       {
                         disabled: true,
                         label: "과금형 콘센트",
                         value: "",
+                        // checked: chargerClass === ''
                       },
                     ]}
-                    onChange={(e) => {
-                      onChange(e);
-                      /* 급속 충전이 아닐경우, 최대 충전시간 데이터 초기화 */
-                      if (e.target.value !== "1") {
-                        onChangeSingle({ maxChargeTime: "" });
-                      }
-                    }}
+                    // onChange={(e) => {
+                    //   console.log("onc");
+                    //   onChange(e);
+                    //   /* 급속 충전이 아닐경우, 최대 충전시간 데이터 초기화 */
+                    //   if (e.target.value !== "1") {
+                    //     onChangeSingle({ maxChargeTime: "" });
+                    //   }
+                    // }}
+                    onChange={onChange}
                   />
                 </DetailContentCol>
               </DetailRow>

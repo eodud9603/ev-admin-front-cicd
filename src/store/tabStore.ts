@@ -4,11 +4,16 @@ import { createJSONStorage, devtools, persist } from "zustand/middleware";
 export type tabType = {
   // seq: number;
   index?: number;
+  /**  탭 명칭 */
   label: string;
+  /**  현재 페이지 경로 */
   path: string;
   data: any | null;
-  /**  /detail or /registration 과 같이 상세나 등록 페이지가 있을 경우 rootPath 필수 */
+  /**  인덱스 (리스트) 페이지 경로 */
   rootPath: string;
+  /**  수정 여부 데이터 */
+  editable?: boolean;
+  filterData?: { [key: string]: string };
 };
 export interface ITabState {
   data: Array<tabType>;
@@ -49,7 +54,10 @@ export const useTabStore = create<ITabState>()(
             const index = arr.findIndex((e: tabType) => {
               return path.includes(e.rootPath);
             });
-            arr[index] = { ...tabData, rootPath: arr[index].rootPath };
+            arr[index] = arr[index]?.rootPath && {
+              ...tabData,
+              rootPath: arr[index].rootPath,
+            };
             return { data: arr };
           });
         },

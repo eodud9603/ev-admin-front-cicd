@@ -200,19 +200,13 @@ const ChargerContract = () => {
         });
       }
     };
-
   useTabs({ data: data, pageTitle: "충전소 계약 관리" });
 
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-      // list={tabList}
-      // selectedIndex={selectedIndex}
-      // onClick={() => {}}
-      // onClose={() => {}}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase

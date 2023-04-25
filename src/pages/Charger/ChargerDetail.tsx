@@ -27,17 +27,20 @@ import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 import useInputs from "src/hooks/useInputs";
 import { IChargerDetailResponse } from "src/api/charger/chargerApi.interface";
+import { useTabs } from "src/hooks/useTabs";
+import { chargerDetailLoaderType } from "src/pages/Charger/loader/chargerDetailLoader";
 
 const ChargerDetail = () => {
   /** init 충전기 상세 데이터 */
-  const charger = useLoaderData() as Partial<IChargerDetailResponse>;
+  const { charger, editable = false } =
+    useLoaderData() as chargerDetailLoaderType;
 
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 설치정보 drop */
   const [isInstallDrop, setIsInstallDrop] = useState(true);
   /** 전역 disabled 처리 */
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(editable);
   /* 수정완료 모달 */
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
@@ -45,52 +48,7 @@ const ChargerDetail = () => {
   /* 충전소검색 모달 */
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
 
-  const [
-    {
-      stationName,
-      id,
-      assetsNumber,
-      chargerClass,
-      isDualChannel,
-      channelType02,
-      envVersion,
-      companyType,
-      useStatus,
-      installStatus,
-      isBroken,
-      hasPgTerm,
-      maxChargeTime,
-      idleCommunicationTime,
-      busyCommunicationTime,
-      isRoaming,
-      isKepcoRoaming,
-      rechargeAppAvailable,
-      contractPrice,
-      qrType,
-      reservationType,
-      etcInfo,
-      installGubun,
-      installCompany,
-      yyyy,
-      mm,
-      serverDomain,
-      serverPort,
-      chargerSN,
-      hasTr,
-      fwVer,
-      fwVerCurrent,
-      modemOpenNumber,
-      modemCompany,
-      modemCompanyPhone,
-      modemName,
-      modemSN,
-      carrierName,
-      commFee,
-      openCompany,
-      openCompanyPhone,
-    },
-    { onChange, onChangeSingle },
-  ] = useInputs({
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
     /* 기본정보 */
     stationName: charger.station?.stationName ?? "",
     id: (charger.id ?? "").toString(),
@@ -150,11 +108,62 @@ const ChargerDetail = () => {
     openCompanyPhone: charger.install?.modem?.openCompanyPhone ?? "",
   });
 
+  const {
+    stationName,
+    id,
+    assetsNumber,
+    chargerClass,
+    isDualChannel,
+    channelType02,
+    envVersion,
+    companyType,
+    useStatus,
+    installStatus,
+    isBroken,
+    hasPgTerm,
+    maxChargeTime,
+    idleCommunicationTime,
+    busyCommunicationTime,
+    isRoaming,
+    isKepcoRoaming,
+    rechargeAppAvailable,
+    contractPrice,
+    qrType,
+    reservationType,
+    etcInfo,
+    installGubun,
+    installCompany,
+    yyyy,
+    mm,
+    serverDomain,
+    serverPort,
+    chargerSN,
+    hasTr,
+    fwVer,
+    fwVerCurrent,
+    modemOpenNumber,
+    modemCompany,
+    modemCompanyPhone,
+    modemName,
+    modemSN,
+    carrierName,
+    commFee,
+    openCompany,
+    openCompanyPhone,
+  } = inputs;
+
   const navigate = useNavigate();
+
+  useTabs({
+    data: inputs,
+    pageTitle: "충전기 상세",
+    pageType: "detail",
+    editable: isEditCancel,
+  });
 
   return (
     <ContainerBase>
-      <HeaderBase></HeaderBase>
+      <HeaderBase />
 
       <TabGroup />
 

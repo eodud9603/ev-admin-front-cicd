@@ -14,8 +14,8 @@ const defaultParams: IRequestStationList = {
 
 export const stationListLoader = async () => {
   const loadData = loadTabData("/charger/ChargerStation");
-  if (loadData) {
-    return loadData;
+  if (loadData?.data) {
+    return loadData?.data;
   }
   /* 검색  */
   const { code, data } = await getStationList(defaultParams);

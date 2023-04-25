@@ -24,10 +24,11 @@ import useInputs from "src/hooks/useInputs";
 import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
 import { postStationContractRegister } from "src/api/station/stationApi";
 import { number, object, string } from "yup";
-import { YNType } from "src/api/api.interface";
-import { TContractStatus } from "src/constants/status";
 import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
+import { useLoaderData } from "react-router-dom";
+import { chargerContractAddLoaderType } from "src/pages/Charger/loader/chargerContractAddLoader";
+import { useTabs } from "src/hooks/useTabs";
 
 const contractValidation = object({
   place: string().required("계약 장소를 입력해주세요."),
@@ -61,6 +62,7 @@ const contractValidation = object({
 });
 
 const ChargerContractAdd = () => {
+  const data = useLoaderData() as chargerContractAddLoaderType;
   const [tabList, setTabList] = useState([{ label: "충전소 계약 관리" }]);
   /* 미입력 안내 모달 */
   const [invalidModalOpen, setInvalidModalOpen] = useState(false);
@@ -68,32 +70,7 @@ const ChargerContractAdd = () => {
   const [isAddComplete, setIsAddComplete] = useState(false);
   /* 등록취소 모달 */
   const [isAddCancel, setIsAddCancel] = useState(false);
-  const [inputs, { onChange, onChangeSingle }] = useInputs({
-    place: "",
-    contractorName: "",
-    code: "" as TContractStatus,
-    isMeRoaming: "" as YNType,
-    meStationId: "",
-    contractStartDt: "",
-    contractEndDt: "",
-    addressSido: "",
-    addressSigugun: "",
-    addressDongmyun: "",
-    managerName: "",
-    managerPhone: "",
-    salesCompany: "",
-    salesManagerName: "",
-    salesManagerPhone: "",
-    contractInfo: "",
-    contractDt: "",
-    subsidyAgency: "",
-    subsidyYyyy: "",
-    subsidyAmount: "",
-    subsidyRevDt: "",
-    costSales: "",
-    costConstruct: "",
-    esafetyMng: "",
-  });
+  const [inputs, { onChange, onChangeSingle }] = useInputs(data.inputs);
   const {
     place,
     contractorName,
@@ -120,14 +97,50 @@ const ChargerContractAdd = () => {
     costConstruct,
     esafetyMng,
   } = inputs;
+
+  /**
+   * Formats the size
+   */
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
   /* 계약서 파일 */
   const [file, setFile] = useState<
     Partial<{
       url?: string;
       file: FileList | null;
     }>
-  >({});
-
+  >({
+    url: data?.file?.file
+      ? URL.createObjectURL(
+          JSON.parse(data.file.file)
+            .map((info) => new File([], info.name, { type: info.type }))
+            .map((file) =>
+              Object.assign(file, {
+                preview: URL.createObjectURL(file),
+                formattedSize: formatBytes(file.size),
+              })
+            )[0]
+        )
+      : "",
+    file: data?.file?.file
+      ? JSON.parse(data.file.file).map(
+          (info) => new File([], info.name, { type: info.type })
+        )
+      : null,
+  });
+  // files.map((file) =>
+  //     Object.assign(file, {
+  //       preview: URL.createObjectURL(file),
+  //       formattedSize: formatBytes(file.size),
+  //     })
+  // );
   const navigate = useNavigate();
 
   /** valid check */
@@ -172,11 +185,33 @@ const ChargerContractAdd = () => {
     }
   };
 
+  const filesArray = file.file ? Array.from(file.file) : [];
+  const filesInfo = filesArray.map((file) => {
+    return {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    };
+  });
+  const filesInfoString = JSON.stringify(filesInfo);
+  console.log(file);
+  useTabs({
+    data: {
+      inputs: inputs,
+      file: {
+        url: file.url,
+        file: filesInfoString,
+      },
+    },
+    pageTitle: "충전소 계약 신규 등록",
+    pageType: "add",
+  });
+
   return (
     <ContainerBase>
-      <HeaderBase></HeaderBase>
+      <HeaderBase />
 
-      <TabGroup list={tabList} />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -259,7 +294,7 @@ const ChargerContractAdd = () => {
               <TextInputBase
                 bsSize={"lg"}
                 name={"meStationId"}
-                value={meStationId}
+                value={meStationId ?? ""}
                 onChange={onChange}
               />
             </DetailContentCol>
@@ -384,13 +419,15 @@ const ChargerContractAdd = () => {
                 }`}
                 onClick={() => {}}
               >
-                {file.file ? (
+                {file.file && file.file.length > 0 ? (
                   <u
                     onClick={() => {
                       window?.open(file.url);
                     }}
                   >
-                    {file.file?.item(0)?.name}
+                    {/*ㄴㄴ*/}
+                    {/*{file.file?.item(0)?.name}*/}
+                    {file.file[0]?.name}
                   </u>
                 ) : (
                   "계약서 파일을 등록해주세요"
@@ -406,6 +443,7 @@ const ChargerContractAdd = () => {
                       return;
                     }
 
+                    console.log(e.target.files);
                     const localUrl = URL.createObjectURL(
                       Array.from(e.target.files)[0]
                     );
@@ -468,7 +506,7 @@ const ChargerContractAdd = () => {
               <TextInputBase
                 bsSize={"lg"}
                 name={"subsidyAmount"}
-                value={subsidyAmount}
+                value={subsidyAmount.toString() ?? ""}
                 onChange={onChange}
               />
             </DetailContentCol>
@@ -490,7 +528,7 @@ const ChargerContractAdd = () => {
                 titleWidthRatio: 4,
                 title: "영업비",
                 name: "costSales",
-                content: costSales,
+                content: costSales.toString(),
                 placeholder: "입력해주세요.",
                 onChange,
               },
@@ -498,7 +536,7 @@ const ChargerContractAdd = () => {
                 titleWidthRatio: 4,
                 title: "공사비",
                 name: "costConstruct",
-                content: costConstruct,
+                content: costConstruct.toString(),
                 placeholder: "입력해주세요.",
                 onChange,
               },

@@ -14,8 +14,8 @@ export const stationDetailLoader = async ({ params }: IStationDetailParams) => {
   }
 
   const loadData = loadTabData(`/charger/chargerStation/detail/${params.id}`);
-  if (loadData) {
-    return loadData;
+  if (loadData?.data) {
+    return loadData?.data;
   }
 
   /* 충전소 상세 정보 조회 */

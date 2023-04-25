@@ -9,11 +9,21 @@ interface IUseTabsProps {
   pageTitle: string;
   //페이지 형태 ( 없을 경우 리스트 페이지 )
   pageType?: "detail" | "registration" | "add";
+  editable?: boolean;
 }
 export const useTabs = (props: IUseTabsProps) => {
   const { pathname } = useLocation();
-  const { data, pageTitle, pageType } = props;
+  const { data, pageTitle, pageType, editable = false } = props;
   const tabStore = useTabStore();
+
+  const index = tabStore.data.findIndex((e) => pathname.includes(e.path));
+  const saveData = {
+    data: data,
+    label: pageTitle,
+    path: pathname,
+    rootPath: pageType ? pathname.split(`/${pageType}`)[0] : pathname,
+    editable: editable,
+  };
 
   const dataRef = useRef(data);
 
@@ -22,13 +32,6 @@ export const useTabs = (props: IUseTabsProps) => {
   }, [data]);
 
   useEffect(() => {
-    const index = tabStore.data.findIndex((e) => pathname.includes(e.path));
-    const saveData = {
-      data: data,
-      label: pageTitle,
-      path: pathname,
-      rootPath: pageType ? pathname.split(`/${pageType}`)[0] : pathname,
-    };
     //데이터 로딩 시 타임아웃에 걸려 데이터를 가져오지 못한 경우 데이터를 가져왔을때 change 처리
     if (data && !tabStore?.data[index]?.data && !pageType && index > -1) {
       tabStore.changeData(pathname, saveData);
@@ -42,7 +45,9 @@ export const useTabs = (props: IUseTabsProps) => {
 
     //탭 활성화
     tabStore.setActive(pathname);
+  }, []);
 
+  useEffect(() => {
     /** 업데이트된 데이터 정보 가져오기 */
     return () => {
       /* unmounted 시점 최신 데이터 저장 */
@@ -53,13 +58,13 @@ export const useTabs = (props: IUseTabsProps) => {
     };
   }, [tabStore.data.length]);
 
-  /** mounted 시, 데이터 set하기 위한 콜백 함수 */
-  const dataCallback = useCallback(() => {
-    return tabStore.data.find((e) => pathname.includes(e.rootPath))
-      ?.data as Pick<tabType, "data">;
-  }, []);
-
-  return {
-    dataCallback,
-  };
+  // /** mounted 시, 데이터 set하기 위한 콜백 함수 */
+  // const dataCallback = useCallback(() => {
+  //   return tabStore.data.find((e) => pathname.includes(e.rootPath))
+  //     ?.data as Pick<tabType, "data">;
+  // }, []);
+  //
+  // return {
+  //   dataCallback,
+  // };
 };
