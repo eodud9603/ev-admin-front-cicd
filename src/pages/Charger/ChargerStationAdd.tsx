@@ -37,6 +37,8 @@ import { YNType } from "src/api/api.interface";
 import { getParams } from "src/utils/params";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_STATION } from "src/constants/valid/charger";
+import { objectToArray } from "src/utils/convert";
+import { SUPPLY_METHOD } from "src/constants/status";
 
 const ChargerStationAdd = () => {
   /* 기본정보 drop */
@@ -440,16 +442,7 @@ const ChargerStationAdd = () => {
                       {
                         title: "수전방식",
                         name: "supplyMethod",
-                        list: [
-                          {
-                            label: "자중",
-                            value: "1",
-                          },
-                          {
-                            label: "가공",
-                            value: "2",
-                          },
-                        ],
+                        list: objectToArray(SUPPLY_METHOD),
                         onChange,
                       },
                       {

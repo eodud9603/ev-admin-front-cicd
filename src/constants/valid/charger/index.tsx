@@ -65,7 +65,7 @@ export const YUP_CHARGER_STATION: FieldSchemaMap = {
   supplyMethod: {
     validation: string()
       .required("수전방식은 필수 선택 항목입니다.")
-      .oneOf(["1", "2"], "수전방식은 자중 또는 가공 중 하나여야 합니다."),
+      .oneOf(["SM01", "SM02"], "수전방식은 자중 또는 가공 중 하나여야 합니다."),
   },
   billDivision: {
     validation: string()

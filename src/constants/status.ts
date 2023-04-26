@@ -104,7 +104,7 @@ export const BROKEN_STATUS = {
   SB06: "충전불가",
   SB07: "사용불가",
 } as const;
-/** 계약 상태 코드 키 타입 */
+/** 고장 파손 부위 코드 키 타입 */
 export type TBrokenStatus = keyof typeof BROKEN_STATUS;
 
 /**
@@ -115,7 +115,7 @@ export const INFPROTOCOL_STATUS = {
   IF01: "TCP",
   IF02: "OCPP 1.6",
 } as const;
-/** 계약 상태 코드 키 타입 */
+/** 연동규격 코드 키 타입 */
 export type TInfprotocolStatusKeys = keyof typeof INFPROTOCOL_STATUS;
 
 /**
@@ -127,5 +127,16 @@ export const CAPACITY = {
   50: "50",
   100: "100",
 } as const;
-/** 계약 상태 코드 키 타입 */
+/** 배터리 용량 코드 키 타입 */
 export type TCapacityKeys = keyof typeof CAPACITY;
+
+/**
+ * @description 수전방식
+ * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=31893c8250b7405ba9d736517ad24b60&pm=s
+ */
+export const SUPPLY_METHOD = {
+  SM01: "자중",
+  SM02: "가공",
+} as const;
+/** 수전방식 키 타입 */
+export type TSupplyMethodKeys = keyof typeof SUPPLY_METHOD;

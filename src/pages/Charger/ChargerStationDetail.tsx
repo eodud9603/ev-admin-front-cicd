@@ -37,6 +37,7 @@ import {
   CHARGER_MODE,
   CHARGER_RATION,
   OPERATION_STATUS,
+  SUPPLY_METHOD,
 } from "src/constants/status";
 import { getChargerStatusColor } from "src/utils/charger";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
@@ -48,6 +49,7 @@ import ContractDropdown from "src/pages/Charger/components/ContractDropdown";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_STATION } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import { objectToArray } from "src/utils/convert";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -572,20 +574,11 @@ const ChargerStationDetail = () => {
                       {
                         title: "수전방식",
                         name: "supplyMethod",
-                        list: [
-                          {
-                            disabled,
-                            label: "자중",
-                            value: "1",
-                            checked: supplyMethod === "1",
-                          },
-                          {
-                            disabled,
-                            label: "가공",
-                            value: "2",
-                            checked: supplyMethod === "2",
-                          },
-                        ],
+                        list: objectToArray(SUPPLY_METHOD).map((data) => ({
+                          ...data,
+                          disabled,
+                          checked: data.value === supplyMethod,
+                        })),
                         onChange,
                       },
                       {
