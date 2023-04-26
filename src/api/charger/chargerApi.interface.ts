@@ -51,7 +51,7 @@ export interface IChargerListItem {
   type: TChargerTypeKeys;
   status: TChargerModeKeys;
   lastConnection: string;
-  assetNumber: string;
+  assetNumber: number;
   nowChargingStartTime: string;
   lastChargingStartTime: string;
   lastChargingEndTime: string;
@@ -122,11 +122,11 @@ interface IInstallItem {
 }
 export interface IChargerDetailResponse {
   id?: number; /* 충전기 고유 ID 등록시 없어야함 */
-  assetNumber: string;
+  assetNumber: number;
   chargerKey?: number;
   chargerClass: TChargerRationKeys;
   installType: TChargerTypeKeys;
-  capacity: number;
+  capacity: string;
   isDualChannel: YNType;
   channelType01: string;
   channelType02: string;
@@ -149,6 +149,7 @@ export interface IChargerDetailResponse {
   reservationType: string;
   etcInfo: string; /* 특이사항 */
   isRoaming: YNType;
+  unitPrice: number;
   station?: IStationItem;
   install?: IInstallItem;
 }

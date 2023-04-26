@@ -205,12 +205,13 @@ export const YUP_CHARGER: FieldSchemaMap = {
     validation: string().required("종별은 필수 입력 항목입니다."),
   },
   installType: {
-    validation: string().required("설치 타입은 필수 입력 항목입니다."),
+    // validation: string().required("설치 타입은 필수 입력 항목입니다."),
+    validation: string().optional(),
   },
   capacity: {
     validation: number()
       .required("충전 용량은 필수 입력 항목입니다.")
-      .min(0, "충전 용량은 0보다 작을 수 없습니다."),
+      .min(1, "충전 용량은 1보다 작을 수 없습니다."),
   },
   isDualChannel: {
     validation: string()
@@ -235,7 +236,8 @@ export const YUP_CHARGER: FieldSchemaMap = {
   },
   /** @TODO 수정 필요 */
   consignmentName: {
-    validation: string().required("위탁사는 필수 입력 항목입니다."),
+    // validation: string().required("위탁사는 필수 입력 항목입니다."),
+    validation: string().optional(),
   },
   /** @TODO 수정 필요 */
   manufactureCode: {
@@ -272,7 +274,8 @@ export const YUP_CHARGER: FieldSchemaMap = {
       .oneOf(["Y", "N"], "결제단말기 여부는 Y 또는 N 중 하나여야 합니다."),
   },
   pgName: {
-    validation: string().required("결제단말기 PG사는 필수 입력 항목입니다."),
+    // validation: string().required("결제단말기 PG사는 필수 입력 항목입니다."),
+    validation: string().optional(),
   },
   infProtocol: {
     validation: string().required("연동 규격은 필수 입력 항목입니다."),
@@ -280,19 +283,19 @@ export const YUP_CHARGER: FieldSchemaMap = {
   maxChargeTime: {
     validation: string()
       .optional()
-      .min(0, "최대 충전 시간(분)은 0분 보다 작을 수 없습니다.")
+      .min(1, "최대 충전 시간(분)은 1분 보다 작을 수 없습니다.")
       .max(60, "최대 충전 시간(분)은 60분 보다 클 수 없습니다."),
   },
   idleCommunicationTime: {
     validation: number()
       .required("미사용 전송 주기(분)는 필수 입력 항목입니다.")
-      .min(0, "미사용 전송 주기(분)는 0분 보다 작을 수 없습니다.")
+      .min(1, "미사용 전송 주기(분)는 1분 보다 작을 수 없습니다.")
       .max(60, "미사용 전송 주기(분)는 60분 보다 클 수 없습니다."),
   },
   busyCommunicationTime: {
     validation: number()
       .required("충전중 전송 주기(분)는 필수 입력 항목입니다.")
-      .min(0, "충전중 전송 주기(분)는 0분 보다 작을 수 없습니다.")
+      .min(1, "충전중 전송 주기(분)는 1분 보다 작을 수 없습니다.")
       .max(60, "충전중 전송 주기(분)는 60분 보다 클 수 없습니다."),
   },
   isRoaming: {
@@ -345,10 +348,10 @@ export const YUP_CHARGER_INSTALL: FieldSchemaMap = {
     validation: string().required("설치 연도는 필수 입력 항목입니다."),
   },
   mm: {
-    validation: string()
-      .required("설치 월은 필수 입력 항목입니다.")
-      .min(1, "설치 월은 최소 1월이어야 합니다.")
-      .max(12, "설치 월은 최대 12월이어야 합니다."),
+    validation: string().required("설치 월은 필수 입력 항목입니다."),
+    // number타입일 경우
+    // .min(1, "설치 월은 최소 1월이어야 합니다.")
+    // .max(12, "설치 월은 최대 12월이어야 합니다."),
   },
   serverDomain: {
     validation: string().required("서버 도메인은 필수 입력 항목입니다."),
@@ -368,7 +371,8 @@ export const YUP_CHARGER_INSTALL: FieldSchemaMap = {
     validation: string().required("충전기 펌웨어는 필수 입력 항목입니다."),
   },
   fwVerCurrent: {
-    validation: string().required("현재 충전기 펌웨어운 필수 입력 항목입니다."),
+    // validation: string().required("현재 충전기 펌웨어은 필수 입력 항목입니다."),
+    validation: string().optional(),
   },
 };
 

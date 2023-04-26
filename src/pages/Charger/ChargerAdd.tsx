@@ -44,7 +44,15 @@ import ManufacturerModelDropdown from "src/pages/Charger/components/Manufacturer
 import { useTabs } from "src/hooks/useTabs";
 import { useLoaderData } from "react-router-dom";
 import { CHANNEL_TYPE_LIST } from "src/constants/list";
-import { INIT_CHARGER_ADD } from "./loader/chargerAddLoader";
+import { INIT_CHARGER_ADD } from "src/pages/Charger/loader/chargerAddLoader";
+import createValidation from "src/utils/validate";
+import {
+  YUP_CHARGER,
+  YUP_CHARGER_INSTALL,
+  YUP_CHARGER_IN_STATION,
+  YUP_CHARGER_MODEM,
+} from "src/constants/valid/charger";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -57,6 +65,11 @@ const ChargerAdd = () => {
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 설치정보 drop */
   const [isInstallDrop, setIsInstallDrop] = useState(true);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
   /* 등록완료 모달 */
   const [isCompleteComplete, setIsCompleteComplete] = useState(false);
   /* 등록취소 모달 */
@@ -156,23 +169,46 @@ const ChargerAdd = () => {
     const registerParams: IRequestChargerRegister = {
       /* 기본 정보 */
       ...inputs,
-      capacity: Number(capacity),
+      assetNumber: Number(assetNumber),
       chargerKey: Number(chargerKey),
       maxChargeTime: Number(maxChargeTime),
       idleCommunicationTime: Number(idleCommunicationTime),
       busyCommunicationTime: Number(busyCommunicationTime),
+      unitPrice: Number(unitPrice),
       /* 충전소 정보 */
       station: {
-        stationKey: stationInputs.stationKey,
+        stationKey: "11111111",
       },
-
+      /* 설치 정보 */
       install: {
         ...installParams,
-
+        /* 모뎀 정보 */
         modem: modemParams,
       },
     };
     getParams(registerParams);
+
+    /* 유효성 체크 */
+    const scheme = createValidation({
+      ...YUP_CHARGER_IN_STATION,
+      ...YUP_CHARGER,
+      ...YUP_CHARGER_INSTALL,
+      ...YUP_CHARGER_MODEM,
+    });
+    const [invalid] = scheme({
+      ...stationInputs,
+      ...registerParams,
+      ...installParams,
+      ...modemParams,
+    });
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
 
     /* 등록 요청 */
     const { code } = await postChargerRegister(registerParams);
@@ -199,9 +235,7 @@ const ChargerAdd = () => {
   return (
     <ContainerBase>
       <HeaderBase></HeaderBase>
-
       <TabGroup />
-
       <BodyBase>
         <BreadcrumbBase
           list={[
@@ -1092,7 +1126,12 @@ const ChargerAdd = () => {
           rightButtonHandler={register}
         />
       </BodyBase>
-
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
       <DetailCompleteModal
         isOpen={isCompleteComplete}
         onClose={() => {
