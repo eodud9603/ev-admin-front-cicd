@@ -112,7 +112,7 @@ interface IInstallItem {
   yyyy: string;
   mm: string;
   serverDomain: string;
-  serverPort: string;
+  serverPort: number;
   sn: string;
   hasTr: string;
   fwVer: string;
@@ -152,6 +152,13 @@ export interface IChargerDetailResponse {
   unitPrice: number;
   station?: IStationItem;
   install?: IInstallItem;
+  manufactureId: number;
+  manufactureCode: string;
+  manufactureName: string;
+  modelId: number;
+  model: string;
+  type: TChargerTypeKeys;
+  rechargeAppAvailable: YNType; /** @TODO 서버 필드 추가 후, 수정 필요 */
 }
 
 /* 충전기 등록 */
@@ -161,3 +168,7 @@ export interface IRequestChargerRegister extends Omit<IChargerDetailResponse, "s
     stationKey: string;
   }
 };
+
+/* 충전기 수정 */
+/** @see  */
+export type IRequestChargerModify = IRequestChargerRegister;

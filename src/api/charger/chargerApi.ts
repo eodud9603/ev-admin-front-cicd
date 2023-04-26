@@ -8,6 +8,7 @@ import {
   IRequestChargerDetail,
   IChargerDetailResponse,
   IRequestChargerRegister,
+  IRequestChargerModify,
 } from "src/api/charger/chargerApi.interface";
 
 const { chargerUrl } = API_URL;
@@ -39,5 +40,12 @@ export const getChargerDetail = (params: IRequestChargerDetail) => {
 export const postChargerRegister = (body: IRequestChargerRegister) => {
   return api.post<undefined>(
     `${chargerUrl}/register`, { body }
+  );
+};
+
+/** 충전기 수정 api */
+export const postChargerModify = (body: IRequestChargerModify) => {
+  return api.post<undefined>(
+    `${chargerUrl}/modify`, { body }
   );
 };

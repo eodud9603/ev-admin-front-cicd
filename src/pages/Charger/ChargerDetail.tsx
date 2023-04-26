@@ -28,6 +28,42 @@ import { StationSearchModal } from "src/pages/Charger/components/StationSearchMo
 import useInputs from "src/hooks/useInputs";
 import { useTabs } from "src/hooks/useTabs";
 import { chargerDetailLoaderType } from "src/pages/Charger/loader/chargerDetailLoader";
+import {
+  CAPACITY,
+  CHARGER_MODE,
+  CHARGER_TYPE,
+  INFPROTOCOL_STATUS,
+  INSTALL_TYPE,
+  TCapacityKeys,
+  TChargerModeKeys,
+  TChargerRationKeys,
+  TChargerTypeKeys,
+  TInfprotocolStatusKeys,
+  TInstallTypeKeys,
+  TOperationStatusKeys,
+} from "src/constants/status";
+import { YNType } from "src/api/api.interface";
+import { objectToArray } from "src/utils/convert";
+import ManufacturerModelDropdown from "src/pages/Charger/components/ManufacturerModelDropdown";
+import ManufacturerDropdown from "src/pages/Charger/components/ManufacturerDropdown";
+import { CHANNEL_TYPE_LIST } from "src/constants/list";
+import { postChargerModify } from "src/api/charger/chargerApi";
+import { getParams } from "src/utils/params";
+import createValidation from "src/utils/validate";
+import {
+  YUP_CHARGER,
+  YUP_CHARGER_EXTRA,
+  YUP_CHARGER_INSTALL,
+  YUP_CHARGER_IN_STATION,
+  YUP_CHARGER_MODEM,
+} from "src/constants/valid/charger";
+import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import { IRequestChargerModify } from "src/api/charger/chargerApi.interface";
+
+const DefaultDropdownData = {
+  label: "선택",
+  value: "",
+};
 
 const ChargerDetail = () => {
   /** init 충전기 상세 데이터 */
@@ -38,8 +74,12 @@ const ChargerDetail = () => {
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 설치정보 drop */
   const [isInstallDrop, setIsInstallDrop] = useState(true);
-  /** 전역 disabled 처리 */
-  const [disabled, setDisabled] = useState(editable);
+
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
   /* 수정완료 모달 */
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
@@ -47,109 +87,147 @@ const ChargerDetail = () => {
   /* 충전소검색 모달 */
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
 
+  /** 전역 disabled 처리 */
+  const [disabled, setDisabled] = useState(!editable);
+
+  /* 기본정보 */
   const [inputs, { onChange, onChangeSingle }] = useInputs({
-    /* 기본정보 */
-    stationName: charger.station?.stationName ?? "",
-    id: (charger.id ?? "").toString(),
-    assetsNumber: (charger.assetNumber ?? "").toString(),
-    chargerClass: charger.chargerClass ?? "",
-    installType: charger.installType ?? "",
-    capacity: charger.capacity ?? "",
-    /* 듀얼형 */
-    isDualChannel: charger.isDualChannel ?? "N",
+    id: charger.id,
+    chargerKey: (charger.chargerKey ?? "").toString(),
+    assetNumber: (charger.assetNumber ?? "").toString(),
+    chargerClass: (charger.chargerClass ?? "") as TChargerRationKeys,
+    installType: (charger.installType ?? "") as TInstallTypeKeys,
+    capacity: (charger.capacity ?? "").toString() as `${TCapacityKeys}`,
+    isDualChannel: (charger.channelType02 ? "Y" : "N") as YNType,
     channelType01: charger.channelType01 ?? "",
     channelType02: charger.channelType02 ?? "",
     envVersion: charger.envVersion ?? "",
-    companyType: "",
-    useStatus: "",
-    consignmentName: "",
-    manufacturerName: "",
-    manufacturerModel: "",
-    installStatus: "",
-    connectorType: "",
-    isBroken: charger.isBroken ?? "",
-    status: charger.status ?? "",
-    hasPgTerm: charger.hasPgTerm ?? "",
+    consignmentGubun: charger.consignmentGubun ?? "",
+    useCode: charger.useCode ?? "", // 서버 확인
+    consignmentName: charger.consignmentName ?? "",
+    manufactureId: (charger.manufactureId ?? "").toString(),
+    manufactureCode: charger.manufactureCode ?? "",
+    manufactureName: charger.manufactureName ?? "",
+    modelId: (charger.modelId ?? "").toString(),
+    model: charger.model ?? "",
+    operationStatus: (charger.operationStatus ?? "") as TOperationStatusKeys,
+    type: (charger.type ?? "") as TChargerTypeKeys,
+    isBroken: (charger.isBroken ?? "") as YNType,
+    status: (charger.status ?? "") as TChargerModeKeys,
+    hasPgTerm: (charger.hasPgTerm ?? "") as YNType,
     pgName: charger.pgName ?? "",
-    infProtocol: charger.infProtocol ?? "",
+    infProtocol: (charger.infProtocol ?? "") as TInfprotocolStatusKeys,
     maxChargeTime: (charger.maxChargeTime ?? "").toString(),
     idleCommunicationTime: (charger.idleCommunicationTime ?? "").toString(),
     busyCommunicationTime: (charger.busyCommunicationTime ?? "").toString(),
-    isRoaming: charger.isRoaming ?? "",
-    isKepcoRoaming: charger.isKepcoRoaming ?? "",
-    rechargeAppAvailable: "" /** @TODO 앱 충전 가능 여부 추가필요 */,
-    contractPrice: "" /** @TODO 예약단가 추가필요 */,
+    isRoaming: (charger.isRoaming ?? "") as YNType,
+    isKepcoRoaming: (charger.isKepcoRoaming ?? "") as YNType,
+    rechargeAppAvailable: (charger.rechargeAppAvailable ?? "") as YNType, // 서버 확인
+    unitPrice: (charger.unitPrice ?? "").toString(),
     qrType: charger.qrType ?? "",
     reservationType: charger.reservationType ?? "",
     etcInfo: charger.etcInfo ?? "",
-    /* 계약정보 */
-    installGubun: charger.install?.gubun ?? "",
-    installCompany: charger.install?.companyName ?? "",
+  });
+  const {
+    chargerKey,
+    assetNumber,
+    chargerClass,
+    installType,
+    capacity,
+    isDualChannel,
+    channelType01,
+    channelType02,
+    envVersion,
+    manufactureId,
+    manufactureCode,
+    manufactureName,
+    modelId,
+    model,
+    status,
+    maxChargeTime,
+    idleCommunicationTime,
+    busyCommunicationTime,
+    unitPrice,
+    etcInfo,
+    operationStatus,
+    consignmentGubun,
+    useCode,
+    isBroken,
+    hasPgTerm,
+    isRoaming,
+    isKepcoRoaming,
+    rechargeAppAvailable,
+    qrType,
+    reservationType,
+    type,
+    infProtocol,
+  } = inputs;
+
+  /* 충전소 정보 */
+  const [stationInputs, { onChangeSingle: onChangeStationSingle }] = useInputs({
+    chargerStationName: charger.station?.stationName ?? "",
+    stationKey: charger.station?.stationKey ?? "",
+  });
+  const { chargerStationName } = stationInputs;
+
+  /* 설치 정보 */
+  const [
+    installInputs,
+    { onChange: onChangeInstall, onChangeSingle: onChangeInstallSingle },
+  ] = useInputs({
+    id: charger.install?.id,
+    gubun: charger.install?.gubun ?? "",
+    companyName: charger.install?.companyName ?? "",
     yyyy: charger.install?.yyyy ?? "",
     mm: charger.install?.mm ?? "",
     serverDomain: charger.install?.serverDomain ?? "",
-    serverPort: charger.install?.serverPort ?? "",
-    chargerSN: charger.install?.sn ?? "",
+    serverPort: (charger.install?.serverPort ?? "").toString(),
+    sn: charger.install?.sn ?? "",
     hasTr: charger.install?.hasTr ?? "",
     fwVer: charger.install?.fwVer ?? "",
     fwVerCurrent: charger.install?.fwVerCurrent ?? "",
+  });
+  const {
+    gubun,
+    companyName,
+    yyyy,
+    mm,
+    serverDomain,
+    serverPort,
+    hasTr,
+    fwVer,
+    fwVerCurrent,
+  } = installInputs;
+
+  /* 모뎀 정보 */
+  const [
+    modemInputs,
+    { onChange: onChangeModem, onChangeSingle: onChangeModemSingle },
+  ] = useInputs({
+    id: charger.install?.modem?.id,
     /* 모뎀  */
-    modemOpenNumber: charger.install?.modem?.openNumber ?? "",
-    modemCompany: charger.install?.modem?.company ?? "",
-    modemCompanyPhone: charger.install?.modem?.companyPhone ?? "",
-    modemName: charger.install?.modem?.name ?? "",
-    modemSN: charger.install?.modem?.sn ?? "",
+    openNumber: charger.install?.modem?.openNumber ?? "",
+    company: charger.install?.modem?.company ?? "",
+    companyPhone: charger.install?.modem?.companyPhone ?? "",
+    name: charger.install?.modem?.name ?? "",
+    sn: charger.install?.modem?.sn ?? "",
     /* 통신사  */
     carrierName: charger.install?.modem?.carrierName ?? "",
     commFee: charger.install?.modem?.commFee ?? "",
     /* 개통사  */
     openCompany: charger.install?.modem?.openCompany ?? "",
-    openCompanyPhone: charger.install?.modem?.openCompanyPhone ?? "",
+    openCompanyPhone: charger.install?.modem?.companyPhone ?? "",
   });
-
   const {
-    stationName,
-    id,
-    assetsNumber,
-    chargerClass,
-    isDualChannel,
-    channelType02,
-    envVersion,
-    companyType,
-    useStatus,
-    installStatus,
-    isBroken,
-    hasPgTerm,
-    maxChargeTime,
-    idleCommunicationTime,
-    busyCommunicationTime,
-    isRoaming,
-    isKepcoRoaming,
-    rechargeAppAvailable,
-    contractPrice,
-    qrType,
-    reservationType,
-    etcInfo,
-    installGubun,
-    installCompany,
-    yyyy,
-    mm,
-    serverDomain,
-    serverPort,
-    chargerSN,
-    hasTr,
-    fwVer,
-    fwVerCurrent,
-    modemOpenNumber,
-    modemCompany,
-    modemCompanyPhone,
-    modemName,
-    modemSN,
+    openNumber,
+    company,
+    companyPhone,
+    name,
     carrierName,
     commFee,
     openCompany,
     openCompanyPhone,
-  } = inputs;
+  } = modemInputs;
 
   const navigate = useNavigate();
 
@@ -157,8 +235,83 @@ const ChargerDetail = () => {
     data: inputs,
     pageTitle: "충전기 상세",
     pageType: "detail",
-    editable: isEditCancel,
+    editable: !disabled,
   });
+
+  /** 수정 */
+  const modify = async () => {
+    if (disabled) {
+      setDisabled((prev) => !prev);
+      return;
+    }
+
+    /** 설치 정보 */
+    const installParams = { ...installInputs };
+    /** 모뎀 정보 */
+    const modemParams = { ...modemInputs };
+
+    getParams(installParams);
+    getParams(modemParams);
+
+    /** 등록 정보 */
+    const modifyParams: IRequestChargerModify = {
+      /* 기본 정보 */
+      ...inputs,
+      assetNumber: Number(assetNumber),
+      chargerKey: Number(chargerKey),
+      maxChargeTime: Number(maxChargeTime),
+      idleCommunicationTime: Number(idleCommunicationTime),
+      busyCommunicationTime: Number(busyCommunicationTime),
+      manufactureId: Number(manufactureId),
+      modelId: Number(modelId),
+      unitPrice: Number(unitPrice),
+      /* 충전소 정보 */
+      station: {
+        /** @description 현재 충전기 id 생성 이슈로 stationKey: "11111111" 충전소로만 생성 가능 */
+        stationKey: stationInputs.stationKey,
+      },
+      /* 설치 정보 */
+      install: {
+        ...installParams,
+        serverPort: Number(installParams.serverPort),
+        /* 모뎀 정보 */
+        modem: modemParams,
+      },
+    };
+    getParams(modifyParams);
+
+    /* 유효성 체크 */
+    const scheme = createValidation({
+      ...YUP_CHARGER_IN_STATION,
+      ...YUP_CHARGER,
+      ...YUP_CHARGER_EXTRA,
+      ...YUP_CHARGER_INSTALL,
+      ...YUP_CHARGER_MODEM,
+    });
+    const [invalid] = scheme({
+      ...stationInputs,
+      ...modifyParams,
+      ...installParams,
+      ...modemParams,
+    });
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
+
+    /* 수정 요청 */
+    const { code } = await postChargerModify(modifyParams);
+    /* 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      /* 저장 성공 */
+      setIsEditComplete(true);
+    }
+  };
 
   return (
     <ContainerBase>
@@ -219,8 +372,8 @@ const ChargerDetail = () => {
                       inputstyle={{ flex: 1 }}
                       bsSize={"lg"}
                       disabled={true}
-                      name={"stationName"}
-                      value={stationName}
+                      name={"chargerStationName"}
+                      value={chargerStationName}
                       onChange={onChange}
                     />
 
@@ -241,8 +394,8 @@ const ChargerDetail = () => {
                   <TextInputBase
                     bsSize={"lg"}
                     disabled={true}
-                    name={"id"}
-                    value={id}
+                    name={"chargerKey"}
+                    value={chargerKey}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -253,9 +406,9 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
-                    disabled={true}
-                    name={"assetsNumber"}
-                    value={assetsNumber}
+                    disabled={disabled}
+                    name={"assetNumber"}
+                    value={assetNumber}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -266,23 +419,21 @@ const ChargerDetail = () => {
                     list={[
                       {
                         label: "급속",
-                        value: "1",
-                        checked: chargerClass === "1",
-                        disabled,
+                        value: "QUICK",
                       },
                       {
                         label: "완속",
-                        value: "2",
-                        checked: chargerClass === "2",
-                        disabled,
+                        value: "STANDARD",
                       },
                       {
                         label: "과금형 콘센트",
-                        value: "3",
-                        checked: chargerClass === "3",
-                        disabled,
+                        value: undefined,
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === chargerClass,
+                    }))}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -291,19 +442,23 @@ const ChargerDetail = () => {
               <DetailDropdownRow
                 rows={[
                   {
+                    disabled,
                     titleWidthRatio: 4,
                     title: "설치타입",
-                    disabled,
                     dropdownItems: [
                       {
                         menuItems: [
-                          {
-                            label: "스탠드형",
-                            value: "1",
-                          },
+                          DefaultDropdownData,
+                          ...objectToArray(INSTALL_TYPE),
                         ],
+                        initSelectedValue: {
+                          label: INSTALL_TYPE[installType],
+                          value: installType,
+                        },
                         onClickDropdownItem: (label, value) => {
-                          onChangeSingle({ installType: value });
+                          onChangeSingle({
+                            installType: value as typeof installType,
+                          });
                         },
                       },
                     ],
@@ -315,13 +470,17 @@ const ChargerDetail = () => {
                     dropdownItems: [
                       {
                         menuItems: [
-                          {
-                            label: "100",
-                            value: "1",
-                          },
+                          DefaultDropdownData,
+                          ...objectToArray(CAPACITY),
                         ],
+                        initSelectedValue: {
+                          label: CAPACITY[capacity],
+                          value: capacity,
+                        },
                         onClickDropdownItem: (label, value) => {
-                          onChangeSingle({ capacity: value });
+                          onChangeSingle({
+                            capacity: value as typeof capacity,
+                          });
                         },
                       },
                     ],
@@ -337,23 +496,23 @@ const ChargerDetail = () => {
                       disabled={disabled}
                       name={"듀얼형"}
                       label={"듀얼형"}
-                      value={"1"}
+                      value={"Y"}
+                      checked={isDualChannel === "Y"}
                       onChange={() => {
                         onChangeSingle({
                           isDualChannel: isDualChannel === "Y" ? "N" : "Y",
                           channelType02:
-                            isDualChannel === "Y" ? "" : channelType02,
+                            isDualChannel === "N" ? "" : channelType02,
                         });
                       }}
                     />
                     <DropdownBase
                       disabled={disabled}
-                      menuItems={[
-                        {
-                          label: "CH1",
-                          value: "1",
-                        },
-                      ]}
+                      menuItems={[DefaultDropdownData, ...CHANNEL_TYPE_LIST]}
+                      initSelectedValue={{
+                        label: channelType01,
+                        value: channelType01,
+                      }}
                       onClickDropdownItem={(_, value) => {
                         onChangeSingle({
                           channelType01: value,
@@ -364,11 +523,13 @@ const ChargerDetail = () => {
                       {isDualChannel === "Y" && (
                         <DropdownBase
                           menuItems={[
-                            {
-                              label: "CH2",
-                              value: "1",
-                            },
+                            DefaultDropdownData,
+                            ...CHANNEL_TYPE_LIST,
                           ]}
+                          initSelectedValue={{
+                            label: channelType02,
+                            value: channelType02,
+                          }}
                           onClickDropdownItem={(_, value) => {
                             onChangeSingle({
                               channelType02: value,
@@ -395,46 +556,44 @@ const ChargerDetail = () => {
                 rows={[
                   {
                     title: "자사/위탁 구분",
-                    name: "companyType",
+                    name: "consignmentGubun",
                     list: [
                       {
-                        disabled,
                         label: "자사",
                         value: "1",
-                        checked: companyType === "1",
                       },
                       {
-                        disabled,
                         label: "위탁사",
                         value: "2",
-                        checked: companyType === "2",
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === consignmentGubun,
+                    })),
                     onChange,
                   },
                   {
                     title: "사용/전용 구분",
-                    name: "useStatus",
+                    name: "useCode",
                     list: [
                       {
-                        disabled,
                         label: "사용",
-                        value: "1",
-                        checked: useStatus === "1",
+                        value: "Y",
                       },
                       {
-                        disabled,
                         label: "미사용",
-                        value: "2",
-                        checked: useStatus === "2",
+                        value: "N",
                       },
                       {
-                        disabled,
                         label: "전용",
-                        value: "3",
-                        checked: useStatus === "3",
+                        value: undefined,
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === useCode,
+                    })),
                     onChange,
                   },
                 ]}
@@ -446,12 +605,7 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <DropdownBase
                     disabled={disabled}
-                    menuItems={[
-                      {
-                        label: "위탁사(운영사)명 노출",
-                        value: "1",
-                      },
-                    ]}
+                    menuItems={[DefaultDropdownData]}
                     onClickDropdownItem={(label, value) => {
                       onChangeSingle({ consignmentName: value });
                     }}
@@ -460,28 +614,34 @@ const ChargerDetail = () => {
                 <DetailLabelCol sm={2}>제조사</DetailLabelCol>
                 <DetailContentCol>
                   <DetailGroupCol className={"gap-4"}>
-                    <DropdownBase
+                    <ManufacturerDropdown
                       disabled={disabled}
-                      menuItems={[
-                        {
-                          label: "제조사명 노출",
-                          value: "1",
-                        },
-                      ]}
-                      onClickDropdownItem={(label, value) => {
-                        onChangeSingle({ manufacturerName: value });
+                      initSelectedValue={{
+                        code: manufactureCode,
+                        name: manufactureName,
+                      }}
+                      onChange={(data) => {
+                        onChangeSingle({
+                          manufactureId: data.id?.toString(),
+                          manufactureCode: data.code,
+                          manufactureName: data.name,
+                          modelId: "",
+                          model: "",
+                        });
                       }}
                     />
-                    <DropdownBase
-                      disabled={disabled}
-                      menuItems={[
-                        {
-                          label: "모델명 노출",
-                          value: "1",
-                        },
-                      ]}
-                      onClickDropdownItem={(label, value) => {
-                        onChangeSingle({ manufacturerModel: value });
+                    <ManufacturerModelDropdown
+                      disabled={disabled || !manufactureName}
+                      id={Number(manufactureId || -1)}
+                      initSelectedValue={{
+                        value: model,
+                        label: modelId,
+                      }}
+                      onChange={(data) => {
+                        onChangeSingle({
+                          modelId: data.id?.toString(),
+                          model: data.modelName,
+                        });
                       }}
                     />
                   </DetailGroupCol>
@@ -492,33 +652,29 @@ const ChargerDetail = () => {
                 <DetailLabelCol sm={2}>충전기 설치 상태</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"installStatus"}
+                    name={"operationStatus"}
                     list={[
                       {
-                        disabled,
                         label: "정상",
-                        value: "1",
-                        checked: installStatus === "1",
+                        value: "INSTALLED",
                       },
                       {
-                        disabled,
                         label: "수리중",
-                        value: "2",
-                        checked: installStatus === "2",
+                        value: "REPAIR",
                       },
                       {
-                        disabled,
                         label: "철거",
-                        value: "3",
-                        checked: installStatus === "3",
+                        value: "DEMOLISHED",
                       },
                       {
-                        disabled,
                         label: "철거예정",
-                        value: "4",
-                        checked: installStatus === "4",
+                        value: "TO_BE_DEMOLISH",
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === operationStatus,
+                    }))}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -527,13 +683,15 @@ const ChargerDetail = () => {
                   <DropdownBase
                     disabled={disabled}
                     menuItems={[
-                      {
-                        label: "DC 콤보",
-                        value: "1",
-                      },
+                      DefaultDropdownData,
+                      ...objectToArray(CHARGER_TYPE),
                     ]}
+                    initSelectedValue={{
+                      label: CHARGER_TYPE[type],
+                      value: type,
+                    }}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ connectorType: value });
+                      onChangeSingle({ type: value as typeof type });
                     }}
                   />
                 </DetailContentCol>
@@ -546,18 +704,18 @@ const ChargerDetail = () => {
                     name={"isBroken"}
                     list={[
                       {
-                        disabled,
                         label: "정상",
-                        value: "Y",
-                        checked: isBroken === "Y",
+                        value: "N",
                       },
                       {
-                        disabled,
                         label: "고장",
-                        value: "N",
-                        checked: isBroken === "N",
+                        value: "Y",
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === isBroken,
+                    }))}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -566,13 +724,15 @@ const ChargerDetail = () => {
                   <DropdownBase
                     disabled={disabled}
                     menuItems={[
-                      {
-                        label: "충전중",
-                        value: "1",
-                      },
+                      DefaultDropdownData,
+                      ...objectToArray(CHARGER_MODE),
                     ]}
+                    initSelectedValue={{
+                      label: CHARGER_MODE[status],
+                      value: status,
+                    }}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ status: value });
+                      onChangeSingle({ status: value as typeof status });
                     }}
                   />
                 </DetailContentCol>
@@ -585,18 +745,18 @@ const ChargerDetail = () => {
                     name={"hasPgTerm"}
                     list={[
                       {
-                        disabled,
                         label: "Y",
                         value: "Y",
-                        checked: hasPgTerm === "Y",
                       },
                       {
-                        disabled,
                         label: "N",
                         value: "N",
-                        checked: hasPgTerm === "N",
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === hasPgTerm,
+                    }))}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -604,12 +764,7 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <DropdownBase
                     disabled={disabled}
-                    menuItems={[
-                      {
-                        label: "스마트로",
-                        value: "1",
-                      },
-                    ]}
+                    menuItems={[DefaultDropdownData]}
                     onClickDropdownItem={(label, value) => {
                       onChangeSingle({ pgName: value });
                     }}
@@ -622,9 +777,18 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <DropdownBase
                     disabled={disabled}
-                    menuItems={[{ label: "OCPP 1.6", value: "1" }]}
+                    menuItems={[
+                      DefaultDropdownData,
+                      ...objectToArray(INFPROTOCOL_STATUS),
+                    ]}
+                    initSelectedValue={{
+                      label: INFPROTOCOL_STATUS[infProtocol],
+                      value: infProtocol,
+                    }}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ infProtocol: value });
+                      onChangeSingle({
+                        infProtocol: value as typeof infProtocol,
+                      });
                     }}
                   />
                 </DetailContentCol>
@@ -635,7 +799,7 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
-                    disabled={disabled}
+                    disabled={disabled || chargerClass !== "QUICK"}
                     name={"maxChargeTime"}
                     value={maxChargeTime}
                     onChange={onChange}
@@ -646,16 +810,16 @@ const ChargerDetail = () => {
               <DetailTextInputRow
                 rows={[
                   {
-                    titleWidthRatio: 4,
                     disabled,
+                    titleWidthRatio: 4,
                     title: "미사용 전송 주기(분)",
                     name: "idleCommunicationTime",
                     content: idleCommunicationTime,
                     onChange,
                   },
                   {
-                    titleWidthRatio: 4,
                     disabled,
+                    titleWidthRatio: 4,
                     title: "충전중 전송 주기(분)",
                     name: "busyCommunicationTime",
                     content: busyCommunicationTime,
@@ -671,18 +835,18 @@ const ChargerDetail = () => {
                     name: "isRoaming",
                     list: [
                       {
-                        disabled,
                         label: "연동",
-                        value: "1",
-                        checked: isRoaming === "1",
+                        value: "Y",
                       },
                       {
-                        disabled,
                         label: "미연동",
-                        value: "2",
-                        checked: isRoaming === "2",
+                        value: "N",
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === isRoaming,
+                    })),
                     onChange,
                   },
                   {
@@ -690,18 +854,18 @@ const ChargerDetail = () => {
                     name: "isKepcoRoaming",
                     list: [
                       {
-                        disabled,
                         label: "연동",
-                        value: "1",
-                        checked: isKepcoRoaming === "1",
+                        value: "Y",
                       },
                       {
-                        disabled,
                         label: "미연동",
-                        value: "2",
-                        checked: isKepcoRoaming === "2",
+                        value: "N",
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === isKepcoRoaming,
+                    })),
                     onChange,
                   },
                 ]}
@@ -714,18 +878,18 @@ const ChargerDetail = () => {
                     name={"rechargeAppAvailable"}
                     list={[
                       {
-                        disabled,
                         label: "Y",
-                        value: "1",
-                        checked: rechargeAppAvailable === "1",
+                        value: "Y",
                       },
                       {
-                        disabled,
                         label: "N",
-                        value: "2",
-                        checked: rechargeAppAvailable === "2",
+                        value: "N",
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === rechargeAppAvailable,
+                    }))}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -734,8 +898,8 @@ const ChargerDetail = () => {
                   <TextInputBase
                     bsSize={"lg"}
                     disabled={disabled}
-                    name={"contractPrice"}
-                    value={contractPrice}
+                    name={"unitPrice"}
+                    value={unitPrice}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -748,30 +912,26 @@ const ChargerDetail = () => {
                     name: "qrType",
                     list: [
                       {
-                        disabled,
                         label: "없음",
                         value: "1",
-                        checked: qrType === "1",
                       },
                       {
-                        disabled,
                         label: "카카오",
                         value: "2",
-                        checked: qrType === "2",
                       },
                       {
-                        disabled,
                         label: "티맵",
                         value: "3",
-                        checked: qrType === "3",
                       },
                       {
-                        disabled,
                         label: "현대 E-PIT",
                         value: "4",
-                        checked: qrType === "4",
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === qrType,
+                    })),
                     onChange,
                   },
                   {
@@ -779,24 +939,22 @@ const ChargerDetail = () => {
                     name: "reservationType",
                     list: [
                       {
-                        disabled,
                         label: "비예약",
                         value: "1",
-                        checked: reservationType === "1",
                       },
                       {
-                        disabled,
                         label: "예약",
                         value: "2",
-                        checked: reservationType === "2",
                       },
                       {
-                        disabled,
                         label: "시범",
                         value: "3",
-                        checked: reservationType === "3",
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === reservationType,
+                    })),
                     onChange,
                   },
                 ]}
@@ -834,34 +992,30 @@ const ChargerDetail = () => {
                 <DetailLabelCol sm={2}>설치구분</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"installGubun"}
+                    name={"gubun"}
                     list={[
                       {
-                        disabled,
                         label: "자체",
-                        value: "1",
-                        checked: installGubun === "1",
+                        value: "자체",
                       },
                       {
-                        disabled,
                         label: "보조금",
-                        value: "2",
-                        checked: installGubun === "2",
+                        value: "보조금",
                       },
                       {
-                        disabled,
                         label: "납품",
-                        value: "3",
-                        checked: installGubun === "3",
+                        value: "납품",
                       },
                       {
-                        disabled,
                         label: "위탁",
-                        value: "4",
-                        checked: installGubun === "4",
+                        value: "위탁",
                       },
-                    ]}
-                    onChange={onChange}
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === gubun,
+                    }))}
+                    onChange={onChangeInstall}
                   />
                 </DetailContentCol>
                 <DetailLabelCol sm={2}>설치업체</DetailLabelCol>
@@ -869,9 +1023,9 @@ const ChargerDetail = () => {
                   <TextInputBase
                     bsSize={"lg"}
                     disabled={disabled}
-                    name={"installCompany"}
-                    value={installCompany}
-                    onChange={onChange}
+                    name={"companyName"}
+                    value={companyName}
+                    onChange={onChangeInstall}
                   />
                 </DetailContentCol>
               </DetailRow>
@@ -885,7 +1039,7 @@ const ChargerDetail = () => {
                     title: "설치 연도",
                     name: "yyyy",
                     content: yyyy,
-                    onChange,
+                    onChange: onChangeInstall,
                     placeholder: "숫자만 입력해주세요 (ex. 2023)",
                   },
                   {
@@ -893,10 +1047,10 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "설치 월",
+                    placeholder: "숫자만 입력해주세요 (ex. 06)",
                     name: "mm",
                     content: mm,
-                    onChange,
-                    placeholder: "숫자만 입력해주세요 (ex. 06)",
+                    onChange: onChangeInstall,
                   },
                 ]}
               />
@@ -909,7 +1063,7 @@ const ChargerDetail = () => {
                     title: "서버 도메인",
                     name: "serverDomain",
                     content: serverDomain,
-                    onChange,
+                    onChange: onChangeInstall,
                   },
                   {
                     disabled,
@@ -917,7 +1071,7 @@ const ChargerDetail = () => {
                     title: "서버 PORT",
                     name: "serverPort",
                     content: serverPort,
-                    onChange,
+                    onChange: onChangeInstall,
                   },
                 ]}
               />
@@ -928,9 +1082,13 @@ const ChargerDetail = () => {
                   <TextInputBase
                     disabled={disabled}
                     bsSize={"lg"}
-                    name={"chargerSN"}
-                    value={chargerSN}
-                    onChange={onChange}
+                    name={"installSN"}
+                    value={installInputs.sn}
+                    onChange={(e) => {
+                      onChangeInstallSingle({
+                        sn: e.target.value,
+                      });
+                    }}
                   />
                 </DetailContentCol>
                 <DetailLabelCol sm={2}>TR 설치여부</DetailLabelCol>
@@ -939,19 +1097,19 @@ const ChargerDetail = () => {
                     name={"hasTr"}
                     list={[
                       {
-                        disabled,
                         label: "Y",
-                        value: "1",
-                        checked: hasTr === "1",
+                        value: "Y",
                       },
                       {
-                        disabled,
                         label: "N",
-                        value: "2",
-                        checked: hasTr === "2",
+                        value: "N",
                       },
-                    ]}
-                    onChange={onChange}
+                    ].map((data) => ({
+                      ...data,
+                      disabled,
+                      checked: data.value === hasTr,
+                    }))}
+                    onChange={onChangeInstall}
                   />
                 </DetailContentCol>
               </DetailRow>
@@ -959,21 +1117,21 @@ const ChargerDetail = () => {
               <DetailTextInputRow
                 rows={[
                   {
-                    titleWidthRatio: 4,
                     disabled,
+                    titleWidthRatio: 4,
                     title: "충전기 펌웨어",
                     name: "fwVer",
                     content: fwVer,
-                    onChange,
+                    onChange: onChangeInstall,
                   },
                   /** @TODO 자동 노출 표시로 disabled true 고정 */
                   {
-                    titleWidthRatio: 4,
                     disabled: true,
+                    titleWidthRatio: 4,
                     title: "현재 충전기 펌웨어",
                     name: "fwVerCurrent",
                     content: fwVerCurrent,
-                    onChange,
+                    onChange: onChangeInstall,
                   },
                 ]}
               />
@@ -981,12 +1139,12 @@ const ChargerDetail = () => {
               <DetailTextInputRow
                 rows={[
                   {
+                    disabled,
                     titleWidthRatio: 2,
-                    disabled,
                     title: "모뎀개통 번호",
-                    name: "modemOpenNumber",
-                    content: modemOpenNumber,
-                    onChange,
+                    name: "openNumber",
+                    content: openNumber,
+                    onChange: onChangeModem,
                   },
                 ]}
               />
@@ -994,20 +1152,20 @@ const ChargerDetail = () => {
               <DetailTextInputRow
                 rows={[
                   {
-                    titleWidthRatio: 4,
                     disabled,
+                    titleWidthRatio: 4,
                     title: "모뎀 제조사",
-                    name: "modemCompany",
-                    content: modemCompany,
-                    onChange,
+                    name: "company",
+                    content: company,
+                    onChange: onChangeModem,
                   },
                   {
-                    titleWidthRatio: 4,
                     disabled,
+                    titleWidthRatio: 4,
                     title: "모뎀 제조사 연락처",
-                    name: "modemCompanyPhone",
-                    content: modemCompanyPhone,
-                    onChange,
+                    name: "companyPhone",
+                    content: companyPhone,
+                    onChange: onChangeModem,
                   },
                 ]}
               />
@@ -1015,20 +1173,24 @@ const ChargerDetail = () => {
               <DetailTextInputRow
                 rows={[
                   {
-                    titleWidthRatio: 4,
                     disabled,
+                    titleWidthRatio: 4,
                     title: "모뎀명",
-                    name: "modemName",
-                    content: modemName,
-                    onChange,
+                    name: "name",
+                    content: name,
+                    onChange: onChangeModem,
                   },
                   {
-                    titleWidthRatio: 4,
                     disabled,
+                    titleWidthRatio: 4,
                     title: "모뎀 S/N",
-                    name: "modemSN",
-                    content: modemSN,
-                    onChange,
+                    name: "modelSN",
+                    content: modemInputs.sn,
+                    onChange: (e) => {
+                      onChangeModemSingle({
+                        sn: e.target.value,
+                      });
+                    },
                   },
                 ]}
               />
@@ -1036,20 +1198,20 @@ const ChargerDetail = () => {
               <DetailTextInputRow
                 rows={[
                   {
-                    titleWidthRatio: 4,
                     disabled,
+                    titleWidthRatio: 4,
                     title: "통신사",
                     name: "carrierName",
                     content: carrierName,
-                    onChange,
+                    onChange: onChangeModem,
                   },
                   {
-                    titleWidthRatio: 4,
                     disabled,
+                    titleWidthRatio: 4,
                     title: "통신요금",
                     name: "commFee",
                     content: commFee,
-                    onChange,
+                    onChange: onChangeModem,
                   },
                 ]}
               />
@@ -1057,20 +1219,20 @@ const ChargerDetail = () => {
               <DetailTextInputRow
                 rows={[
                   {
-                    titleWidthRatio: 4,
                     disabled,
+                    titleWidthRatio: 4,
                     title: "개통사",
                     name: "openCompany",
                     content: openCompany,
-                    onChange,
+                    onChange: onChangeModem,
                   },
                   {
-                    titleWidthRatio: 4,
                     disabled,
+                    titleWidthRatio: 4,
                     title: "개통사 연락처",
                     name: "openCompanyPhone",
                     content: openCompanyPhone,
-                    onChange,
+                    onChange: onChangeModem,
                   },
                 ]}
               />
@@ -1090,18 +1252,16 @@ const ChargerDetail = () => {
 
             navigate("/charger/charger");
           }}
-          rightButtonHandler={() => {
-            if (!disabled) {
-              /** @TODO 저장 로직 추가 필요 */
-              /* 저장 성공시 완료모달 오픈 */
-              setIsEditComplete(true);
-            }
-
-            setDisabled((prev) => !prev);
-          }}
+          rightButtonHandler={modify}
         />
       </BodyBase>
-
+      {/* 모달 모음 */}
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
       <DetailCompleteModal
         isOpen={isEditComplete}
         onClose={() => {
@@ -1128,6 +1288,12 @@ const ChargerDetail = () => {
         isOpen={isStationSearchModal}
         onClose={() => {
           setIsStationSearchModal((prev) => !prev);
+        }}
+        onChangeSelected={(data) => {
+          onChangeStationSingle({
+            chargerStationName: data?.stationName ?? "",
+            stationKey: data?.stationId ?? "",
+          });
         }}
         size={"xl"}
       />

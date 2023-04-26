@@ -239,21 +239,12 @@ export const YUP_CHARGER: FieldSchemaMap = {
     // validation: string().required("위탁사는 필수 입력 항목입니다."),
     validation: string().optional(),
   },
-  /** @TODO 수정 필요 */
   manufactureCode: {
-    validation: string().required("제조사 코드는 필수 입력 항목입니다."),
-  },
-  manufactureName: {
     validation: string().required("제조사는 필수 입력 항목입니다."),
   },
-  /** @TODO 수정 필요 */
-  manufacturerModelId: {
+  modelId: {
     validation: string().required("제조사 모델은 필수 입력 항목입니다."),
   },
-  /** @TODO 수정 필요 */
-  // manufacturerModelName: {
-  //   validation: string().required("제조사명은 필수 입력 항목입니다."),
-  // },
   operationStatus: {
     validation: string().required("충전기 설치 상태는 필수 입력 항목입니다."),
   },
@@ -326,6 +317,13 @@ export const YUP_CHARGER: FieldSchemaMap = {
   },
   etcInfo: {
     validation: string().optional(),
+  },
+};
+
+/** 충전기 > 기본정보(수정) yup */
+export const YUP_CHARGER_EXTRA: FieldSchemaMap = {
+  id: {
+    validation: number().required("충전소 키를 찾을 수 없습니다."),
   },
 };
 

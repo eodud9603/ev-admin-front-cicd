@@ -33,9 +33,6 @@ import {
   CHARGER_TYPE,
   INFPROTOCOL_STATUS,
   INSTALL_TYPE,
-  TCapacityKeys,
-  TChargerTypeKeys,
-  TInfprotocolStatusKeys,
 } from "src/constants/status";
 import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
 import { getParams } from "src/utils/params";
@@ -175,6 +172,8 @@ const ChargerAdd = () => {
       maxChargeTime: Number(maxChargeTime),
       idleCommunicationTime: Number(idleCommunicationTime),
       busyCommunicationTime: Number(busyCommunicationTime),
+      manufactureId: Number(manufactureId),
+      modelId: Number(modelId),
       unitPrice: Number(unitPrice),
       /* 충전소 정보 */
       station: {
@@ -184,6 +183,7 @@ const ChargerAdd = () => {
       /* 설치 정보 */
       install: {
         ...installParams,
+        serverPort: Number(installParams.serverPort),
         /* 모뎀 정보 */
         modem: modemParams,
       },
@@ -385,7 +385,7 @@ const ChargerAdd = () => {
                         },
                         onClickDropdownItem: (label, value) => {
                           onChangeSingle({
-                            capacity: value as `${TCapacityKeys}`,
+                            capacity: value as typeof capacity,
                           });
                         },
                       },
@@ -609,7 +609,7 @@ const ChargerAdd = () => {
                       value: type,
                     }}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ type: value as TChargerTypeKeys });
+                      onChangeSingle({ type: value as typeof type });
                     }}
                   />
                 </DetailContentCol>
@@ -700,7 +700,7 @@ const ChargerAdd = () => {
                     }}
                     onClickDropdownItem={(label, value) => {
                       onChangeSingle({
-                        infProtocol: value as TInfprotocolStatusKeys,
+                        infProtocol: value as typeof infProtocol,
                       });
                     }}
                   />
@@ -1135,6 +1135,7 @@ const ChargerAdd = () => {
           rightButtonHandler={register}
         />
       </BodyBase>
+      {/* 모달 모음 */}
       <DetailValidCheckModal
         {...invalidModal}
         onClose={() =>
