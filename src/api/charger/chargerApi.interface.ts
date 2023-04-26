@@ -1,6 +1,6 @@
 
 import { OperatorType, YNType } from "src/api/api.interface";
-import { TChargerModeKeys, TChargerRationKeys, TChargerTypeKeys, TInfprotocolStatusKeys, TInstallTypeKeys, TOperationStatusKeys } from "src/constants/status";
+import { TChargerModeKeys, TChargerRationKeys, TChargerTypeKeys, TInfprotocolStatusKeys, TInstallGubunKeys, TInstallTypeKeys, TOperationStatusKeys, TPgCodeKeys, TQrTypeKeys, TReservationTypeKeys } from "src/constants/status";
 
 /* 충전기별 충전기 목록 조회 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EC%86%8C%EB%B3%84_%EC%B6%A9%EC%A0%84%EA%B8%B0_%EB%AA%A9%EB%A1%9D_%EC%A1%B0%ED%9A%8C */
@@ -107,7 +107,7 @@ interface IModemItem {
 
 interface IInstallItem {
   id?: number; /* 설치 관리 ID 등록시 없어야함 */
-  gubun: string;
+  gubun: TInstallGubunKeys;
   companyName: string;
   yyyy: string;
   mm: string;
@@ -138,6 +138,7 @@ export interface IChargerDetailResponse {
   isBroken: YNType;
   status: TChargerModeKeys;
   hasPgTerm: string;
+  pgCode: TPgCodeKeys;
   pgName: string;
   infProtocol: TInfprotocolStatusKeys;
   maxChargeTime: number;
@@ -145,8 +146,8 @@ export interface IChargerDetailResponse {
   busyCommunicationTime: number;
   isKepcoRoaming: YNType;
   searchKey?: number; /* 충전기 고유 키 */
-  qrType: string;
-  reservationType: string;
+  qrType: TQrTypeKeys;
+  reservationType: TReservationTypeKeys;
   etcInfo: string; /* 특이사항 */
   isRoaming: YNType;
   unitPrice: number;
@@ -158,7 +159,7 @@ export interface IChargerDetailResponse {
   modelId: number;
   model: string;
   type: TChargerTypeKeys;
-  rechargeAppAvailable: YNType; /** @TODO 서버 필드 추가 후, 수정 필요 */
+  enableCharging: YNType;
 }
 
 /* 충전기 등록 */

@@ -32,7 +32,11 @@ import {
   CHARGER_MODE,
   CHARGER_TYPE,
   INFPROTOCOL_STATUS,
+  INSTALL_GUBUN,
   INSTALL_TYPE,
+  PG_CODE,
+  QR_TYPE,
+  RESERVATION_TYPE,
 } from "src/constants/status";
 import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
 import { getParams } from "src/utils/params";
@@ -103,9 +107,10 @@ const ChargerAdd = () => {
     useCode,
     isBroken,
     hasPgTerm,
+    pgCode,
     isRoaming,
     isKepcoRoaming,
-    rechargeAppAvailable,
+    enableCharging,
     qrType,
     reservationType,
     type,
@@ -678,9 +683,16 @@ const ChargerAdd = () => {
                 <DetailLabelCol sm={2}>결제단말기 PG사</DetailLabelCol>
                 <DetailContentCol>
                   <DropdownBase
-                    menuItems={[DefaultDropdownData]}
+                    menuItems={[DefaultDropdownData, ...objectToArray(PG_CODE)]}
+                    initSelectedValue={{
+                      label: PG_CODE[pgCode],
+                      value: pgCode,
+                    }}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ pgName: value });
+                      onChangeSingle({
+                        pgCode: value as typeof pgCode,
+                        pgName: label,
+                      });
                     }}
                   />
                 </DetailContentCol>
@@ -784,7 +796,7 @@ const ChargerAdd = () => {
                 <DetailLabelCol sm={2}>앱 충전 가능 여부</DetailLabelCol>
                 <DetailContentCol>
                   <RadioGroup
-                    name={"rechargeAppAvailable"}
+                    name={"enableCharging"}
                     list={[
                       {
                         label: "Y",
@@ -796,7 +808,7 @@ const ChargerAdd = () => {
                       },
                     ].map((data) => ({
                       ...data,
-                      checked: data.value === rechargeAppAvailable,
+                      checked: data.value === enableCharging,
                     }))}
                     onChange={onChange}
                   />
@@ -817,24 +829,7 @@ const ChargerAdd = () => {
                   {
                     title: "QR 연동여부",
                     name: "qrType",
-                    list: [
-                      {
-                        label: "없음",
-                        value: "1",
-                      },
-                      {
-                        label: "카카오",
-                        value: "2",
-                      },
-                      {
-                        label: "티맵",
-                        value: "3",
-                      },
-                      {
-                        label: "현대 E-PIT",
-                        value: "4",
-                      },
-                    ].map((data) => ({
+                    list: objectToArray(QR_TYPE).map((data) => ({
                       ...data,
                       checked: data.value === qrType,
                     })),
@@ -843,20 +838,7 @@ const ChargerAdd = () => {
                   {
                     title: "예약 가능 여부",
                     name: "reservationType",
-                    list: [
-                      {
-                        label: "비예약",
-                        value: "1",
-                      },
-                      {
-                        label: "예약",
-                        value: "2",
-                      },
-                      {
-                        label: "시범",
-                        value: "3",
-                      },
-                    ].map((data) => ({
+                    list: objectToArray(RESERVATION_TYPE).map((data) => ({
                       ...data,
                       checked: data.value === reservationType,
                     })),
@@ -897,24 +879,7 @@ const ChargerAdd = () => {
                 <DetailContentCol>
                   <RadioGroup
                     name={"gubun"}
-                    list={[
-                      {
-                        label: "자체",
-                        value: "자체",
-                      },
-                      {
-                        label: "보조금",
-                        value: "보조금",
-                      },
-                      {
-                        label: "납품",
-                        value: "납품",
-                      },
-                      {
-                        label: "위탁",
-                        value: "위탁",
-                      },
-                    ].map((data) => ({
+                    list={objectToArray(INSTALL_GUBUN).map((data) => ({
                       ...data,
                       checked: data.value === gubun,
                     }))}

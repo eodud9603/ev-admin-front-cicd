@@ -299,7 +299,7 @@ export const YUP_CHARGER: FieldSchemaMap = {
       .required("한전 연동 여부는 필수 선택 항목입니다.")
       .oneOf(["Y", "N"], "한전 연동 여부는 Y 또는 N 중 하나여야 합니다."),
   },
-  rechargeAppAvailable: {
+  enableCharging: {
     validation: string()
       .required("앱 충전 가능 여부는 필수 선택 항목입니다.")
       .oneOf(["Y", "N"], "앱 충전 가능 여부는 Y 또는 N 중 하나여야 합니다."),

@@ -5,8 +5,12 @@ import {
   TChargerRationKeys,
   TChargerTypeKeys,
   TInfprotocolStatusKeys,
+  TInstallGubunKeys,
   TInstallTypeKeys,
   TOperationStatusKeys,
+  TPgCodeKeys,
+  TQrTypeKeys,
+  TReservationTypeKeys,
 } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
 
@@ -35,6 +39,7 @@ export const INIT_CHARGER_ADD = {
     isBroken: "" as YNType,
     status: "" as TChargerModeKeys,
     hasPgTerm: "" as YNType,
+    pgCode: "" as TPgCodeKeys,
     pgName: "",
     infProtocol: "" as TInfprotocolStatusKeys,
     maxChargeTime: "",
@@ -42,10 +47,10 @@ export const INIT_CHARGER_ADD = {
     busyCommunicationTime: "",
     isRoaming: "" as YNType,
     isKepcoRoaming: "" as YNType,
-    rechargeAppAvailable: "" as YNType, // 서버 확인
+    enableCharging: "" as YNType, // 서버 확인
     unitPrice: "",
-    qrType: "",
-    reservationType: "",
+    qrType: "" as TQrTypeKeys,
+    reservationType: "" as TReservationTypeKeys,
     etcInfo: "",
   },
   /* 충전소 정보 */
@@ -55,7 +60,7 @@ export const INIT_CHARGER_ADD = {
   },
   /* 설치 정보 */
   installInputs: {
-    gubun: "",
+    gubun: "" as TInstallGubunKeys,
     companyName: "",
     yyyy: "",
     mm: "",

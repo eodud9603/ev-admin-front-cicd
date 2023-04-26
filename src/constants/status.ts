@@ -154,3 +154,63 @@ export const INSTALL_TYPE = {
 /** 충전기 > 설치타입 키 타입 */
 export type TInstallTypeKeys = keyof typeof INSTALL_TYPE;
 
+/**
+ * @description 충전기 > 사용/전용 구분
+ * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=6e576f4d93494c0f8f1111a92a54a479&pm=s
+ */
+export const USE_CODE = {
+  US01: "사용",
+  US02: "미사용",
+  US03: "전용"
+} as const;
+/** 충전기 > 사용/전용 구분 키 타입 */
+export type TUseCodeKeys = keyof typeof USE_CODE;
+
+/**
+ * @description 충전기 > QR 연동여부
+ * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=6e576f4d93494c0f8f1111a92a54a479&pm=s
+ */
+export const QR_TYPE = {
+  QR01: "카카오",
+  QR02: "티맵",
+  QR03: "현대",
+  QR04: "E-PIT"
+} as const;
+/** 충전기 > QR 연동여부 키 타입 */
+export type TQrTypeKeys = keyof typeof QR_TYPE;
+
+/**
+ * @description 충전기 > 예약 가능 여부
+ * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=6e576f4d93494c0f8f1111a92a54a479&pm=s
+ */
+export const RESERVATION_TYPE = {
+  RV01: "비예약",
+  RV02: "예약",
+  RV03: "시범",
+} as const;
+/** 충전기 > 예약 가능 여부 키 타입 */
+export type TReservationTypeKeys = keyof typeof RESERVATION_TYPE;
+
+/**
+ * @description 충전기 > 계약 > 설치구분
+ * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=6e576f4d93494c0f8f1111a92a54a479&pm=s
+ */
+export const INSTALL_GUBUN = {
+  IG01: "자체",
+  IG02: "보조금",
+  IG03: "납품",
+  IG04: "위탁",
+} as const;
+/** 충전기 > 계약 > 설치구분 키 타입 */
+export type TInstallGubunKeys = keyof typeof INSTALL_GUBUN;
+
+/**
+ * @description 충전기 > pg사
+ * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=6e576f4d93494c0f8f1111a92a54a479&pm=s
+ */
+export const PG_CODE = {
+  PG01: "스마트로",
+} as const;
+/** 충전기 > pg사 키 타입 */
+export type TPgCodeKeys = keyof typeof PG_CODE;
+
