@@ -704,11 +704,11 @@ const ChargerAdd = () => {
                     list: [
                       {
                         label: "연동",
-                        value: "1",
+                        value: "Y",
                       },
                       {
                         label: "미연동",
-                        value: "2",
+                        value: "N",
                       },
                     ].map((data) => ({
                       ...data,
@@ -722,11 +722,11 @@ const ChargerAdd = () => {
                     list: [
                       {
                         label: "연동",
-                        value: "1",
+                        value: "Y",
                       },
                       {
                         label: "미연동",
-                        value: "2",
+                        value: "N",
                       },
                     ].map((data) => ({
                       ...data,
@@ -745,11 +745,11 @@ const ChargerAdd = () => {
                     list={[
                       {
                         label: "Y",
-                        value: "1",
+                        value: "Y",
                       },
                       {
                         label: "N",
-                        value: "2",
+                        value: "N",
                       },
                     ].map((data) => ({
                       ...data,

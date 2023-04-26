@@ -33,7 +33,7 @@ export const INIT_CHARGER_ADD = {
     type: "" as TChargerTypeKeys,
     isBroken: "" as YNType,
     status: "" as TChargerModeKeys,
-    hasPgTerm: "",
+    hasPgTerm: "" as YNType,
     pgName: "",
     infProtocol: "" as TInfprotocolStatusKeys,
     maxChargeTime: "",
@@ -41,7 +41,7 @@ export const INIT_CHARGER_ADD = {
     busyCommunicationTime: "",
     isRoaming: "" as YNType,
     isKepcoRoaming: "" as YNType,
-    rechargeAppAvailable: "", // 서버 확인
+    rechargeAppAvailable: "" as YNType, // 서버 확인
     unitPrice: "",
     qrType: "",
     reservationType: "",
