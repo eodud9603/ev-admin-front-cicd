@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -32,13 +32,8 @@ import {
   CHARGER_MODE,
   CHARGER_TYPE,
   INFPROTOCOL_STATUS,
-  TChargerModeKeys,
-  TChargerRationKeys,
-  TChargerTypeKeys,
   TInfprotocolStatusKeys,
-  TOperationStatusKeys,
 } from "src/constants/status";
-import { YNType } from "src/api/api.interface";
 import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
 import { getParams } from "src/utils/params";
 import { objectToArray } from "src/utils/convert";
@@ -47,6 +42,7 @@ import ManufacturerModelDropdown from "src/pages/Charger/components/Manufacturer
 import { useTabs } from "src/hooks/useTabs";
 import { useLoaderData } from "react-router-dom";
 import { CHANNEL_TYPE_LIST } from "src/constants/list";
+import { INIT_CHARGER_ADD } from "./loader/chargerAddLoader";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -54,7 +50,7 @@ const DefaultDropdownData = {
 };
 
 const ChargerAdd = () => {
-  const data: any = useLoaderData();
+  const data = useLoaderData() as typeof INIT_CHARGER_ADD;
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 설치정보 drop */
@@ -65,9 +61,9 @@ const ChargerAdd = () => {
   const [isCompleteCancel, setIsCompleteCancel] = useState(false);
   /* 충전소검색 모달 */
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
+
   /* 기본정보 */
   const [inputs, { onChange, onChangeSingle }] = useInputs(data.inputs);
-
   const {
     chargerKey,
     assetNumber,
@@ -179,12 +175,6 @@ const ChargerAdd = () => {
     pageTitle: "충전기 등록",
     pageType: "add",
   });
-
-  /** focus시, unmounted됐을 때, 가장 최신 데이터로 input값 저장 */
-  // useEffect(() => {
-  //   //TODO:: type 지정
-  //   // onChangeSingle(dataCallback());
-  // }, [dataCallback]);
 
   return (
     <ContainerBase>

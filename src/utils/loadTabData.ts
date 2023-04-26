@@ -1,6 +1,6 @@
 import { tabType } from "src/store/tabStore";
 
-export const loadTabData = (path: string) => {
+export const loadTabData = <T,>(path: string) => {
   const tabStorage: string | null = sessionStorage.getItem("tab-storage");
 
   const tabData: Array<tabType> =
@@ -8,8 +8,7 @@ export const loadTabData = (path: string) => {
       (e: tabType) => e.path === path
     ) ?? [];
   if (tabData && tabData.length > 0) {
-    const data: [] | { [key: string]: string | number | boolean } | undefined =
-      tabData[0].data;
+    const data: T = tabData[0].data;
 
     return { data: data, editable: tabData[0].editable as boolean };
   }
