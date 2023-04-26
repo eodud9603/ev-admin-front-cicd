@@ -177,7 +177,8 @@ const ChargerAdd = () => {
       unitPrice: Number(unitPrice),
       /* 충전소 정보 */
       station: {
-        stationKey: "11111111",
+        /** @description 현재 충전기 id 생성 이슈로 stationKey: "11111111" 충전소로만 생성 가능 */
+        stationKey: stationInputs.stationKey,
       },
       /* 설치 정보 */
       install: {
