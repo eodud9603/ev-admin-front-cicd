@@ -3,8 +3,9 @@
  * @see http://218.38.12.198:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EA%B8%B0_%EC%9A%B4%EC%98%81_%EC%83%81%ED%83%9C
  * */
 export const OPERATION_STATUS = {
+  INSTALLED: "설치완료(정상)",
+  REPAIR: "수리중",
   TO_BE_INSTALL: "설치예정",
-  INSTALLED: "설치완료",
   TO_BE_DEMOLISH: "철거예정",
   DEMOLISHED: "철거완료",
 } as const;
@@ -119,7 +120,7 @@ export const INFPROTOCOL_STATUS = {
 export type TInfprotocolStatusKeys = keyof typeof INFPROTOCOL_STATUS;
 
 /**
- * @description 배터리 용량
+ * @description 충전기 > 배터리 용량
  */
 export const CAPACITY = {
   3: "3",
@@ -127,16 +128,29 @@ export const CAPACITY = {
   50: "50",
   100: "100",
 } as const;
-/** 배터리 용량 코드 키 타입 */
+/** 충전기 > 배터리 용량 코드 키 타입 */
 export type TCapacityKeys = keyof typeof CAPACITY;
 
 /**
- * @description 수전방식
+ * @description 충전소 > 수전방식
  * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=31893c8250b7405ba9d736517ad24b60&pm=s
  */
 export const SUPPLY_METHOD = {
   SM01: "자중",
   SM02: "가공",
 } as const;
-/** 수전방식 키 타입 */
+/** 충전소 > 수전방식 키 타입 */
 export type TSupplyMethodKeys = keyof typeof SUPPLY_METHOD;
+
+/**
+ * @description 충전기 > 설치타입
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%84%A4%EC%B9%98%ED%83%80%EC%9E%85
+ */
+export const INSTALL_TYPE = {
+  IS01: "스탠드형",
+  IS02: "벽부형",
+  IS03: "콘센트형"
+} as const;
+/** 충전기 > 설치타입 키 타입 */
+export type TInstallTypeKeys = keyof typeof INSTALL_TYPE;
+

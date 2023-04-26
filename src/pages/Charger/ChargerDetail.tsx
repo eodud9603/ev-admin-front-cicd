@@ -26,7 +26,6 @@ import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 import useInputs from "src/hooks/useInputs";
-import { IChargerDetailResponse } from "src/api/charger/chargerApi.interface";
 import { useTabs } from "src/hooks/useTabs";
 import { chargerDetailLoaderType } from "src/pages/Charger/loader/chargerDetailLoader";
 
@@ -52,7 +51,7 @@ const ChargerDetail = () => {
     /* 기본정보 */
     stationName: charger.station?.stationName ?? "",
     id: (charger.id ?? "").toString(),
-    assetsNumber: charger.assetNumber ?? "",
+    assetsNumber: (charger.assetNumber ?? "").toString(),
     chargerClass: charger.chargerClass ?? "",
     installType: charger.installType ?? "",
     capacity: charger.capacity ?? "",

@@ -32,6 +32,7 @@ import {
   CHARGER_MODE,
   CHARGER_TYPE,
   INFPROTOCOL_STATUS,
+  INSTALL_TYPE,
   TCapacityKeys,
   TChargerTypeKeys,
   TInfprotocolStatusKeys,
@@ -92,8 +93,8 @@ const ChargerAdd = () => {
     manufactureId,
     manufactureCode,
     manufactureName,
-    manufacturerModelId,
-    manufacturerModelName,
+    modelId,
+    model,
     status,
     maxChargeTime,
     idleCommunicationTime,
@@ -353,7 +354,14 @@ const ChargerAdd = () => {
                     title: "설치타입",
                     dropdownItems: [
                       {
-                        menuItems: [DefaultDropdownData],
+                        menuItems: [
+                          DefaultDropdownData,
+                          ...objectToArray(INSTALL_TYPE),
+                        ],
+                        initSelectedValue: {
+                          label: INSTALL_TYPE[installType],
+                          value: installType,
+                        },
                         onClickDropdownItem: (label, value) => {
                           onChangeSingle({
                             installType: value as typeof installType,
@@ -537,8 +545,8 @@ const ChargerAdd = () => {
                           manufactureId: data.id?.toString(),
                           manufactureCode: data.code,
                           manufactureName: data.name,
-                          manufacturerModelId: "",
-                          manufacturerModelName: "",
+                          modelId: "",
+                          model: "",
                         });
                       }}
                     />
@@ -546,13 +554,13 @@ const ChargerAdd = () => {
                       disabled={!manufactureName}
                       id={Number(manufactureId || -1)}
                       initSelectedValue={{
-                        value: manufacturerModelName,
-                        label: manufacturerModelId,
+                        value: model,
+                        label: modelId,
                       }}
                       onChange={(data) => {
                         onChangeSingle({
-                          manufacturerModelId: data.id?.toString(),
-                          manufacturerModelName: data.modelName,
+                          modelId: data.id?.toString(),
+                          model: data.modelName,
                         });
                       }}
                     />

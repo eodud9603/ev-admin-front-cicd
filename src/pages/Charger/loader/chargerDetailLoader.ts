@@ -18,12 +18,12 @@ export const chargerDetailLoader = async ({ params }: IChargerDetailParams) => {
     return {};
   }
 
-  const loadData = loadTabData(`/charger/charger/detail/${params.id}`);
+  const loadData = loadTabData<IChargerDetailResponse | null>(
+    `/charger/charger/detail/${params.id}`
+  );
+
   if (loadData?.data) {
-    console.log("loadData::", loadData);
-    return { charger: loadData.data, editable: loadData.editable } as {
-      [key: string]: Partial<IChargerDetailResponse> | boolean;
-    };
+    return { charger: loadData.data, editable: loadData.editable };
   }
 
   /* 충전기 상세 정보 조회 */

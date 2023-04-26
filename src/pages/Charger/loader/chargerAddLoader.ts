@@ -5,6 +5,7 @@ import {
   TChargerRationKeys,
   TChargerTypeKeys,
   TInfprotocolStatusKeys,
+  TInstallTypeKeys,
   TOperationStatusKeys,
 } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
@@ -15,7 +16,7 @@ export const INIT_CHARGER_ADD = {
     chargerKey: "",
     assetNumber: "",
     chargerClass: "" as TChargerRationKeys,
-    installType: "" as TChargerTypeKeys, // 서버 확인
+    installType: "" as TInstallTypeKeys, // 서버 확인
     capacity: "" as `${TCapacityKeys}`,
     isDualChannel: "N" as YNType,
     channelType01: "",
@@ -27,8 +28,8 @@ export const INIT_CHARGER_ADD = {
     manufactureId: "",
     manufactureCode: "",
     manufactureName: "",
-    manufacturerModelId: "", // 서버 확인
-    manufacturerModelName: "", // 서버 확인
+    modelId: "", 
+    model: "", 
     operationStatus: "" as TOperationStatusKeys, // 서버 확인
     type: "" as TChargerTypeKeys,
     isBroken: "" as YNType,
