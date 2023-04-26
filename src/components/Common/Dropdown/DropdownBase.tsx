@@ -34,8 +34,8 @@ export const DropdownBase = (props: IDropdownBaseProps) => {
     label: string;
     value: string;
   }>({
-    label: initSelectedValue?.label ?? menuItems[0].label,
-    value: initSelectedValue?.value ?? menuItems[0].value,
+    label: initSelectedValue?.label || menuItems[0].label,
+    value: initSelectedValue?.value || menuItems[0].value,
   });
 
   const onToggleDropdown = () => {

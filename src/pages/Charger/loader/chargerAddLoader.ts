@@ -1,5 +1,6 @@
 import { loadTabData } from "src/utils/loadTabData";
 import {
+  TCapacityKeys,
   TChargerModeKeys,
   TChargerRationKeys,
   TChargerTypeKeys,
@@ -15,7 +16,7 @@ export const INIT_CHARGER_ADD = {
     assetNumber: "",
     chargerClass: "" as TChargerRationKeys,
     installType: "" as TChargerTypeKeys, // 서버 확인
-    capacity: "",
+    capacity: "" as `${TCapacityKeys}`,
     isDualChannel: "N" as YNType,
     channelType01: "",
     channelType02: "",
@@ -23,12 +24,13 @@ export const INIT_CHARGER_ADD = {
     consignmentGubun: "",
     useCode: "", // 서버 확인
     consignmentName: "",
+    manufactureId: "",
     manufactureCode: "",
     manufactureName: "",
     manufacturerModelId: "", // 서버 확인
     manufacturerModelName: "", // 서버 확인
     operationStatus: "" as TOperationStatusKeys, // 서버 확인
-    type: "",
+    type: "" as TChargerTypeKeys,
     isBroken: "" as YNType,
     status: "" as TChargerModeKeys,
     hasPgTerm: "",

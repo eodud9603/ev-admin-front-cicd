@@ -32,6 +32,8 @@ import {
   CHARGER_MODE,
   CHARGER_TYPE,
   INFPROTOCOL_STATUS,
+  TCapacityKeys,
+  TChargerTypeKeys,
   TInfprotocolStatusKeys,
 } from "src/constants/status";
 import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
@@ -71,16 +73,32 @@ const ChargerAdd = () => {
     installType,
     capacity,
     isDualChannel,
+    channelType01,
     channelType02,
     envVersion,
+    manufactureId,
     manufactureCode,
     manufactureName,
+    manufacturerModelId,
+    manufacturerModelName,
     status,
     maxChargeTime,
     idleCommunicationTime,
     busyCommunicationTime,
     unitPrice,
     etcInfo,
+    operationStatus,
+    consignmentGubun,
+    useCode,
+    isBroken,
+    hasPgTerm,
+    isRoaming,
+    isKepcoRoaming,
+    rechargeAppAvailable,
+    qrType,
+    reservationType,
+    type,
+    infProtocol,
   } = inputs;
 
   /* 충전소 정보 */
@@ -102,6 +120,8 @@ const ChargerAdd = () => {
     serverPort,
     fwVer,
     fwVerCurrent,
+    gubun,
+    hasTr,
   } = installInputs;
 
   /* 모뎀 정보 */
@@ -264,20 +284,20 @@ const ChargerAdd = () => {
                       {
                         label: "급속",
                         value: "QUICK",
-                        checked: chargerClass === "QUICK",
                       },
                       {
                         label: "완속",
                         value: "STANDARD",
-                        checked: chargerClass === "STANDARD",
                       },
                       {
                         disabled: true,
                         label: "과금형 콘센트",
-                        value: "",
-                        // checked: chargerClass === ''
+                        value: undefined,
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === chargerClass,
+                    }))}
                     // onChange={(e) => {
                     //   console.log("onc");
                     //   onChange(e);
@@ -316,8 +336,14 @@ const ChargerAdd = () => {
                           DefaultDropdownData,
                           ...objectToArray(CAPACITY),
                         ],
+                        initSelectedValue: {
+                          label: CAPACITY[capacity],
+                          value: capacity,
+                        },
                         onClickDropdownItem: (label, value) => {
-                          onChangeSingle({ capacity: value });
+                          onChangeSingle({
+                            capacity: value as `${TCapacityKeys}`,
+                          });
                         },
                       },
                     ],
@@ -333,6 +359,7 @@ const ChargerAdd = () => {
                       name={"듀얼형"}
                       label={"듀얼형"}
                       value={"Y"}
+                      checked={isDualChannel === "Y"}
                       onChange={() => {
                         onChangeSingle({
                           isDualChannel: isDualChannel === "Y" ? "N" : "Y",
@@ -344,6 +371,10 @@ const ChargerAdd = () => {
                     <div className={"d-flex gap-2"}>
                       <DropdownBase
                         menuItems={[DefaultDropdownData, ...CHANNEL_TYPE_LIST]}
+                        initSelectedValue={{
+                          label: channelType01,
+                          value: channelType01,
+                        }}
                         onClickDropdownItem={(_, value) => {
                           onChangeSingle({
                             channelType01: value,
@@ -357,6 +388,10 @@ const ChargerAdd = () => {
                               DefaultDropdownData,
                               ...CHANNEL_TYPE_LIST,
                             ]}
+                            initSelectedValue={{
+                              label: channelType02,
+                              value: channelType02,
+                            }}
                             onClickDropdownItem={(_, value) => {
                               onChangeSingle({
                                 channelType02: value,
@@ -393,7 +428,10 @@ const ChargerAdd = () => {
                         label: "위탁사",
                         value: "2",
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === consignmentGubun,
+                    })),
                     onChange,
                   },
                   {
@@ -410,9 +448,12 @@ const ChargerAdd = () => {
                       },
                       {
                         label: "전용",
-                        value: "",
+                        value: undefined,
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === useCode,
+                    })),
                     onChange,
                   },
                 ]}
@@ -452,9 +493,14 @@ const ChargerAdd = () => {
                 <DetailContentCol sm={4}>
                   <DetailGroupCol className={"gap-4"}>
                     <ManufacturerDropdown
+                      initSelectedValue={{
+                        code: manufactureCode,
+                        name: manufactureName,
+                      }}
                       onChange={(data) => {
                         onChangeSingle({
-                          manufactureCode: data.id?.toString(),
+                          manufactureId: data.id?.toString(),
+                          manufactureCode: data.code,
                           manufactureName: data.name,
                           manufacturerModelId: "",
                           manufacturerModelName: "",
@@ -463,7 +509,11 @@ const ChargerAdd = () => {
                     />
                     <ManufacturerModelDropdown
                       disabled={!manufactureName}
-                      id={Number(manufactureCode || -1)}
+                      id={Number(manufactureId || -1)}
+                      initSelectedValue={{
+                        value: manufacturerModelName,
+                        label: manufacturerModelId,
+                      }}
                       onChange={(data) => {
                         onChangeSingle({
                           manufacturerModelId: data.id?.toString(),
@@ -497,7 +547,10 @@ const ChargerAdd = () => {
                         label: "철거예정",
                         value: "TO_BE_DEMOLISH",
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === operationStatus,
+                    }))}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -508,8 +561,12 @@ const ChargerAdd = () => {
                       DefaultDropdownData,
                       ...objectToArray(CHARGER_TYPE),
                     ]}
+                    initSelectedValue={{
+                      label: CHARGER_TYPE[type],
+                      value: type,
+                    }}
                     onClickDropdownItem={(label, value) => {
-                      onChangeSingle({ type: value });
+                      onChangeSingle({ type: value as TChargerTypeKeys });
                     }}
                   />
                 </DetailContentCol>
@@ -529,7 +586,10 @@ const ChargerAdd = () => {
                         label: "고장",
                         value: "Y",
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === isBroken,
+                    }))}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -540,6 +600,10 @@ const ChargerAdd = () => {
                       DefaultDropdownData,
                       ...objectToArray(CHARGER_MODE),
                     ]}
+                    initSelectedValue={{
+                      label: CHARGER_MODE[status],
+                      value: status,
+                    }}
                     onClickDropdownItem={(label, value) => {
                       onChangeSingle({ status: value as typeof status });
                     }}
@@ -555,13 +619,16 @@ const ChargerAdd = () => {
                     list={[
                       {
                         label: "Y",
-                        value: "1",
+                        value: "Y",
                       },
                       {
                         label: "N",
-                        value: "2",
+                        value: "N",
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === hasPgTerm,
+                    }))}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -584,6 +651,10 @@ const ChargerAdd = () => {
                       DefaultDropdownData,
                       ...objectToArray(INFPROTOCOL_STATUS),
                     ]}
+                    initSelectedValue={{
+                      label: INFPROTOCOL_STATUS[infProtocol],
+                      value: infProtocol,
+                    }}
                     onClickDropdownItem={(label, value) => {
                       onChangeSingle({
                         infProtocol: value as TInfprotocolStatusKeys,
@@ -639,7 +710,10 @@ const ChargerAdd = () => {
                         label: "미연동",
                         value: "2",
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === isRoaming,
+                    })),
                     onChange,
                   },
                   {
@@ -654,7 +728,10 @@ const ChargerAdd = () => {
                         label: "미연동",
                         value: "2",
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === isKepcoRoaming,
+                    })),
                     onChange,
                   },
                 ]}
@@ -674,7 +751,10 @@ const ChargerAdd = () => {
                         label: "N",
                         value: "2",
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === rechargeAppAvailable,
+                    }))}
                     onChange={onChange}
                   />
                 </DetailContentCol>
@@ -711,7 +791,10 @@ const ChargerAdd = () => {
                         label: "현대 E-PIT",
                         value: "4",
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === qrType,
+                    })),
                     onChange,
                   },
                   {
@@ -730,7 +813,10 @@ const ChargerAdd = () => {
                         label: "시범",
                         value: "3",
                       },
-                    ],
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === reservationType,
+                    })),
                     onChange,
                   },
                 ]}
@@ -785,7 +871,10 @@ const ChargerAdd = () => {
                         label: "위탁",
                         value: "위탁",
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === gubun,
+                    }))}
                     onChange={onChangeInstall}
                   />
                 </DetailContentCol>
@@ -869,7 +958,10 @@ const ChargerAdd = () => {
                         label: "N",
                         value: "N",
                       },
-                    ]}
+                    ].map((data) => ({
+                      ...data,
+                      checked: data.value === hasTr,
+                    }))}
                     onChange={onChangeInstall}
                   />
                 </DetailContentCol>

@@ -10,13 +10,19 @@ interface IItemProps extends IManufactureListItem {
 
 interface IManufactureDropdownProps {
   disabled?: boolean;
+  initSelectedValue?: {
+    code: string;
+    name: string;
+  };
   onChange?: (data: Partial<IItemProps>) => void;
 }
 
 const ManufacturerDropdown = (props: IManufactureDropdownProps) => {
-  const { disabled, onChange } = props;
+  const { disabled, initSelectedValue, onChange } = props;
   const [list, setList] = useState<IItemProps[]>([]);
-  const [selectedData, setSelectedData] = useState<Partial<IItemProps>>({});
+  const [selectedData, setSelectedData] = useState<Partial<IItemProps>>(
+    initSelectedValue ?? {}
+  );
 
   /** 선택한 제조사 데이터 콜백 */
   const onChangeData = (data: Partial<IItemProps>) => {
