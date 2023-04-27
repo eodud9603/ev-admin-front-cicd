@@ -169,7 +169,7 @@ export const StationSearchModal = (props: IStationSearchModalProps) => {
             <>
               {list.length > 0 ? (
                 list.map((data, index) => (
-                  <tr key={data.stationId}>
+                  <tr key={data.searchKey}>
                     <td>{(page - 1) * Number(count) + index + 1}</td>
                     <td onClick={onChangeData(data)}>
                       <HoverSpan className={"text-turu"}>

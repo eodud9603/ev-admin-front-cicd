@@ -16,11 +16,6 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import { useTabs } from "src/hooks/useTabs";
 
-const dropdownData = [
-  { label: "10개씩 보기", value: "1" },
-  { label: "20개씩 보기", value: "2" },
-  { label: "50개씩 보기", value: "3" },
-];
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import {
   IRequestSupplierList,
@@ -181,7 +176,6 @@ export const ChargerOperator = () => {
 
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const [text, setText] = useState("");
 
   const moveToRegistration = () => {
     nav(`${pathname}/registration`);
@@ -310,7 +304,7 @@ export const ChargerOperator = () => {
           </Row>
           <TableBase
             tableHeader={tableHeader}
-            allCheck={checkList.length === list.length}
+            allCheck={list.length > 0 && checkList.length === list.length}
             onClickAllCheck={onChangeCheck}
           >
             <>

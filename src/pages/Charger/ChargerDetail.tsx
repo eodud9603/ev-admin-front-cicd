@@ -49,6 +49,8 @@ import {
   TPgCodeKeys,
   TQrTypeKeys,
   TReservationTypeKeys,
+  TUseCodeKeys,
+  USE_CODE,
 } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
 import { objectToArray } from "src/utils/convert";
@@ -111,7 +113,7 @@ const ChargerDetail = () => {
     channelType02: charger.channelType02 ?? "",
     envVersion: charger.envVersion ?? "",
     consignmentGubun: charger.consignmentGubun ?? "",
-    useCode: charger.useCode ?? "", // 서버 확인
+    useCode: (charger.useCode ?? "") as TUseCodeKeys,
     consignmentName: charger.consignmentName ?? "",
     manufactureId: (charger.manufactureId ?? "").toString(),
     manufactureCode: charger.manufactureCode ?? "",
@@ -131,7 +133,7 @@ const ChargerDetail = () => {
     busyCommunicationTime: (charger.busyCommunicationTime ?? "").toString(),
     isRoaming: (charger.isRoaming ?? "") as YNType,
     isKepcoRoaming: (charger.isKepcoRoaming ?? "") as YNType,
-    enableCharging: (charger.enableCharging ?? "") as YNType, // 서버 확인
+    enableCharging: (charger.enableCharging ?? "") as YNType,
     unitPrice: (charger.unitPrice ?? "").toString(),
     qrType: (charger.qrType ?? "") as TQrTypeKeys,
     reservationType: (charger.reservationType ?? "") as TReservationTypeKeys,
@@ -303,6 +305,7 @@ const ChargerDetail = () => {
       ...modifyParams,
       ...installParams,
       ...modemParams,
+      id: modifyParams.id,
     });
 
     if (invalid) {
@@ -452,11 +455,11 @@ const ChargerDetail = () => {
               <DetailDropdownRow
                 rows={[
                   {
-                    disabled,
                     titleWidthRatio: 4,
                     title: "설치타입",
                     dropdownItems: [
                       {
+                        disabled,
                         menuItems: [
                           DefaultDropdownData,
                           ...objectToArray(INSTALL_TYPE),
@@ -476,9 +479,9 @@ const ChargerDetail = () => {
                   {
                     titleWidthRatio: 4,
                     title: "충전 용량",
-                    disabled,
                     dropdownItems: [
                       {
+                        disabled,
                         menuItems: [
                           DefaultDropdownData,
                           ...objectToArray(CAPACITY),
@@ -586,20 +589,7 @@ const ChargerDetail = () => {
                   {
                     title: "사용/전용 구분",
                     name: "useCode",
-                    list: [
-                      {
-                        label: "사용",
-                        value: "Y",
-                      },
-                      {
-                        label: "미사용",
-                        value: "N",
-                      },
-                      {
-                        label: "전용",
-                        value: undefined,
-                      },
-                    ].map((data) => ({
+                    list: objectToArray(USE_CODE).map((data) => ({
                       ...data,
                       disabled,
                       checked: data.value === useCode,
@@ -816,7 +806,10 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
+                    type={"number"}
                     disabled={disabled || chargerClass !== "QUICK"}
+                    min={1}
+                    max={60}
                     name={"maxChargeTime"}
                     value={maxChargeTime}
                     onChange={onChange}
@@ -829,7 +822,10 @@ const ChargerDetail = () => {
                   {
                     disabled,
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "미사용 전송 주기(분)",
+                    min: 1,
+                    max: 60,
                     name: "idleCommunicationTime",
                     content: idleCommunicationTime,
                     onChange,
@@ -837,7 +833,10 @@ const ChargerDetail = () => {
                   {
                     disabled,
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "충전중 전송 주기(분)",
+                    min: 1,
+                    max: 60,
                     name: "busyCommunicationTime",
                     content: busyCommunicationTime,
                     onChange,
@@ -914,6 +913,7 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
+                    type={"number"}
                     disabled={disabled}
                     name={"unitPrice"}
                     value={unitPrice}
@@ -1007,6 +1007,7 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "설치 연도",
+                    min: 1970,
                     name: "yyyy",
                     content: yyyy,
                     onChange: onChangeInstall,
@@ -1017,6 +1018,8 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "설치 월",
+                    min: 1,
+                    max: 12,
                     placeholder: "숫자만 입력해주세요 (ex. 06)",
                     name: "mm",
                     content: mm,
@@ -1038,6 +1041,7 @@ const ChargerDetail = () => {
                   {
                     disabled,
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "서버 PORT",
                     name: "serverPort",
                     content: serverPort,

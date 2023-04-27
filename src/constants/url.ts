@@ -9,4 +9,5 @@ export const API_URL = {
   manufactureUrl: "/manufactures",
   supplierUrl: "/supplier",
   evModelUrl: "/ev/model",
+  boardUrl: "/board"
 } as const;

@@ -64,15 +64,15 @@ export const UPLOAD_FILTER_LIST = [
   },
   {
     label: "IOS",
-    value: "1"
+    value: "IOS"
   },
   {
     label: "AOS",
-    value: "2"
+    value: "AOS"
   },
   {
     label: "WEB",
-    value: "3"
+    value: "WEB"
   },
 ];
 

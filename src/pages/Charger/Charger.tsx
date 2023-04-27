@@ -40,6 +40,7 @@ import { getChargerStatusColor } from "src/utils/charger";
 import useList from "src/hooks/useList";
 import { useTabs } from "src/hooks/useTabs";
 import { getParams } from "src/utils/params";
+import { standardDateFormat } from "src/utils/day";
 
 /* 검색어 필터 */
 const searchList = [
@@ -165,7 +166,7 @@ const Charger = () => {
         onChangeList({
           ...data,
           page: searchParams.page,
-          emptyMessage: "검색된 충전소 정보가 없습니다.",
+          emptyMessage: "검색된 충전기 정보가 없습니다.",
         });
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
@@ -318,12 +319,13 @@ const Charger = () => {
                 list.map(
                   (
                     {
+                      id,
                       region,
                       operator,
                       stationName,
                       stationId,
                       chargerKey,
-                      // searchKey,
+                      searchKey,
                       chargerClass,
                       type,
                       status,
@@ -337,7 +339,7 @@ const Charger = () => {
                     },
                     index
                   ) => (
-                    <tr key={assetNumber}>
+                    <tr key={searchKey}>
                       <td>{(page - 1) * Number(count) + index + 1}</td>
                       <td>{region}</td>
                       <td>{operator ?? "전체"}</td>
@@ -345,8 +347,7 @@ const Charger = () => {
                         <HoverSpan
                           className={"text-turu"}
                           onClick={() => {
-                            /** @TODO 현재 자산번호가 id로 되어 있음. * id필드로 변경 예정 */
-                            navigate(`/charger/charger/detail/${assetNumber}`);
+                            navigate(`/charger/charger/detail/${id}`);
                           }}
                         >
                           <u>{stationName}</u>
@@ -364,9 +365,30 @@ const Charger = () => {
                         />
                       </td>
                       <td>{isConnection === "Y" ? "연결" : "미연결"}</td>
-                      <td>{nowChargingStartTime ?? "-"}</td>
-                      <td>{lastConnection ?? "-"}</td>
-                      <td>{lastChargingEndTime ?? "-"}</td>
+                      <td>
+                        {nowChargingStartTime
+                          ? standardDateFormat(
+                              nowChargingStartTime,
+                              "YYYY.MM.DD HH:mm:ss"
+                            )
+                          : "-"}
+                      </td>
+                      <td>
+                        {lastConnection
+                          ? standardDateFormat(
+                              lastConnection,
+                              "YYYY.MM.DD HH:mm:ss"
+                            )
+                          : "-"}
+                      </td>
+                      <td>
+                        {lastChargingEndTime
+                          ? standardDateFormat(
+                              lastChargingEndTime,
+                              "YYYY.MM.DD HH:mm:ss"
+                            )
+                          : "-"}
+                      </td>
                       <td>{operationStatus === "DEMOLISHED" ? "Y" : "N"}</td>
                       <td>{assetNumber}</td>
                       {/** @TODO 데이터 누락 추가 필요 */}

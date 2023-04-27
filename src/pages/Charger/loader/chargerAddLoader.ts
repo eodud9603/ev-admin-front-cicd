@@ -11,6 +11,7 @@ import {
   TPgCodeKeys,
   TQrTypeKeys,
   TReservationTypeKeys,
+  TUseCodeKeys,
 } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
 
@@ -20,21 +21,21 @@ export const INIT_CHARGER_ADD = {
     chargerKey: "",
     assetNumber: "",
     chargerClass: "" as TChargerRationKeys,
-    installType: "" as TInstallTypeKeys, // 서버 확인
+    installType: "" as TInstallTypeKeys, 
     capacity: "" as `${TCapacityKeys}`,
     isDualChannel: "N" as YNType,
     channelType01: "",
     channelType02: "",
     envVersion: "",
     consignmentGubun: "",
-    useCode: "", // 서버 확인
+    useCode: "" as TUseCodeKeys,
     consignmentName: "",
     manufactureId: "",
     manufactureCode: "",
     manufactureName: "",
     modelId: "", 
     model: "", 
-    operationStatus: "" as TOperationStatusKeys, // 서버 확인
+    operationStatus: "" as TOperationStatusKeys,
     type: "" as TChargerTypeKeys,
     isBroken: "" as YNType,
     status: "" as TChargerModeKeys,
@@ -47,7 +48,7 @@ export const INIT_CHARGER_ADD = {
     busyCommunicationTime: "",
     isRoaming: "" as YNType,
     isKepcoRoaming: "" as YNType,
-    enableCharging: "" as YNType, // 서버 확인
+    enableCharging: "" as YNType,
     unitPrice: "",
     qrType: "" as TQrTypeKeys,
     reservationType: "" as TReservationTypeKeys,

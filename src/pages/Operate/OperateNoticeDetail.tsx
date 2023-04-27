@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useLoaderData } from "react-router";
 import { Col, Row } from "reactstrap";
+import { INoticeDetailResponse } from "src/api/board/noticeApi.interface";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import EditorBase from "src/components/Common/Editor/EditorBase";
@@ -13,57 +15,30 @@ import { UPLOAD_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 
 const OperateNoticeDetail = () => {
-  const [tabList, setTabList] = useState([{ label: "공지사항" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
+  const data = useLoaderData() as INoticeDetailResponse | null;
+
   const [disabled, setDisabled] = useState(true);
 
-  const initContents =
-    "<pre>안녕하세요! 모빌리티로 통하는 세상 트루입니다.</pre>";
+  const initContents = (data?.content ?? "").replace(/\n/gi, "<br>");
   const [
-    { date, deleteStatus, writer, views, uploadTarget, title, attachmentList },
+    { createAt, delete: isDelete, writer, readCount, uploadType, title, files },
     { onChange, onChangeSingle },
   ] = useInputs({
-    date: "2022-11-31 12:00:00",
-    deleteStatus: "Y",
-    writer: "홍길동",
-    views: "1",
-    uploadTarget: "1",
-    title: "개인정보 처리 방침 변경 안내",
+    createAt: data?.createAt ?? "",
+    delete: data?.delete ?? "",
+    writer: data?.writer ?? "",
+    readCount: (data?.readCount ?? "").toString(),
+    uploadType: data?.uploadType ?? "",
+    title: data?.title ?? "",
     contents: initContents,
-    attachmentList: [{ name: "2023.01.07 개인정보 처리 방침.pdf" }],
+    files: data?.files ?? [],
   });
-
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
 
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -105,9 +80,9 @@ const OperateNoticeDetail = () => {
           </Col>
           <Col sm={3}>
             <TextInputBase
-              name={"date"}
               disabled={true}
-              value={date}
+              name={"createAt"}
+              value={createAt}
               onChange={onChange}
             />
           </Col>
@@ -117,18 +92,18 @@ const OperateNoticeDetail = () => {
           </Col>
           <Col sm={3}>
             <RadioGroup
-              name={"deleteStatus"}
+              name={"delete"}
               list={[
                 {
                   label: "Y",
                   value: "Y",
-                  checked: deleteStatus === "Y",
+                  checked: isDelete === "Y",
                   disabled,
                 },
                 {
                   label: "N",
                   value: "N",
-                  checked: deleteStatus === "N",
+                  checked: isDelete === "N",
                   disabled,
                 },
               ]}
@@ -156,10 +131,10 @@ const OperateNoticeDetail = () => {
             <div className={"d-flex gap-3 align-items-center"}>
               <span className={"font-size-14 fw-semibold"}>조회 수</span>
               <TextInputBase
-                inputstyle={{ flex: 1 }}
-                name={"views"}
                 disabled={true}
-                value={views}
+                inputstyle={{ flex: 1 }}
+                name={"readCount"}
+                value={readCount}
                 onChange={onChange}
               />
             </div>
@@ -170,11 +145,11 @@ const OperateNoticeDetail = () => {
           </Col>
           <Col sm={3}>
             <RadioGroup
-              name={"uploadTarget"}
+              name={"uploadType"}
               list={UPLOAD_FILTER_LIST.map((radio) => ({
                 ...radio,
                 disabled,
-                checked: uploadTarget === radio.value,
+                checked: uploadType === radio.value,
               }))}
               onChange={onChange}
             />
@@ -195,7 +170,7 @@ const OperateNoticeDetail = () => {
             },
           }}
           footerProps={{
-            attachmentList,
+            attachmentList: files.map((data) => ({ name: data.fileName })),
           }}
         />
       </BodyBase>

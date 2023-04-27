@@ -37,6 +37,7 @@ import {
   PG_CODE,
   QR_TYPE,
   RESERVATION_TYPE,
+  USE_CODE,
 } from "src/constants/status";
 import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
 import { getParams } from "src/utils/params";
@@ -485,20 +486,7 @@ const ChargerAdd = () => {
                   {
                     title: "사용/전용 구분",
                     name: "useCode",
-                    list: [
-                      {
-                        label: "사용",
-                        value: "Y",
-                      },
-                      {
-                        label: "미사용",
-                        value: "N",
-                      },
-                      {
-                        label: "전용",
-                        value: undefined,
-                      },
-                    ].map((data) => ({
+                    list: objectToArray(USE_CODE).map((data) => ({
                       ...data,
                       checked: data.value === useCode,
                     })),
@@ -725,6 +713,9 @@ const ChargerAdd = () => {
                   <TextInputBase
                     disabled={chargerClass !== "QUICK"}
                     bsSize={"lg"}
+                    type={"number"}
+                    min={1}
+                    max={60}
                     name={"maxChargeTime"}
                     value={maxChargeTime}
                     onChange={onChange}
@@ -736,14 +727,20 @@ const ChargerAdd = () => {
                 rows={[
                   {
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "미사용 전송 주기(분)",
+                    min: 1,
+                    max: 60,
                     name: "idleCommunicationTime",
                     content: idleCommunicationTime,
                     onChange,
                   },
                   {
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "충전중 전송 주기(분)",
+                    min: 1,
+                    max: 60,
                     name: "busyCommunicationTime",
                     content: busyCommunicationTime,
                     onChange,
@@ -817,6 +814,7 @@ const ChargerAdd = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
+                    type={"number"}
                     name={"unitPrice"}
                     value={unitPrice}
                     onChange={onChange}
@@ -903,6 +901,7 @@ const ChargerAdd = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "설치 연도",
+                    min: 1970,
                     name: "yyyy",
                     content: yyyy,
                     onChange: onChangeInstall,
@@ -912,6 +911,8 @@ const ChargerAdd = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "설치 월",
+                    min: 1,
+                    max: 12,
                     placeholder: "숫자만 입력해주세요 (ex. 06)",
                     name: "mm",
                     content: mm,
@@ -931,6 +932,7 @@ const ChargerAdd = () => {
                   },
                   {
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "서버 PORT",
                     name: "serverPort",
                     content: serverPort,
