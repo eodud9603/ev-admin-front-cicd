@@ -49,6 +49,7 @@ import {
   TPgCodeKeys,
   TQrTypeKeys,
   TReservationTypeKeys,
+  TUseCodeKeys,
   USE_CODE,
 } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
@@ -112,7 +113,7 @@ const ChargerDetail = () => {
     channelType02: charger.channelType02 ?? "",
     envVersion: charger.envVersion ?? "",
     consignmentGubun: charger.consignmentGubun ?? "",
-    useCode: charger.useCode ?? "", // 서버 확인
+    useCode: (charger.useCode ?? "") as TUseCodeKeys,
     consignmentName: charger.consignmentName ?? "",
     manufactureId: (charger.manufactureId ?? "").toString(),
     manufactureCode: charger.manufactureCode ?? "",
@@ -132,7 +133,7 @@ const ChargerDetail = () => {
     busyCommunicationTime: (charger.busyCommunicationTime ?? "").toString(),
     isRoaming: (charger.isRoaming ?? "") as YNType,
     isKepcoRoaming: (charger.isKepcoRoaming ?? "") as YNType,
-    enableCharging: (charger.enableCharging ?? "") as YNType, // 서버 확인
+    enableCharging: (charger.enableCharging ?? "") as YNType,
     unitPrice: (charger.unitPrice ?? "").toString(),
     qrType: (charger.qrType ?? "") as TQrTypeKeys,
     reservationType: (charger.reservationType ?? "") as TReservationTypeKeys,
@@ -304,6 +305,7 @@ const ChargerDetail = () => {
       ...modifyParams,
       ...installParams,
       ...modemParams,
+      id: modifyParams.id,
     });
 
     if (invalid) {
