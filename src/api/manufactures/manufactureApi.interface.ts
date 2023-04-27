@@ -73,3 +73,22 @@ export interface IManufactureModelItem {
   totalElements: number;
   totalPages: number;
  }
+
+ /* 제조사 등록 */
+ /** @see http://218.38.12.198:45081/docs/index.html#_%EC%A0%9C%EC%A1%B0%EC%82%AC_%EB%93%B1%EB%A1%9D */
+export interface IRequestManufactureRegister {
+  code: string;
+  name: string;
+  identifier: string; /* 고유값, 서버 확인 필요 */
+  companyId: string;
+  managerName: string;
+  managerPhone: string;
+  phone: string; /* 업체 번호 */
+  address: string;
+  zipCode: string;
+  managerExtPhone: string; /* 내선 번호 */
+}
+
+ /* 제조사 수정 */
+ /** @see http://218.38.12.198:45081/docs/index.html#_%EC%A0%9C%EC%A1%B0%EC%82%AC_%EC%88%98%EC%A0%95 */
+ export type IRequestManufactureModify = IRequestManufactureRegister;

@@ -7,6 +7,8 @@ import {
   IManufactureDetailResponse,
   IRequestManufactureModelList,
   IManufactureModelListResponse,
+  IRequestManufactureRegister,
+  IRequestManufactureModify,
 } from "src/api/manufactures/manufactureApi.interface";
 
 const { manufactureUrl } = API_URL;
@@ -36,5 +38,19 @@ export const deleteManufacture = (params: IRequestManufactureDetail) => {
 export const getManufactureModelList = (params: IRequestManufactureModelList) => {
   return api.get<IManufactureModelListResponse>(
     `${manufactureUrl}/model/list/${params.id}`
+  );
+};
+
+/** 제조사 등록 api */
+export const postManufactureRegister = (body: IRequestManufactureRegister) => {
+  return api.post<undefined>(
+    `${manufactureUrl}/register`, { body }
+  );
+};
+
+/** 제조사 수정 api */
+export const postManufactureModify = (body: IRequestManufactureModify) => {
+  return api.post<undefined>(
+    `${manufactureUrl}/modify`, { body }
   );
 };
