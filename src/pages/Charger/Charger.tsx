@@ -318,6 +318,7 @@ const Charger = () => {
                 list.map(
                   (
                     {
+                      id,
                       region,
                       operator,
                       stationName,
@@ -337,7 +338,7 @@ const Charger = () => {
                     },
                     index
                   ) => (
-                    <tr key={assetNumber}>
+                    <tr key={id}>
                       <td>{(page - 1) * Number(count) + index + 1}</td>
                       <td>{region}</td>
                       <td>{operator ?? "전체"}</td>
@@ -345,8 +346,7 @@ const Charger = () => {
                         <HoverSpan
                           className={"text-turu"}
                           onClick={() => {
-                            /** @TODO 현재 자산번호가 id로 되어 있음. * id필드로 변경 예정 */
-                            navigate(`/charger/charger/detail/${assetNumber}`);
+                            navigate(`/charger/charger/detail/${id}`);
                           }}
                         >
                           <u>{stationName}</u>

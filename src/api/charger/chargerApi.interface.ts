@@ -40,6 +40,7 @@ export interface IRequestChargerList {
 }
 
 export interface IChargerListItem {
+  id: number;
   region: string;
   operator: OperatorType;
   stationName: string;
