@@ -453,11 +453,11 @@ const ChargerDetail = () => {
               <DetailDropdownRow
                 rows={[
                   {
-                    disabled,
                     titleWidthRatio: 4,
                     title: "설치타입",
                     dropdownItems: [
                       {
+                        disabled,
                         menuItems: [
                           DefaultDropdownData,
                           ...objectToArray(INSTALL_TYPE),
@@ -477,9 +477,9 @@ const ChargerDetail = () => {
                   {
                     titleWidthRatio: 4,
                     title: "충전 용량",
-                    disabled,
                     dropdownItems: [
                       {
+                        disabled,
                         menuItems: [
                           DefaultDropdownData,
                           ...objectToArray(CAPACITY),
