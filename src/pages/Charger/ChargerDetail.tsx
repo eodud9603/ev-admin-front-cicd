@@ -49,6 +49,7 @@ import {
   TPgCodeKeys,
   TQrTypeKeys,
   TReservationTypeKeys,
+  USE_CODE,
 } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
 import { objectToArray } from "src/utils/convert";
@@ -586,20 +587,7 @@ const ChargerDetail = () => {
                   {
                     title: "사용/전용 구분",
                     name: "useCode",
-                    list: [
-                      {
-                        label: "사용",
-                        value: "Y",
-                      },
-                      {
-                        label: "미사용",
-                        value: "N",
-                      },
-                      {
-                        label: "전용",
-                        value: undefined,
-                      },
-                    ].map((data) => ({
+                    list: objectToArray(USE_CODE).map((data) => ({
                       ...data,
                       disabled,
                       checked: data.value === useCode,
@@ -816,6 +804,7 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
+                    type={"number"}
                     disabled={disabled || chargerClass !== "QUICK"}
                     name={"maxChargeTime"}
                     value={maxChargeTime}
@@ -829,6 +818,7 @@ const ChargerDetail = () => {
                   {
                     disabled,
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "미사용 전송 주기(분)",
                     name: "idleCommunicationTime",
                     content: idleCommunicationTime,
@@ -837,6 +827,7 @@ const ChargerDetail = () => {
                   {
                     disabled,
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "충전중 전송 주기(분)",
                     name: "busyCommunicationTime",
                     content: busyCommunicationTime,
@@ -914,6 +905,7 @@ const ChargerDetail = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
+                    type={"number"}
                     disabled={disabled}
                     name={"unitPrice"}
                     value={unitPrice}
@@ -1038,6 +1030,7 @@ const ChargerDetail = () => {
                   {
                     disabled,
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "서버 PORT",
                     name: "serverPort",
                     content: serverPort,

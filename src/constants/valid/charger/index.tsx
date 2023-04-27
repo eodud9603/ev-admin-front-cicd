@@ -272,7 +272,7 @@ export const YUP_CHARGER: FieldSchemaMap = {
     validation: string().required("연동 규격은 필수 입력 항목입니다."),
   },
   maxChargeTime: {
-    validation: string()
+    validation: number()
       .optional()
       .min(1, "최대 충전 시간(분)은 1분 보다 작을 수 없습니다.")
       .max(60, "최대 충전 시간(분)은 60분 보다 클 수 없습니다."),
@@ -307,7 +307,7 @@ export const YUP_CHARGER: FieldSchemaMap = {
   unitPrice: {
     validation: number()
       .required("계약 단가(원)는 필수 입력 항목입니다.")
-      .min(0, "계약 단가(원)는 0보다 작을 수 없습니다."),
+      .min(1, "계약 단가(원)는 1보다 작을 수 없습니다."),
   },
   qrType: {
     validation: string().required("QR 연동여부는 필수 입력 항목입니다."),
@@ -355,7 +355,7 @@ export const YUP_CHARGER_INSTALL: FieldSchemaMap = {
     validation: string().required("서버 도메인은 필수 입력 항목입니다."),
   },
   serverPort: {
-    validation: string().required("서버 PORT는 필수 입력 항목입니다."),
+    validation: number().required("서버 PORT는 필수 입력 항목입니다."),
   },
   sn: {
     validation: string().required("충전기 S/N은 필수 입력 항목입니다."),

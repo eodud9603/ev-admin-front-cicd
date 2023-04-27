@@ -37,6 +37,7 @@ import {
   PG_CODE,
   QR_TYPE,
   RESERVATION_TYPE,
+  USE_CODE,
 } from "src/constants/status";
 import { IRequestChargerRegister } from "src/api/charger/chargerApi.interface";
 import { getParams } from "src/utils/params";
@@ -485,20 +486,7 @@ const ChargerAdd = () => {
                   {
                     title: "사용/전용 구분",
                     name: "useCode",
-                    list: [
-                      {
-                        label: "사용",
-                        value: "Y",
-                      },
-                      {
-                        label: "미사용",
-                        value: "N",
-                      },
-                      {
-                        label: "전용",
-                        value: undefined,
-                      },
-                    ].map((data) => ({
+                    list: objectToArray(USE_CODE).map((data) => ({
                       ...data,
                       checked: data.value === useCode,
                     })),
@@ -725,6 +713,7 @@ const ChargerAdd = () => {
                   <TextInputBase
                     disabled={chargerClass !== "QUICK"}
                     bsSize={"lg"}
+                    type={"number"}
                     name={"maxChargeTime"}
                     value={maxChargeTime}
                     onChange={onChange}
@@ -736,6 +725,7 @@ const ChargerAdd = () => {
                 rows={[
                   {
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "미사용 전송 주기(분)",
                     name: "idleCommunicationTime",
                     content: idleCommunicationTime,
@@ -743,6 +733,7 @@ const ChargerAdd = () => {
                   },
                   {
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "충전중 전송 주기(분)",
                     name: "busyCommunicationTime",
                     content: busyCommunicationTime,
@@ -817,6 +808,7 @@ const ChargerAdd = () => {
                 <DetailContentCol>
                   <TextInputBase
                     bsSize={"lg"}
+                    type={"number"}
                     name={"unitPrice"}
                     value={unitPrice}
                     onChange={onChange}
@@ -931,6 +923,7 @@ const ChargerAdd = () => {
                   },
                   {
                     titleWidthRatio: 4,
+                    type: "number",
                     title: "서버 PORT",
                     name: "serverPort",
                     content: serverPort,
