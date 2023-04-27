@@ -133,7 +133,7 @@ export type TCapacityKeys = keyof typeof CAPACITY;
 
 /**
  * @description 충전소 > 수전방식
- * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=31893c8250b7405ba9d736517ad24b60&pm=s
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%88%98%EC%A0%84%EB%B0%A9%EC%8B%9D
  */
 export const SUPPLY_METHOD = {
   SM01: "자중",
@@ -156,7 +156,7 @@ export type TInstallTypeKeys = keyof typeof INSTALL_TYPE;
 
 /**
  * @description 충전기 > 사용/전용 구분
- * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=6e576f4d93494c0f8f1111a92a54a479&pm=s
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%82%AC%EC%9A%A9%EC%BD%94%EB%93%9C
  */
 export const USE_CODE = {
   US01: "사용",
@@ -168,7 +168,7 @@ export type TUseCodeKeys = keyof typeof USE_CODE;
 
 /**
  * @description 충전기 > QR 연동여부
- * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=6e576f4d93494c0f8f1111a92a54a479&pm=s
+ * @see http://218.38.12.198:45081/docs/index.html#_qr_%EC%97%B0%EB%8F%99%EC%97%AC%EB%B6%80_qrtype
  */
 export const QR_TYPE = {
   QR01: "카카오",
@@ -181,7 +181,7 @@ export type TQrTypeKeys = keyof typeof QR_TYPE;
 
 /**
  * @description 충전기 > 예약 가능 여부
- * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=6e576f4d93494c0f8f1111a92a54a479&pm=s
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%98%88%EC%95%BD_%ED%83%80%EC%9E%85_reservationtype
  */
 export const RESERVATION_TYPE = {
   RV01: "비예약",
@@ -193,7 +193,7 @@ export type TReservationTypeKeys = keyof typeof RESERVATION_TYPE;
 
 /**
  * @description 충전기 > 계약 > 설치구분
- * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=6e576f4d93494c0f8f1111a92a54a479&pm=s
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%84%A4%EC%B9%98_%EA%B5%AC%EB%B6%84_install_gubun
  */
 export const INSTALL_GUBUN = {
   IG01: "자체",
@@ -206,7 +206,7 @@ export type TInstallGubunKeys = keyof typeof INSTALL_GUBUN;
 
 /**
  * @description 충전기 > pg사
- * @see https://www.notion.so/e4da949ca8b14acea4f3d60445721954?v=e1aebf2436034e6dbeac1ad34c6e22e9&p=6e576f4d93494c0f8f1111a92a54a479&pm=s
+ * @see http://218.38.12.198:45081/docs/index.html#_pg%EC%82%AC_%EC%BD%94%EB%93%9C_pgcode
  */
 export const PG_CODE = {
   PG01: "스마트로",
