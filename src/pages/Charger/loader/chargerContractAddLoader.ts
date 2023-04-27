@@ -5,9 +5,12 @@ import { IStationContractDetailResponse } from "src/api/station/stationApi.inter
 
 export type chargerContractAddLoaderType = {
   inputs: IStationContractDetailResponse;
-  file: Partial<{
-    url?: string;
-    file: FileList | null | string;
+  fileData: Partial<{
+    fileInfoData: Partial<{
+      type: string;
+      name: string;
+    }>;
+    blobStringData: string;
   }>;
 };
 export const chargerContractAddLoader = () => {
@@ -42,9 +45,12 @@ export const chargerContractAddLoader = () => {
         costConstruct: "",
         esafetyMng: "",
       },
-      file: {
-        url: "",
-        file: null,
+      fileData: {
+        fileInfoData: {
+          type: "",
+          name: "",
+        },
+        blobStringData: "",
       },
     }
   );

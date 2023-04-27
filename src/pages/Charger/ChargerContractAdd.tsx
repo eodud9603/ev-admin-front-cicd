@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Col, Input, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -63,13 +63,20 @@ const contractValidation = object({
 
 const ChargerContractAdd = () => {
   const data = useLoaderData() as chargerContractAddLoaderType;
-  const [tabList, setTabList] = useState([{ label: "충전소 계약 관리" }]);
   /* 미입력 안내 모달 */
   const [invalidModalOpen, setInvalidModalOpen] = useState(false);
   /* 등록완료 모달 */
   const [isAddComplete, setIsAddComplete] = useState(false);
   /* 등록취소 모달 */
   const [isAddCancel, setIsAddCancel] = useState(false);
+
+  const [fileData, setFileData] = useState({
+    fileInfoData: {
+      type: data?.fileData?.fileInfoData?.type ?? "",
+      name: data?.fileData?.fileInfoData?.name ?? "",
+    },
+    blobStringData: data?.fileData?.blobStringData,
+  });
   const [inputs, { onChange, onChangeSingle }] = useInputs(data.inputs);
   const {
     place,
@@ -98,50 +105,87 @@ const ChargerContractAdd = () => {
     esafetyMng,
   } = inputs;
 
-  /**
-   * Formats the size
-   */
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
   /* 계약서 파일 */
   const [file, setFile] = useState<
     Partial<{
       url?: string;
       file: FileList | null;
     }>
-  >({
-    url: "",
-    // url: data?.file?.file
-    //   ? URL.createObjectURL(
-    //       JSON.parse(data.file.file)
-    //         .map((info) => new File([], info.name, { type: info.type }))
-    //         .map((file) =>
-    //           Object.assign(file, {
-    //             preview: URL.createObjectURL(file),
-    //             formattedSize: formatBytes(file.size),
-    //           })
-    //         )[0]
-    //     )
-    //   : "",
-    file: data?.file?.file
-      ? JSON.parse(data.file.file).map(
-          (info) => new File([], info.name, { type: info.type })
-        )
-      : null,
-  });
-  // files.map((file) =>
-  //     Object.assign(file, {
-  //       preview: URL.createObjectURL(file),
-  //       formattedSize: formatBytes(file.size),
-  //     })
-  // );
+  >({});
+
+  const changeFileToBlobString = useCallback((fileData: File) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileData);
+    reader.onload = function () {
+      const fileString = reader.result as string;
+      if (fileString) {
+        setFileData({
+          fileInfoData: {
+            type: fileData.type,
+            name: fileData.name,
+          },
+          blobStringData: fileString.split(",")[1], // , 뒤에 있는 데이터가 순수 base64 이미지 데이터
+        });
+      }
+    };
+  }, []);
+
+  const changeStringToFile = useCallback(
+    (
+      fileInfoString: {
+        type: string;
+        name: string;
+      },
+      fileDataString: string
+    ) => {
+      const fileInfoData = fileInfoString;
+      // 문자열을 Blob 객체로 변환
+      const base64String = fileDataString;
+      const mimeType = fileInfoData.type;
+      const byteCharacters = atob(base64String);
+      const byteArrays = [];
+
+      for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
+        const slice = byteCharacters.slice(offset, offset + 1024);
+
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+
+      const blob = new Blob(byteArrays, { type: mimeType });
+
+      // Blob 객체를 File 객체로 변환
+      const newFile: File = new File([blob], fileInfoData.name, {
+        type: fileInfoData.type,
+      });
+      const dataTranster = new DataTransfer();
+
+      Array.from([newFile]).forEach((file) => {
+        dataTranster.items.add(newFile);
+      });
+
+      setFile({
+        url: URL.createObjectURL(Array.from(dataTranster.files)[0]),
+        file: dataTranster.files ?? null,
+      });
+    },
+    []
+  );
+
+  useEffect(() => {
+    fileData?.blobStringData &&
+      changeStringToFile(fileData.fileInfoData, fileData.blobStringData);
+  }, []);
+
+  useEffect(() => {
+    file?.file && changeFileToBlobString(file.file[0]);
+  }, [file?.url]);
+
   const navigate = useNavigate();
 
   /** valid check */
@@ -186,23 +230,10 @@ const ChargerContractAdd = () => {
     }
   };
 
-  const filesArray = file.file ? Array.from(file.file) : [];
-  const filesInfo = filesArray.map((file) => {
-    return {
-      name: file.name,
-      size: file.size,
-      type: file.type,
-    };
-  });
-  const filesInfoString = JSON.stringify(filesInfo);
-  console.log(file);
   useTabs({
     data: {
       inputs: inputs,
-      file: {
-        url: file.url,
-        file: filesInfoString,
-      },
+      fileData: fileData,
     },
     pageTitle: "충전소 계약 신규 등록",
     pageType: "add",
@@ -444,7 +475,7 @@ const ChargerContractAdd = () => {
                       return;
                     }
 
-                    console.log(e.target.files);
+                    console.log("eeeee", e.target.files);
                     const localUrl = URL.createObjectURL(
                       Array.from(e.target.files)[0]
                     );
