@@ -205,8 +205,7 @@ export const YUP_CHARGER: FieldSchemaMap = {
     validation: string().required("종별은 필수 입력 항목입니다."),
   },
   installType: {
-    // validation: string().required("설치 타입은 필수 입력 항목입니다."),
-    validation: string().optional(),
+    validation: string().required("설치 타입은 필수 입력 항목입니다."),
   },
   capacity: {
     validation: number()
@@ -234,7 +233,7 @@ export const YUP_CHARGER: FieldSchemaMap = {
   useCode: {
     validation: string().required("사용/전용 구분은 필수 입력 항목입니다."),
   },
-  /** @TODO 수정 필요 */
+  /** @TODO 위탁사 api추가 후, 수정 필요 */
   consignmentName: {
     // validation: string().required("위탁사는 필수 입력 항목입니다."),
     validation: string().optional(),
@@ -264,9 +263,8 @@ export const YUP_CHARGER: FieldSchemaMap = {
       .required("결제단말기 여부는 필수 입력 항목입니다.")
       .oneOf(["Y", "N"], "결제단말기 여부는 Y 또는 N 중 하나여야 합니다."),
   },
-  pgName: {
-    // validation: string().required("결제단말기 PG사는 필수 입력 항목입니다."),
-    validation: string().optional(),
+  pgCode: {
+    validation: string().required("결제단말기 PG사는 필수 입력 항목입니다."),
   },
   infProtocol: {
     validation: string().required("연동 규격은 필수 입력 항목입니다."),
@@ -346,10 +344,10 @@ export const YUP_CHARGER_INSTALL: FieldSchemaMap = {
     validation: string().required("설치 연도는 필수 입력 항목입니다."),
   },
   mm: {
-    validation: string().required("설치 월은 필수 입력 항목입니다."),
-    // number타입일 경우
-    // .min(1, "설치 월은 최소 1월이어야 합니다.")
-    // .max(12, "설치 월은 최대 12월이어야 합니다."),
+    validation: number()
+      .required("설치 월은 필수 입력 항목입니다.")
+      .min(1, "설치 월은 최소 1월이어야 합니다.")
+      .max(12, "설치 월은 최대 12월이어야 합니다."),
   },
   serverDomain: {
     validation: string().required("서버 도메인은 필수 입력 항목입니다."),
@@ -383,7 +381,12 @@ export const YUP_CHARGER_MODEM: FieldSchemaMap = {
     validation: string().required("모뎀 제조사는 필수 입력 항목입니다."),
   },
   companyPhone: {
-    validation: string().required("모뎀 제조사 연락처는 필수 입력 항목입니다."),
+    validation: string()
+      .required("모뎀 제조사 연락처는 필수 입력 항목입니다.")
+      .matches(
+        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        "유효한 모뎀 제조사 연락처를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
+      ),
   },
   name: { validation: string().required("모뎀명은 필수 입력 항목입니다.") },
   sn: { validation: string().required("모뎀S/N은 필수 입력 항목입니다.") },
@@ -397,7 +400,12 @@ export const YUP_CHARGER_MODEM: FieldSchemaMap = {
     validation: string().required("개통사는 필수 입력 항목입니다."),
   },
   openCompanyPhone: {
-    validation: string().required("개통사 연락처는 필수 입력 항목입니다."),
+    validation: string()
+      .required("개통사 연락처는 필수 입력 항목입니다.")
+      .matches(
+        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        "유효한 개통사 연락처를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
+      ),
   },
 };
 
@@ -492,16 +500,16 @@ export const YUP_CHARGER_OPERATOR: FieldSchemaMap = {
     validation: string()
       .required("사업자 전화번호는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{4})-(\d{4})$/,
-        "유효한 사업자 전화번호를 입력해주세요.\n(000-0000-0000)"
+        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        "유효한 사업자 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
   mainPhoneNumber: {
     validation: string()
       .required("사업자 대표 번호는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{4})-(\d{4})$/,
-        "유효한 사업자 대표 전화번호를 입력해주세요.\n(000-0000-0000)"
+        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        "유효한 사업자 대표 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
   zipCode: {

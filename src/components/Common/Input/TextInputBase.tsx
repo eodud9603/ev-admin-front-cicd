@@ -1,8 +1,9 @@
-import React from "react";
+import React, { InputHTMLAttributes } from "react";
 import { Input } from "reactstrap";
 import styled from "styled-components";
 
-export interface ITextInputBaseProps {
+export interface ITextInputBaseProps
+  extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   value: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;

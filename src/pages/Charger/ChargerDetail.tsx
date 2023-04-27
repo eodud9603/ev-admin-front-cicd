@@ -806,6 +806,8 @@ const ChargerDetail = () => {
                     bsSize={"lg"}
                     type={"number"}
                     disabled={disabled || chargerClass !== "QUICK"}
+                    min={1}
+                    max={60}
                     name={"maxChargeTime"}
                     value={maxChargeTime}
                     onChange={onChange}
@@ -820,6 +822,8 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "미사용 전송 주기(분)",
+                    min: 1,
+                    max: 60,
                     name: "idleCommunicationTime",
                     content: idleCommunicationTime,
                     onChange,
@@ -829,6 +833,8 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "충전중 전송 주기(분)",
+                    min: 1,
+                    max: 60,
                     name: "busyCommunicationTime",
                     content: busyCommunicationTime,
                     onChange,
@@ -999,6 +1005,7 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "설치 연도",
+                    min: 1970,
                     name: "yyyy",
                     content: yyyy,
                     onChange: onChangeInstall,
@@ -1009,6 +1016,8 @@ const ChargerDetail = () => {
                     titleWidthRatio: 4,
                     type: "number",
                     title: "설치 월",
+                    min: 1,
+                    max: 12,
                     placeholder: "숫자만 입력해주세요 (ex. 06)",
                     name: "mm",
                     content: mm,
