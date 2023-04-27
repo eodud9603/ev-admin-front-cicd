@@ -122,6 +122,8 @@ import { supplierDetailLoader } from "src/pages/Charger/loader/supplierDetailLoa
 import { chargerAddLoader } from "src/pages/Charger/loader/chargerAddLoader";
 import { chargerContractAddLoader } from "src/pages/Charger/loader/chargerContractAddLoader";
 import { evModelListLoader } from "src/pages/Operate/loader/evModelListLoader";
+import { noticeListLoader } from "src/pages/Operate/loader/noticeListLoader";
+import { noticeDetailLoader } from "src/pages/Operate/loader/noticeDetailLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -234,9 +236,17 @@ const userRoutes: Array<RouteProps> = [
   { path: "/member/contract", element: <MemberContract /> },
 
   /* 서비스 운영 관리 */
-  { path: "/operate/notice", element: <OperateNotice /> },
+  {
+    path: "/operate/notice",
+    element: <OperateNotice />,
+    loader: noticeListLoader,
+  },
   { path: "/operate/notice/add", element: <OperateNoticeAdd /> },
-  { path: "/operate/notice/detail/:id", element: <OperateNoticeDetail /> },
+  {
+    path: "/operate/notice/detail/:id",
+    element: <OperateNoticeDetail />,
+    loader: noticeDetailLoader,
+  },
   { path: "/operate/qna", element: <OperateQnA /> },
   { path: "/operate/qna/detail/:id", element: <OperateQnADetail /> },
   { path: "/operate/faq", element: <OperateFAQ /> },

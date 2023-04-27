@@ -365,7 +365,7 @@ const EvModel = () => {
                       (itemsRef.current[index] = ref)
                     }
                     key={evModel.id}
-                    index={index}
+                    num={(page - 1) * Number(count) + index + 1}
                     rowClickHandler={() => {
                       setModelModal({
                         isOpen: true,
@@ -455,7 +455,7 @@ interface IEvModelItemRef {
 }
 
 interface IEvModelItemProps extends IEvModelItem {
-  index: number;
+  num: number;
   rowClickHandler?: () => void;
 }
 
@@ -464,7 +464,7 @@ const EvModelItem = forwardRef<
   IEvModelItemProps & { onChangeActive: (currentItemChecked: boolean) => void }
 >((props, ref) => {
   const {
-    index,
+    num,
     id,
     chargerType,
     chargerClass,
@@ -506,7 +506,7 @@ const EvModelItem = forwardRef<
           onChange={onChange}
         />
       </td>
-      <td>{index + 1}</td>
+      <td>{num}</td>
       <td>{CHARGER_RATION[chargerClass] ?? "-"}</td>
       <td>{CHARGER_TYPE[chargerType] ?? "-"}</td>
       <td>{manufactureName ?? "-"}</td>

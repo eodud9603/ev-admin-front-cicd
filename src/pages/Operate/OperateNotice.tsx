@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -29,29 +29,38 @@ import {
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
-import { YNType } from "src/api/api.interface";
+import {
+  INoticeItem,
+  INoticeListResponse,
+  IRequestNoticeList,
+} from "src/api/board/noticeApi.interface";
+import useList from "src/hooks/useList";
+import { getPageList } from "src/utils/pagination";
+import { getNoticeList } from "src/api/board/noticeApi";
+import { getParams } from "src/utils/params";
+import { standardDateFormat } from "src/utils/day";
+import { UploadType, YNType } from "src/api/api.interface";
 
 /** 검색어 필터 */
 const searchList = [
-  { label: "전체", value: "" },
-  { label: "제목", value: "1" },
-  { label: "내용", value: "2" },
-  { label: "작성자", value: "3" },
+  { label: "제목", value: "Title" },
+  { label: "내용", value: "Content" },
+  { label: "작성자", value: "Writer" },
 ];
 
 /** 정렬 필터 */
 const sortList = [
   {
     label: "기본",
-    value: "",
+    value: "CreateAt",
   },
   {
     label: "작성일",
-    value: "1",
+    value: "CreateAt",
   },
   {
     label: "조회 수",
-    value: "2",
+    value: "ReadCount",
   },
 ];
 
@@ -67,95 +76,98 @@ const tableHeader = [
   { label: "삭제 여부" },
 ];
 
-/** 임시 목록 데이터 */
-const noticeList: Omit<IListItemProps, "index">[] = [
-  {
-    id: "1",
-    title: "개인정보 처리방침 변경 안내",
-    upload: "전체",
-    writer: "홍길동",
-    view: 15,
-    date: "2022.01.07",
-    isDelete: "N",
-  },
-  {
-    id: "2",
-    title: "개인정보 처리방침 변경 안내",
-    upload: "IOS",
-    writer: "홍길동",
-    view: 10,
-    date: "2022.01.07",
-    isDelete: "Y",
-  },
-];
-
 interface IListRefProps {
-  data: IListItemProps;
+  data: INoticeItem;
   checked: boolean;
   onChange: (bool: boolean) => void;
 }
-interface IListItemProps {
-  id: string;
-  index: number;
-  title: string;
-  upload: string;
-  writer: string;
-  view: number;
-  date: string;
-  isDelete: YNType;
-}
 
 const OperateNotice = () => {
-  const [tabList, setTabList] = useState([{ label: "공지사항" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
+  const data = useLoaderData() as INoticeListResponse;
   /* 선택삭제 버튼 활성화 여부 */
   const [isActive, setIsActive] = useState(false);
   /* 선택삭제 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [page, setPage] = useState(1);
+
   const [
-    {
-      // startDate,
-      // endDate,
-      deleteStatus,
-      uploadTarget,
-      searchText,
-    },
-    { onChange, onChangeSingle },
-  ] = useInputs({
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<INoticeItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: !data?.elements
+      ? "오류가 발생하였습니다."
+      : "등록된 공지사항이 없습니다.",
+  });
+
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
     startDate: "",
     endDate: "",
-    deleteStatus: "",
-    uploadTarget: "",
-    searchRange: "",
+    isDeleted: "" as YNType,
+    uploadType: "" as UploadType,
+    searchRange: "Title",
     searchText: "",
-    sort: "",
+    sort: "CreateAt",
+    count: "10",
   });
+  const {
+    startDate,
+    endDate,
+    isDeleted,
+    uploadType,
+    searchRange,
+    searchText,
+    sort,
+    count,
+  } = inputs;
+
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestNoticeList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams: IRequestNoticeList = {
+        size: Number(count),
+        page,
+        isDeleted,
+        uploadType,
+        sort: sort as IRequestNoticeList["sort"],
+      };
+      if (startDate && endDate) {
+        searchParams.startDate = standardDateFormat(startDate, "YYYY-MM-DD");
+        searchParams.endDate = standardDateFormat(endDate, "YYYY-MM-DD");
+      }
+      if (searchRange && searchText) {
+        searchParams.searchType =
+          searchRange as IRequestNoticeList["searchType"];
+        searchParams.searchKeyword = searchText;
+      }
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
+
+      /* 검색  */
+      const { code, data, message } = await getNoticeList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 공지사항이 없습니다.",
+        });
+      } else {
+        reset({ code, message: message || "오류가 발생하였습니다." });
+      }
+    };
 
   const listRef = useRef<IListRefProps[]>([]);
 
   const navigate = useNavigate();
-
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
 
   /** 선택항목 삭제 */
   const deleteHandler = () => {
@@ -197,12 +209,7 @@ const OperateNotice = () => {
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -217,15 +224,19 @@ const OperateNotice = () => {
         <SearchSection className={"pt-2 pb-4 border-top border-bottom"}>
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col md={4}>
-              <DateGroup className={"mb-0"} label={"작성일"} />
+              <DateGroup
+                className={"mb-0"}
+                label={"작성일"}
+                onChangeDate={onChangeSingle}
+              />
             </Col>
             <Col md={4}>
               <RadioGroup
                 title={"삭제 여부"}
-                name={"deleteStatus"}
+                name={"isDeleted"}
                 list={YN_FILTER_LIST.map((status) => ({
                   ...status,
-                  checked: deleteStatus === status.value,
+                  checked: isDeleted === status.value,
                 }))}
                 onChange={onChange}
               />
@@ -233,10 +244,10 @@ const OperateNotice = () => {
             <Col md={4}>
               <RadioGroup
                 title={"업로드 대상"}
-                name={"uploadTarget"}
+                name={"uploadType"}
                 list={UPLOAD_FILTER_LIST.map((target) => ({
                   ...target,
-                  checked: uploadTarget === target.value,
+                  checked: uploadType === target.value,
                 }))}
                 onChange={onChange}
               />
@@ -254,6 +265,7 @@ const OperateNotice = () => {
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
             <Col md={5} />
@@ -266,6 +278,10 @@ const OperateNotice = () => {
                   {
                     onClickDropdownItem: (_, value) => {
                       onChangeSingle({ sort: value });
+                      void searchHandler({
+                        page: 1,
+                        sort: value as IRequestNoticeList["sort"],
+                      })();
                     },
                     menuItems: sortList,
                   },
@@ -280,14 +296,12 @@ const OperateNotice = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{noticeList.length}개</span>의
-              공지사항이 있습니다.
+              총 <span className={"text-turu"}>{total}개</span>의 공지사항이
+              있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
-              <span className={"font-size-10 text-muted"}>
-                2023-04-01 14:51기준
-              </span>
+              <span className={"font-size-10 text-muted"}>{time}기준</span>
               <DropdownBase menuItems={COUNT_FILTER_LIST} />
               <ButtonBase
                 label={"신규 등록"}
@@ -310,27 +324,38 @@ const OperateNotice = () => {
 
           <TableBase tableHeader={tableHeader}>
             <>
-              {noticeList.length > 0 ? (
-                noticeList.map((notice, index) => (
+              {list.length > 0 ? (
+                list.map((data, index) => (
                   <TableRow
                     ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
                     key={index}
-                    index={index}
+                    num={(page - 1) * Number(count) + index + 1}
                     onChangeActive={onChangeActive}
-                    {...notice}
+                    {...data}
                   />
                 ))
               ) : (
                 <tr>
                   <td colSpan={8} className={"py-5 text-center text"}>
-                    등록된 공지사항이 없습니다.
+                    {message}
                   </td>
                 </tr>
               )}
             </>
           </TableBase>
 
-          <PaginationBase setPage={setPage} data={{}} />
+          <PaginationBase
+            setPage={setPage}
+            data={{
+              hasPreviousPage: page > 1,
+              hasNextPage: page < lastPage,
+              navigatePageNums: getPageList(page, lastPage),
+              pageNum: page,
+              onChangePage: (page) => {
+                void searchHandler({ page })();
+              },
+            }}
+          />
         </ListSection>
       </BodyBase>
 
@@ -376,17 +401,20 @@ const HoverTr = styled.tr`
 
 const TableRow = forwardRef<
   IListRefProps,
-  IListItemProps & { onChangeActive: (currentItemChecked: boolean) => void }
+  INoticeItem & {
+    num: number;
+    onChangeActive: (currentItemChecked: boolean) => void;
+  }
 >((props, ref) => {
   const {
     id,
-    index,
+    num,
     title,
-    upload,
+    uploadType,
     writer,
-    view,
-    date,
-    isDelete,
+    readCount,
+    createAt,
+    delete: isDeleted,
     onChangeActive,
   } = props;
   const [checked, setChecked] = useState(false);
@@ -417,19 +445,19 @@ const TableRow = forwardRef<
     >
       <td onClick={(e) => e.stopPropagation()}>
         <CheckBoxBase
-          name={`announcement-${index}`}
+          name={`announcement-${num}`}
           label={""}
           checked={checked}
           onChange={onChangeCheck}
         />
       </td>
-      <td>{index + 1}</td>
+      <td>{num}</td>
       <td>{title}</td>
-      <td>{upload}</td>
-      <td>{writer}</td>
-      <td>{view}</td>
-      <td>{date}</td>
-      <td>{isDelete}</td>
+      <td>{uploadType ?? "전체"}</td>
+      <td>{writer ?? "-"}</td>
+      <td>{readCount}</td>
+      <td>{createAt ? standardDateFormat(createAt, "YYYY.MM.DD") : "-"}</td>
+      <td>{isDeleted}</td>
     </HoverTr>
   );
 });
