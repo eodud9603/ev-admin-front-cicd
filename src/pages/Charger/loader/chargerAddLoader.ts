@@ -46,7 +46,7 @@ export const INIT_CHARGER_ADD = {
     maxChargeTime: "",
     idleCommunicationTime: "",
     busyCommunicationTime: "",
-    isRoaming: "" as YNType,
+    isMeRoaming: "" as YNType,
     isKepcoRoaming: "" as YNType,
     enableCharging: "" as YNType,
     unitPrice: "",

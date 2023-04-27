@@ -150,7 +150,7 @@ export interface IChargerDetailResponse {
   qrType: TQrTypeKeys;
   reservationType: TReservationTypeKeys;
   etcInfo: string; /* 특이사항 */
-  isRoaming: YNType;
+  isMeRoaming: YNType;
   unitPrice: number;
   station?: IStationItem;
   install?: IInstallItem;

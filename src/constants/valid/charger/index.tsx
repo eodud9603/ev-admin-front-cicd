@@ -287,7 +287,7 @@ export const YUP_CHARGER: FieldSchemaMap = {
       .min(1, "충전중 전송 주기(분)는 1분 보다 작을 수 없습니다.")
       .max(60, "충전중 전송 주기(분)는 60분 보다 클 수 없습니다."),
   },
-  isRoaming: {
+  isMeRoaming: {
     validation: string()
       .required("환경부 연동 여부는 필수 선택 항목입니다.")
       .oneOf(["Y", "N"], "환경부 연동 여부는 Y 또는 N 중 하나여야 합니다."),

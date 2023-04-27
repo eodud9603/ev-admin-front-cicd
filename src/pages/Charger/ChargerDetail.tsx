@@ -131,7 +131,7 @@ const ChargerDetail = () => {
     maxChargeTime: (charger.maxChargeTime ?? "").toString(),
     idleCommunicationTime: (charger.idleCommunicationTime ?? "").toString(),
     busyCommunicationTime: (charger.busyCommunicationTime ?? "").toString(),
-    isRoaming: (charger.isRoaming ?? "") as YNType,
+    isMeRoaming: (charger.isMeRoaming ?? "") as YNType,
     isKepcoRoaming: (charger.isKepcoRoaming ?? "") as YNType,
     enableCharging: (charger.enableCharging ?? "") as YNType,
     unitPrice: (charger.unitPrice ?? "").toString(),
@@ -166,7 +166,7 @@ const ChargerDetail = () => {
     isBroken,
     hasPgTerm,
     pgCode,
-    isRoaming,
+    isMeRoaming,
     isKepcoRoaming,
     enableCharging,
     qrType,
@@ -848,7 +848,7 @@ const ChargerDetail = () => {
                 rows={[
                   {
                     title: "환경부 연동 여부",
-                    name: "isRoaming",
+                    name: "isMeRoaming",
                     list: [
                       {
                         label: "연동",
@@ -861,7 +861,7 @@ const ChargerDetail = () => {
                     ].map((data) => ({
                       ...data,
                       disabled,
-                      checked: data.value === isRoaming,
+                      checked: data.value === isMeRoaming,
                     })),
                     onChange,
                   },

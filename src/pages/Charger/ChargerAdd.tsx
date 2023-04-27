@@ -109,7 +109,7 @@ const ChargerAdd = () => {
     isBroken,
     hasPgTerm,
     pgCode,
-    isRoaming,
+    isMeRoaming,
     isKepcoRoaming,
     enableCharging,
     qrType,
@@ -752,7 +752,7 @@ const ChargerAdd = () => {
                 rows={[
                   {
                     title: "환경부 연동 여부",
-                    name: "isRoaming",
+                    name: "isMeRoaming",
                     list: [
                       {
                         label: "연동",
@@ -764,7 +764,7 @@ const ChargerAdd = () => {
                       },
                     ].map((data) => ({
                       ...data,
-                      checked: data.value === isRoaming,
+                      checked: data.value === isMeRoaming,
                     })),
                     onChange,
                   },
