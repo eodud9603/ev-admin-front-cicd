@@ -23,7 +23,6 @@ import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import useInputs from "src/hooks/useInputs";
 import { IStationContractDetailResponse } from "src/api/station/stationApi.interface";
-import { number, object, string } from "yup";
 import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
 import { postStationContractModify } from "src/api/station/stationApi";
 import { YNType } from "src/api/api.interface";
@@ -31,38 +30,11 @@ import { useTabStore } from "src/store/tabStore";
 import { TContractStatus } from "src/constants/status";
 import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
-
-const contractValidation = object({
-  id: number().required("필수 값이 누락되었습니다."),
-  place: string().required("계약 장소를 입력해주세요."),
-  contractorName: string().required("계약자 이름을 입력해주세요."),
-  code: string().required("계약여부를 입력해주세요."),
-  isMeRoaming: string().required("환경부 연동 여부를 입력해주세요."),
-  // isUse: string().required("사용여부를 입력해주세요."),
-  meStationId: string().optional(),
-  contractStartDt: string().required("계약 시작일를 입력해주세요."),
-  contractEndDt: string().required("계약 종료일를 입력해주세요."),
-  addressSido: string().required("행정동 주소 (시도)를 입력해주세요."),
-  addressSigugun: string().required("행정동 주소(구군)를 입력해주세요."),
-  addressDongmyun: string().required("행정동 주소(동읍)를 입력해주세요."),
-  managerName: string().required("장소 담당자를 입력해주세요."),
-  managerPhone: string().required("담당자 전화번호를 입력해주세요."),
-  salesCompany: string().required("영업업체를 입력해주세요."),
-  salesManagerName: string().required("영업담당자를 입력해주세요."),
-  salesManagerPhone: string().required("영업담당자 전화번호를 입력해주세요."),
-  contractInfo: string().required("영업내용을 입력해주세요."),
-  // contractFileUrl: string().required("계약파일을 업로드해주세요."),
-  // contractFileName: string().required("계약파일 이름을 찾을 수 없습니다."),
-  contractDt: string().required("계약일를 입력해주세요."),
-  subsidyAgency: string().required("보조금 기관을 입력해주세요."),
-  subsidyYyyy: string().required("보조금 연도를 입력해주세요."),
-  subsidyAmount: number().required("보조금 금액을 입력해주세요."),
-  subsidyRevDt: string().required("보조금 수령일를 입력해주세요."),
-  costSales: number().required("영업비용을 입력해주세요."),
-  costConstruct: number().required("공사비를 입력해주세요."),
-  esafetyMng: string().optional(),
-  // .required("전기 안전 관리를 입력해주세요."),
-});
+import createValidation from "src/utils/validate";
+import {
+  YUP_CHARGER_CONTRACT,
+  YUP_CHARGER_CONTRACT_EXTRA,
+} from "src/constants/valid/charger";
 
 const ChargerContractDetail = () => {
   /** init 충전소 계약 상세 데이터 */
@@ -71,7 +43,10 @@ const ChargerContractDetail = () => {
   /** 전역 disabled 처리 */
   const [disabled, setDisabled] = useState(true);
   /* 미입력 안내 모달 */
-  const [invalidModalOpen, setInvalidModalOpen] = useState(false);
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
   /* 수정완료 모달 */
   const [isEditComplete, setIsEditComplete] = useState(false);
   /* 수정취소 모달 */
@@ -143,30 +118,10 @@ const ChargerContractDetail = () => {
 
   const navigate = useNavigate();
 
-  /** valid check */
-  const isValid = async () => {
-    /** 유효성 체크 */
-    const valid = await contractValidation.isValid({
-      ...inputs,
-      /** @TODO 파일 업로드 기능 추가 후, 적용 */
-      // contractFileUrl:
-      // contractFileName: file?.item(0)?.name
-    });
-
-    return valid;
-  };
-
   /** 계약 수정 */
   const postModify = async () => {
     if (disabled) {
       setDisabled(false);
-      return;
-    }
-
-    /** 유효성 체크 */
-    const valid = await isValid();
-    if (!valid) {
-      setInvalidModalOpen(true);
       return;
     }
 
@@ -175,8 +130,7 @@ const ChargerContractDetail = () => {
     fileParams.name = fileParams.name || contractFileName;
     fileParams.url = fileParams.url || contractFileUrl;
 
-    /* 수정 요청 */
-    const { code } = await postStationContractModify({
+    const modifyParams = {
       ...inputs,
       id: Number(id),
       subsidyAmount: Number(subsidyAmount),
@@ -184,7 +138,25 @@ const ChargerContractDetail = () => {
       costConstruct: Number(costConstruct),
       contractFileName: fileParams.name,
       contractFileUrl: fileParams.url,
+    };
+
+    /** 유효성 체크 */
+    const scheme = createValidation({
+      ...YUP_CHARGER_CONTRACT,
+      ...YUP_CHARGER_CONTRACT_EXTRA,
     });
+    const [invalid] = scheme(modifyParams);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
+
+    /* 수정 요청 */
+    const { code } = await postStationContractModify(modifyParams);
 
     /** 성공 */
     const success = code === "SUCCESS";
@@ -606,8 +578,10 @@ const ChargerContractDetail = () => {
       </BodyBase>
 
       <DetailValidCheckModal
-        isOpen={invalidModalOpen}
-        onClose={() => setInvalidModalOpen(false)}
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
       />
       <DetailCompleteModal
         isOpen={isEditComplete}

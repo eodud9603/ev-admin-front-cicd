@@ -409,6 +409,79 @@ export const YUP_CHARGER_MODEM: FieldSchemaMap = {
   },
 };
 
+/** 충전소 계약 yup */
+export const YUP_CHARGER_CONTRACT: FieldSchemaMap = {
+  place: { validation: string().required("계약 장소를 입력해주세요.") },
+  contractorName: {
+    validation: string().required("계약자 이름을 입력해주세요."),
+  },
+  code: { validation: string().required("계약여부를 입력해주세요.") },
+  isMeRoaming: {
+    validation: string()
+      .required("환경부 연동 여부를 입력해주세요.")
+      .oneOf(
+        ["Y", "N"],
+        "환경부 연동 여부는 연동 또는 미연동 중 하나여야 합니다."
+      ),
+  },
+  meStationId: { validation: string().optional() },
+  contractStartDt: {
+    validation: string().required("계약 시작일를 입력해주세요."),
+  },
+  contractEndDt: {
+    validation: string().required("계약 종료일를 입력해주세요."),
+  },
+  addressSido: {
+    validation: string().required("행정동 주소 (시도)를 입력해주세요."),
+  },
+  addressSigugun: {
+    validation: string().required("행정동 주소(구군)를 입력해주세요."),
+  },
+  addressDongmyun: {
+    validation: string().required("행정동 주소(동읍)를 입력해주세요."),
+  },
+  managerName: { validation: string().required("장소 담당자를 입력해주세요.") },
+  managerPhone: {
+    validation: string()
+      .required("담당자 전화번호를 입력해주세요.")
+      .matches(
+        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        "유효한 담당자 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
+      ),
+  },
+  salesCompany: { validation: string().required("영업업체를 입력해주세요.") },
+  salesManagerName: {
+    validation: string().required("영업담당자를 입력해주세요."),
+  },
+  salesManagerPhone: {
+    validation: string()
+      .required("영업담당자 전화번호를 입력해주세요.")
+      .matches(
+        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        "유효한 영업담당자 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
+      ),
+  },
+  contractInfo: { validation: string().required("영업내용을 입력해주세요.") },
+  contractDt: { validation: string().required("계약일를 입력해주세요.") },
+  subsidyAgency: {
+    validation: string().required("보조금 기관을 입력해주세요."),
+  },
+  subsidyYyyy: { validation: string().required("보조금 연도를 입력해주세요.") },
+  subsidyAmount: {
+    validation: number().required("보조금 금액을 입력해주세요."),
+  },
+  subsidyRevDt: {
+    validation: string().required("보조금 수령일를 입력해주세요."),
+  },
+  costSales: { validation: number().required("영업비용을 입력해주세요.") },
+  costConstruct: { validation: number().required("공사비를 입력해주세요.") },
+  esafetyMng: { validation: string().optional() },
+};
+/** 충전소 계약 수정 yup */
+export const YUP_CHARGER_CONTRACT_EXTRA: FieldSchemaMap = {
+  id: { validation: number().required("필수 값이 누락되었습니다.") },
+};
+
 /** 충전기 고장/파손 yup */
 export const YUP_CHARGER_BROKEN: FieldSchemaMap = {
   stationKey: {
