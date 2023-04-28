@@ -302,7 +302,15 @@ const OperateNotice = () => {
 
             <div className={"d-flex align-items-center gap-3"}>
               <span className={"font-size-10 text-muted"}>{time}기준</span>
-              <DropdownBase menuItems={COUNT_FILTER_LIST} />
+              <DropdownBase
+                menuItems={COUNT_FILTER_LIST}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({
+                    count: value,
+                  });
+                  void searchHandler({ page: 1, size: Number(value) })();
+                }}
+              />
               <ButtonBase
                 label={"신규 등록"}
                 color={"turu"}

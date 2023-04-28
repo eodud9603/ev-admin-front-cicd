@@ -390,7 +390,7 @@ const Charger = () => {
                           : "-"}
                       </td>
                       <td>{operationStatus === "DEMOLISHED" ? "Y" : "N"}</td>
-                      <td>{assetNumber}</td>
+                      <td>{assetNumber ?? "-"}</td>
                       {/** @TODO 데이터 누락 추가 필요 */}
                       <td>-</td>
                     </tr>
