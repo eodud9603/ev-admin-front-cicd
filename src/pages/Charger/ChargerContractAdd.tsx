@@ -96,7 +96,7 @@ const ChargerContractAdd = () => {
   }, [onChangeFile]);
 
   useEffect(() => {
-    const create = async () => {
+    const createFileData = async () => {
       if (!file.file) {
         return;
       }
@@ -107,7 +107,7 @@ const ChargerContractAdd = () => {
       }
     };
 
-    void create();
+    void createFileData();
   }, [file, onChangeFileData]);
 
   const navigate = useNavigate();

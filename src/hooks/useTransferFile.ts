@@ -21,9 +21,9 @@ const useTransferFile = (props: IUseTransferFileProps) => {
     const { fileInfoData, blobStringData } = data;
 
     if (data) {
-      const file = blobStringToFile(fileInfoData, blobStringData ?? "");
+      const result = blobStringToFile(fileInfoData, blobStringData ?? "");
 
-      return file;
+      return result;
     }
 
     return {};
@@ -33,9 +33,9 @@ const useTransferFile = (props: IUseTransferFileProps) => {
     if (!file) {
       return;
     }
-    const test = fileToBlobString(file[0]);
+    const result = fileToBlobString(file[0]);
 
-    return test;
+    return result;
   }, []);
 
   return { onChangeFile, onChangeFileData };
