@@ -49,7 +49,7 @@ const ManufacturerModelDropdown = (props: IManufactureModelDropdownProps) => {
 
         setList(list);
         setSelectedData((prev) => {
-          const findData = list.find((data) => data.id === Number(prev.label));
+          const findData = list.find((data) => data.id === Number(prev.value));
 
           return findData ?? {};
         });
@@ -74,8 +74,8 @@ const ManufacturerModelDropdown = (props: IManufactureModelDropdownProps) => {
       disabled={disabled || empty}
       list={list}
       initSelectedValue={{
-        label: selectedData?.modelName || "선택",
-        value: selectedData.id?.toString() || "",
+        label: selectedData.label || "선택",
+        value: selectedData.value || "",
       }}
       onClickDropdownItem={onChangeData}
     />

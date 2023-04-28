@@ -274,7 +274,7 @@ const ChargerDetail = () => {
       maxChargeTime: Number(maxChargeTime),
       idleCommunicationTime: Number(idleCommunicationTime),
       busyCommunicationTime: Number(busyCommunicationTime),
-      manufactureId: Number(manufactureId),
+      manufactureId: undefined,
       modelId: Number(modelId),
       unitPrice: Number(unitPrice),
       /* 충전소 정보 */
@@ -634,8 +634,8 @@ const ChargerDetail = () => {
                       disabled={disabled || !manufactureName}
                       id={Number(manufactureId || -1)}
                       initSelectedValue={{
-                        value: model,
-                        label: modelId,
+                        value: modelId,
+                        label: model,
                       }}
                       onChange={(data) => {
                         onChangeSingle({

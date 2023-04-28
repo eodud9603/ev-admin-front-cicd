@@ -154,7 +154,7 @@ export interface IChargerDetailResponse {
   unitPrice: number;
   station?: IStationItem;
   install?: IInstallItem;
-  manufactureId: number;
+  manufactureId?: number;
   manufactureCode: string;
   manufactureName: string;
   modelId: number;
