@@ -251,8 +251,6 @@ const ChargerStationDetail = () => {
     };
     getParams(modifyParams);
 
-    console.log(modifyParams);
-
     /* valid 체크 */
     /* 유효성 체크 */
     const scheme = createValidation(YUP_CHARGER_STATION);

@@ -22,6 +22,6 @@ export const stationListLoader = async () => {
 
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
-  console.log("list data ::", data);
+
   return success ? data : null;
 };
