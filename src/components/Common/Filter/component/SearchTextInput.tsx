@@ -14,6 +14,7 @@ interface ITextInputFilterProps extends ITextInputBaseProps {
   onClickDropdownItem?: (label: string, value: string) => void;
 
   onClick?: () => void | Promise<void>;
+  initSelectedValue?: { label: string; value: string };
 }
 
 const SearchTextInput = (props: ITextInputFilterProps) => {
@@ -29,6 +30,7 @@ const SearchTextInput = (props: ITextInputFilterProps) => {
     onClick,
     /* rest > textinput props */
     className = "",
+    initSelectedValue,
     ...rest
   } = props;
 
@@ -42,6 +44,7 @@ const SearchTextInput = (props: ITextInputFilterProps) => {
           className={"me-3"}
           disabled={disabled}
           menuItems={menuItems}
+          initSelectedValue={initSelectedValue}
           onClickDropdownItem={onClickDropdownItem}
         />
       )}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -56,19 +56,22 @@ const tableHeader = [
 ];
 
 export const ChargerManufacturer = () => {
-  const data = useLoaderData() as IManufactureListResponse | null;
+  const { data, filterData } = useLoaderData() as {
+    data: IManufactureListResponse | null;
+    filterData: { [key: string]: any };
+  };
 
   const nav = useNavigate();
   const { pathname } = useLocation();
 
-  const [
-    { count, searchRange, searchText, sort },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    searchRange: "CompanyId",
-    searchText: "",
-    sort: "CompanyId",
-    count: "10",
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
+
+  const { count, searchRange, searchText, sort } = inputs;
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "충전기 제조사 관리",
+    filterData: inputs,
   });
 
   const [
@@ -115,6 +118,7 @@ export const ChargerManufacturer = () => {
           page: searchParams.page,
           emptyMessage: "검색된 제조사 정보가 없습니다.",
         });
+        searchDataStorage(data);
       } else {
         reset({
           code,
@@ -129,8 +133,6 @@ export const ChargerManufacturer = () => {
   const moveToDetail = (id: number) => {
     nav(`${pathname}/detail/${id}`);
   };
-
-  useTabs({ data: data, pageTitle: "충전기 제조사 관리" });
 
   return (
     <ContainerBase>
@@ -157,6 +159,9 @@ export const ChargerManufacturer = () => {
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
+                initSelectedValue={dropdownGroupSearch.find(
+                  (e) => e.value === searchRange
+                )}
                 placeholder={"제조사 ID를 입력해주세요"}
                 name={"searchText"}
                 value={searchText}
@@ -171,6 +176,9 @@ export const ChargerManufacturer = () => {
                 label={"정렬기준"}
                 dropdownItems={dropdownGroupSort.map((data) => ({
                   ...data,
+                  initSelectedValue: data.menuItems.find(
+                    (e) => e.value === sort
+                  ),
                   onClickDropdownItem: (label, value) => {
                     onChangeSingle({
                       sort: value,
