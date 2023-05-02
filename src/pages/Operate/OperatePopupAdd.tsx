@@ -147,10 +147,11 @@ const OperatePopupAdd = () => {
             />
           </Col>
 
+          <Col sm={1} />
           <Col className={"font-size-14 fw-semibold"} sm={1}>
             카테고리
           </Col>
-          <Col sm={4}>
+          <Col sm={3}>
             <DropdownBase
               menuItems={[
                 {
