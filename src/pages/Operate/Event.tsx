@@ -234,23 +234,28 @@ const Event = () => {
                 onChange={onChange}
               />
             </Col>
-            <Col md={4}>
-              <RadioGroup
-                title={"업로드 대상"}
-                name={"uploadTarget"}
-                list={UPLOAD_FILTER_LIST.map((data) => ({
-                  ...data,
-                  checked: uploadTarget === data.value,
-                }))}
-                onChange={onChange}
-              />
+            <Col md={4} className={"d-flex align-items-center"}>
+              <Col md={2} className={"fw-bold m-0 w-xs me-3"}>
+                업로드 대상
+              </Col>
+              <Col md={10}>
+                <RadioGroup
+                  title={""}
+                  name={"uploadTarget"}
+                  list={UPLOAD_FILTER_LIST.map((data) => ({
+                    ...data,
+                    checked: uploadTarget === data.value,
+                  }))}
+                  onChange={onChange}
+                />
+              </Col>
             </Col>
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col md={4}>
               <DateGroup className={"mb-0"} label={"이벤트 기간"} />
             </Col>
-            <Col md={8} />
+            <Col md={9} />
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col md={7}>

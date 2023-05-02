@@ -221,6 +221,7 @@ export const UPLOAD_TYPE = {
   ALL : "전체",
   IOS : "IOS",
   AOS : "AOS",
+  APP: "APP",
   WEB : "WEB"
 } as const;
 /** 업로드 대상 키 타입 */

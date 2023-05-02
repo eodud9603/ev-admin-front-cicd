@@ -71,6 +71,10 @@ export const UPLOAD_FILTER_LIST = [
     value: "AOS"
   },
   {
+    label: "APP",
+    value: "APP"
+  },
+  {
     label: "WEB",
     value: "WEB"
   },

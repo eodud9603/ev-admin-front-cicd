@@ -209,7 +209,7 @@ const OperateFAQ = () => {
 
         <SearchSection className={"pt-2 pb-4 border-top border-bottom"}>
           <Row className={"mt-3 d-flex align-items-center"}>
-            <Col md={5}>
+            <Col md={4}>
               <DateGroup className={"mb-0"} label={"답변일시"} />
             </Col>
             <Col md={3}>
@@ -223,7 +223,7 @@ const OperateFAQ = () => {
                 onChange={onChange}
               />
             </Col>
-            <Col md={4}>
+            <Col md={5}>
               <RadioGroup
                 title={"업로드 대상"}
                 name={"uploadTarget"}
@@ -236,7 +236,7 @@ const OperateFAQ = () => {
             </Col>
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
-            <Col md={8}>
+            <Col md={7}>
               <SearchTextInput
                 title={"검색어"}
                 placeholder={"검색어를 입력해주세요."}
@@ -249,7 +249,7 @@ const OperateFAQ = () => {
                 onChange={onChange}
               />
             </Col>
-            <Col className={"d-flex"} md={4}>
+            <Col className={"d-flex"} md={5}>
               <DropboxGroup
                 label={"카테고리"}
                 dropdownItems={categoryList}

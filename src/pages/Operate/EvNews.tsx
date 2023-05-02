@@ -204,7 +204,7 @@ const EvNews = () => {
             <Col md={4}>
               <DateGroup className={"mb-0"} label={"작성일"} />
             </Col>
-            <Col md={4}>
+            <Col md={3}>
               <RadioGroup
                 title={"삭제 여부"}
                 name={"deleteStatus"}
@@ -215,7 +215,7 @@ const EvNews = () => {
                 onChange={onChange}
               />
             </Col>
-            <Col md={4}>
+            <Col md={5}>
               <RadioGroup
                 title={"업로드 대상"}
                 name={"uploadTarget"}

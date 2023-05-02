@@ -206,7 +206,7 @@ const OperateNotice = () => {
                 onChangeDate={onChangeSingle}
               />
             </Col>
-            <Col md={4}>
+            <Col md={3}>
               <RadioGroup
                 title={"삭제 여부"}
                 name={"isDeleted"}
@@ -217,7 +217,7 @@ const OperateNotice = () => {
                 onChange={onChange}
               />
             </Col>
-            <Col md={4}>
+            <Col md={5}>
               <RadioGroup
                 title={"업로드 대상"}
                 name={"uploadType"}
