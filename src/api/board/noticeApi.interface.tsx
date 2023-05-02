@@ -1,4 +1,5 @@
-import { UploadType, YNType } from "src/api/api.interface";
+import { YNType } from "src/api/api.interface";
+import { TUploadTypeKeys } from "src/constants/status";
 
 /* 공지사항 목록 조회 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EC%A1%B0%ED%9A%8C_5 */
@@ -10,7 +11,7 @@ export interface IRequestNoticeList {
   startDate?: string;
   endDate?: string;
   isDeleted?: YNType;
-  uploadType?: UploadType;
+  uploadType?: TUploadTypeKeys;
   searchType?: "Title" | "Content" | "Writer";
   searchKeyword?: string;
   sort?: "CreateAt" | "ReadCount";
@@ -19,7 +20,7 @@ export interface IRequestNoticeList {
 export interface INoticeItem {
   id: number;
   title: string;
-  uploadType?: UploadType;
+  uploadType: TUploadTypeKeys;
   writer: string;
   readCount: number;
   createAt: string;
@@ -48,11 +49,40 @@ export interface INoticeDetailFileItem {
 export interface INoticeDetailResponse {
   id: number;
   title: string;
-  uploadType?: UploadType;
+  uploadType?: TUploadTypeKeys;
   writer: string;
   content: string;
   readCount: number;
   createAt: string;
   delete: YNType;
   files: INoticeDetailFileItem[];
+}
+
+/* 공지사항 수정 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%88%98%EC%A0%95_7 */
+export interface IRequestNoticeModify {
+  id: number;
+  title: string;
+  content: string;
+  deleted: YNType;
+  files: { id: number }[];
+  uploadType: TUploadTypeKeys;
+}
+
+/* 공지사항 등록 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_7 */
+export interface IRequestNoticeRegister {
+  boardId: number /* 게시판 ID(NOTICE: 1) */;
+  title: string;
+  content: string;
+  writer: string;
+  deleted: YNType;
+  files: { id: number }[];
+  uploadType: TUploadTypeKeys;
+}
+
+/* 공지사항 선택 삭제 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%84%A0%ED%83%9D_%EC%82%AD%EC%A0%9C */
+export interface IRequestNoticeListDelete {
+  noticeIds: number[];
 }

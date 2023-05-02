@@ -49,8 +49,6 @@ export interface IRequestEvModelModify {
   modelName: string;
   year: string;
   capacity: number;
-  managerId?: string;
-  managerName?: string;
   memo: string;
   fileId?: number;
   fileUrl?: string;

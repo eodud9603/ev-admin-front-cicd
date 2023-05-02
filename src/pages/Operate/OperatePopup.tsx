@@ -21,13 +21,8 @@ import PaginationBase from "src/components/Common/Layout/PaginationBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import {
-  COUNT_FILTER_LIST,
-  POPUP_CATEGORY_LIST,
-  UPLOAD_FILTER_LIST,
-} from "src/constants/list";
+import { COUNT_FILTER_LIST, UPLOAD_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
-import CategoryModal from "src/pages/Operate/components/CategoryModal";
 import useInputs from "src/hooks/useInputs";
 import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 
@@ -139,8 +134,6 @@ const OperatePopup = () => {
   const [tabList, setTabList] = useState([{ label: "팝업 관리" }]);
   const [selectedIndex, setSelectedIndex] = useState("0");
   const [page, setPage] = useState(1);
-  /* 카테고리 모달 */
-  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   /* 선택삭제 버튼 활성화 여부 */
   const [isActive, setIsActive] = useState(false);
   /* 선택삭제 모달 */
@@ -256,16 +249,21 @@ const OperatePopup = () => {
                 onChange={onChange}
               />
             </Col>
-            <Col md={4}>
-              <RadioGroup
-                title={"업로드 대상"}
-                name={"uploadTarget"}
-                list={UPLOAD_FILTER_LIST.map((data) => ({
-                  ...data,
-                  checked: uploadTarget === data.value,
-                }))}
-                onChange={onChange}
-              />
+            <Col md={4} className={"d-flex align-items-center"}>
+              <Col md={2} className={"fw-bold m-0 w-xs me-3"}>
+                업로드 대상
+              </Col>
+              <Col md={10}>
+                <RadioGroup
+                  title={""}
+                  name={"uploadTarget"}
+                  list={UPLOAD_FILTER_LIST.map((data) => ({
+                    ...data,
+                    checked: uploadTarget === data.value,
+                  }))}
+                  onChange={onChange}
+                />
+              </Col>
             </Col>
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
@@ -295,13 +293,6 @@ const OperatePopup = () => {
                 label={"카테고리"}
                 dropdownItems={categoryList}
                 className={"me-2 w-xs"}
-              />
-              <ButtonBase
-                label={"추가"}
-                color={"dark"}
-                onClick={() => {
-                  setIsCategoryModalOpen(true);
-                }}
               />
             </Col>
           </Row>
@@ -387,13 +378,6 @@ const OperatePopup = () => {
         </ListSection>
       </BodyBase>
 
-      <CategoryModal
-        isOpen={isCategoryModalOpen}
-        onClose={() => {
-          setIsCategoryModalOpen((prev) => !prev);
-        }}
-        list={POPUP_CATEGORY_LIST}
-      />
       <OperateTextModal
         isOpen={deleteModalOpen}
         onClose={() => {

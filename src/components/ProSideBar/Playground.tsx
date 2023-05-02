@@ -262,10 +262,12 @@ export const Playground = (props: any) => {
                 <MenuItem component={<Link to={"/operate/faq"} />}>
                   FAQ
                 </MenuItem>
+                <MenuItem component={<Link to={"/operate/category"} />}>
+                  카테고리 관리
+                </MenuItem>
                 <MenuItem component={<Link to={"/operate/corporateNotice"} />}>
                   법인 공지사항
                 </MenuItem>
-
                 <MenuItem component={<Link to={"/operate/corporateQnA"} />}>
                   법인 문의사항
                 </MenuItem>

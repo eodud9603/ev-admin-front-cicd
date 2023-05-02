@@ -14,7 +14,7 @@ interface IOperateTextModalProps {
   buttons?: {
     label: string;
 
-    onClick?: () => void;
+    onClick?: () => void | Promise<void>;
     className?: string;
     color?:
       | "secondary"

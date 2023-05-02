@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
+import { postNoticeRegister } from "src/api/board/noticeApi";
+import { IRequestNoticeRegister } from "src/api/board/noticeApi.interface";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import EditorBase from "src/components/Common/Editor/EditorBase";
@@ -8,63 +10,80 @@ import TextInputBase from "src/components/Common/Input/TextInputBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { UPLOAD_FILTER_LIST } from "src/constants/list";
+import { BoardIdEnum, TUploadTypeKeys } from "src/constants/status";
+import { YUP_OPERATE_NOTICE } from "src/constants/valid/operate";
 import useInputs from "src/hooks/useInputs";
 import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
+import { getParams } from "src/utils/params";
+import createValidation from "src/utils/validate";
 
 const OperateNoticeAdd = () => {
-  const [tabList, setTabList] = useState([{ label: "공지사항" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
   /* 등록확인 모달 */
   const [addModalOpen, setAddModalOpen] = useState(false);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
 
   const navigate = useNavigate();
 
-  const [
-    { date, writer, uploadTarget, title, attachmentList },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    date: "",
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
     writer: "",
-    uploadTarget: "",
+    readCount: "",
+    uploadType: "" as TUploadTypeKeys,
     title: "",
     contents: "",
-    attachmentList: [],
+    files: [] as { id: number; fileName: string }[],
   });
+  const { writer, uploadType, title, files } = inputs;
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
+  /** 등록 */
+  const register = async () => {
+    const { contents, ...registerParams } = inputs;
+    /* 등록 params */
+    const params: IRequestNoticeRegister = {
+      ...registerParams,
+      writer: "임시 기입(서버 수정 후, 제거)",
+      boardId: BoardIdEnum.NOTICE,
+      content: contents,
+      deleted: "N",
+    };
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
+    getParams(params);
+
+    /* 유효성 체크 */
+    const scheme = createValidation(YUP_OPERATE_NOTICE);
+    const [invalid] = scheme(params);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
       return;
     }
 
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
+    /* 등록 요청 */
+    const { code } = await postNoticeRegister(params);
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      setAddModalOpen((prev) => !prev);
+      navigate("/operate/notice");
+      return;
     }
-
-    setTabList(tempList);
   };
 
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -103,7 +122,7 @@ const OperateNoticeAdd = () => {
             <TextInputBase
               name={"date"}
               disabled={true}
-              value={date}
+              value={""}
               onChange={onChange}
               placeholder={"자동기입"}
             />
@@ -130,16 +149,16 @@ const OperateNoticeAdd = () => {
             />
             <Col sm={5} />
           </Col>
-          <Col sm={4} />
+          <Col sm={3} />
           <Col className={"font-size-14 fw-semibold"} sm={1}>
             업로드 대상
           </Col>
-          <Col sm={3}>
+          <Col sm={4}>
             <RadioGroup
-              name={"uploadTarget"}
+              name={"uploadType"}
               list={UPLOAD_FILTER_LIST.map((radio) => ({
                 ...radio,
-                checked: uploadTarget === radio.value,
+                checked: uploadType === radio.value,
               }))}
               onChange={onChange}
             />
@@ -158,11 +177,17 @@ const OperateNoticeAdd = () => {
             },
           }}
           footerProps={{
-            attachmentList,
+            attachmentList: files.map((data) => ({ name: data.fileName })),
           }}
         />
       </BodyBase>
 
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
       <OperateTextModal
         isOpen={addModalOpen}
         onClose={() => {
@@ -178,12 +203,7 @@ const OperateNoticeAdd = () => {
           {
             label: "저장",
             color: "turu",
-            onClick: () => {
-              /** @TODO 저장 로직 추가 */
-
-              setAddModalOpen((prev) => !prev);
-              navigate("/operate/notice");
-            },
+            onClick: register,
           },
         ]}
       />

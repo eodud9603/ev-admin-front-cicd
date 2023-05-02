@@ -55,7 +55,7 @@ import {
   YUP_CHARGER_IN_STATION,
   YUP_CHARGER_MODEM,
 } from "src/constants/valid/charger";
-import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 
 const DefaultDropdownData = {
   label: "선택",

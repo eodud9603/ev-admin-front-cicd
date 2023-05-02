@@ -25,7 +25,7 @@ import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
-import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import SingleMapBase from "src/components/Common/Map/SingleMapBase";
 import useMapStore from "src/store/mapStore";
 import { postStationRegistration } from "src/api/station/stationApi";

@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { useLoaderData } from "react-router";
 import { Col, Row } from "reactstrap";
-import { INoticeDetailResponse } from "src/api/board/noticeApi.interface";
+import { YNType } from "src/api/api.interface";
+import { putNoticeModify } from "src/api/board/noticeApi";
+import {
+  INoticeDetailResponse,
+  IRequestNoticeModify,
+} from "src/api/board/noticeApi.interface";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import EditorBase from "src/components/Common/Editor/EditorBase";
@@ -12,27 +17,90 @@ import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { UPLOAD_FILTER_LIST } from "src/constants/list";
+import { TUploadTypeKeys } from "src/constants/status";
+import {
+  YUP_OPERATE_NOTICE,
+  YUP_OPERATE_NOTICE_EXTRA,
+} from "src/constants/valid/operate";
 import useInputs from "src/hooks/useInputs";
+import { getParams } from "src/utils/params";
+import createValidation from "src/utils/validate";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
+import { standardDateFormat } from "src/utils/day";
 
 const OperateNoticeDetail = () => {
   const data = useLoaderData() as INoticeDetailResponse | null;
 
   const [disabled, setDisabled] = useState(true);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
 
   const initContents = (data?.content ?? "").replace(/\n/gi, "<br>");
-  const [
-    { createAt, delete: isDelete, writer, readCount, uploadType, title, files },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    createAt: data?.createAt ?? "",
-    delete: data?.delete ?? "",
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
+    id: Number(data?.id ?? -1),
+    createAt: data?.createAt
+      ? standardDateFormat(data?.createAt, "YYYY.MM.DD HH:mm:ss")
+      : "",
+    delete: (data?.delete ?? "") as YNType,
     writer: data?.writer ?? "",
     readCount: (data?.readCount ?? "").toString(),
-    uploadType: data?.uploadType ?? "",
+    uploadType: (data?.uploadType ?? "") as TUploadTypeKeys,
     title: data?.title ?? "",
     contents: initContents,
     files: data?.files ?? [],
   });
+  const {
+    createAt,
+    delete: isDelete,
+    writer,
+    readCount,
+    uploadType,
+    title,
+    files,
+  } = inputs;
+
+  /** 수정 */
+  const modify = async () => {
+    if (disabled) {
+      setDisabled(false);
+      return;
+    }
+
+    /* 수정 params */
+    const { delete: isDelete, contents, ...modifyParams } = inputs;
+    const params: IRequestNoticeModify = {
+      ...modifyParams,
+      deleted: isDelete,
+      content: contents,
+    };
+    getParams(params);
+
+    /* 유효성 체크 */
+    const scheme = createValidation({
+      ...YUP_OPERATE_NOTICE,
+      ...YUP_OPERATE_NOTICE_EXTRA,
+    });
+    const [invalid] = scheme(params);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
+
+    /* 수정요청 */
+    const { code } = await putNoticeModify(params);
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      setDisabled((prev) => !prev);
+    }
+  };
 
   return (
     <ContainerBase>
@@ -58,13 +126,7 @@ const OperateNoticeDetail = () => {
             <ButtonBase
               label={disabled ? "수정하기" : "저장하기"}
               color={"turu"}
-              onClick={() => {
-                if (!disabled) {
-                  /** @TODO 저장(수정) 로직 추가 */
-                }
-
-                setDisabled((prev) => !prev);
-              }}
+              onClick={modify}
             />
           </div>
         </div>
@@ -86,11 +148,11 @@ const OperateNoticeDetail = () => {
               onChange={onChange}
             />
           </Col>
-          <Col sm={4} />
+          <Col sm={3} />
           <Col className={"font-size-14 fw-semibold"} sm={1}>
             삭제여부
           </Col>
-          <Col sm={3}>
+          <Col sm={4}>
             <RadioGroup
               name={"delete"}
               list={[
@@ -123,6 +185,7 @@ const OperateNoticeDetail = () => {
           <Col className={"d-flex gap-5"} sm={3}>
             <TextInputBase
               className={"d-flex"}
+              placeholder={""}
               name={"writer"}
               disabled={true}
               value={writer}
@@ -139,11 +202,11 @@ const OperateNoticeDetail = () => {
               />
             </div>
           </Col>
-          <Col sm={4} />
+          <Col sm={3} />
           <Col className={"font-size-14 fw-semibold"} sm={1}>
             업로드 대상
           </Col>
-          <Col sm={3}>
+          <Col sm={4}>
             <RadioGroup
               name={"uploadType"}
               list={UPLOAD_FILTER_LIST.map((radio) => ({
@@ -174,6 +237,13 @@ const OperateNoticeDetail = () => {
           }}
         />
       </BodyBase>
+
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
     </ContainerBase>
   );
 };

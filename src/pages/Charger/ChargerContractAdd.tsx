@@ -23,7 +23,7 @@ import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import useInputs from "src/hooks/useInputs";
 import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
 import { postStationContractRegister } from "src/api/station/stationApi";
-import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
 import { useLoaderData } from "react-router-dom";
 import { chargerContractAddLoaderType } from "src/pages/Charger/loader/chargerContractAddLoader";
