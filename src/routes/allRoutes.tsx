@@ -124,6 +124,7 @@ import { chargerContractAddLoader } from "src/pages/Charger/loader/chargerContra
 import { evModelListLoader } from "src/pages/Operate/loader/evModelListLoader";
 import { noticeListLoader } from "src/pages/Operate/loader/noticeListLoader";
 import { noticeDetailLoader } from "src/pages/Operate/loader/noticeDetailLoader";
+import OperateCategory from "src/pages/Operate/OperateCategory";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -252,6 +253,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/faq", element: <OperateFAQ /> },
   { path: "/operate/faq/add", element: <OperateFAQAdd /> },
   { path: "/operate/faq/detail/:id", element: <OperateFAQDetail /> },
+  { path: "/operate/category", element: <OperateCategory /> },
   { path: "/operate/corporateNotice", element: <CorporateNotice /> },
   { path: "/operate/corporateNotice/add", element: <CorporateNoticeAdd /> },
   {
