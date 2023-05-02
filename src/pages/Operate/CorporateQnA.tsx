@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
-import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
@@ -196,7 +195,6 @@ const CorporateQnA = () => {
                 ]}
                 className={"me-2 w-xs"}
               />
-              <ButtonBase label={"추가"} color={"dark"} />
             </Col>
           </Row>
 

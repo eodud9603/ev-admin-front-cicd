@@ -22,13 +22,11 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import {
-  CATEGORY_LIST,
   COUNT_FILTER_LIST,
   YN_FILTER_LIST,
   UPLOAD_FILTER_LIST,
 } from "src/constants/list";
 import styled from "styled-components";
-import CategoryModal from "src/pages/Operate/components/CategoryModal";
 import useInputs from "src/hooks/useInputs";
 import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 
@@ -111,8 +109,6 @@ const OperateFAQ = () => {
   /* 선택삭제 버튼 활성화 여부 */
   const [isActive, setIsActive] = useState(false);
   const [page, setPage] = useState(1);
-  /* 카테고리 모달 */
-  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   /* 선택삭제 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
@@ -259,13 +255,6 @@ const OperateFAQ = () => {
                 dropdownItems={categoryList}
                 className={"me-2 w-xs"}
               />
-              <ButtonBase
-                label={"추가"}
-                color={"dark"}
-                onClick={() => {
-                  setIsCategoryModalOpen(true);
-                }}
-              />
             </Col>
           </Row>
           <Row className={"mt-3 d-flex align-items-center"}>
@@ -349,13 +338,6 @@ const OperateFAQ = () => {
         </ListSection>
       </BodyBase>
 
-      <CategoryModal
-        isOpen={isCategoryModalOpen}
-        onClose={() => {
-          setIsCategoryModalOpen((prev) => !prev);
-        }}
-        list={CATEGORY_LIST}
-      />
       <OperateTextModal
         isOpen={deleteModalOpen}
         onClose={() => {

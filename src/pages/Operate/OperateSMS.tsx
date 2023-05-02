@@ -301,7 +301,6 @@ const SMSList = (props: { navigate: NavigateFunction }) => {
               ]}
               className={"me-2 w-xs"}
             />
-            <ButtonBase label={"추가"} color={"dark"} />
           </Col>
         </Row>
 

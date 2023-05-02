@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
-import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
@@ -16,12 +15,10 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import {
   ANSWER_STATUS_FILTER_LIST,
-  CATEGORY_LIST,
   COUNT_FILTER_LIST,
 } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
-import CategoryModal from "src/pages/Operate/components/CategoryModal";
 
 /* 검색어 필터 */
 const searchList = [
@@ -105,9 +102,6 @@ const OperateQnA = () => {
       searchText: "",
       sort: "",
     });
-
-  /* 카테고리 모달 */
-  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -196,13 +190,6 @@ const OperateQnA = () => {
                 dropdownItems={categoryList}
                 className={"me-2 w-xs"}
               />
-              <ButtonBase
-                label={"추가"}
-                color={"dark"}
-                onClick={() => {
-                  setIsCategoryModalOpen(true);
-                }}
-              />
             </Col>
           </Row>
 
@@ -289,14 +276,6 @@ const OperateQnA = () => {
           <PaginationBase setPage={setPage} data={{}} />
         </ListSection>
       </BodyBase>
-
-      <CategoryModal
-        isOpen={isCategoryModalOpen}
-        onClose={() => {
-          setIsCategoryModalOpen((prev) => !prev);
-        }}
-        list={CATEGORY_LIST}
-      />
     </ContainerBase>
   );
 };
