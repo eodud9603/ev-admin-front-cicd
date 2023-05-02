@@ -1,6 +1,8 @@
 import { getStationContractList } from "src/api/station/stationApi";
 import { IRequestStationContractList } from "src/api/station/stationApi.interface";
 import { loadTabData } from "src/utils/loadTabData";
+import { TContractStatus } from "src/constants/status";
+import { YNType } from "src/api/api.interface";
 
 const defaultParams: IRequestStationContractList = {
   /** @TODO 서버 sortDirection 정의 후, 추가 */
@@ -10,10 +12,22 @@ const defaultParams: IRequestStationContractList = {
   sort: "ContractedDate",
 };
 
+export const INIT_CONTRACT = {
+  sido: "",
+  gugun: "",
+  dong: "",
+  contractCode: "" as TContractStatus,
+  searchRange: "ContractPlace",
+  searchText: "",
+  isUse: "" as YNType,
+  sort: "ContractedDate",
+  count: "10",
+};
+
 export const stationContractListLoader = async () => {
   const loadData = loadTabData("/charger/contract");
-  if (loadData?.data) {
-    return loadData?.data;
+  if (loadData?.data || loadData?.filterData) {
+    return loadData;
   }
 
   /* 검색  */
@@ -21,5 +35,5 @@ export const stationContractListLoader = async () => {
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return success ? data : null;
+  return success ? { data: data, filterData: INIT_CONTRACT } : null;
 };

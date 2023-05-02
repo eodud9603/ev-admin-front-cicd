@@ -111,7 +111,10 @@ const tableHeader = [
 
 const ChargerContract = () => {
   /** init 충전소 계약 목록 데이터 */
-  const data = useLoaderData() as IStationContractListResponse | null;
+  const { data, filterData } = useLoaderData() as {
+    data: IStationContractListResponse | null;
+    filterData: { [key: string]: any };
+  };
 
   const [
     { list, page, lastPage, total, message, time },
@@ -125,30 +128,26 @@ const ChargerContract = () => {
       : "등록된 충전소 계약 정보가 없습니다.",
   });
 
-  const [
-    {
-      sido,
-      gugun,
-      dong,
-      contractCode,
-      searchRange,
-      searchText,
-      isUse,
-      sort,
-      count,
-    },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    sido: "",
-    gugun: "",
-    dong: "",
-    contractCode: "" as TContractStatus,
-    searchRange: "ContractPlace",
-    searchText: "",
-    isUse: "" as YNType,
-    sort: "ContractedDate",
-    count: "10",
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
+
+  const {
+    sido,
+    gugun,
+    dong,
+    contractCode,
+    searchRange,
+    searchText,
+    isUse,
+    sort,
+    count,
+  } = inputs;
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "충전소 계약 관리",
+    filterData: inputs,
   });
+
   const placeholderKeyword =
     searchList.find((search) => searchRange === search.value)
       ?.placeholderKeyword ?? "";
@@ -195,6 +194,7 @@ const ChargerContract = () => {
           page: searchParams.page,
           emptyMessage: "검색된 충전소 계약 정보가 없습니다.",
         });
+        searchDataStorage(data);
       } else {
         reset({
           code,
@@ -202,7 +202,6 @@ const ChargerContract = () => {
         });
       }
     };
-  useTabs({ data: data, pageTitle: "충전소 계약 관리" });
 
   return (
     <ContainerBase>
