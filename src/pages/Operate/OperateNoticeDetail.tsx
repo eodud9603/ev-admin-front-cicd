@@ -26,6 +26,7 @@ import useInputs from "src/hooks/useInputs";
 import { getParams } from "src/utils/params";
 import createValidation from "src/utils/validate";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
+import { standardDateFormat } from "src/utils/day";
 
 const OperateNoticeDetail = () => {
   const data = useLoaderData() as INoticeDetailResponse | null;
@@ -40,7 +41,9 @@ const OperateNoticeDetail = () => {
   const initContents = (data?.content ?? "").replace(/\n/gi, "<br>");
   const [inputs, { onChange, onChangeSingle }] = useInputs({
     id: Number(data?.id ?? -1),
-    createAt: data?.createAt ?? "",
+    createAt: data?.createAt
+      ? standardDateFormat(data?.createAt, "YYYY.MM.DD HH:mm:ss")
+      : "",
     delete: (data?.delete ?? "") as YNType,
     writer: data?.writer ?? "",
     readCount: (data?.readCount ?? "").toString(),
@@ -182,6 +185,7 @@ const OperateNoticeDetail = () => {
           <Col className={"d-flex gap-5"} sm={3}>
             <TextInputBase
               className={"d-flex"}
+              placeholder={""}
               name={"writer"}
               disabled={true}
               value={writer}
