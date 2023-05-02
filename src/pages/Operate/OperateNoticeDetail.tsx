@@ -38,7 +38,8 @@ const OperateNoticeDetail = () => {
     content: "",
   });
 
-  const initContents = (data?.content ?? "").replace(/\n/gi, "<br>");
+  const initContents = (data?.content ?? "").replace(/\n\n/gi, "<br>");
+
   const [inputs, { onChange, onChangeSingle }] = useInputs({
     id: Number(data?.id ?? -1),
     createAt: data?.createAt
@@ -71,10 +72,12 @@ const OperateNoticeDetail = () => {
 
     /* 수정 params */
     const { delete: isDelete, contents, ...modifyParams } = inputs;
+
     const params: IRequestNoticeModify = {
       ...modifyParams,
       deleted: isDelete,
-      content: contents,
+      /** @description initContent에서 replace해주므로 insert시, replace제거하여도 문제없을 것으로 판단하나 미확인, 추후 불필요시 제거 */
+      content: contents.replace(/\n\n/gi, "<br>"),
     };
     getParams(params);
 

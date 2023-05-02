@@ -5,6 +5,7 @@ export const CK_EDITOR_CONFIGS = {
     startupFocus: true,
     // bodyClass: 'CKEditor',
     language: 'ko',
+    enterMode: 2,
     toolbar: [
         { name: 'document', items: [ 'Source', '-', /*'Save', 'NewPage', 'ExportPdf', 'Preview', 'Print', '-',*/ 'Templates' ] },
         { name: 'clipboard', items: ['SelectAll', 'Cut', 'Copy', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
