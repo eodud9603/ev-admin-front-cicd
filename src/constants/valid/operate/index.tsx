@@ -34,10 +34,6 @@ export const YUP_OPERATE_EV_MODEL: FieldSchemaMap = {
 /** 전기차 모델 수정 yup */
 export const YUP_OPERATE_EV_MODEL_EXTRA: FieldSchemaMap = {
   id: { validation: string().required("ID는 필수 입력 항목입니다.") },
-  managerName: {
-    // validation: string().required("관리자명은 필수 입력 항목입니다."),
-    validation: string().optional(),
-  },
 };
 
 /** 공지사항 yup */

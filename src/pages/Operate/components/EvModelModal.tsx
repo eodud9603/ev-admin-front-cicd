@@ -19,7 +19,6 @@ import {
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import {
   DetailContentCol,
-  DetailGroupCol,
   DetailLabelCol,
   DetailRow,
 } from "src/components/Common/DetailContentRow/Detail";
@@ -78,8 +77,6 @@ const EvModelModal = (props: IEvModelModalProps) => {
     modelName: "",
     year: "",
     capacity: "",
-    managerId: "",
-    managerName: "",
     memo: "",
     fileId: "",
     fileUrl: "",
@@ -95,7 +92,6 @@ const EvModelModal = (props: IEvModelModalProps) => {
     modelName,
     year,
     capacity,
-    managerName,
     fileId,
     fileUrl,
     fileName,
@@ -171,10 +167,6 @@ const EvModelModal = (props: IEvModelModalProps) => {
   const removeParams = (
     params: IRequestEvModelModify | IRequestEvModelRegister
   ) => {
-    if (!inputs.managerId) {
-      delete params.managerId;
-      delete params.managerName;
-    }
     if (!inputs.manufactureId) {
       delete params.manufactureId;
       delete params.manufactureName;
@@ -297,8 +289,6 @@ const EvModelModal = (props: IEvModelModalProps) => {
           manufactureName: data.manufactureName ?? "",
           modelName: data.modelName ?? "",
           year: data.year ?? "",
-          managerId: data.managerId ?? "",
-          managerName: data.managerName ?? "",
           memo: data.memo ?? "",
           fileId: (data.fileId ?? "").toString(),
           fileUrl: data.fileUrl ?? "",
@@ -408,6 +398,8 @@ const EvModelModal = (props: IEvModelModalProps) => {
           <DetailContentCol>
             <TextInputBase
               bsSize={"lg"}
+              type={"number"}
+              min={1960}
               name={"year"}
               value={year}
               onChange={onChange}
@@ -436,24 +428,6 @@ const EvModelModal = (props: IEvModelModalProps) => {
         {/* 상세(수정모드)에서만 보임 */}
         {isEditMode && (
           <DetailRow>
-            <DetailLabelCol sm={2}>관리자</DetailLabelCol>
-            <DetailContentCol>
-              <DetailGroupCol>
-                <TextInputBase
-                  disabled={true}
-                  bsSize={"lg"}
-                  name={"managerName"}
-                  value={managerName}
-                  onChange={onChange}
-                />
-                <ButtonBase
-                  disabled={true}
-                  className={"width-110"}
-                  label={"조회"}
-                  color={"dark"}
-                />
-              </DetailGroupCol>
-            </DetailContentCol>
             <DetailLabelCol sm={2}>등록일</DetailLabelCol>
             <DetailContentCol>
               <input
