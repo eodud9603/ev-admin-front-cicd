@@ -25,10 +25,8 @@ import {
 import { getPageList } from "src/utils/pagination";
 import useInputs from "src/hooks/useInputs";
 import { getBrokenList } from "src/api/broken/brokenApi";
-import { OperatorType } from "src/api/api.interface";
 import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
-import { TChargerProcessingStatus } from "src/constants/status";
 import { useTabs } from "src/hooks/useTabs";
 import { getParams } from "src/utils/params";
 
@@ -76,39 +74,29 @@ const tableHeader = [
 
 export const ChargerTrouble = () => {
   /** init 충전기별 고장/파손 데이터 */
-  const data = useLoaderData() as IBrokenListResponse | null;
+  const { data, filterData } = useLoaderData() as {
+    data: IBrokenListResponse | null;
+    filterData: { [key: string]: any };
+  };
 
   const nav = useNavigate();
   const { pathname } = useLocation();
 
-  const [
-    {
-      sido,
-      gugun,
-      dong,
-      count,
-      startDate,
-      endDate,
-      searchRange,
-      searchText,
-      operator,
-      sort,
-      status,
-    },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    sido: "",
-    gugun: "",
-    dong: "",
-    searchRange: "StationName",
-    startDate: "",
-    endDate: "",
-    searchText: "",
-    operator: "" as OperatorType,
-    sort: "CreatedDate",
-    status: "" as TChargerProcessingStatus,
-    count: "10",
-  });
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
+
+  const {
+    sido,
+    gugun,
+    dong,
+    count,
+    startDate,
+    endDate,
+    searchRange,
+    searchText,
+    operator,
+    sort,
+    status,
+  } = inputs;
 
   const [
     { list, page, lastPage, total, message, time },
@@ -120,6 +108,12 @@ export const ChargerTrouble = () => {
     emptyMessage: !data?.elements
       ? "오류가 발생하였습니다."
       : "등록된 고장/파손 충전기 정보가 없습니다.",
+  });
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "충전기 고장/파손 관리",
+    filterData: inputs,
   });
 
   /** 검색 핸들러 */
@@ -139,10 +133,13 @@ export const ChargerTrouble = () => {
       };
       if (startDate && endDate) {
         searchParams.submitStartDate = standardDateFormat(
-          startDate,
+          startDate as string,
           "YYYY.MM.DD"
         );
-        searchParams.submitEndDate = standardDateFormat(endDate, "YYYY.MM.DD");
+        searchParams.submitEndDate = standardDateFormat(
+          endDate as string,
+          "YYYY.MM.DD"
+        );
       }
       if (searchRange && searchText) {
         searchParams.searchType =
@@ -166,6 +163,7 @@ export const ChargerTrouble = () => {
           page: searchParams.page,
           emptyMessage: "검색된 고장/파손 충전기 정보가 없습니다.",
         });
+        searchDataStorage(data);
       } else {
         reset({
           code,
@@ -181,8 +179,6 @@ export const ChargerTrouble = () => {
   const moveToRegistration = () => {
     nav(`${pathname}/registration`);
   };
-
-  useTabs({ data: data, pageTitle: "충전기 고장/파손 관리" });
 
   return (
     <ContainerBase>
@@ -228,6 +224,9 @@ export const ChargerTrouble = () => {
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
+                initSelectedValue={dropdownGroupSearch.find(
+                  (e) => e.value === searchRange
+                )}
                 placeholder={"충전소를 입력해주세요"}
                 name={"searchText"}
                 value={searchText}
@@ -253,6 +252,9 @@ export const ChargerTrouble = () => {
                 label={"정렬기준"}
                 dropdownItems={dropdownGroupSort.map((data) => ({
                   ...data,
+                  initSelectedValue: data.menuItems.find(
+                    (e) => e.value === sort
+                  ),
                   onClickDropdownItem: (label, value) => {
                     onChangeSingle({ sort: value });
                     void searchHandler({
@@ -293,6 +295,9 @@ export const ChargerTrouble = () => {
                 <span className={"font-size-10 text-muted"}>{time}기준</span>
                 <DropdownBase
                   menuItems={COUNT_FILTER_LIST}
+                  initSelectedValue={COUNT_FILTER_LIST.find(
+                    (e) => e.value === count
+                  )}
                   onClickDropdownItem={(_, value) => {
                     onChangeSingle({
                       count: value,
