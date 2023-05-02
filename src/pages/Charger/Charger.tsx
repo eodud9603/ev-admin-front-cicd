@@ -82,7 +82,10 @@ const tableHeader = [
 ];
 
 const Charger = () => {
-  const data = useLoaderData() as IChargerListResponse | null;
+  const { data, filterData } = useLoaderData() as {
+    data: IChargerListResponse | null;
+    filterData: { [key: string]: string };
+  };
 
   const [
     { list, page, lastPage, total, message, time },
@@ -101,30 +104,26 @@ const Charger = () => {
   /* 단일 제어 모달 */
   const [singleControlModalOpen, setSingleControlModalOpen] = useState(false);
 
-  const [
-    {
-      sido,
-      gugun,
-      dong,
-      operation,
-      searchRange,
-      searchText,
-      operationStatus,
-      sort,
-      count,
-    },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    sido: "",
-    gugun: "",
-    dong: "",
-    operation: "",
-    searchRange: "StationName",
-    searchText: "",
-    operationStatus: "",
-    sort: "CreatedDate",
-    count: "10",
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
+
+  const {
+    sido,
+    gugun,
+    dong,
+    operation,
+    searchRange,
+    searchText,
+    operationStatus,
+    sort,
+    count,
+  } = inputs;
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "충전기 관리",
+    filterData: inputs,
   });
+
   const searchKeyword =
     searchList.find((data) => searchRange === data.value)?.placeholderKeyword ??
     "";
@@ -163,17 +162,17 @@ const Charger = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
+        searchDataStorage(data);
         onChangeList({
           ...data,
           page: searchParams.page,
           emptyMessage: "검색된 충전기 정보가 없습니다.",
         });
+        // searchDataStorage()
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }
     };
-
-  useTabs({ data: data, pageTitle: "충전기 관리" });
 
   return (
     <ContainerBase>

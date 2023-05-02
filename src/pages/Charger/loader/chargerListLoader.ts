@@ -10,15 +10,27 @@ const defaultParams: IRequestChargerList = {
   sort: "CreatedDate",
 };
 
+export const INIT_CHARGER = {
+  sido: "",
+  gugun: "",
+  dong: "",
+  operation: "",
+  searchRange: "StationName",
+  searchText: "",
+  operationStatus: "",
+  sort: "CreatedDate",
+  count: "10",
+};
+
 export const chargerListLoader = async () => {
   const loadData = loadTabData("/charger/charger");
-  if (loadData?.data) {
-    return loadData?.data;
+  if (loadData?.data || loadData?.filterData) {
+    return loadData;
   }
   /* 검색  */
   const { code, data } = await getChargerList(defaultParams);
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return success ? data : null;
+  return success ? { data: data, filterData: INIT_CHARGER } : null;
 };
