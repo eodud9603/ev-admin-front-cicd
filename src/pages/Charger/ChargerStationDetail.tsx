@@ -48,7 +48,7 @@ import { postStationModify } from "src/api/station/stationApi";
 import ContractDropdown from "src/pages/Charger/components/ContractDropdown";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_STATION } from "src/constants/valid/charger";
-import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { objectToArray } from "src/utils/convert";
 
 /* 충전기 요약 테이블 */

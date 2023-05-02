@@ -24,7 +24,7 @@ import { BROKEN_STATUS, TBrokenStatus } from "src/constants/status";
 import { deleteBroken, postBrokenModify } from "src/api/broken/brokenApi";
 import DetailDeleteModal from "src/pages/Charger/components/DetailDeleteModal";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
-import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
 import { standardDateFormat } from "src/utils/day";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";

@@ -48,7 +48,7 @@ import {
   YUP_OPERATE_EV_MODEL,
   YUP_OPERATE_EV_MODEL_EXTRA,
 } from "src/constants/valid/operate";
-import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
 
 export interface IEvModelModalProps {

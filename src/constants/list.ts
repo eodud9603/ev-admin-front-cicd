@@ -60,7 +60,7 @@ export const YN_FILTER_LIST = [
 export const UPLOAD_FILTER_LIST = [
   {
     label: "전체",
-    value: ""
+    value: "ALL"
   },
   {
     label: "IOS",

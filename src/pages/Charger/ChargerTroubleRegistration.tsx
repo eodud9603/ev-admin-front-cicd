@@ -27,7 +27,7 @@ import { TBrokenStatus } from "src/constants/status";
 import { getParams } from "src/utils/params";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_BROKEN } from "src/constants/valid/charger";
-import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 
 export const ChargerTroubleRegistration = () => {
   const nav = useNavigate();

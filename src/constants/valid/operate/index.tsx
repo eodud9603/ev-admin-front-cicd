@@ -39,3 +39,26 @@ export const YUP_OPERATE_EV_MODEL_EXTRA: FieldSchemaMap = {
     validation: string().optional(),
   },
 };
+
+/** 공지사항 yup */
+export const YUP_OPERATE_NOTICE: FieldSchemaMap = {
+  title: {
+    validation: string().required("제목은 필수 입력 항목입니다."),
+  },
+  content: {
+    validation: string().required("내용은 필수 입력 항목입니다."),
+  },
+  deleted: {
+    validation: string().required("삭제여부는 필수 입력 항목입니다."),
+  },
+  uploadType: {
+    validation: string()
+      .required("업로드 대상은 필수 입력 항목입니다.")
+      .oneOf(["ALL", "IOS", "AOS", "WEB"], "잘못된 업로드 대상입니다."),
+  },
+};
+
+/** 공지사항 수정 yup */
+export const YUP_OPERATE_NOTICE_EXTRA: FieldSchemaMap = {
+  id: { validation: number().required("ID는 필수 입력 항목입니다.") },
+};

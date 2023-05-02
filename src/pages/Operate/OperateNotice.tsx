@@ -1,10 +1,4 @@
-import React, {
-  forwardRef,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
+import React, { useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -36,10 +30,11 @@ import {
 } from "src/api/board/noticeApi.interface";
 import useList from "src/hooks/useList";
 import { getPageList } from "src/utils/pagination";
-import { getNoticeList } from "src/api/board/noticeApi";
+import { deleteNoticeList, getNoticeList } from "src/api/board/noticeApi";
 import { getParams } from "src/utils/params";
 import { standardDateFormat } from "src/utils/day";
-import { UploadType, YNType } from "src/api/api.interface";
+import { YNType } from "src/api/api.interface";
+import { TUploadTypeKeys, UPLOAD_TYPE } from "src/constants/status";
 
 /** 검색어 필터 */
 const searchList = [
@@ -66,7 +61,7 @@ const sortList = [
 
 /** 목록 헤더 */
 const tableHeader = [
-  { label: "선택" },
+  { label: "checkbox" },
   { label: "번호" },
   { label: "제목" },
   { label: "업로드 대상" },
@@ -76,16 +71,10 @@ const tableHeader = [
   { label: "삭제 여부" },
 ];
 
-interface IListRefProps {
-  data: INoticeItem;
-  checked: boolean;
-  onChange: (bool: boolean) => void;
-}
-
 const OperateNotice = () => {
   const data = useLoaderData() as INoticeListResponse;
-  /* 선택삭제 버튼 활성화 여부 */
-  const [isActive, setIsActive] = useState(false);
+  /* 체크 리스트 */
+  const [checkList, setCheckList] = useState<number[]>([]);
   /* 선택삭제 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
@@ -105,10 +94,10 @@ const OperateNotice = () => {
     startDate: "",
     endDate: "",
     isDeleted: "" as YNType,
-    uploadType: "" as UploadType,
+    uploadType: "" as TUploadTypeKeys,
     searchRange: "Title",
     searchText: "",
-    sort: "CreateAt",
+    sort: "CreateAt" as IRequestNoticeList["sort"],
     count: "10",
   });
   const {
@@ -132,7 +121,7 @@ const OperateNotice = () => {
         page,
         isDeleted,
         uploadType,
-        sort: sort as IRequestNoticeList["sort"],
+        sort,
       };
       if (startDate && endDate) {
         searchParams.startDate = standardDateFormat(startDate, "YYYY-MM-DD");
@@ -163,47 +152,34 @@ const OperateNotice = () => {
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }
-    };
 
-  const listRef = useRef<IListRefProps[]>([]);
+      setCheckList([]);
+    };
 
   const navigate = useNavigate();
 
   /** 선택항목 삭제 */
-  const deleteHandler = () => {
-    setIsActive(false);
-
-    const checkedList = [];
-    for (const item of listRef.current) {
-      const { checked, data } = item;
-
-      if (checked) {
-        checkedList.push(data);
-        item.onChange(false);
-      }
+  const deleteHandler = async () => {
+    /* 삭제요청 */
+    const { code } = await deleteNoticeList({
+      noticeIds: checkList,
+    });
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      void searchHandler({ page })();
+      setDeleteModalOpen((prev) => !prev);
     }
   };
 
-  /** 선택삭제 버튼 활성화 여부 업데이트 */
-  const onChangeActive = useCallback((currentItemChecked: boolean) => {
-    let isActive = currentItemChecked;
-    if (!isActive) {
-      const checkCount = listRef.current.reduce((acc, cur) => {
-        if (cur.checked) {
-          acc += 1;
-        }
-
-        return acc;
-      }, 0);
-
-      /* 체크된 목록이 있으면, 선택삭제 버튼 활성화 (ref을 사용하여 1개 보다 커야 체크된 것이 있음) */
-      if (checkCount > 1) {
-        isActive = true;
-      }
+  /** 전체 체크 변경 콜백 */
+  const onChangeCheck = (check: boolean) => {
+    if (check) {
+      setCheckList(list.map((data) => data.id));
+    } else {
+      setCheckList([]);
     }
-
-    setIsActive(isActive);
-  }, []);
+  };
 
   return (
     <ContainerBase>
@@ -277,7 +253,7 @@ const OperateNotice = () => {
                 dropdownItems={[
                   {
                     onClickDropdownItem: (_, value) => {
-                      onChangeSingle({ sort: value });
+                      onChangeSingle({ sort: value as typeof sort });
                       void searchHandler({
                         page: 1,
                         sort: value as IRequestNoticeList["sort"],
@@ -319,10 +295,10 @@ const OperateNotice = () => {
                 }}
               />
               <ButtonBase
-                disabled={!isActive}
+                disabled={!(checkList.length > 0)}
                 label={"선택 삭제"}
-                outline={isActive}
-                color={isActive ? "turu" : "secondary"}
+                outline={checkList.length > 0}
+                color={checkList.length > 0 ? "turu" : "secondary"}
                 onClick={() => {
                   setDeleteModalOpen(true);
                 }}
@@ -330,17 +306,51 @@ const OperateNotice = () => {
             </div>
           </div>
 
-          <TableBase tableHeader={tableHeader}>
+          <TableBase
+            tableHeader={tableHeader}
+            allCheck={list.length > 0 && checkList.length === list.length}
+            onClickAllCheck={onChangeCheck}
+          >
             <>
               {list.length > 0 ? (
                 list.map((data, index) => (
-                  <TableRow
-                    ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
-                    key={index}
-                    num={(page - 1) * Number(count) + index + 1}
-                    onChangeActive={onChangeActive}
-                    {...data}
-                  />
+                  <HoverTr
+                    key={data.id}
+                    onClick={() => {
+                      navigate(`/operate/notice/detail/${data.id}`);
+                    }}
+                  >
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <CheckBoxBase
+                        name={"check"}
+                        label={""}
+                        checked={checkList.indexOf(data.id) > -1}
+                        onChange={() => {
+                          const list = [...checkList];
+                          const findIndex = checkList.indexOf(data.id);
+
+                          if (findIndex > -1) {
+                            list.splice(findIndex, 1);
+                          } else {
+                            list.push(data.id);
+                          }
+
+                          setCheckList(list);
+                        }}
+                      />
+                    </td>
+                    <td>{(page - 1) * Number(count) + index + 1}</td>
+                    <td>{data.title}</td>
+                    <td>{UPLOAD_TYPE[data.uploadType] ?? "-"}</td>
+                    <td>{data.writer ?? "-"}</td>
+                    <td>{data.readCount}</td>
+                    <td>
+                      {data.createAt
+                        ? standardDateFormat(data.createAt, "YYYY.MM.DD")
+                        : "-"}
+                    </td>
+                    <td>{data.delete}</td>
+                  </HoverTr>
                 ))
               ) : (
                 <tr>
@@ -384,12 +394,7 @@ const OperateNotice = () => {
           {
             label: "삭제",
             color: "turu",
-            onClick: () => {
-              /** @TODO 저장 로직 추가 */
-
-              deleteHandler();
-              setDeleteModalOpen((prev) => !prev);
-            },
+            onClick: deleteHandler,
           },
         ]}
       />
@@ -406,66 +411,3 @@ const HoverTr = styled.tr`
     cursor: pointer;
   }
 `;
-
-const TableRow = forwardRef<
-  IListRefProps,
-  INoticeItem & {
-    num: number;
-    onChangeActive: (currentItemChecked: boolean) => void;
-  }
->((props, ref) => {
-  const {
-    id,
-    num,
-    title,
-    uploadType,
-    writer,
-    readCount,
-    createAt,
-    delete: isDeleted,
-    onChangeActive,
-  } = props;
-  const [checked, setChecked] = useState(false);
-
-  const navigate = useNavigate();
-
-  const onChangeCheck = () => {
-    onChangeActive(!checked);
-
-    setChecked((prev) => !prev);
-  };
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      data: props,
-      checked,
-      onChange: (bool: boolean) => setChecked(bool),
-    }),
-    [props, checked]
-  );
-
-  return (
-    <HoverTr
-      onClick={() => {
-        navigate(`/operate/notice/detail/${id}`);
-      }}
-    >
-      <td onClick={(e) => e.stopPropagation()}>
-        <CheckBoxBase
-          name={`announcement-${num}`}
-          label={""}
-          checked={checked}
-          onChange={onChangeCheck}
-        />
-      </td>
-      <td>{num}</td>
-      <td>{title}</td>
-      <td>{uploadType ?? "전체"}</td>
-      <td>{writer ?? "-"}</td>
-      <td>{readCount}</td>
-      <td>{createAt ? standardDateFormat(createAt, "YYYY.MM.DD") : "-"}</td>
-      <td>{isDeleted}</td>
-    </HoverTr>
-  );
-});

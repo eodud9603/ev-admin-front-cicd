@@ -31,7 +31,7 @@ import { getParams } from "src/utils/params";
 import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_OPERATOR } from "src/constants/valid/charger";
-import DetailValidCheckModal from "src/pages/Charger/components/DetailValidCheckModal";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },

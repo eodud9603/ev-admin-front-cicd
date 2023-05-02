@@ -214,3 +214,21 @@ export const PG_CODE = {
 /** 충전기 > pg사 키 타입 */
 export type TPgCodeKeys = keyof typeof PG_CODE;
 
+/**
+ * @description 업로드 대상
+ */
+export const UPLOAD_TYPE = {
+  ALL : "전체",
+  IOS : "IOS",
+  AOS : "AOS",
+  WEB : "WEB"
+} as const;
+/** 업로드 대상 키 타입 */
+export type TUploadTypeKeys = keyof typeof UPLOAD_TYPE;
+
+/**
+ * @description 게시판 타입 (FAQ 등 추가 예정)
+ */
+export const enum BoardIdEnum {
+  NOTICE = 1,
+}
