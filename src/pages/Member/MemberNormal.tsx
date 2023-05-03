@@ -33,7 +33,7 @@ import {
 } from "src/constants/status";
 import { getPageList } from "src/utils/pagination";
 import { getParams } from "src/utils/params";
-import { standardDateFormat } from "src/utils/day";
+import { onChangeStaticDate, standardDateFormat } from "src/utils/day";
 import {
   getNormalMemberList,
   getNormalMemberListExcel,
@@ -235,9 +235,30 @@ export const MemberNormal = () => {
               <DateGroup
                 label={"조회기간"}
                 buttonState={[
-                  { label: "7일" },
-                  { label: "1개월" },
-                  { label: "3개월" },
+                  {
+                    label: "7일",
+                    onClick: () =>
+                      onChangeStaticDate({
+                        size: 7,
+                        unit: "day",
+                      }),
+                  },
+                  {
+                    label: "1개월",
+                    onClick: () =>
+                      onChangeStaticDate({
+                        size: 1,
+                        unit: "month",
+                      }),
+                  },
+                  {
+                    label: "3개월",
+                    onClick: () =>
+                      onChangeStaticDate({
+                        size: 3,
+                        unit: "month",
+                      }),
+                  },
                 ]}
                 onChangeDate={onChangeSingle}
               />

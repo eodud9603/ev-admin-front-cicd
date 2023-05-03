@@ -15,3 +15,19 @@ export const standardDateFormat= (date?: string | number | dayjs.Dayjs | Date | 
     return dayjs(date).format(format ?? "YYYY-MM-DD HH:mm");
 };
 
+/** 현재날짜로 부터 특정 기간으로 시작/종료일 설정 함수 */
+export const onChangeStaticDate = ({
+    size,
+    unit,
+  }: {
+    size: number;
+    unit: "day" | "month";
+  }) => {
+    const now = dayjs();
+    const startDate = now.clone().subtract(size, unit).format("YYYY-MM-DD");
+
+    return {
+      startDate,
+      endDate: now.format("YYYY-MM-DD"),
+    };
+  };
