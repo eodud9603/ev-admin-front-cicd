@@ -74,9 +74,9 @@ export const CHARGER_PROCESSING_STATUS = {
   SUBMIT: "알수없음",
   CONFIRM: "급속",
   COMPLETE: "완속",
-  PROGRESS: "진행중", /* (L2추가) */
-  EXCEPT: "접수제외", /* (L2추가) */
-  UNKNOWN: "알수없음"
+  PROGRESS: "진행중" /* (L2추가) */,
+  EXCEPT: "접수제외" /* (L2추가) */,
+  UNKNOWN: "알수없음",
 } as const;
 /** 고장/파손 처리 상태코드 키 타입 */
 export type TChargerProcessingStatus = keyof typeof CHARGER_PROCESSING_STATUS;
@@ -149,7 +149,7 @@ export type TSupplyMethodKeys = keyof typeof SUPPLY_METHOD;
 export const INSTALL_TYPE = {
   IS01: "스탠드형",
   IS02: "벽부형",
-  IS03: "콘센트형"
+  IS03: "콘센트형",
 } as const;
 /** 충전기 > 설치타입 키 타입 */
 export type TInstallTypeKeys = keyof typeof INSTALL_TYPE;
@@ -161,7 +161,7 @@ export type TInstallTypeKeys = keyof typeof INSTALL_TYPE;
 export const USE_CODE = {
   US01: "사용",
   US02: "미사용",
-  US03: "전용"
+  US03: "전용",
 } as const;
 /** 충전기 > 사용/전용 구분 키 타입 */
 export type TUseCodeKeys = keyof typeof USE_CODE;
@@ -174,7 +174,7 @@ export const QR_TYPE = {
   QR01: "카카오",
   QR02: "티맵",
   QR03: "현대",
-  QR04: "E-PIT"
+  QR04: "E-PIT",
 } as const;
 /** 충전기 > QR 연동여부 키 타입 */
 export type TQrTypeKeys = keyof typeof QR_TYPE;
@@ -218,11 +218,11 @@ export type TPgCodeKeys = keyof typeof PG_CODE;
  * @description 업로드 대상
  */
 export const UPLOAD_TYPE = {
-  ALL : "전체",
-  IOS : "IOS",
-  AOS : "AOS",
+  ALL: "전체",
+  IOS: "IOS",
+  AOS: "AOS",
   APP: "APP",
-  WEB : "WEB"
+  WEB: "WEB",
 } as const;
 /** 업로드 대상 키 타입 */
 export type TUploadTypeKeys = keyof typeof UPLOAD_TYPE;
@@ -233,3 +233,47 @@ export type TUploadTypeKeys = keyof typeof UPLOAD_TYPE;
 export const enum BoardIdEnum {
   NOTICE = 1,
 }
+
+/* 회원 관리 */
+/**
+ * @description 운영기관(회원 소속)
+ */
+export const STATION_OPERATOR = {
+  HEV: "HEV",
+  JEV: "JEV",
+} as const;
+/** 운영기관(회원 소속) 키 타입 */
+export type TStationTypeKey = keyof typeof STATION_OPERATOR;
+
+/**
+ * @description 회원그룹(grade)
+ */
+export const MEMBER_STATUS_TYPE = {
+  MS01: "정회원",
+  MS02: "준회원",
+  MS03: "이용정지",
+} as const;
+/** 회원그룹(grade) 키 타입 */
+export type TMemberStatusTypeKey = keyof typeof MEMBER_STATUS_TYPE;
+
+/**
+ * @description 회원 등급(statusType)
+ */
+export const MEMBER_GRADE_TYPE = {
+  MEMBER: "개인",
+  GROUP: "그룹",
+  COMPANY: "법인",
+} as const;
+/** 회원 등급(statusType) 키 타입 */
+export type TMemberGradeTypeKey = keyof typeof MEMBER_GRADE_TYPE;
+
+/**
+ * @description 성별(gender)
+ */
+export const GENDER_TYPE = {
+  1: "남자",
+  2: "여자",
+} as const;
+/** 성별(gender) 키 타입 */
+export type TGenderTypeKey = keyof typeof GENDER_TYPE;
+/* 회원 관리 */

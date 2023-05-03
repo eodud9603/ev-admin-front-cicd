@@ -15,45 +15,58 @@ import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
 import { SendAlarmModal } from "src/pages/Member/components/SendAlarmModal";
-import { useLocation, useNavigate, useNavigation } from "react-router-dom";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import useList from "src/hooks/useList";
+import {
+  INormalMemberItem,
+  INormalMemberListResponse,
+  IRequestNormalMemberList,
+} from "src/api/member/memberApi.interface";
+import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
+import useInputs from "src/hooks/useInputs";
+import {
+  MEMBER_GRADE_TYPE,
+  MEMBER_STATUS_TYPE,
+  STATION_OPERATOR,
+  TMemberStatusTypeKey,
+  TStationTypeKey,
+} from "src/constants/status";
+import { getPageList } from "src/utils/pagination";
+import { getParams } from "src/utils/params";
+import { standardDateFormat } from "src/utils/day";
+import {
+  getNormalMemberList,
+  getNormalMemberListExcel,
+} from "src/api/member/memberApi";
+import { objectToArray } from "src/utils/convert";
+import { COUNT_FILTER_LIST } from "src/constants/list";
+import { blobToExcel } from "src/utils/xlsx";
 
-const dropdownData = [
-  { label: "10개씩 보기", value: "1" },
-  { label: "20개씩 보기", value: "2" },
-  { label: "50개씩 보기", value: "3" },
-];
+const defaultFilterData = {
+  label: "전체",
+  value: "",
+};
 
 const dropdownGroupSearch = [
-  { label: "이름", value: "1" },
-  { label: "회원 ID", value: "1" },
-  { label: "휴대폰 번호", value: "1" },
+  { label: "이름", value: "Name" },
+  { label: "회원 ID", value: "UserId" },
+  { label: "휴대폰 번호", value: "PhoneNumber" },
 ];
 
 const dropdownGroupSort = [
   {
     menuItems: [
-      { label: "기본", value: "1" },
-      { label: "생년월일", value: "1" },
-      { label: "회원 가입일", value: "1" },
+      { label: "기본", value: "CreatedDate" },
+      { label: "생년월일", value: "" },
+      { label: "회원 가입일", value: "CreatedDate" },
     ],
   },
 ];
 
-const gradeRadio = [
-  { label: "전체" },
-  { label: "정회원" },
-  { label: "준회원" },
-  { label: "이용정지" },
-];
-const affiliationRadio = [
-  { label: "전체" },
-  { label: "HEV" },
-  { label: "JEV" },
-];
-
 const tableHeader = [
   { label: "checkbox" },
-  { label: "번호", sort: () => {} },
+  { label: "번호" },
+  { label: "회원소속" },
   { label: "회원등급" },
   { label: "구분" },
   { label: "이름" },
@@ -65,40 +78,47 @@ const tableHeader = [
   { label: "이용내역" },
 ];
 
-const data = [
-  {
-    userSeq: 1,
-    affiliation: "HEV",
-    grade: "정회원",
-    division: "개인",
-    name: "김회원",
-    userId: "kim",
-    birthday: "YYYY.MM.DD",
-    phone: "000-0000-0000",
-    memberCardNumber: "000000",
-    createDt: "YYYY.MM.DD",
-  },
-  {
-    userSeq: 2,
-    affiliation: "HEV",
-    grade: "정회원",
-    division: "개인",
-    name: "김회원",
-    userId: "kim",
-    birthday: "YYYY.MM.DD",
-    phone: "000-0000-0000",
-    memberCardNumber: "000000",
-    createDt: "YYYY.MM.DD",
-  },
-];
-
 export const MemberNormal = () => {
+  const data = useLoaderData() as INormalMemberListResponse | null;
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const [page, setPage] = useState(1);
+
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("0");
-  const [text, setText] = useState("");
+
+  /* 체크 리스트 */
+  const [checkList, setCheckList] = useState<number[]>([]);
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<INormalMemberItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: !data?.elements
+      ? "오류가 발생하였습니다."
+      : "등록된 회원 정보가 없습니다.",
+  });
+
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
+    startDate: "",
+    endDate: "",
+    statusType: "" as TMemberStatusTypeKey,
+    searchRange: "Name",
+    searchText: "",
+    stationOperator: "" as TStationTypeKey,
+    sort: "CreatedDate" as IRequestNormalMemberList["sort"],
+    count: "10",
+  });
+  const {
+    startDate: searchStartDate,
+    endDate: searchEndDate,
+    statusType,
+    searchRange,
+    searchText,
+    stationOperator,
+    sort,
+    count,
+  } = inputs;
 
   const handleModalState = () => {
     setIsOpen(!isOpen);
@@ -108,14 +128,95 @@ export const MemberNormal = () => {
     nav(`${pathname}/${path}/${id}`);
   };
 
+  const getSearchParams = () => {
+    /* 검색 파라미터 */
+    const searchParams: IRequestNormalMemberList = {
+      size: Number(count),
+      page,
+      statusType,
+      stationOperator,
+      sort,
+    };
+    if (searchStartDate && searchEndDate) {
+      searchParams.searchStartDate = standardDateFormat(
+        searchStartDate,
+        "YYYY.MM.DD"
+      );
+      searchParams.searchEndDate = standardDateFormat(
+        searchEndDate,
+        "YYYY.MM.DD"
+      );
+    }
+    if (searchRange && searchText) {
+      searchParams.searchType =
+        searchRange as IRequestNormalMemberList["searchType"];
+      searchParams.searchKeyword = searchText;
+    }
+
+    return searchParams;
+  };
+
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestNormalMemberList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams = getSearchParams();
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
+
+      /* 검색  */
+      const { code, data, message } = await getNormalMemberList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 회원 정보가 없습니다.",
+        });
+      } else {
+        reset({ code, message: message || "오류가 발생하였습니다." });
+      }
+
+      setCheckList([]);
+    };
+
+  /** 전체 체크 변경 콜백 */
+  const onChangeCheck = (check: boolean) => {
+    if (check) {
+      setCheckList(list.map((data) => data.id));
+    } else {
+      setCheckList([]);
+    }
+  };
+
+  /** 엑셀 다운로드 (*현재 검색어 기준) */
+  const download = async () => {
+    /* 검색 파라미터 */
+    const searchParams = getSearchParams();
+    getParams(searchParams);
+    /* 엑셀 다운 요청 */
+    const data = await getNormalMemberListExcel(searchParams);
+    /** 성공 */
+    const success = !!data;
+
+    if (success) {
+      blobToExcel(
+        data,
+        `회원관리_${standardDateFormat(undefined, "YYYY_MM_DD_HH_mm_ss")}.xlsx`
+      );
+    }
+  };
+
   return (
     <ContainerBase>
       <HeaderBase></HeaderBase>
-      <TabGroup
-      // list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
-      // selectedIndex={selected}
-      // onClick={(e) => setSelected(e.currentTarget.value)}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -138,107 +239,182 @@ export const MemberNormal = () => {
                   { label: "1개월" },
                   { label: "3개월" },
                 ]}
+                onChangeDate={onChangeSingle}
               />
             </Col>
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
                 title={"회원등급"}
-                name={"radioGroup1"}
-                list={gradeRadio}
+                name={"statusType"}
+                list={[
+                  defaultFilterData,
+                  ...objectToArray(MEMBER_STATUS_TYPE),
+                ].map((data) => ({
+                  ...data,
+                  checked: data.value === statusType,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
-          <Row>
-            <Col className={"mt-3"}>
+          <Row className={"mt-3 d-flex align-items-center"}>
+            <Col>
               <SearchTextInput
                 title={"검색어"}
                 menuItems={dropdownGroupSearch}
-                placeholder={`${text}을 입력해주세요`}
                 name={"searchText"}
-                className={""}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                value={searchText}
+                onChange={onChange}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
                 title={"회원소속"}
-                name={"radioGroup2"}
-                list={affiliationRadio}
+                name={"stationOperator"}
+                list={[
+                  defaultFilterData,
+                  ...objectToArray(STATION_OPERATOR),
+                ].map((data) => ({
+                  ...data,
+                  checked: data.value === stationOperator,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
           <Row className={"mt-3"}>
             <Col>
               <DropboxGroup
-                label={"정렬기준"}
-                dropdownItems={dropdownGroupSort}
                 className={"me-2"}
+                label={"정렬기준"}
+                dropdownItems={dropdownGroupSort.map((data) => ({
+                  ...data,
+                  onClickDropdownItem: (_, value) => {
+                    onChangeSingle({ sort: value as typeof sort });
+                    void searchHandler({
+                      page: 1,
+                      sort: value as typeof sort,
+                    })();
+                  },
+                }))}
               />
             </Col>
           </Row>
         </FilterSection>
-        <Separator />
         <Separator />
 
         <ListSection className={"py-4"}>
           <Row className={"mb-4"}>
             <Col>
               <AmountInfo className={"text-size-13 fw-bold"}>
-                총 <AmountInfo className={"text-turu"}>0건</AmountInfo>의 회원
-                정보가 있습니다.
+                총 <AmountInfo className={"text-turu"}>{total}건</AmountInfo>의
+                회원 정보가 있습니다.
               </AmountInfo>
             </Col>
             <Col className={"d-flex justify-content-end"}>
               <div className={"d-flex align-items-center gap-3"}>
-                <span className={"font-size-10 text-muted"}>
-                  2023-04-01 14:51기준
-                </span>
-                <DropdownBase menuItems={dropdownData} />
+                <span className={"font-size-10 text-muted"}>{time}기준</span>
+                <DropdownBase
+                  menuItems={COUNT_FILTER_LIST}
+                  onClickDropdownItem={(_, value) => {
+                    onChangeSingle({
+                      count: value,
+                    });
+                    void searchHandler({ page: 1, size: Number(value) })();
+                  }}
+                />
                 <ButtonBase
                   label={"알림 발송"}
-                  color={"turu"}
+                  disabled={checkList.length === 0}
+                  color={checkList.length === 0 ? "secondary" : "turu"}
                   onClick={handleModalState}
                 />
-                <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
+                <ButtonBase
+                  label={"엑셀 저장"}
+                  outline={true}
+                  color={"turu"}
+                  onClick={download}
+                />
               </div>
             </Col>
           </Row>
-          <TableBase tableHeader={tableHeader}>
+          <TableBase
+            tableHeader={tableHeader}
+            allCheck={list.length > 0 && checkList.length === list.length}
+            onClickAllCheck={onChangeCheck}
+          >
             <>
-              {data.length > 0 &&
-                data.map((e, i) => (
-                  <tr key={i}>
-                    <td></td>
-                    <td>{e.userSeq}</td>
-                    <td>{e.grade}</td>
-                    <td>{e.division}</td>
-                    <td>{e.name}</td>
+              {list.length > 0 ? (
+                list.map((data, index) => (
+                  <tr key={data.id}>
+                    <td>
+                      <CheckBoxBase
+                        name={data.id.toString()}
+                        label={""}
+                        checked={checkList.indexOf(data.id) > -1}
+                        onChange={() => {
+                          const list = [...checkList];
+                          const findIndex = checkList.indexOf(data.id);
+
+                          if (findIndex > -1) {
+                            list.splice(findIndex, 1);
+                          } else {
+                            list.push(data.id);
+                          }
+
+                          setCheckList(list);
+                        }}
+                      />
+                    </td>
+                    <td>{(page - 1) * Number(count) + index + 1}</td>
+                    <td>{STATION_OPERATOR[data.stationOperator] ?? "-"}</td>
+                    <td>{MEMBER_GRADE_TYPE[data.grade] ?? "-"}</td>
+                    <td>{MEMBER_STATUS_TYPE[data.statusType] ?? "-"}</td>
+                    <td>{data.name}</td>
                     <td>
                       <HoverSpan
                         className={"text-turu"}
-                        onClick={() => handleNavigation(e.userSeq, "detail")}
+                        onClick={() => handleNavigation(data.id, "detail")}
                       >
-                        <u>{e.userId}</u>
+                        <u>{data.userId ?? "-"}</u>
                       </HoverSpan>
                     </td>
-                    <td>{e.birthday}</td>
-                    <td>{e.phone}</td>
-                    <td>{e.memberCardNumber}</td>
-                    <td>{e.createDt}</td>
+                    <td>{data.birthday ?? "-"}</td>
+                    <td>{data.phone ?? "-"}</td>
+                    <td>{data.memberCard ?? "-"}</td>
+                    <td>{data.memberAuthDate ?? "-"}</td>
                     <td>
                       <ButtonBase
                         label={"보기"}
                         outline={true}
-                        onClick={() => handleNavigation(e.userSeq, "history")}
+                        onClick={() => handleNavigation(data.id, "history")}
                       />
                     </td>
                   </tr>
-                ))}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={12} className={"py-5 text-center text"}>
+                    {message}
+                  </td>
+                </tr>
+              )}
             </>
           </TableBase>
         </ListSection>
-        <PaginationBase setPage={setPage} data={{}} />
+        <PaginationBase
+          setPage={setPage}
+          data={{
+            hasPreviousPage: page > 1,
+            hasNextPage: page < lastPage,
+            navigatePageNums: getPageList(page, lastPage),
+            pageNum: page,
+            onChangePage: (page) => {
+              void searchHandler({ page })();
+            },
+          }}
+        />
       </BodyBase>
       <SendAlarmModal isOpen={isOpen} onClose={handleModalState} />
     </ContainerBase>

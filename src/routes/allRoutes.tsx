@@ -125,6 +125,7 @@ import { evModelListLoader } from "src/pages/Operate/loader/evModelListLoader";
 import { noticeListLoader } from "src/pages/Operate/loader/noticeListLoader";
 import { noticeDetailLoader } from "src/pages/Operate/loader/noticeDetailLoader";
 import OperateCategory from "src/pages/Operate/OperateCategory";
+import { normalMemberListLoader } from "src/pages/Member/laoder/normalMemberListLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -220,7 +221,11 @@ const userRoutes: Array<RouteProps> = [
     element: <ChargerOperatorRegistration />,
   },
   /* 회원 및 카드관리 */
-  { path: "/member/normal", element: <MemberNormal /> },
+  {
+    path: "/member/normal",
+    element: <MemberNormal />,
+    loader: normalMemberListLoader,
+  },
   { path: "/member/normal/detail/:id", element: <MemberNormalDetail /> },
   { path: "/member/withdraw", element: <MemberWithdraw /> },
   { path: "/member/card/normal", element: <MemberNormalCard /> },

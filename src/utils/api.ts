@@ -65,9 +65,14 @@ axiosInstance.interceptors.response.use((response) => {
 });
 
 const rest = (method: Method) => {
-  return async <T>(
+  return async <T,>(
     url: string,
-    { headers = {}, params = {}, body = {} } = {}
+    {
+      headers = {},
+      params = {},
+      body = {},
+      responseType = undefined as "blob" | undefined,
+    } = {}
   ) => {
     try {
       const response = await axiosInstance(url, {
@@ -75,6 +80,7 @@ const rest = (method: Method) => {
         params,
         data: body,
         headers,
+        responseType,
       });
 
       const { data } = response;
