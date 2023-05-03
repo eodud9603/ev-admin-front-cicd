@@ -77,7 +77,7 @@ const DefaultDropdownData = {
 
 const ChargerDetail = () => {
   /** init 충전기 상세 데이터 */
-  const { charger, editable = false } =
+  const { charger, editable = true } =
     useLoaderData() as chargerDetailLoaderType;
 
   /* 기본정보 drop */
@@ -98,7 +98,7 @@ const ChargerDetail = () => {
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
 
   /** 전역 disabled 처리 */
-  const [disabled, setDisabled] = useState(!editable);
+  const [disabled, setDisabled] = useState(editable);
 
   /* 기본정보 */
   const [inputs, { onChange, onChangeSingle }] = useInputs({
@@ -247,7 +247,7 @@ const ChargerDetail = () => {
     data: inputs,
     pageTitle: "충전기 상세",
     pageType: "detail",
-    editable: !disabled,
+    editable: disabled,
   });
 
   /** 수정 */
