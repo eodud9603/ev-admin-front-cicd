@@ -9,7 +9,7 @@ interface IDateInputProps {
   setData?: Dispatch<SetStateAction<{ [key: string]: string }>>;
   buttonState?: {
     label: string;
-    onClick?: () => void;
+    onClick?: () => { startDate: string; endDate: string };
     className?: string;
   }[];
   className?: string;
@@ -32,7 +32,7 @@ export const DateGroup = (props: IDateInputProps) => {
     onChangeDate,
     ...extraProps
   } = props;
-  const [{ startDate, endDate }, { onChange }] = useInputs({
+  const [{ startDate, endDate }, { onChange, onChangeSingle }] = useInputs({
     startDate: "",
     endDate: "",
   });
@@ -59,6 +59,7 @@ export const DateGroup = (props: IDateInputProps) => {
           type={"date"}
           className={"form-control w-xs bg-white"}
           name={"startDate"}
+          value={startDate}
           onChange={onChangeHandler}
         />
         <div className={"px-2 text-center"}>~</div>
@@ -66,6 +67,7 @@ export const DateGroup = (props: IDateInputProps) => {
           type={"date"}
           className={"form-control w-xs bg-white"}
           name={"endDate"}
+          value={endDate}
           onChange={onChangeHandler}
         />
         {buttonState && buttonState.length > 0 && (
@@ -77,6 +79,12 @@ export const DateGroup = (props: IDateInputProps) => {
                 className={`w-xs me-2 ${e.className ?? ""}`}
                 color={"turu"}
                 outline={true}
+                onClick={() => {
+                  if (e.onClick) {
+                    const changeDate = e.onClick();
+                    onChangeSingle(changeDate);
+                  }
+                }}
               />
             ))}
           </div>

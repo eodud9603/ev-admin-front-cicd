@@ -43,7 +43,7 @@ export interface INoticeDetailFileItem {
   id: number;
   fileName: string;
   filePath: string;
-  fileSize: number;
+  fileSize?: number;
 }
 
 export interface INoticeDetailResponse {
@@ -65,7 +65,7 @@ export interface IRequestNoticeModify {
   title: string;
   content: string;
   deleted: YNType;
-  files: { id: number }[];
+  files: number[];
   uploadType: TUploadTypeKeys;
 }
 
@@ -77,7 +77,7 @@ export interface IRequestNoticeRegister {
   content: string;
   writer: string;
   deleted: YNType;
-  files: { id: number }[];
+  files: number[];
   uploadType: TUploadTypeKeys;
 }
 

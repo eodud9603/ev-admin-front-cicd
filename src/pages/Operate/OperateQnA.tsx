@@ -253,7 +253,9 @@ const OperateQnA = () => {
                     >
                       <td>{index + 1}</td>
                       <td>{category}</td>
-                      <td>{title}</td>
+                      <td className={"text-turu"}>
+                        <u>{title}</u>
+                      </td>
                       <td>{userName}</td>
                       <td>{userId}</td>
                       <td>{regDate}</td>
