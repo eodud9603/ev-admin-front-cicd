@@ -225,6 +225,9 @@ const Charger = () => {
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
+                initSelectedValue={searchList.find(
+                  (e) => e.value === searchRange
+                )}
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
@@ -258,6 +261,7 @@ const Charger = () => {
                       })();
                     },
                     menuItems: sortList,
+                    initSelectedValue: sortList.find((e) => e.value === sort),
                   },
                 ]}
               />
@@ -284,6 +288,9 @@ const Charger = () => {
                   });
                   void searchHandler({ page: 1, size: Number(value) })();
                 }}
+                initSelectedValue={COUNT_FILTER_LIST.find(
+                  (e) => e.value === count
+                )}
               />
               <ButtonBase
                 label={"신규 등록"}

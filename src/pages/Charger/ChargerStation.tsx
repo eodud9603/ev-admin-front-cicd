@@ -24,7 +24,6 @@ import {
   IStationListResponse,
 } from "src/api/station/stationApi.interface";
 import { getPageList } from "src/utils/pagination";
-import { YNType } from "src/api/api.interface";
 import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
 import { useTabs } from "src/hooks/useTabs";
@@ -71,7 +70,10 @@ const tableHeader = [
 ];
 
 const ChargingStationManagement = () => {
-  const data = useLoaderData() as IStationListResponse | null;
+  const { data, filterData } = useLoaderData() as {
+    data: IStationListResponse | null;
+    filterData: { [key: string]: any };
+  };
 
   const [
     { list, page, lastPage, total, message, time },
@@ -85,17 +87,7 @@ const ChargingStationManagement = () => {
       : "등록된 충전소 정보가 없습니다.",
   });
 
-  const inputs = useInputs({
-    sido: "",
-    gugun: "",
-    dong: "",
-    operation: "",
-    searchRange: "StationName",
-    searchText: "서울",
-    isUse: "" as YNType,
-    sort: "StationName",
-    count: "10",
-  });
+  const inputs = useInputs(filterData);
   const [
     {
       count,
@@ -110,6 +102,12 @@ const ChargingStationManagement = () => {
     },
     { onChange, onChangeSingle },
   ] = inputs;
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "충전소 관리",
+    filterData: inputs[0],
+  });
   const searchKeyword =
     searchList.find((data) => searchRange === data.value)?.placeholderKeyword ??
     "검색어를";
@@ -153,12 +151,11 @@ const ChargingStationManagement = () => {
           page: searchParams.page,
           emptyMessage: "검색된 충전소 정보가 없습니다.",
         });
+        searchDataStorage(data);
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }
     };
-
-  useTabs({ data: data, pageTitle: "충전소 관리" });
 
   return (
     <ContainerBase>
@@ -211,6 +208,9 @@ const ChargingStationManagement = () => {
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
+                initSelectedValue={searchList.find(
+                  (e) => e.value === searchRange
+                )}
                 disabled={true} /** @TODO 임시 비활성화 (서버 이슈) */
                 name={"searchText"}
                 value={searchText}
@@ -245,6 +245,7 @@ const ChargingStationManagement = () => {
                       })();
                     },
                     menuItems: sortList,
+                    initSelectedValue: sortList.find((e) => e.value === sort),
                   },
                 ]}
               />
@@ -269,6 +270,9 @@ const ChargingStationManagement = () => {
                   onChangeSingle({ count: value });
                   void searchHandler({ page: 1, size: Number(value) })();
                 }}
+                initSelectedValue={COUNT_FILTER_LIST.find(
+                  (e) => e.value === count
+                )}
               />
               <ButtonBase
                 label={"신규 등록"}

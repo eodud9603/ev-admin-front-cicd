@@ -1,7 +1,6 @@
 import React from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
-import { YNType } from "src/api/api.interface";
 import { getStationContractList } from "src/api/station/stationApi";
 import {
   IRequestStationContractList,
@@ -26,7 +25,7 @@ import useInputs from "src/hooks/useInputs";
 import { getPageList } from "src/utils/pagination";
 import styled from "styled-components";
 import useList from "src/hooks/useList";
-import { CONTRACT_STATUS, TContractStatus } from "src/constants/status";
+import { CONTRACT_STATUS } from "src/constants/status";
 import { standardDateFormat } from "src/utils/day";
 import { useTabs } from "src/hooks/useTabs";
 import { getParams } from "src/utils/params";
@@ -254,6 +253,9 @@ const ChargerContract = () => {
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
+                initSelectedValue={searchList.find(
+                  (e) => e.value === searchRange
+                )}
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
@@ -287,6 +289,7 @@ const ChargerContract = () => {
                       })();
                     },
                     menuItems: sortList,
+                    initSelectedValue: sortList.find((e) => e.value === sort),
                   },
                 ]}
               />
@@ -311,6 +314,9 @@ const ChargerContract = () => {
                   onChangeSingle({ count: value });
                   void searchHandler({ page: 1, size: Number(value) })();
                 }}
+                initSelectedValue={COUNT_FILTER_LIST.find(
+                  (e) => e.value === count
+                )}
               />
               <ButtonBase
                 label={"신규 등록"}

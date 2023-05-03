@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
-import { ICommonListResProps, tabType, useTabStore } from "src/store/tabStore";
+import { ICommonListResProps, useTabStore } from "src/store/tabStore";
 import { useLocation } from "react-router-dom";
-import { filter } from "lodash";
 
 interface IUseTabsProps {
   //페이지 데이터
@@ -64,7 +63,6 @@ export const useTabs = (props: IUseTabsProps) => {
         //리스트 페이지가 아니고 데이터가 있을때
         tabStore.changeData(pathname, { ...saveData, data: dataRef.current });
       } else if (index > -1) {
-        console.log("return data :: ", saveData);
         tabStore.changeData(pathname, {
           ...saveData,
           filterData: filterRef.current,
@@ -76,7 +74,6 @@ export const useTabs = (props: IUseTabsProps) => {
   // 검색 시 데이터 저장
   const searchDataStorage = useCallback((data: any) => {
     saveData.data = data;
-    console.log("storage ::", data);
     tabStore.changeData(pathname, saveData);
   }, []);
 

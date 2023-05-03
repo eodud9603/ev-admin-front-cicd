@@ -215,6 +215,9 @@ export const ChargerManufacturer = () => {
                     });
                     void searchHandler({ page: 1, size: Number(value) })();
                   }}
+                  initSelectedValue={COUNT_FILTER_LIST.find(
+                    (e) => e.value === count
+                  )}
                 />
                 <ButtonBase
                   label={"신규 등록"}

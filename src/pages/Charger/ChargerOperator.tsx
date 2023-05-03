@@ -78,7 +78,7 @@ const tableHeader = [
 export const ChargerOperator = () => {
   const { data, filterData } = useLoaderData() as {
     data: IRequestSupplierListResponse | null;
-    filterData: any;
+    filterData: { [key: string]: any };
   };
 
   const [
