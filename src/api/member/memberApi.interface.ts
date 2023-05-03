@@ -53,8 +53,9 @@ export interface IMemberDetailResponse {
   name: string;
   userId: string;
   birthday: string;
-  gender: string;
+  gender: number;
   empNumber: string;
+  checkerPhone: string;
   phone: string;
   email: string;
   stationOperator: TStationTypeKey;

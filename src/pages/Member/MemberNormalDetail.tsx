@@ -29,6 +29,9 @@ import { postNormalMemberModify } from "src/api/member/memberApi";
 import { getParams } from "src/utils/params";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
+import createValidation from "src/utils/validate";
+import { YUP_NORMAL_MEMBER } from "src/constants/valid/member";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 
 const receptionRadio = [
   { label: "Y", value: "Y" },
@@ -42,6 +45,11 @@ export const MemberNormalDetail = () => {
 
   /* 수정모드 */
   const [disabled, setDisabled] = useState(true);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
   /* 수정취소 모달 */
   const [isEditCancel, setIsEditCancel] = useState(false);
   /* 수정완료 모달 */
@@ -52,16 +60,17 @@ export const MemberNormalDetail = () => {
     name: data?.name ?? "",
     userId: data?.userId ?? "",
     birthday: data?.birthday ?? "",
-    gender: data?.gender ?? "",
-    // 사원번호
+    gender: (data?.gender ?? "").toString(),
+    /** @TODO checkerPhone, phone 휴대전화/전화번호 매칭 필요 */
+    checkerPhone: data?.checkerPhone ?? "",
     empNumber: data?.empNumber ?? "",
     phone: data?.phone ?? "",
     email: data?.email ?? "",
     stationOperator: data?.stationOperator ?? "",
-    // 등록일
+    /** @TODO 등록일 필드 추가 필요 */
     memberAuthDate: data?.memberAuthDate ?? "",
     memberCard: data?.memberCard ?? "",
-    payCards: data?.payCards ?? [], // 내부 데이터 필드
+    payCards: data?.payCards ?? [] /** @TODO 내부 데이터 필드 확인 필요 */,
     paymentCardNumber: data?.paymentCardNumber ?? "",
     statusType: data?.statusType ?? "",
     lastChangedPwdDate: data?.lastChangedPwdDate ?? "",
@@ -72,7 +81,7 @@ export const MemberNormalDetail = () => {
     carCompany: data?.carCompany ?? "",
     carModel: data?.carModel ?? "",
     carNumber: data?.carNumber ?? "",
-    // 비고
+    /** @TODO 비고 필드 추가 필요 */
   });
   const {
     id,
@@ -80,6 +89,7 @@ export const MemberNormalDetail = () => {
     userId,
     birthday,
     gender,
+    checkerPhone,
     empNumber,
     phone,
     email,
@@ -111,8 +121,21 @@ export const MemberNormalDetail = () => {
     const params = {
       ...inputs,
       id: Number(id),
+      gender: Number(gender),
     };
     getParams(params);
+
+    /* 유효성 체크 */
+    const scheme = createValidation(YUP_NORMAL_MEMBER);
+    const [invalid] = scheme(params);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
 
     /* 회원 정보 수정 요청 */
     const { code } = await postNormalMemberModify(params);
@@ -172,14 +195,17 @@ export const MemberNormalDetail = () => {
                 disabled,
                 titleWidthRatio: 4,
                 title: "사원번호",
-                content: "회원가입시 입력된 정보 노출",
+                name: "empNumber",
+                content: empNumber,
+                placeholder: "",
+                onChange,
               },
               {
                 disabled,
                 titleWidthRatio: 4,
                 title: "휴대전화 번호",
-                name: "empNumber",
-                content: empNumber,
+                name: "checkerPhone",
+                content: checkerPhone,
                 onChange,
               },
             ]}
@@ -331,7 +357,7 @@ export const MemberNormalDetail = () => {
             }}
           />
           <ButtonBase
-            label={"수정"}
+            label={disabled ? "수정" : "저장"}
             color={"turu"}
             className={"w-xs"}
             onClick={modify}
@@ -339,6 +365,12 @@ export const MemberNormalDetail = () => {
         </div>
       </BodyBase>
 
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
       <DetailCancelModal
         isOpen={isEditCancel}
         onClose={() => {

@@ -283,6 +283,11 @@ export const MemberNormal = () => {
               <SearchTextInput
                 title={"검색어"}
                 menuItems={dropdownGroupSearch}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({
+                    searchRange: value,
+                  });
+                }}
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
@@ -401,7 +406,11 @@ export const MemberNormal = () => {
                         <u>{data.userId ?? "-"}</u>
                       </HoverSpan>
                     </td>
-                    <td>{data.birthday ?? "-"}</td>
+                    <td>
+                      {data.birthday
+                        ? standardDateFormat(data.birthday, "YYYY.MM.DD")
+                        : "-"}
+                    </td>
                     <td>{data.phone ?? "-"}</td>
                     <td>{data.memberCard ?? "-"}</td>
                     <td>{data.memberAuthDate ?? "-"}</td>
