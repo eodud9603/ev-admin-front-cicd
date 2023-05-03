@@ -57,7 +57,7 @@ const dropdownGroupSort = [
   {
     menuItems: [
       { label: "기본", value: "CreatedDate" },
-      { label: "생년월일", value: "" },
+      { label: "생년월일", value: "Birthday" },
       { label: "회원 가입일", value: "CreatedDate" },
     ],
   },

@@ -126,6 +126,7 @@ import { noticeListLoader } from "src/pages/Operate/loader/noticeListLoader";
 import { noticeDetailLoader } from "src/pages/Operate/loader/noticeDetailLoader";
 import OperateCategory from "src/pages/Operate/OperateCategory";
 import { normalMemberListLoader } from "src/pages/Member/laoder/normalMemberListLoader";
+import { normalMemberDetailLoader } from "src/pages/Member/laoder/normalMemberDetailLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -226,7 +227,11 @@ const userRoutes: Array<RouteProps> = [
     element: <MemberNormal />,
     loader: normalMemberListLoader,
   },
-  { path: "/member/normal/detail/:id", element: <MemberNormalDetail /> },
+  {
+    path: "/member/normal/detail/:id",
+    element: <MemberNormalDetail />,
+    loader: normalMemberDetailLoader,
+  },
   { path: "/member/withdraw", element: <MemberWithdraw /> },
   { path: "/member/card/normal", element: <MemberNormalCard /> },
   {

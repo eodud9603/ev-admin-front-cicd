@@ -3,6 +3,8 @@ import api from "src/utils/api";
 import {
   IRequestNormalMemberList,
   INormalMemberListResponse,
+  IRequestNormalMemberDetail,
+  IMemberDetailResponse,
 } from "src/api/member/memberApi.interface";
 
 const { memberUrl } = API_URL;
@@ -18,4 +20,9 @@ export const getNormalMemberListExcel = (params: IRequestNormalMemberList) => {
     params,
     responseType: "blob",
   }) as unknown as Promise<Blob>;
+};
+
+/** 회원 상세 조회 api */
+export const getNormalMemberDetail = (params: IRequestNormalMemberDetail) => {
+  return api.get<IMemberDetailResponse>(`${memberUrl}/detail/${params.id}`);
 };
