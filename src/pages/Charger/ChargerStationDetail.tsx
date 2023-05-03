@@ -23,7 +23,7 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import styled from "styled-components";
 import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
-import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
+import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
 import SingleMapBase from "src/components/Common/Map/SingleMapBase";

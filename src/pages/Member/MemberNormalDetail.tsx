@@ -25,6 +25,10 @@ import {
   STATION_OPERATOR,
 } from "src/constants/status";
 import { standardDateFormat } from "src/utils/day";
+import { postNormalMemberModify } from "src/api/member/memberApi";
+import { getParams } from "src/utils/params";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
+import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
 
 const receptionRadio = [
   { label: "Y", value: "Y" },
@@ -36,7 +40,12 @@ export const MemberNormalDetail = () => {
 
   const navigate = useNavigate();
 
+  /* 수정모드 */
   const [disabled, setDisabled] = useState(true);
+  /* 수정취소 모달 */
+  const [isEditCancel, setIsEditCancel] = useState(false);
+  /* 수정완료 모달 */
+  const [isEditComplete, setIsEditComplete] = useState(false);
 
   const [inputs, { onChange }] = useInputs({
     id: (data?.id ?? "").toString(),
@@ -52,7 +61,7 @@ export const MemberNormalDetail = () => {
     // 등록일
     memberAuthDate: data?.memberAuthDate ?? "",
     memberCard: data?.memberCard ?? "",
-    payCards: data?.payCards ?? [],
+    payCards: data?.payCards ?? [], // 내부 데이터 필드
     paymentCardNumber: data?.paymentCardNumber ?? "",
     statusType: data?.statusType ?? "",
     lastChangedPwdDate: data?.lastChangedPwdDate ?? "",
@@ -63,6 +72,7 @@ export const MemberNormalDetail = () => {
     carCompany: data?.carCompany ?? "",
     carModel: data?.carModel ?? "",
     carNumber: data?.carNumber ?? "",
+    // 비고
   });
   const {
     id,
@@ -88,6 +98,31 @@ export const MemberNormalDetail = () => {
     carModel,
     carNumber,
   } = inputs;
+
+  /** 수정 */
+  const modify = async () => {
+    /* 수정모드 변경 */
+    if (disabled) {
+      setDisabled(false);
+      return;
+    }
+
+    /* 수정 params */
+    const params = {
+      ...inputs,
+      id: Number(id),
+    };
+    getParams(params);
+
+    /* 회원 정보 수정 요청 */
+    const { code } = await postNormalMemberModify(params);
+    /* 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      setIsEditComplete(true);
+      setDisabled((prev) => !prev);
+    }
+  };
 
   return (
     <ContainerBase>
@@ -127,6 +162,7 @@ export const MemberNormalDetail = () => {
                   disabled,
                   checked: data.value === gender,
                 }))}
+                onChange={onChange}
               />
             </DetailContentCol>
           </DetailRow>
@@ -284,18 +320,46 @@ export const MemberNormalDetail = () => {
             label={"목록"}
             outline={true}
             className={"mx-2 w-xs"}
-            onClick={() => navigate("/member/normal")}
+            onClick={() => {
+              /* 수정모드면 */
+              if (!disabled) {
+                setIsEditCancel(true);
+                return;
+              }
+
+              navigate("/member/normal");
+            }}
           />
           <ButtonBase
             label={"수정"}
             color={"turu"}
             className={"w-xs"}
-            onClick={() => {
-              setDisabled((prev) => !prev);
-            }}
+            onClick={modify}
           />
         </div>
       </BodyBase>
+
+      <DetailCancelModal
+        isOpen={isEditCancel}
+        onClose={() => {
+          setIsEditCancel((prev) => !prev);
+        }}
+        cancelHandler={() => {
+          navigate("/member/normal");
+        }}
+        title={"회원 정보 수정 취소 안내"}
+        contents={
+          "수정된 회원 정보가 저장되지 않습니다.\n수정을 취소하시겠습니까?"
+        }
+      />
+      <DetailCompleteModal
+        isOpen={isEditComplete}
+        onClose={() => {
+          setIsEditComplete((prev) => !prev);
+        }}
+        title={"회원 정보 수정 완료 안내"}
+        contents={"수정된 회원 정보가 저장되었습니다."}
+      />
     </ContainerBase>
   );
 };

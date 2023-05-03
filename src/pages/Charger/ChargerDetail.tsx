@@ -23,7 +23,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import styled from "styled-components";
 import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
-import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
+import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 import useInputs from "src/hooks/useInputs";
 import { useTabs } from "src/hooks/useTabs";

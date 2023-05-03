@@ -22,7 +22,7 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import styled from "styled-components";
 import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
-import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
+import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import useInputs from "src/hooks/useInputs";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
