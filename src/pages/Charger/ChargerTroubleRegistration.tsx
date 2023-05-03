@@ -15,7 +15,7 @@ import { DetailTextInputRow } from "src/components/Common/DetailContentRow/Detai
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { ChangeOperatorModal } from "src/pages/Counseling/components/ChangeOperatorModal";
 import { StationSearchModal } from "src/pages/Charger/components/StationSearchModal";
 import useInputs from "src/hooks/useInputs";
@@ -28,8 +28,11 @@ import { getParams } from "src/utils/params";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_BROKEN } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
+import { useTabs } from "src/hooks/useTabs";
+import { INIT_BROKEN_ADD } from "src/pages/Charger/loader/brokenRegistrationLoader";
 
 export const ChargerTroubleRegistration = () => {
+  const data = useLoaderData() as typeof INIT_BROKEN_ADD;
   const nav = useNavigate();
   const [isChangeOperatorModal, setIsChangeOperatorModal] = useState(false);
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
@@ -41,18 +44,7 @@ export const ChargerTroubleRegistration = () => {
   /* 등록완료 모달 */
   const [isAddComplete, setIsAddComplete] = useState(false);
 
-  const [inputs, { onChangeSingle, onChange }] = useInputs({
-    stationKey: "",
-    stationName: "",
-    chargerKey: "",
-    searchKey: "",
-    reservation: "",
-    damagedPart01: "" as TBrokenStatus,
-    damagedPart02: "" as TBrokenStatus,
-    managerMemo: "",
-    brokenContent: "",
-    managerName: "",
-  });
+  const [inputs, { onChangeSingle, onChange }] = useInputs(data);
   const {
     stationKey,
     stationName,
@@ -62,6 +54,13 @@ export const ChargerTroubleRegistration = () => {
     brokenContent,
     managerName,
   } = inputs;
+
+  useTabs({
+    data: inputs,
+    pageTitle: "충전기 고장/파손 등록",
+    pageType: "registration",
+  });
+
   /* 고장1 */
   const [damagedFilePart01, setDamagedFilePart01] = useState<
     Partial<{

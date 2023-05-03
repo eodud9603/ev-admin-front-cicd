@@ -34,12 +34,16 @@ import {
   YUP_CHARGER_BROKEN,
   YUP_CHARGER_BROKEN_EXTRA,
 } from "src/constants/valid/charger";
+import { useTabs } from "src/hooks/useTabs";
 
 export const ChargerTroubleDetail = () => {
-  const data = useLoaderData() as IBrokenDetailResponse | null;
+  const { data, editable = true } = useLoaderData() as {
+    data: IBrokenDetailResponse | null;
+    editable: boolean;
+  };
 
   /* 수정모드 */
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(editable);
   /* 충전소 검색 모달 */
   const [isStationSearchModal, setIsStationSearchModal] = useState(false);
   /* 삭제안내 모달 */
@@ -153,6 +157,13 @@ export const ChargerTroubleDetail = () => {
     };
 
   const navigate = useNavigate();
+
+  useTabs({
+    data: inputs,
+    pageTitle: "충전기 고장/파손 상세",
+    pageType: "detail",
+    editable: disabled,
+  });
 
   /** 뒤로가기 */
   const goBack = () => {

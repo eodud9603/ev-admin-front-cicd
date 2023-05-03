@@ -128,6 +128,7 @@ import OperateCategory from "src/pages/Operate/OperateCategory";
 import { normalMemberListLoader } from "src/pages/Member/laoder/normalMemberListLoader";
 import { normalMemberDetailLoader } from "src/pages/Member/laoder/normalMemberDetailLoader";
 import { stationAddLoader } from "src/pages/Charger/loader/stationAddLoader";
+import { brokenRegistrationLoader } from "src/pages/Charger/loader/brokenRegistrationLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -194,6 +195,7 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/trouble/registration",
     element: <ChargerTroubleRegistration />,
+    loader: brokenRegistrationLoader,
   },
   {
     path: "/charger/manufacturer",
