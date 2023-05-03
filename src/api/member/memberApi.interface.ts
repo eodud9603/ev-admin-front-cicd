@@ -72,3 +72,7 @@ export interface IMemberDetailResponse {
   carModel: string;
   carNumber: string;
 }
+
+/* 회원 수정 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%88%98%EC%A0%95_6 */
+export type IRequestModify = IMemberDetailResponse

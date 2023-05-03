@@ -28,7 +28,7 @@ import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal
 import { YNType } from "src/api/api.interface";
 import { fileUpload } from "src/utils/upload";
 import { getParams } from "src/utils/params";
-import DetailCancelModal from "src/pages/Charger/components/DetailCancelModal";
+import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_OPERATOR } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";

@@ -5,6 +5,7 @@ import {
   INormalMemberListResponse,
   IRequestNormalMemberDetail,
   IMemberDetailResponse,
+  IRequestModify,
 } from "src/api/member/memberApi.interface";
 
 const { memberUrl } = API_URL;
@@ -25,4 +26,9 @@ export const getNormalMemberListExcel = (params: IRequestNormalMemberList) => {
 /** 회원 상세 조회 api */
 export const getNormalMemberDetail = (params: IRequestNormalMemberDetail) => {
   return api.get<IMemberDetailResponse>(`${memberUrl}/detail/${params.id}`);
+};
+
+/** 회원 수정 api */
+export const postNormalMemberModify = (body: IRequestModify) => {
+  return api.post<undefined>(`${memberUrl}/modify`, { body });
 };
