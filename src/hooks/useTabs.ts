@@ -64,9 +64,9 @@ export const useTabs = (props: IUseTabsProps) => {
         //리스트 페이지가 아니고 데이터가 있을때
         tabStore.changeData(pathname, { ...saveData, data: dataRef.current });
       } else if (index > -1) {
+        console.log("return data :: ", saveData);
         tabStore.changeData(pathname, {
           ...saveData,
-          data: dataRef.current,
           filterData: filterRef.current,
         });
       }
@@ -76,6 +76,7 @@ export const useTabs = (props: IUseTabsProps) => {
   // 검색 시 데이터 저장
   const searchDataStorage = useCallback((data: any) => {
     saveData.data = data;
+    console.log("storage ::", data);
     tabStore.changeData(pathname, saveData);
   }, []);
 

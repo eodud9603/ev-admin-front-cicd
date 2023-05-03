@@ -31,7 +31,6 @@ import {
   getSupplierList,
   postSupplierModifyActive,
 } from "src/api/supplier/supplierApi";
-import { YNType } from "src/api/api.interface";
 import { getParams } from "src/utils/params";
 
 const dropdownGroupSearch = [
@@ -77,7 +76,10 @@ const tableHeader = [
 ];
 
 export const ChargerOperator = () => {
-  const data = useLoaderData() as IRequestSupplierListResponse | null;
+  const { data, filterData } = useLoaderData() as {
+    data: IRequestSupplierListResponse | null;
+    filterData: any;
+  };
 
   const [
     { list, page, lastPage, total, message, time },
@@ -93,16 +95,15 @@ export const ChargerOperator = () => {
   /* 체크 리스트 */
   const [checkList, setCheckList] = useState<number[]>([]);
 
-  const [
-    { searchRange, searchText, isActive, sort, isContracted, count },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    searchRange: "SupplierName",
-    searchText: "",
-    isActive: "" as YNType,
-    sort: "CreatedDate",
-    isContracted: "" as YNType,
-    count: "10",
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
+
+  const { searchRange, searchText, isActive, sort, isContracted, count } =
+    inputs;
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "서비스 운영사 관리",
+    filterData: inputs,
   });
   const searchKeyword =
     dropdownGroupSearch.find((data) => searchRange === data.value)
@@ -143,6 +144,7 @@ export const ChargerOperator = () => {
           page: searchParams.page,
           emptyMessage: "검색된 서비스 운영사 정보가 없습니다.",
         });
+        searchDataStorage(data);
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }
@@ -184,8 +186,6 @@ export const ChargerOperator = () => {
     nav(`${pathname}/detail/${id}`);
   };
 
-  useTabs({ data: data, pageTitle: "서비스 운영사 관리" });
-
   return (
     <ContainerBase>
       <HeaderBase />
@@ -213,6 +213,9 @@ export const ChargerOperator = () => {
                     searchRange: value,
                   });
                 }}
+                initSelectedValue={dropdownGroupSearch.find(
+                  (e) => e.value === searchRange
+                )}
                 placeholder={`${searchKeyword} 입력해주세요`}
                 name={"searchText"}
                 className={""}
@@ -239,6 +242,9 @@ export const ChargerOperator = () => {
                 label={"정렬기준"}
                 dropdownItems={dropdownGroupSort.map((data) => ({
                   ...data,
+                  initSelectedValue: data.menuItems.find(
+                    (e) => e.value === sort
+                  ),
                   onClickDropdownItem: (label, value) => {
                     onChangeSingle({
                       sort: value,
