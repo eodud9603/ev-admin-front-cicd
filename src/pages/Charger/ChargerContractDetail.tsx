@@ -26,7 +26,6 @@ import { IStationContractDetailResponse } from "src/api/station/stationApi.inter
 import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
 import { postStationContractModify } from "src/api/station/stationApi";
 import { YNType } from "src/api/api.interface";
-import { useTabStore } from "src/store/tabStore";
 import { TContractStatus } from "src/constants/status";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
@@ -35,13 +34,17 @@ import {
   YUP_CHARGER_CONTRACT,
   YUP_CHARGER_CONTRACT_EXTRA,
 } from "src/constants/valid/charger";
+import { useTabs } from "src/hooks/useTabs";
 
 const ChargerContractDetail = () => {
   /** init 충전소 계약 상세 데이터 */
-  const data = useLoaderData() as IStationContractDetailResponse | null;
+  const { data, editable = true } = useLoaderData() as {
+    data: IStationContractDetailResponse | null;
+    editable: boolean;
+  };
 
   /** 전역 disabled 처리 */
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(editable);
   /* 미입력 안내 모달 */
   const [invalidModal, setInvalidModal] = useState({
     isOpen: false,
@@ -116,6 +119,13 @@ const ChargerContractDetail = () => {
     url: data?.contractFileUrl ?? "",
   });
 
+  useTabs({
+    data: inputs,
+    pageTitle: "충전소 계약 상세",
+    pageType: "detail",
+    editable: disabled,
+  });
+
   const navigate = useNavigate();
 
   /** 계약 수정 */
@@ -171,23 +181,6 @@ const ChargerContractDetail = () => {
       });
     }
   };
-
-  const tabStore = useTabStore();
-
-  useEffect(() => {
-    const index = tabStore.data.findIndex((e) =>
-      location.pathname.includes(e.path)
-    );
-    if (index > -1) {
-      tabStore.changeData(location.pathname, {
-        data: data,
-        label: "충전소 계약 상세",
-        path: location.pathname,
-        rootPath: location.pathname.split("/detail")[0],
-      });
-    }
-    tabStore.setActive(location.pathname);
-  }, []);
 
   return (
     <ContainerBase>
