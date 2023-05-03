@@ -340,7 +340,9 @@ const OperateNotice = () => {
                       />
                     </td>
                     <td>{(page - 1) * Number(count) + index + 1}</td>
-                    <td>{data.title}</td>
+                    <td className={"text-turu"}>
+                      <u>{data.title}</u>
+                    </td>
                     <td>{UPLOAD_TYPE[data.uploadType] ?? "-"}</td>
                     <td>{data.writer ?? "-"}</td>
                     <td>{data.readCount}</td>
