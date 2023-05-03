@@ -33,14 +33,17 @@ import { OPERATOR_FILTER_LIST } from "src/constants/list";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 import ContractDropdown from "src/pages/Charger/components/ContractDropdown";
 import { IRequestStationRegister } from "src/api/station/stationApi.interface";
-import { YNType } from "src/api/api.interface";
 import { getParams } from "src/utils/params";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_STATION } from "src/constants/valid/charger";
 import { objectToArray } from "src/utils/convert";
 import { SUPPLY_METHOD } from "src/constants/status";
+import { useTabs } from "src/hooks/useTabs";
+import { useLoaderData } from "react-router-dom";
+import { INIT_CHARGER_STATION_ADD } from "src/pages/Charger/loader/stationAddLoader";
 
 const ChargerStationAdd = () => {
+  const data = useLoaderData() as typeof INIT_CHARGER_STATION_ADD;
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 운영정보 drop */
@@ -48,52 +51,7 @@ const ChargerStationAdd = () => {
   /* 계약정보 drop */
   const [isContractDrop, setIsContractDrop] = useState(true);
 
-  const [inputs, { onChange, onChangeSingle }] = useInputs({
-    /* 기본정보 */
-    stationName: "",
-    stationKey: "",
-    location: "",
-    operator: "HEV",
-    isUse: "" as YNType,
-    business: "" /* 위탁사업자 > dropdown */,
-    directInput: "1" /* 직접입력 check "1": 체크, "0": "미체크" */,
-    consignmentCompany: "" /* 위탁사업자명 (input text) */,
-    isOpen: "" as YNType,
-    quickChargerCount: "",
-    standardChargerCount: "",
-    powerSocket: "",
-    powerSocketCount: "",
-    isHidden: "" as YNType,
-    supplyMethod: "",
-    billDivision: "" as YNType,
-    kepcoCustomerNum: "",
-    meterNum: "",
-    kepcoFee: "",
-    kepcoOffice: "",
-    kepcoPayment: "",
-    entryDate: "",
-    chargerLocation: "",
-    addressRoad: "",
-    zoneCode: "",
-    addressJibun: "",
-    addressJibunDetail: "",
-    memo: "",
-    etcInfo: "",
-    /* 운영정보 */
-    baseOperationTimeFrom: "",
-    baseOperationTimeTo: "",
-    holidayOperationTimeFrom: "",
-    holidayOperationTimeTo: "",
-    saturdayOperationTimeFrom: "",
-    saturdayOperationTimeTo: "",
-    isParkFeeFree: "",
-    parkFee: "" /* 수정 필요 필드 */,
-    /* 지도 좌표 */
-    lat: "",
-    lng: "",
-    /* 계약정보 */
-    contractId: "",
-  });
+  const [inputs, { onChange, onChangeSingle }] = useInputs(data);
   const {
     /* 기본정보 */
     stationName,
@@ -188,6 +146,12 @@ const ChargerStationAdd = () => {
     }
   };
 
+  useTabs({
+    data: inputs,
+    pageTitle: "충전소 등록",
+    pageType: "add",
+  });
+
   return (
     <ContainerBase>
       <HeaderBase />
@@ -199,7 +163,7 @@ const ChargerStationAdd = () => {
           list={[
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
-            { label: "충전소 관리", href: "/charger/chargerStation" },
+            { label: "충전소 관리", href: "/charger/station" },
             { label: "충전소 신규 등록", href: "" },
           ]}
           title={"충전소 신규 등록"}
@@ -862,7 +826,7 @@ const ChargerStationAdd = () => {
           containerClassName={"my-5"}
           rightButtonTitle={"등록"}
           listHandler={() => {
-            navigate("/charger/chargerStation");
+            navigate("/charger/station");
           }}
           rightButtonHandler={save}
         />
@@ -874,7 +838,7 @@ const ChargerStationAdd = () => {
           setIsRegistrationComplete((prev) => !prev);
         }}
         onClosed={() => {
-          navigate("/charger/chargerStation");
+          navigate("/charger/station");
         }}
         title={"신규 충전소 등록 완료"}
         contents={"충전소 정보가 등록되었습니다."}
@@ -885,7 +849,7 @@ const ChargerStationAdd = () => {
           setIsRegistrationCancel((prev) => !prev);
         }}
         cancelHandler={() => {
-          navigate("/charger/chargerStation");
+          navigate("/charger/station");
         }}
         title={"신규 충전소 정보 등록 취소 안내"}
         contents={

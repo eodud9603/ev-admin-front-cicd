@@ -330,7 +330,7 @@ const getPopup = (chargerStation: {
           font-weight: 800;
         ">
           ${chargerStation.stationName}:
-           <a href="/charger/chargerStation/detail/${chargerStation.stationId}">
+           <a href="/charger/station/detail/${chargerStation.stationId}">
             ${chargerStation.stationId}
            </a>
         </p>

@@ -125,6 +125,7 @@ import { evModelListLoader } from "src/pages/Operate/loader/evModelListLoader";
 import { noticeListLoader } from "src/pages/Operate/loader/noticeListLoader";
 import { noticeDetailLoader } from "src/pages/Operate/loader/noticeDetailLoader";
 import OperateCategory from "src/pages/Operate/OperateCategory";
+import { stationAddLoader } from "src/pages/Charger/loader/stationAddLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -134,16 +135,17 @@ const userRoutes: Array<RouteProps> = [
   { path: "/chargeMonitoring/chargerControl", element: <ChargerControl /> },
   /* 충전소 및 충전기 관리 */
   {
-    path: "/charger/chargerStation",
+    path: "/charger/station",
     element: <ChargingStation />,
     loader: stationListLoader,
   },
   {
-    path: "/charger/chargerStation/add",
+    path: "/charger/station/add",
     element: <ChargerStationAdd />,
+    loader: stationAddLoader,
   },
   {
-    path: "/charger/chargerStation/detail/:id",
+    path: "/charger/station/detail/:id",
     element: <ChargerStationDetail />,
     loader: stationDetailLoader,
   },

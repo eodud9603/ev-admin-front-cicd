@@ -213,9 +213,7 @@ export const Playground = (props: any) => {
                 }
               >
                 <MenuItem
-                  component={
-                    <Link to={moveToPath("/charger/ChargerStation")} />
-                  }
+                  component={<Link to={moveToPath("/charger/station")} />}
                 >
                   충전소 관리
                 </MenuItem>

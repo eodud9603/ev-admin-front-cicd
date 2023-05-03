@@ -13,17 +13,22 @@ export const stationDetailLoader = async ({ params }: IStationDetailParams) => {
     return null;
   }
 
-  const loadData = loadTabData(`/charger/chargerStation/detail/${params.id}`);
+  const loadData = loadTabData(`/charger/station/detail/${params.id}`);
+  console.log("station loader data ::", loadData);
   if (loadData?.data) {
-    return loadData?.data;
+    return loadData;
   }
-
+  console.log(1123123);
   /* 충전소 상세 정보 조회 */
   const { data } = await getStationDetail({ id: params.id });
   /* 충전소별 충전기 목록 조회 */
   const { data: chargerData } = await getChargerListByStation({
     stationId: params.id,
   });
-
-  return { station: data ?? {}, charger: chargerData ?? [] };
+  console.log("충전기 ::", data);
+  console.log("충전기2 ::", chargerData);
+  return {
+    data: { station: data ?? {}, charger: chargerData ?? [] },
+    editable: true,
+  };
 };

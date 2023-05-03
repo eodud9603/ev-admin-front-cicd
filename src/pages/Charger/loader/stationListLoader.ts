@@ -26,7 +26,7 @@ export const INIT_STATION = {
 };
 
 export const stationListLoader = async () => {
-  const loadData = loadTabData("/charger/ChargerStation");
+  const loadData = loadTabData("/charger/station");
   if (loadData?.data || loadData?.filterData) {
     return loadData;
   }

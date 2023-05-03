@@ -228,7 +228,6 @@ const ChargerAdd = () => {
     }
   };
 
-  /** focus시, unmounted됐을 때, 가장 최신 데이터 가져오는 콜백 함수 */
   useTabs({
     data: {
       inputs: inputs,

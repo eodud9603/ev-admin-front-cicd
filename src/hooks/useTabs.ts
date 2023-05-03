@@ -13,9 +13,14 @@ interface IUseTabsProps {
   editable?: boolean;
   filterData?: { [key: string]: string };
 }
-export const useTabs = (props: IUseTabsProps) => {
+export const useTabs = ({
+  data,
+  pageTitle,
+  pageType,
+  editable = false,
+  filterData,
+}: IUseTabsProps) => {
   const { pathname } = useLocation();
-  const { data, pageTitle, pageType, editable = false, filterData } = props;
   const tabStore = useTabStore();
 
   const index = tabStore.data.findIndex((e) => pathname.includes(e.path));
@@ -60,7 +65,6 @@ export const useTabs = (props: IUseTabsProps) => {
     return () => {
       /* unmounted 시점 최신 데이터 저장 */
       if (pageType && index > -1) {
-        //리스트 페이지가 아니고 데이터가 있을때
         tabStore.changeData(pathname, { ...saveData, data: dataRef.current });
       } else if (index > -1) {
         tabStore.changeData(pathname, {
@@ -69,7 +73,7 @@ export const useTabs = (props: IUseTabsProps) => {
         });
       }
     };
-  }, [tabStore.data.length]);
+  }, [tabStore.data.length, saveData.editable]);
 
   // 검색 시 데이터 저장
   const searchDataStorage = useCallback((data: any) => {

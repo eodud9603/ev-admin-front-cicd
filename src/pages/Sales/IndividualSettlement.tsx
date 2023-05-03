@@ -314,7 +314,7 @@ const IndividualSettlement = () => {
                       className={"text-turu"}
                       onClick={() => {
                         navigate(
-                          "/charger/chargerStation/detail/" +
+                          "/charger/station/detail/" +
                             settlement.chargerStationId
                         );
                       }}

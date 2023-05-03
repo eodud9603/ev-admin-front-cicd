@@ -91,14 +91,17 @@ const chargerTableHeader = [
 
 const ChargerStationDetail = () => {
   /** init api response */
-  const initData = useLoaderData() as {
-    station: IStationDetailResponse;
-    charger: IChargerListByStationResponse;
-  } | null;
+  const { data, editable } = useLoaderData() as {
+    data: {
+      station: IStationDetailResponse;
+      charger: IChargerListByStationResponse;
+    } | null;
+    editable: boolean;
+  };
   /** 충전소 상세 */
-  const detail = initData?.station;
+  const detail = data?.station;
   /** 충전소별 충전기 */
-  const chargers = initData?.charger;
+  const chargers = data?.charger;
   /* 충전기 상태 통계 */
   const { fast, slow, total, communication, valid, ing, etc } =
     getChargerStatusStatistics(chargers);
@@ -111,7 +114,7 @@ const ChargerStationDetail = () => {
   const [isContractDrop, setIsContractDrop] = useState(true);
 
   /* 전역 disabled 처리 */
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(editable);
   /* 미입력 안내 모달 */
   const [invalidModal, setInvalidModal] = useState({
     isOpen: false,
@@ -230,7 +233,16 @@ const ChargerStationDetail = () => {
   const onChangeModalVisible = () => {
     setAddrSearchModalOpen((prev) => !prev);
   };
-  useTabs({ data: detail, pageTitle: "충전소 상세", pageType: "detail" });
+
+  useTabs({
+    data: {
+      station: inputs,
+      charger: chargers,
+    },
+    pageTitle: "충전소 상세",
+    pageType: "detail",
+    editable: disabled,
+  });
 
   /** 수정 */
   const modify = async () => {
@@ -1125,7 +1137,7 @@ const ChargerStationDetail = () => {
               return;
             }
 
-            navigate("/charger/chargerStation");
+            navigate("/charger/station");
           }}
           rightButtonHandler={modify}
         />
@@ -1151,7 +1163,7 @@ const ChargerStationDetail = () => {
           setIsEditCancel((prev) => !prev);
         }}
         cancelHandler={() => {
-          navigate("/charger/chargerStation");
+          navigate("/charger/station");
         }}
         title={"충전소 정보 수정 취소 안내"}
         contents={

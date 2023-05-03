@@ -337,7 +337,7 @@ const ChargerControl = () => {
                   <td>{info.useType}</td>
                   <td
                     onClick={() => {
-                      navigate(`/charger/chargerStation/detail/${info.id}`);
+                      navigate(`/charger/station/detail/${info.id}`);
                     }}
                   >
                     <HoverSpan className={"text-turu"}>

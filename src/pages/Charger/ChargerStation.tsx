@@ -278,7 +278,7 @@ const ChargingStationManagement = () => {
                 label={"신규 등록"}
                 color={"turu"}
                 onClick={() => {
-                  navigate("/charger/chargerStation/add");
+                  navigate("/charger/station/add");
                 }}
               />
               <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
@@ -313,7 +313,7 @@ const ChargingStationManagement = () => {
                         <HoverSpan
                           className={"text-turu"}
                           onClick={() => {
-                            navigate(`/charger/chargerStation/detail/${id}`);
+                            navigate(`/charger/station/detail/${id}`);
                           }}
                         >
                           <u>{stationNm}</u>
