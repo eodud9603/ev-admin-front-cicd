@@ -49,6 +49,11 @@ export interface IRequestNormalMemberDetail {
   id: number;
 }
 
+export interface IPayCardItem {
+  cardNo: string; 
+  copName: string;
+}
+
 export interface IMemberDetailResponse {
   id: number;
   name: string;
@@ -62,7 +67,7 @@ export interface IMemberDetailResponse {
   stationOperator: TStationTypeKey;
   memberAuthDate: string;
   memberCard: string;
-  payCards: unknown[];
+  payCards: IPayCardItem[];
   paymentCardNumber: string;
   statusType: TMemberStatusTypeKey;
   lastChangedPwdDate: string;

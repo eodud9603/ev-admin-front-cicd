@@ -61,10 +61,9 @@ export const MemberNormalDetail = () => {
     userId: data?.userId ?? "",
     birthday: data?.birthday ?? "",
     gender: (data?.gender ?? "").toString(),
-    /** @TODO checkerPhone, phone 휴대전화/전화번호 매칭 필요 */
-    checkerPhone: data?.checkerPhone ?? "",
+    checkerPhone: data?.checkerPhone ?? "" /* 전화번호 */,
     empNumber: data?.empNumber ?? "",
-    phone: data?.phone ?? "",
+    phone: data?.phone ?? "" /* 휴대전화 번호 */,
     email: data?.email ?? "",
     stationOperator: data?.stationOperator ?? "",
     /** @TODO 등록일 필드 추가 필요 */
@@ -204,8 +203,8 @@ export const MemberNormalDetail = () => {
                 disabled,
                 titleWidthRatio: 4,
                 title: "휴대전화 번호",
-                name: "checkerPhone",
-                content: checkerPhone,
+                name: "phone",
+                content: phone,
                 onChange,
               },
             ]}
@@ -224,8 +223,8 @@ export const MemberNormalDetail = () => {
                 disabled,
                 titleWidthRatio: 4,
                 title: "전화 번호",
-                name: "phone",
-                content: phone,
+                name: "checkerPhone",
+                content: checkerPhone,
                 onChange,
               },
             ]}
@@ -251,7 +250,14 @@ export const MemberNormalDetail = () => {
               { title: "회원카드 번호", content: memberCard },
               {
                 title: "결제카드 정보",
-                content: "-",
+                content:
+                  payCards.length === 0
+                    ? "-"
+                    : payCards.reduce(
+                        (acc, cur) =>
+                          (acc += `[${cur.copName}] ${cur.cardNo}\n`),
+                        ""
+                      ),
               },
             ]}
           />
