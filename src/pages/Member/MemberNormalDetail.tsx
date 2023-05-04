@@ -8,6 +8,7 @@ import styled from "styled-components";
 import { Label } from "reactstrap";
 import {
   DetailContentCol,
+  DetailGroupCol,
   DetailLabelCol,
   DetailRow,
 } from "src/components/Common/DetailContentRow/Detail";
@@ -32,6 +33,8 @@ import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
 import createValidation from "src/utils/validate";
 import { YUP_NORMAL_MEMBER } from "src/constants/valid/member";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
+import TextInputBase from "src/components/Common/Input/TextInputBase";
+import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 
 const receptionRadio = [
   { label: "Y", value: "Y" },
@@ -45,6 +48,8 @@ export const MemberNormalDetail = () => {
 
   /* 수정모드 */
   const [disabled, setDisabled] = useState(true);
+  /* 주소검색 모달 */
+  const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
   /* 미입력 안내 모달 */
   const [invalidModal, setInvalidModal] = useState({
     isOpen: false,
@@ -55,32 +60,35 @@ export const MemberNormalDetail = () => {
   /* 수정완료 모달 */
   const [isEditComplete, setIsEditComplete] = useState(false);
 
-  const [inputs, { onChange }] = useInputs({
-    id: (data?.id ?? "").toString(),
-    name: data?.name ?? "",
-    userId: data?.userId ?? "",
-    birthday: data?.birthday ?? "",
-    gender: (data?.gender ?? "").toString(),
-    checkerPhone: data?.checkerPhone ?? "" /* 전화번호 */,
-    empNumber: data?.empNumber ?? "",
-    phone: data?.phone ?? "" /* 휴대전화 번호 */,
-    email: data?.email ?? "",
-    stationOperator: data?.stationOperator ?? "",
-    /** @TODO 등록일 필드 추가 필요 */
-    memberAuthDate: data?.memberAuthDate ?? "",
-    memberCard: data?.memberCard ?? "",
-    payCards: data?.payCards ?? [] /** @TODO 내부 데이터 필드 확인 필요 */,
-    paymentCardNumber: data?.paymentCardNumber ?? "",
-    statusType: data?.statusType ?? "",
-    lastChangedPwdDate: data?.lastChangedPwdDate ?? "",
-    delayChangePwdDate: data?.delayChangePwdDate ?? "",
-    isAgreeEmail: data?.isAgreeEmail ?? "",
-    isAgreeSms: data?.isAgreeSms ?? "",
-    isAgreeMarketing: data?.isAgreeMarketing ?? "",
-    carCompany: data?.carCompany ?? "",
-    carModel: data?.carModel ?? "",
-    carNumber: data?.carNumber ?? "",
-    /** @TODO 비고 필드 추가 필요 */
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
+    id: (data.id ?? "").toString(),
+    name: data.name ?? "",
+    userId: data.userId ?? "",
+    birthday: data.birthday ?? "",
+    gender: (data.gender ?? "").toString(),
+    checkerPhone: data.checkerPhone ?? "" /* 전화번호 */,
+    empNumber: data.empNumber ?? "",
+    phone: data.phone ?? "" /* 휴대전화 번호 */,
+    email: data.email ?? "",
+    stationOperator: data.stationOperator ?? "",
+    createdDate: data.createdDate ?? "",
+    memberAuthDate: data.memberAuthDate ?? "",
+    zoneCode: data.zoneCode ?? "",
+    addressJibun: data.addressJibun ?? "",
+    addressDetail: data.addressDetail ?? "",
+    memberCard: data.memberCard ?? "",
+    payCards: data.payCards ?? [],
+    paymentCardNumber: data.paymentCardNumber ?? "",
+    statusType: data.statusType ?? "",
+    lastChangedPwdDate: data.lastChangedPwdDate ?? "",
+    delayChangePwdDate: data.delayChangePwdDate ?? "",
+    isAgreeEmail: data.isAgreeEmail ?? "",
+    isAgreeSms: data.isAgreeSms ?? "",
+    isAgreeMarketing: data.isAgreeMarketing ?? "",
+    carCompany: data.carCompany ?? "",
+    carModel: data.carModel ?? "",
+    carNumber: data.carNumber ?? "",
+    memo: data.memo ?? "",
   });
   const {
     id,
@@ -93,10 +101,13 @@ export const MemberNormalDetail = () => {
     phone,
     email,
     stationOperator,
+    createdDate,
     memberAuthDate,
+    zoneCode,
+    addressJibun,
+    addressDetail,
     memberCard,
     payCards,
-    paymentCardNumber,
     statusType,
     lastChangedPwdDate,
     delayChangePwdDate,
@@ -106,7 +117,13 @@ export const MemberNormalDetail = () => {
     carCompany,
     carModel,
     carNumber,
+    memo,
   } = inputs;
+
+  /** 주소 검색 modal visible */
+  const onChangeModalVisible = () => {
+    setAddrSearchModalOpen((prev) => !prev);
+  };
 
   /** 수정 */
   const modify = async () => {
@@ -238,13 +255,65 @@ export const MemberNormalDetail = () => {
               {
                 title: "회원 가입일(정회원 인증일)",
                 content:
-                  `YYYY.MM.DD ` +
+                  (createdDate
+                    ? standardDateFormat(createdDate, "YYYY.MM.DD")
+                    : "") +
                   (memberAuthDate
                     ? `(${standardDateFormat(memberAuthDate, "YYYY.MM.DD")})`
                     : ""),
               },
             ]}
           />
+
+          <DetailRow>
+            <DetailGroupCol>
+              <DetailLabelCol sm={2}>지번 주소</DetailLabelCol>
+              <DetailContentCol>
+                <div className={"d-flex gap-4"}>
+                  <TextInputBase
+                    disabled={true}
+                    inputstyle={{ flex: 1 }}
+                    bsSize={"lg"}
+                    className={"mb-4"}
+                    placeholder={""}
+                    name={"zoneCode"}
+                    value={zoneCode}
+                    onChange={onChange}
+                  />
+                  <div style={{ flex: 3 }}>
+                    {!disabled && (
+                      <ButtonBase
+                        className={"width-110"}
+                        outline
+                        label={"우편번호 검색"}
+                        color={"turu"}
+                        onClick={onChangeModalVisible}
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className={"d-flex gap-4"}>
+                  <TextInputBase
+                    disabled={true}
+                    bsSize={"lg"}
+                    placeholder={""}
+                    name={"addressJibun"}
+                    value={addressJibun}
+                    onChange={onChange}
+                  />
+                  <TextInputBase
+                    bsSize={"lg"}
+                    disabled={disabled}
+                    placeholder={"상세 주소를 입력해주세요"}
+                    name={"addressDetail"}
+                    value={addressDetail}
+                    onChange={onChange}
+                  />
+                </div>
+              </DetailContentCol>
+            </DetailGroupCol>
+          </DetailRow>
+
           <DetailTextRow
             rows={[
               { title: "회원카드 번호", content: memberCard },
@@ -342,7 +411,9 @@ export const MemberNormalDetail = () => {
                 disabled,
                 titleWidthRatio: 2,
                 title: "비고",
-                content: "-",
+                name: "memo",
+                content: memo,
+                onChange,
               },
             ]}
           />
@@ -371,6 +442,16 @@ export const MemberNormalDetail = () => {
         </div>
       </BodyBase>
 
+      <AddressSearchModal
+        isOpen={addrSearchModalOpen}
+        onClose={onChangeModalVisible}
+        onchange={(data) => {
+          onChangeSingle({
+            zoneCode: data.zipCode,
+            addressJibun: data.jibun,
+          });
+        }}
+      />
       <DetailValidCheckModal
         {...invalidModal}
         onClose={() =>

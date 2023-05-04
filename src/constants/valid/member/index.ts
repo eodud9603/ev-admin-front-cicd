@@ -42,6 +42,15 @@ export const YUP_NORMAL_MEMBER: FieldSchemaMap = {
         "유효한 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
+  zoneCode: {
+    validation: string().required("우편번호는 필수 입력 항목입니다."),
+  },
+  addressJibun: {
+    validation: string().required("주소는 필수 입력 항목입니다."),
+  },
+  addressDetail: {
+    validation: string().required("상세주소는 필수 입력 항목입니다."),
+  },
   isAgreeEmail: {
     validation: string()
       .required("메일 수신 동의 여부는 필수 선택 항목입니다.")

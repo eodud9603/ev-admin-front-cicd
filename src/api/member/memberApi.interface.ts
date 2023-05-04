@@ -65,6 +65,7 @@ export interface IMemberDetailResponse {
   phone: string;
   email: string;
   stationOperator: TStationTypeKey;
+  createdDate: string;
   memberAuthDate: string;
   memberCard: string;
   payCards: IPayCardItem[];
@@ -78,6 +79,11 @@ export interface IMemberDetailResponse {
   carCompany: string;
   carModel: string;
   carNumber: string;
+  memo: string;
+
+  zoneCode: string;
+  addressJibun: string;
+  addressDetail: string;
 }
 
 /* 회원 수정 */
