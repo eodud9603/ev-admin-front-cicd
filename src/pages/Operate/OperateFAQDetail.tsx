@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Col, Row } from "reactstrap";
+import { useNavigate } from "react-router";
+import { Col, Input, Row } from "reactstrap";
+import { INoticeDetailFileItem } from "src/api/board/noticeApi.interface";
+import { postFileUpload } from "src/api/common/commonApi";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
-import EditorBase from "src/components/Common/Editor/EditorBase";
+import EditorBody from "src/components/Common/Editor/EditorBody";
 import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import BodyBase from "src/components/Common/Layout/BodyBase";
@@ -12,16 +15,17 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { UPLOAD_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
+import styled from "styled-components";
 
 const OperateFAQDetail = () => {
-  const [tabList, setTabList] = useState([{ label: "FAQ" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
+  const navigate = useNavigate();
+
   const [disabled, setDisabled] = useState(true);
 
   const initContents =
     "<pre>안녕하세요! 모빌리티로 통하는 세상 트루입니다.</pre>";
   const [
-    { date, deleteStatus, writer, views, uploadTarget, title, attachmentList },
+    { date, deleteStatus, writer, views, uploadTarget, title, files },
     { onChange, onChangeSingle },
   ] = useInputs({
     date: "2022-11-31 12:00:00",
@@ -32,40 +36,51 @@ const OperateFAQDetail = () => {
     uploadTarget: "1",
     title: "개인정보 처리 방침 변경 안내",
     contents: initContents,
-    attachmentList: [{ name: "2023.01.07 개인정보 처리 방침.pdf" }],
+    files: [] as INoticeDetailFileItem[],
   });
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
+  /** 첨부파일 업로드 */
+  const upload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!e.target.files) {
       return;
     }
 
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
+    const uploadCount = e.target.files.length;
+    const totalCount = files.length + e.target.files.length;
+    if (uploadCount === 0) {
+      return;
+    }
+    if (totalCount > 3) {
+      return alert("최대 3개까지 등록 가능합니다.");
     }
 
-    setTabList(tempList);
+    /* 첨부파일 업로드 요청 */
+    void postFileUpload(e.target.files).then(({ code, data }) => {
+      /** 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        onChangeSingle({
+          files: [
+            ...files,
+            ...data.elements.map((data) => ({ ...data, filePath: data.url })),
+          ],
+        });
+      }
+
+      e.target.value = "";
+    });
+  };
+
+  /** 수정 */
+  const modify = () => {
+    setDisabled((prev) => !prev);
   };
 
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -75,79 +90,19 @@ const OperateFAQDetail = () => {
             { label: "FAQ", href: "" },
             { label: "FAQ 상세", href: "" },
           ]}
+          title={"FAQ 상세"}
         />
-        <div
-          className={"mb-4 d-flex align-items-center justify-content-between"}
-        >
-          <h3 className={"m-0 font-size-24"}>FAQ 상세</h3>
-          <div className={"d-flex gap-2"}>
-            {disabled && <ButtonBase label={"삭제"} color={"dark"} />}
-            <ButtonBase
-              label={disabled ? "수정하기" : "저장하기"}
-              color={"turu"}
-              onClick={() => {
-                if (!disabled) {
-                  /** @TODO 저장(수정) 로직 추가 */
-                }
-
-                setDisabled((prev) => !prev);
-              }}
-            />
-          </div>
-        </div>
 
         <Row
           className={
             "py-3 d-flex align-items-center " +
-            "border-top border-2 border-light border-opacity-50 pt-4"
-          }
-        >
-          <Col className={"font-size-14 fw-semibold"} sm={1}>
-            작성일
-          </Col>
-          <Col sm={3}>
-            <TextInputBase
-              name={"date"}
-              disabled={true}
-              value={date}
-              onChange={onChange}
-            />
-          </Col>
-          <Col sm={3} />
-          <Col className={"font-size-14 fw-semibold"} sm={1}>
-            삭제여부
-          </Col>
-          <Col sm={4}>
-            <RadioGroup
-              name={"deleteStatus"}
-              list={[
-                {
-                  label: "Y",
-                  value: "Y",
-                  checked: deleteStatus === "Y",
-                  disabled,
-                },
-                {
-                  label: "N",
-                  value: "N",
-                  checked: deleteStatus === "N",
-                  disabled,
-                },
-              ]}
-              onChange={onChange}
-            />
-          </Col>
-        </Row>
-        <Row
-          className={
-            "d-flex align-items-center " +
-            "border-bottom border-2 border-light border-opacity-50 pb-2"
+            "border-top border-bottom border-2 border-light border-opacity-50"
           }
         >
           <Col className={"font-size-14 fw-semibold"} sm={1}>
             작성자
           </Col>
-          <Col className={"d-flex gap-5"} sm={3}>
+          <Col className={"d-flex gap-5"} sm={2}>
             <TextInputBase
               className={"d-flex"}
               name={"writer"}
@@ -155,20 +110,43 @@ const OperateFAQDetail = () => {
               value={writer}
               onChange={onChange}
             />
-            <div className={"d-flex gap-3 align-items-center"}>
-              <span className={"font-size-14 fw-semibold"}>조회 수</span>
-              <TextInputBase
-                inputstyle={{ flex: 1 }}
-                name={"views"}
-                disabled={true}
-                value={views}
-                onChange={onChange}
-              />
-            </div>
           </Col>
-          <Col sm={1}>
+          <Col className={"font-size-14 fw-semibold"} sm={1}>
+            작성일
+          </Col>
+          <Col sm={2}>
+            <TextInputBase
+              name={"date"}
+              disabled={true}
+              value={date}
+              onChange={onChange}
+            />
+          </Col>
+          <Col className={"font-size-14 fw-semibold"} sm={1}>
+            조회 수
+          </Col>
+          <Col sm={2}>
+            <TextInputBase
+              name={"views"}
+              disabled={true}
+              value={views}
+              onChange={onChange}
+            />
+          </Col>
+          <Col sm={3} />
+        </Row>
+        <Row
+          className={
+            "mb-3 py-3 row-gap-3 d-flex align-items-center " +
+            "border-bottom border-2 border-light border-opacity-50"
+          }
+        >
+          <Col className={"font-size-14 fw-semibold"} sm={1}>
+            카테고리
+          </Col>
+          <Col sm={5}>
             <DropboxGroup
-              label={"카테고리"}
+              label={""}
               dropdownItems={[
                 {
                   disabled,
@@ -189,11 +167,46 @@ const OperateFAQDetail = () => {
               ]}
             />
           </Col>
-          <Col sm={2} />
+          <Col className={"font-size-14 fw-semibold"} sm={1}>
+            삭제여부
+          </Col>
+          <Col sm={5}>
+            <RadioGroup
+              name={"deleteStatus"}
+              list={[
+                {
+                  label: "Y",
+                  value: "Y",
+                  checked: deleteStatus === "Y",
+                  disabled,
+                },
+                {
+                  label: "N",
+                  value: "N",
+                  checked: deleteStatus === "N",
+                  disabled,
+                },
+              ]}
+              onChange={onChange}
+            />
+          </Col>
+
+          <Col className={"font-size-14 fw-semibold"} sm={1}>
+            제목
+          </Col>
+          <Col>
+            <TextInputBase
+              disabled={disabled}
+              name={"title"}
+              value={title}
+              onChange={onChange}
+            />
+          </Col>
+
           <Col className={"font-size-14 fw-semibold"} sm={1}>
             업로드 대상
           </Col>
-          <Col sm={4}>
+          <Col sm={5}>
             <RadioGroup
               name={"uploadTarget"}
               list={UPLOAD_FILTER_LIST.map((radio) => ({
@@ -206,26 +219,101 @@ const OperateFAQDetail = () => {
           </Col>
         </Row>
 
-        <EditorBase
-          disabled={disabled}
-          headerProps={{ name: "title", value: title, onChange }}
-          bodyProps={{
-            initData: initContents,
-            onChange: (e) => {
-              onChangeSingle({ contents: e.editor.getData() });
-            },
-            onFileUploadResponse: (args: unknown) => {
-              /** @TODO 파일 업로드 시, attachmentList state 파일명 추가 필요 */
-              /* 현재 파일 업로드 불가로 해당 로직 대기 */
-            },
+        <EditorBody
+          initData={initContents}
+          onChange={(e) => {
+            onChangeSingle({ contents: e.editor.getData() });
           }}
-          footerProps={{
-            attachmentList,
+          onFileUploadResponse={(args: unknown) => {
+            /** @TODO 파일 업로드 시, attachmentList state 파일명 추가 필요 */
+            /* 현재 파일 업로드 불가로 해당 로직 대기 */
           }}
         />
+
+        <Row
+          className={
+            "mb-4 pb-3 d-flex align-items-center " +
+            "border-bottom border-2 border-light border-opacity-50"
+          }
+        >
+          <Col className={"font-size-16 fw-semibold"} sm={1}>
+            첨부 파일
+          </Col>
+          <Col sm={11}>
+            <div className={files.length > 0 ? "mb-3" : ""}>
+              {files.map((data, index) => (
+                <HoverP
+                  key={data.id}
+                  className={"position-relative m-0 p-0 text-turu"}
+                  onClick={() => {
+                    if (data.filePath) {
+                      window.open(data.filePath);
+                    }
+                  }}
+                >
+                  <u>{data.fileName}</u>
+
+                  <i
+                    className={
+                      "position-absolute bx bx-x font-size-24 text-black"
+                    }
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (disabled) {
+                        return;
+                      }
+
+                      const tempList = [...files];
+                      tempList.splice(index, 1);
+
+                      onChangeSingle({ files: tempList });
+                    }}
+                  />
+                </HoverP>
+              ))}
+            </div>
+            <ButtonBase
+              disabled={disabled}
+              label={"업로드"}
+              outline={true}
+              color={"turu"}
+              onClick={() => {
+                document.getElementById("files")?.click();
+              }}
+            />
+            <Input
+              className={"visually-hidden"}
+              type={"file"}
+              id={"files"}
+              name={"files"}
+              multiple={true}
+              accept={"*"}
+              onChange={upload}
+            />
+          </Col>
+        </Row>
+
+        <div className={"d-flex justify-content-center gap-3"}>
+          <ButtonBase
+            label={"목록"}
+            color={"secondary"}
+            onClick={() => navigate(-1)}
+          />
+          <ButtonBase
+            label={disabled ? "수정" : "저장"}
+            color={"turu"}
+            onClick={modify}
+          />
+        </div>
       </BodyBase>
     </ContainerBase>
   );
 };
 
 export default OperateFAQDetail;
+
+const HoverP = styled.p`
+  :hover {
+    cursor: pointer;
+  }
+`;

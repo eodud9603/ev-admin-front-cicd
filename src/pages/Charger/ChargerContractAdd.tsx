@@ -215,7 +215,7 @@ const ChargerContractAdd = () => {
                     label: "해지",
                     value: "SC89",
                   },
-                ]}
+                ].map((data) => ({ ...data, checked: data.value === code }))}
                 onChange={onChange}
               />
             </DetailContentCol>
@@ -235,7 +235,10 @@ const ChargerContractAdd = () => {
                     label: "미연동",
                     value: "N",
                   },
-                ]}
+                ].map((data) => ({
+                  ...data,
+                  checked: data.value === isMeRoaming,
+                }))}
                 onChange={onChange}
               />
             </DetailContentCol>
@@ -278,6 +281,11 @@ const ChargerContractAdd = () => {
             <DetailLabelCol sm={2}>행정동 주소</DetailLabelCol>
             <DetailContentCol>
               <RegionGroup
+                init={{
+                  sido: addressSido,
+                  sigugun: addressSigugun,
+                  dongmyun: addressDongmyun,
+                }}
                 onChangeRegion={(region) => {
                   onChangeSingle({
                     addressSido: region.sido,

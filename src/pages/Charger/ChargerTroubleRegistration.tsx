@@ -23,7 +23,7 @@ import { postBrokenRegister } from "src/api/broken/brokenApi";
 import { BROKEN_LIST } from "src/constants/list";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import { fileUpload } from "src/utils/upload";
-import { TBrokenStatus } from "src/constants/status";
+import { BROKEN_STATUS, TBrokenStatus } from "src/constants/status";
 import { getParams } from "src/utils/params";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_BROKEN } from "src/constants/valid/charger";
@@ -50,6 +50,8 @@ export const ChargerTroubleRegistration = () => {
     stationName,
     searchKey,
     reservation,
+    damagedPart01,
+    damagedPart02,
     managerMemo,
     brokenContent,
     managerName,
@@ -226,6 +228,10 @@ export const ChargerTroubleRegistration = () => {
               <DropdownBase
                 className={"mb-4"}
                 menuItems={BROKEN_LIST}
+                initSelectedValue={{
+                  label: BROKEN_STATUS[damagedPart01],
+                  value: damagedPart01,
+                }}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({
                     damagedPart01: value as TBrokenStatus,
@@ -286,6 +292,10 @@ export const ChargerTroubleRegistration = () => {
               <DropdownBase
                 className={"mb-4"}
                 menuItems={BROKEN_LIST}
+                initSelectedValue={{
+                  label: BROKEN_STATUS[damagedPart02],
+                  value: damagedPart02,
+                }}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({
                     damagedPart02: value as TBrokenStatus,

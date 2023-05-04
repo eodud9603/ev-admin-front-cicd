@@ -947,6 +947,9 @@ const ChargerStationDetail = () => {
                       <DetailLabelCol sm={2}>계약번호</DetailLabelCol>
                       <DetailContentCol>
                         <ContractDropdown
+                          initSelectedValue={{
+                            id: contractId ? Number(contractId) : undefined,
+                          }}
                           onChange={(data) => {
                             onChangeSingle({
                               contractId: (data.id ?? "").toString(),
@@ -1176,7 +1179,8 @@ const ChargerStationDetail = () => {
         onchange={(data) => {
           onChangeSingle({
             zoneCode: data.zipCode,
-            addressJibun: data.address,
+            addressRoad: data.road,
+            addressJibun: data.jibun,
           });
         }}
       />

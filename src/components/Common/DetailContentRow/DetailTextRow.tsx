@@ -1,5 +1,6 @@
 import { Col, Row } from "reactstrap";
 import React from "react";
+import styled from "styled-components";
 
 interface IDetailTextRow {
   rows: Array<{ title: string; content: string }>;
@@ -17,9 +18,13 @@ export const DetailTextRow = (props: IDetailTextRow) => {
           >
             {item.title}
           </Col>
-          <Col className={"bg-white p-3"}>{item.content}</Col>
+          <PreCol className={"bg-white p-3"}>{item.content}</PreCol>
         </Col>
       ))}
     </Row>
   );
 };
+
+const PreCol = styled(Col)`
+  white-space: pre-wrap;
+`;

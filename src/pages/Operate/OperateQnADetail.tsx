@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { Col, Input } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -20,8 +21,8 @@ import { toLocaleString } from "src/utils/toLocaleString";
 import styled from "styled-components";
 
 const OperateQnADetail = () => {
-  const [tabList, setTabList] = useState([{ label: "Q&A" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
+  const navigate = useNavigate();
+
   /* 수정 비활성화 여부 */
   const [disabled, setDisabled] = useState(true);
   /* 회원이 입력한 정보 (변경X) */
@@ -74,37 +75,11 @@ const OperateQnADetail = () => {
   });
   const [answerImages, { upload, drop, dropBlock, remove }] = useImages([]);
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
-
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -114,44 +89,14 @@ const OperateQnADetail = () => {
             { label: "Q&A", href: "/operate/qna" },
             { label: "Q&A 상세", href: "" },
           ]}
+          title={"Q&A 상세"}
         />
-        <div
-          className={"mb-4 d-flex align-items-center justify-content-between"}
-        >
-          <h3 className={"m-0 font-size-24"}>Q&A 상세</h3>
-          <div className={"d-flex gap-2"}>
-            <ButtonBase
-              label={disabled ? "수정하기" : "저장하기"}
-              color={"turu"}
-              onClick={() => {
-                /** @TODO 저장(수정) 로직 추가 */
-
-                setDisabled((prev) => !prev);
-              }}
-            />
-          </div>
-        </div>
 
         <EditorRow
           className={
             "pt-4 pb-2 d-flex align-items-center border-top border-bottom-0"
           }
         >
-          <EditorContentCol
-            className={"d-flex align-items-center gap-5"}
-            sm={3}
-          >
-            <span>등록 일시</span>
-            <TextInputBase
-              inputstyle={{ flex: 1 }}
-              disabled={true}
-              bsSize={"lg"}
-              name={"regDate"}
-              value={regDate}
-            />
-          </EditorContentCol>
-          <Col sm={3} />
-
           <EditorContentCol
             className={"d-flex align-items-center gap-3"}
             sm={2}
@@ -194,23 +139,24 @@ const OperateQnADetail = () => {
               value={userId}
             />
           </EditorContentCol>
-        </EditorRow>
-        <EditorRow className={"d-flex align-items-center pb-4"}>
+
+          <Col sm={1} />
+
           <EditorContentCol
             className={"d-flex align-items-center gap-5"}
             sm={3}
           >
-            <span>답변 일시</span>
+            <span>등록 일시</span>
             <TextInputBase
               inputstyle={{ flex: 1 }}
               disabled={true}
               bsSize={"lg"}
-              name={"answerDate"}
-              value={answerDate}
+              name={"regDate"}
+              value={regDate}
             />
           </EditorContentCol>
-          <Col sm={3} />
-
+        </EditorRow>
+        <EditorRow className={"d-flex align-items-center pb-4"}>
           <EditorContentCol
             className={"d-flex align-items-center gap-3"}
             sm={2}
@@ -240,9 +186,24 @@ const OperateQnADetail = () => {
           </EditorContentCol>
 
           <Col sm={3} />
+
+          <EditorContentCol
+            className={"d-flex align-items-center gap-5"}
+            sm={3}
+          >
+            <span>답변 일시</span>
+            <TextInputBase
+              inputstyle={{ flex: 1 }}
+              disabled={true}
+              bsSize={"lg"}
+              name={"answerDate"}
+              value={answerDate}
+            />
+          </EditorContentCol>
+
+          <Col sm={3} />
         </EditorRow>
         <EditorHeader
-          hasMargin={false}
           className={"pb-3"}
           label={"문의 제목"}
           name={"title"}
@@ -252,19 +213,22 @@ const OperateQnADetail = () => {
 
         <EditorRow>
           <EditorTitleCol className={"pt-3"}>문의 내용</EditorTitleCol>
-          <EditorContentCol sm={5}>
+          <EditorContentCol>
             <TextInputBase
               disabled={true}
               className={"pt-3 rounded-0 border-0 bg-white"}
-              inputstyle={{ height: "100%" }}
+              inputstyle={{ height: 300 }}
               name={"contents"}
               value={contents}
               type={"textarea"}
             />
           </EditorContentCol>
-          <EditorContentCol sm={6} className={"m-0 p-0"}>
+        </EditorRow>
+
+        <EditorRow className={"pb-3"}>
+          <EditorTitleCol sm={1}>관련 이용 내역</EditorTitleCol>
+          <EditorContentCol sm={7} className={"m-0 p-0"}>
             <DetailTextInputRow
-              hasMargin={false}
               itemClassName={"border-bottom border-2"}
               rows={[
                 {
@@ -312,10 +276,13 @@ const OperateQnADetail = () => {
               ]}
             />
           </EditorContentCol>
-        </EditorRow>
 
-        <EditorRow className={"pb-3"}>
-          <EditorTitleCol>이미지</EditorTitleCol>
+          <EditorTitleCol sm={1}>
+            <>
+              첨부파일
+              <p className={"font-size-12"}>(이미지 및 동영상)</p>
+            </>
+          </EditorTitleCol>
           <EditorContentCol className={"d-flex gap-2"}>
             {questionImages.length > 0 ? (
               questionImages.map((image, index) => (
@@ -336,7 +303,7 @@ const OperateQnADetail = () => {
         </EditorRow>
 
         <EditorRow className={"border-bottom-0 pb-3"}>
-          <EditorTitleCol>답변 내용</EditorTitleCol>
+          <EditorTitleCol className={"pt-3"}>답변 내용</EditorTitleCol>
           <EditorContentCol>
             <TextInputBase
               disabled={disabled}
@@ -346,12 +313,17 @@ const OperateQnADetail = () => {
               name={"answerContent"}
               value={answerContent}
               onChange={onChange}
-              placeholder={"내용을 입력해주세요"}
+              placeholder={"답변이 등록되지 않았습니다."}
             />
           </EditorContentCol>
         </EditorRow>
         <EditorRow className={"pb-3"}>
-          <EditorTitleCol>이미지</EditorTitleCol>
+          <EditorTitleCol>
+            <>
+              첨부파일
+              <p className={"font-size-12"}>(이미지 및 동영상)</p>
+            </>
+          </EditorTitleCol>
           <EditorContentCol
             className={"d-flex flex-wrap gap-4"}
             onDragOver={(e) => e.preventDefault()}
@@ -408,6 +380,30 @@ const OperateQnADetail = () => {
             </>
           </EditorContentCol>
         </EditorRow>
+
+        <div
+          className={"d-flex align-items-center gap-3 justify-content-center"}
+        >
+          <ButtonBase
+            className={"w-xs"}
+            label={"목록"}
+            color={"secondary"}
+            onClick={() => {
+              navigate("/operate/qna");
+            }}
+          />
+          {/** @TODO 답변 데이터가 없을 시, 답변 등록 키워드로 표시  */}
+          <ButtonBase
+            className={"w-xs"}
+            label={disabled ? "수정" : "저장"}
+            color={"turu"}
+            onClick={() => {
+              /** @TODO 저장(수정) 로직 추가 */
+
+              setDisabled((prev) => !prev);
+            }}
+          />
+        </div>
       </BodyBase>
     </ContainerBase>
   );

@@ -33,6 +33,7 @@ export interface INormalMemberItem {
   birthday: string;
   phone: string;
   memberCard: string;
+  createAt: string;
   memberAuthDate: string;
 }
 
@@ -48,6 +49,11 @@ export interface IRequestNormalMemberDetail {
   id: number;
 }
 
+export interface IPayCardItem {
+  cardNo: string; 
+  copName: string;
+}
+
 export interface IMemberDetailResponse {
   id: number;
   name: string;
@@ -59,9 +65,10 @@ export interface IMemberDetailResponse {
   phone: string;
   email: string;
   stationOperator: TStationTypeKey;
+  createdDate: string;
   memberAuthDate: string;
   memberCard: string;
-  payCards: unknown[];
+  payCards: IPayCardItem[];
   paymentCardNumber: string;
   statusType: TMemberStatusTypeKey;
   lastChangedPwdDate: string;
@@ -72,6 +79,11 @@ export interface IMemberDetailResponse {
   carCompany: string;
   carModel: string;
   carNumber: string;
+  memo: string;
+
+  zoneCode: string;
+  addressJibun: string;
+  addressDetail: string;
 }
 
 /* 회원 수정 */

@@ -413,7 +413,17 @@ export const MemberNormal = () => {
                     </td>
                     <td>{data.phone ?? "-"}</td>
                     <td>{data.memberCard ?? "-"}</td>
-                    <td>{data.memberAuthDate ?? "-"}</td>
+                    <td>
+                      {(data.createAt
+                        ? standardDateFormat(data.createAt, "YYYY.MM.DD")
+                        : "") +
+                        (data.memberAuthDate
+                          ? `(${standardDateFormat(
+                              data.memberAuthDate,
+                              "YYYY.MM.DD"
+                            )})`
+                          : "-")}
+                    </td>
                     <td>
                       <ButtonBase
                         label={"보기"}

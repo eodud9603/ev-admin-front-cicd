@@ -1,3 +1,4 @@
+import { UPLOAD_TYPE } from "src/constants/status";
 import { FieldValidation } from "src/utils/validate";
 import { number, string } from "yup";
 
@@ -50,7 +51,10 @@ export const YUP_OPERATE_NOTICE: FieldSchemaMap = {
   uploadType: {
     validation: string()
       .required("업로드 대상은 필수 입력 항목입니다.")
-      .oneOf(["ALL", "IOS", "AOS", "APP", "WEB"], "잘못된 업로드 대상입니다."),
+      .oneOf(
+        Object.keys(UPLOAD_TYPE),
+        "잘못된 업로드 대상입니다."
+      ),
   },
 };
 

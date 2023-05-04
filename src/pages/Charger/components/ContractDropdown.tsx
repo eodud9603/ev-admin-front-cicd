@@ -10,13 +10,18 @@ interface IItemProps extends IStationContractItem {
 
 interface IContractDropdownProps {
   disabled?: boolean;
+  initSelectedValue?: {
+    id?: number;
+  };
   onChange?: (data: Partial<IItemProps>) => void;
 }
 
 const ContractDropdown = (props: IContractDropdownProps) => {
-  const { disabled, onChange } = props;
+  const { disabled, initSelectedValue, onChange } = props;
   const [list, setList] = useState<IItemProps[]>([]);
-  const [selectedData, setSelectedData] = useState<Partial<IItemProps>>({});
+  const [selectedData, setSelectedData] = useState<Partial<IItemProps>>(
+    initSelectedValue?.id ? initSelectedValue : {}
+  );
 
   /** 선택한 계약 데이터 콜백 */
   const onChangeData = (data: Partial<IItemProps>) => {
@@ -49,11 +54,7 @@ const ContractDropdown = (props: IContractDropdownProps) => {
         "검색 결과가 없습니다.\n계약장소명 또는 계약번호를 다시 확인해주세요."
       }
       list={list}
-      selectedLabel={
-        !selectedData?.place || !selectedData?.id
-          ? "선택"
-          : `${selectedData.place}(${selectedData.id})`
-      }
+      selectedLabel={selectedData?.id?.toString() ?? "선택"}
       onClickItem={onChangeData}
       searchHandler={searchHandler}
     />

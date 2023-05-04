@@ -1,6 +1,11 @@
-import { BROKEN_STATUS } from "src/constants/status";
+import {
+  BROKEN_STATUS,
+  STATION_OPERATOR,
+  SUPPLY_METHOD,
+} from "src/constants/status";
 import { FieldValidation } from "src/utils/validate";
 import { number, string } from "yup";
+import { REGEX } from "src/constants/valid/regex";
 
 type FieldSchemaMap = Record<string, FieldValidation>;
 
@@ -21,12 +26,15 @@ export const YUP_CHARGER_STATION: FieldSchemaMap = {
   operator: {
     validation: string()
       .required("충전서비스사업자 필수 선택 항목입니다.")
-      .oneOf(["HEV", "JEV"], "충전서비스사업자 값이 유효하지 않습니다."),
+      .oneOf(
+        Object.keys(STATION_OPERATOR),
+        "충전서비스사업자 값이 유효하지 않습니다."
+      ),
   },
   isUse: {
     validation: string()
       .required("사용여부는 필수 선택 항목입니다.")
-      .oneOf(["Y", "N"], "사용여부는 사용 또는 미사용 중 하나여야 합니다."),
+      .matches(REGEX.yn, "사용여부는 사용 또는 미사용 중 하나여야 합니다."),
   },
   /** @TODO 위탁사업자 dropdown */
   business: {
@@ -39,7 +47,7 @@ export const YUP_CHARGER_STATION: FieldSchemaMap = {
   isOpen: {
     validation: string()
       .required("개방여부는 필수 선택 항목입니다.")
-      .oneOf(["Y", "N"], "개방여부는 완전 또는 부분 중 하나여야 합니다."),
+      .matches(REGEX.yn, "개방여부는 완전 또는 부분 중 하나여야 합니다."),
   },
   quickChargerCount: {
     validation: number()
@@ -65,12 +73,15 @@ export const YUP_CHARGER_STATION: FieldSchemaMap = {
   supplyMethod: {
     validation: string()
       .required("수전방식은 필수 선택 항목입니다.")
-      .oneOf(["SM01", "SM02"], "수전방식은 자중 또는 가공 중 하나여야 합니다."),
+      .oneOf(
+        Object.keys(SUPPLY_METHOD),
+        "수전방식은 자중 또는 가공 중 하나여야 합니다."
+      ),
   },
   billDivision: {
     validation: string()
       .required("모자분리여부는 필수 선택 항목입니다.")
-      .oneOf(["Y", "N"], "모자분리여부는 모자 또는 자가 중 하나여야 합니다."),
+      .matches(REGEX.yn, "모자분리여부는 모자 또는 자가 중 하나여야 합니다."),
   },
   kepcoCustomerNum: {
     validation: string().required("한전고객번호는 필수 입력 항목입니다."),
@@ -111,59 +122,38 @@ export const YUP_CHARGER_STATION: FieldSchemaMap = {
   etcInfo: {
     validation: string()
       .required("충전불가 차량은 필수 입력 항목입니다.")
-      .matches(
-        /^[\s\S]*?(?:,[\s\S]+)*$/,
-        "충전불가 차량 형식이 맞지 않습니다."
-      ),
+      .matches(REGEX.tel, "충전불가 차량 형식이 맞지 않습니다."),
   },
   /* 운영정보 */
   baseOperationTimeFrom: {
     validation: string()
       .required("운영시작시간(평일)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   baseOperationTimeTo: {
     validation: string()
       .required("운영시작시간(휴일)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   holidayOperationTimeFrom: {
     validation: string()
       .required("운영종료시간(휴일)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   holidayOperationTimeTo: {
     validation: string()
       .required("운영종료시간(토)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   saturdayOperationTimeFrom: {
     validation: string()
       .required("운영시작시간(토)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   saturdayOperationTimeTo: {
     validation: string()
       .required("운영종료시간(토)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   isParkFeeFree: {
     validation: string()
@@ -215,7 +205,7 @@ export const YUP_CHARGER: FieldSchemaMap = {
   isDualChannel: {
     validation: string()
       .optional()
-      .oneOf(["Y", "N"], "듀얼형 여부는 Y 또는 N 중 하나여야 합니다."),
+      .matches(REGEX.yn, "듀얼형 여부는 Y 또는 N 중 하나여야 합니다."),
   },
   channelType01: {
     validation: string().required("서버통신채널 타입1은 필수 입력 항목입니다."),
@@ -253,7 +243,7 @@ export const YUP_CHARGER: FieldSchemaMap = {
   isBroken: {
     validation: string()
       .required("고장유무는 필수 입력 항목입니다.")
-      .oneOf(["Y", "N"], "고장유무는 Y 또는 N 중 하나여야 합니다."),
+      .matches(REGEX.yn, "고장유무는 Y 또는 N 중 하나여야 합니다."),
   },
   status: {
     validation: string().required("충전기 상태는 필수 입력 항목입니다."),
@@ -261,7 +251,7 @@ export const YUP_CHARGER: FieldSchemaMap = {
   hasPgTerm: {
     validation: string()
       .required("결제단말기 여부는 필수 입력 항목입니다.")
-      .oneOf(["Y", "N"], "결제단말기 여부는 Y 또는 N 중 하나여야 합니다."),
+      .matches(REGEX.yn, "결제단말기 여부는 Y 또는 N 중 하나여야 합니다."),
   },
   pgCode: {
     validation: string().required("결제단말기 PG사는 필수 입력 항목입니다."),
@@ -290,17 +280,17 @@ export const YUP_CHARGER: FieldSchemaMap = {
   isMeRoaming: {
     validation: string()
       .required("환경부 연동 여부는 필수 선택 항목입니다.")
-      .oneOf(["Y", "N"], "환경부 연동 여부는 Y 또는 N 중 하나여야 합니다."),
+      .matches(REGEX.yn, "환경부 연동 여부는 Y 또는 N 중 하나여야 합니다."),
   },
   isKepcoRoaming: {
     validation: string()
       .required("한전 연동 여부는 필수 선택 항목입니다.")
-      .oneOf(["Y", "N"], "한전 연동 여부는 Y 또는 N 중 하나여야 합니다."),
+      .matches(REGEX.yn, "한전 연동 여부는 Y 또는 N 중 하나여야 합니다."),
   },
   enableCharging: {
     validation: string()
       .required("앱 충전 가능 여부는 필수 선택 항목입니다.")
-      .oneOf(["Y", "N"], "앱 충전 가능 여부는 Y 또는 N 중 하나여야 합니다."),
+      .matches(REGEX.yn, "앱 충전 가능 여부는 Y 또는 N 중 하나여야 합니다."),
   },
   unitPrice: {
     validation: number()
@@ -361,7 +351,7 @@ export const YUP_CHARGER_INSTALL: FieldSchemaMap = {
   hasTr: {
     validation: string()
       .required("TR 설치여부는 필수 입력 항목입니다.")
-      .oneOf(["Y", "N"], "TR 설치여부는 Y 또는 N 중 하나여야 합니다."),
+      .matches(REGEX.yn, "TR 설치여부는 Y 또는 N 중 하나여야 합니다."),
   },
   fwVer: {
     validation: string().required("충전기 펌웨어는 필수 입력 항목입니다."),
@@ -384,7 +374,7 @@ export const YUP_CHARGER_MODEM: FieldSchemaMap = {
     validation: string()
       .required("모뎀 제조사 연락처는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 모뎀 제조사 연락처를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
@@ -403,7 +393,7 @@ export const YUP_CHARGER_MODEM: FieldSchemaMap = {
     validation: string()
       .required("개통사 연락처는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 개통사 연락처를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
@@ -419,8 +409,8 @@ export const YUP_CHARGER_CONTRACT: FieldSchemaMap = {
   isMeRoaming: {
     validation: string()
       .required("환경부 연동 여부를 입력해주세요.")
-      .oneOf(
-        ["Y", "N"],
+      .matches(
+        REGEX.yn,
         "환경부 연동 여부는 연동 또는 미연동 중 하나여야 합니다."
       ),
   },
@@ -445,7 +435,7 @@ export const YUP_CHARGER_CONTRACT: FieldSchemaMap = {
     validation: string()
       .required("담당자 전화번호를 입력해주세요.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 담당자 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
@@ -457,7 +447,7 @@ export const YUP_CHARGER_CONTRACT: FieldSchemaMap = {
     validation: string()
       .required("영업담당자 전화번호를 입력해주세요.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 영업담당자 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
@@ -573,7 +563,7 @@ export const YUP_CHARGER_OPERATOR: FieldSchemaMap = {
     validation: string()
       .required("사업자 전화번호는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 사업자 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
@@ -581,7 +571,7 @@ export const YUP_CHARGER_OPERATOR: FieldSchemaMap = {
     validation: string()
       .required("사업자 대표 번호는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 사업자 대표 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
@@ -597,12 +587,12 @@ export const YUP_CHARGER_OPERATOR: FieldSchemaMap = {
   isContracted: {
     validation: string()
       .required("계약 여부는 필수 입력 항목입니다.")
-      .oneOf(["Y", "N"], "계약 여부는 Y 또는 N 중 하나여야 합니다."),
+      .matches(REGEX.yn, "계약 여부는 Y 또는 N 중 하나여야 합니다."),
   },
   isActive: {
     validation: string()
       .required("활용 여부는 필수 입력 항목입니다.")
-      .oneOf(["Y", "N"], "활용 여부는 Y 또는 N 중 하나여야 합니다."),
+      .matches(REGEX.yn, "활용 여부는 Y 또는 N 중 하나여야 합니다."),
   },
   contractedDate: {
     validation: string().required(),
