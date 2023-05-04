@@ -22,8 +22,12 @@ import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 import { getParams } from "src/utils/params";
 import createValidation from "src/utils/validate";
 import styled from "styled-components";
+import { useLoaderData } from "react-router-dom";
+import { INIT_OPERATE_NOTICE_ADD } from "src/pages/Operate/loader/noticeAddLoader";
+import { useTabs } from "src/hooks/useTabs";
 
 const OperateNoticeAdd = () => {
+  const data = useLoaderData() as typeof INIT_OPERATE_NOTICE_ADD;
   /* 등록확인 모달 */
   const [addModalOpen, setAddModalOpen] = useState(false);
   /* 미입력 안내 모달 */
@@ -34,15 +38,14 @@ const OperateNoticeAdd = () => {
 
   const navigate = useNavigate();
 
-  const [inputs, { onChange, onChangeSingle }] = useInputs({
-    writer: "",
-    readCount: "",
-    uploadType: "" as TUploadTypeKeys,
-    title: "",
-    contents: "",
-    files: [] as { id: number; fileName: string; filePath: string }[],
-  });
+  const [inputs, { onChange, onChangeSingle }] = useInputs(data);
   const { writer, uploadType, title, files } = inputs;
+
+  useTabs({
+    data: inputs,
+    pageTitle: "공지사항 등록",
+    pageType: "add",
+  });
 
   /** 첨부파일 업로드 */
   const upload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -78,13 +81,13 @@ const OperateNoticeAdd = () => {
 
   /** 등록 */
   const register = async () => {
-    const { contents, files, ...registerParams } = inputs;
+    const { content, files, ...registerParams } = inputs;
     /* 등록 params */
     const params: IRequestNoticeRegister = {
       ...registerParams,
       writer: "임시 기입(서버 수정 후, 제거)",
       boardId: BoardIdEnum.NOTICE,
-      content: contents,
+      content: content,
       deleted: "N",
       files: files.map((data) => data.id),
     };
@@ -222,12 +225,13 @@ const OperateNoticeAdd = () => {
         </Row>
         <EditorBody
           onChange={(e) => {
-            onChangeSingle({ contents: e.editor.getData() });
+            onChangeSingle({ content: e.editor.getData() });
           }}
           onFileUploadResponse={(args: unknown) => {
             /** @TODO 파일 업로드 시, attachmentList state 파일명 추가 필요 */
             /* 현재 파일 업로드 불가로 해당 로직 대기 */
           }}
+          initData={data?.content}
         />
         <Row
           className={

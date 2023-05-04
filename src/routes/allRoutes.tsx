@@ -129,6 +129,7 @@ import { normalMemberListLoader } from "src/pages/Member/laoder/normalMemberList
 import { normalMemberDetailLoader } from "src/pages/Member/laoder/normalMemberDetailLoader";
 import { stationAddLoader } from "src/pages/Charger/loader/stationAddLoader";
 import { brokenRegistrationLoader } from "src/pages/Charger/loader/brokenRegistrationLoader";
+import { noticeAddLoader } from "src/pages/Operate/loader/noticeAddLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -256,7 +257,11 @@ const userRoutes: Array<RouteProps> = [
     element: <OperateNotice />,
     loader: noticeListLoader,
   },
-  { path: "/operate/notice/add", element: <OperateNoticeAdd /> },
+  {
+    path: "/operate/notice/add",
+    element: <OperateNoticeAdd />,
+    loader: noticeAddLoader,
+  },
   {
     path: "/operate/notice/detail/:id",
     element: <OperateNoticeDetail />,

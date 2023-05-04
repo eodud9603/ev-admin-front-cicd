@@ -1,5 +1,8 @@
 import { getNoticeList } from "src/api/board/noticeApi";
 import { IRequestNoticeList } from "src/api/board/noticeApi.interface";
+import { loadTabData } from "src/utils/loadTabData";
+import { YNType } from "src/api/api.interface";
+import { TUploadTypeKeys } from "src/constants/status";
 
 const defaultParams: IRequestNoticeList = {
   /** @TODO 서버 sortDirection 정의 후, 추가 */
@@ -9,11 +12,26 @@ const defaultParams: IRequestNoticeList = {
   sort: "CreateAt",
 };
 
+export const INIT_OPERATE_NOTICE_LIST = {
+  startDate: "",
+  endDate: "",
+  isDeleted: "" as YNType,
+  uploadType: "" as TUploadTypeKeys,
+  searchRange: "Title",
+  searchText: "",
+  sort: "CreateAt" as IRequestNoticeList["sort"],
+  count: "10",
+};
+
 export const noticeListLoader = async () => {
+  const loadData = loadTabData("/operate/notice");
+  if (loadData?.data || loadData?.filterData) {
+    return loadData;
+  }
   /* 검색  */
   const { code, data } = await getNoticeList(defaultParams);
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return success ? data : null;
+  return success ? { data: data, filterData: INIT_OPERATE_NOTICE_LIST } : null;
 };

@@ -29,13 +29,17 @@ import { standardDateFormat } from "src/utils/day";
 import EditorBody from "src/components/Common/Editor/EditorBody";
 import styled from "styled-components";
 import { postFileUpload } from "src/api/common/commonApi";
+import { useTabs } from "src/hooks/useTabs";
 
 const OperateNoticeDetail = () => {
-  const data = useLoaderData() as INoticeDetailResponse | null;
+  const { data, editable = true } = useLoaderData() as {
+    data: INoticeDetailResponse | null;
+    editable: boolean;
+  };
 
   const navigate = useNavigate();
 
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(editable);
   /* 미입력 안내 모달 */
   const [invalidModal, setInvalidModal] = useState({
     isOpen: false,
@@ -54,9 +58,10 @@ const OperateNoticeDetail = () => {
     readCount: (data?.readCount ?? "").toString(),
     uploadType: (data?.uploadType ?? "") as TUploadTypeKeys,
     title: data?.title ?? "",
-    contents: initContents,
+    content: initContents,
     files: data?.files ?? [],
   });
+
   const {
     createAt,
     delete: isDelete,
@@ -66,6 +71,13 @@ const OperateNoticeDetail = () => {
     title,
     files,
   } = inputs;
+
+  useTabs({
+    data: inputs,
+    pageTitle: "공지사항 상세",
+    pageType: "detail",
+    editable: disabled,
+  });
 
   /** 첨부파일 업로드 */
   const upload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -107,13 +119,13 @@ const OperateNoticeDetail = () => {
     }
 
     /* 수정 params */
-    const { delete: isDelete, contents, files, ...modifyParams } = inputs;
+    const { delete: isDelete, content, files, ...modifyParams } = inputs;
 
     const params: IRequestNoticeModify = {
       ...modifyParams,
       deleted: isDelete,
       /** @description initContent에서 replace해주므로 insert시, replace제거하여도 문제없을 것으로 판단하나 미확인, 추후 불필요시 제거 */
-      content: contents.replace(/\n\n/gi, "<br>"),
+      content: content.replace(/\n\n/gi, "<br>"),
       files: files.map((data) => data.id),
     };
     getParams(params);
@@ -268,7 +280,7 @@ const OperateNoticeDetail = () => {
         <EditorBody
           disabled={disabled}
           onChange={(e) => {
-            onChangeSingle({ contents: e.editor.getData() });
+            onChangeSingle({ content: e.editor.getData() });
           }}
           initData={initContents}
           onFileUploadResponse={(args: unknown) => {

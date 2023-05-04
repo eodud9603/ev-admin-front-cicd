@@ -35,6 +35,7 @@ import { getParams } from "src/utils/params";
 import { standardDateFormat } from "src/utils/day";
 import { YNType } from "src/api/api.interface";
 import { TUploadTypeKeys, UPLOAD_TYPE } from "src/constants/status";
+import { useTabs } from "src/hooks/useTabs";
 
 /** 검색어 필터 */
 const searchList = [
@@ -72,7 +73,10 @@ const tableHeader = [
 ];
 
 const OperateNotice = () => {
-  const data = useLoaderData() as INoticeListResponse;
+  const { data, filterData } = useLoaderData() as {
+    data: INoticeListResponse;
+    filterData: { [key: string]: any };
+  };
   /* 체크 리스트 */
   const [checkList, setCheckList] = useState<number[]>([]);
   /* 선택삭제 모달 */
@@ -90,16 +94,7 @@ const OperateNotice = () => {
       : "등록된 공지사항이 없습니다.",
   });
 
-  const [inputs, { onChange, onChangeSingle }] = useInputs({
-    startDate: "",
-    endDate: "",
-    isDeleted: "" as YNType,
-    uploadType: "" as TUploadTypeKeys,
-    searchRange: "Title",
-    searchText: "",
-    sort: "CreateAt" as IRequestNoticeList["sort"],
-    count: "10",
-  });
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
   const {
     startDate,
     endDate,
@@ -110,6 +105,12 @@ const OperateNotice = () => {
     sort,
     count,
   } = inputs;
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "공지사항",
+    filterData: inputs,
+  });
 
   /** 검색 핸들러 */
   const searchHandler =
@@ -124,8 +125,14 @@ const OperateNotice = () => {
         sort,
       };
       if (startDate && endDate) {
-        searchParams.startDate = standardDateFormat(startDate, "YYYY-MM-DD");
-        searchParams.endDate = standardDateFormat(endDate, "YYYY-MM-DD");
+        searchParams.startDate = standardDateFormat(
+          startDate as string,
+          "YYYY-MM-DD"
+        );
+        searchParams.endDate = standardDateFormat(
+          endDate as string,
+          "YYYY-MM-DD"
+        );
       }
       if (searchRange && searchText) {
         searchParams.searchType =
@@ -149,6 +156,7 @@ const OperateNotice = () => {
           page: searchParams.page,
           emptyMessage: "검색된 공지사항이 없습니다.",
         });
+        searchDataStorage(data);
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }
@@ -238,6 +246,9 @@ const OperateNotice = () => {
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
+                initSelectedValue={searchList.find(
+                  (e) => e.value === searchRange
+                )}
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
@@ -259,6 +270,7 @@ const OperateNotice = () => {
                         sort: value as IRequestNoticeList["sort"],
                       })();
                     },
+                    initSelectedValue: sortList.find((e) => e.value === sort),
                     menuItems: sortList,
                   },
                 ]}
@@ -286,6 +298,9 @@ const OperateNotice = () => {
                   });
                   void searchHandler({ page: 1, size: Number(value) })();
                 }}
+                initSelectedValue={COUNT_FILTER_LIST.find(
+                  (e) => e.value === count
+                )}
               />
               <ButtonBase
                 label={"신규 등록"}
