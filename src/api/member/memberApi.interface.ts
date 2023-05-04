@@ -33,6 +33,7 @@ export interface INormalMemberItem {
   birthday: string;
   phone: string;
   memberCard: string;
+  createAt: string;
   memberAuthDate: string;
 }
 
