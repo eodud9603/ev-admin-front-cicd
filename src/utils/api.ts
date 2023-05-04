@@ -74,7 +74,7 @@ const rest = (method: Method) => {
       body = {},
       responseType = undefined as "blob" | undefined,
     } = {}
-  ) => {    
+  ) => {
     try {
       const response = await axiosInstance(url, {
         method,

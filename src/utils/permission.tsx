@@ -1,8 +1,10 @@
 /** 계정 권한 오류 모달 */
 export const showPermissionErrorModal = () => {
-  /* 권한 모달이 있는 경우, 제거  */
+  /* 권한 모달이 있는 경우, 재생성X  */
   const existModal = document.body.querySelector(".permission-modal");
-  existModal?.remove();
+  if (existModal) {
+    return;
+  }
 
   /* 권한 모달 > 생성  */
   const modal = document.createElement("div");
@@ -14,7 +16,7 @@ export const showPermissionErrorModal = () => {
   closeBtn?.addEventListener(
     "click",
     () => {
-      modal.classList.remove("show"); // 모달 숨기기 애니메이션 시작
+      modal.classList.remove("show");
       modal.remove();
     },
     false
