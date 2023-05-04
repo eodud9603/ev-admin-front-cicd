@@ -41,18 +41,18 @@ export const YUP_NORMAL_MEMBER: FieldSchemaMap = {
   isAgreeEmail: {
     validation: string()
       .required("메일 수신 동의 여부는 필수 선택 항목입니다.")
-      .oneOf(["Y", "N"], "메일 수신 동의 여부는 Y 또는 N 중 하나여야 합니다."),
+      .matches(REGEX.yn, "메일 수신 동의 여부는 Y 또는 N 중 하나여야 합니다."),
   },
   isAgreeSms: {
     validation: string()
       .required("SMS 수신 동의 여부는 필수 선택 항목입니다.")
-      .oneOf(["Y", "N"], "SMS 수신 동의 여부는 Y 또는 N 중 하나여야 합니다."),
+      .matches(REGEX.yn, "SMS 수신 동의 여부는 Y 또는 N 중 하나여야 합니다."),
   },
   isAgreeMarketing: {
     validation: string()
       .required("마케팅 활용 동의 여부는 필수 선택 항목입니다.")
-      .oneOf(
-        ["Y", "N"],
+      .matches(
+        REGEX.yn,
         "마케팅 활용 동의 여부는 Y 또는 N 중 하나여야 합니다."
       ),
   },
