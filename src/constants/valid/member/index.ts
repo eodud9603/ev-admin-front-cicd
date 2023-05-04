@@ -1,6 +1,7 @@
 import { FieldValidation } from "src/utils/validate";
 import { number, string } from "yup";
-import { REGEX } from "../regex";
+import { REGEX } from "src/constants/valid/regex";
+import { GENDER_TYPE } from "src/constants/status";
 
 type FieldSchemaMap = Record<string, FieldValidation>;
 
@@ -12,7 +13,10 @@ export const YUP_NORMAL_MEMBER: FieldSchemaMap = {
   gender: {
     validation: number()
       .required("성별은 필수 입력 항목입니다.")
-      .oneOf([1, 2], "성별은 남자 또는 여자여야 합니다."),
+      .oneOf(
+        Object.keys(GENDER_TYPE).map((key) => Number(key)),
+        "성별은 남자 또는 여자여야 합니다."
+      ),
   },
   empNumber: {
     validation: string().required("사원번호는 필수 입력 항목입니다."),

@@ -1,7 +1,11 @@
-import { BROKEN_STATUS } from "src/constants/status";
+import {
+  BROKEN_STATUS,
+  STATION_OPERATOR,
+  SUPPLY_METHOD,
+} from "src/constants/status";
 import { FieldValidation } from "src/utils/validate";
 import { number, string } from "yup";
-import { REGEX } from "../regex";
+import { REGEX } from "src/constants/valid/regex";
 
 type FieldSchemaMap = Record<string, FieldValidation>;
 
@@ -22,7 +26,10 @@ export const YUP_CHARGER_STATION: FieldSchemaMap = {
   operator: {
     validation: string()
       .required("충전서비스사업자 필수 선택 항목입니다.")
-      .oneOf(["HEV", "JEV"], "충전서비스사업자 값이 유효하지 않습니다."),
+      .oneOf(
+        Object.keys(STATION_OPERATOR),
+        "충전서비스사업자 값이 유효하지 않습니다."
+      ),
   },
   isUse: {
     validation: string()
@@ -66,7 +73,10 @@ export const YUP_CHARGER_STATION: FieldSchemaMap = {
   supplyMethod: {
     validation: string()
       .required("수전방식은 필수 선택 항목입니다.")
-      .oneOf(["SM01", "SM02"], "수전방식은 자중 또는 가공 중 하나여야 합니다."),
+      .oneOf(
+        Object.keys(SUPPLY_METHOD),
+        "수전방식은 자중 또는 가공 중 하나여야 합니다."
+      ),
   },
   billDivision: {
     validation: string()
