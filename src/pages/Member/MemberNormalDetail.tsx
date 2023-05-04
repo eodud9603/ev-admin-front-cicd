@@ -17,7 +17,10 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { DetailTextInputRow } from "src/components/Common/DetailContentRow/DetailTextInputRow";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { useLoaderData, useNavigate } from "react-router";
-import { IMemberDetailResponse } from "src/api/member/memberApi.interface";
+import {
+  IMemberDetailResponse,
+  IPayCardItem,
+} from "src/api/member/memberApi.interface";
 import useInputs from "src/hooks/useInputs";
 import { objectToArray } from "src/utils/convert";
 import {
@@ -35,6 +38,7 @@ import { YUP_NORMAL_MEMBER } from "src/constants/valid/member";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
+import { useTabs } from "src/hooks/useTabs";
 
 const receptionRadio = [
   { label: "Y", value: "Y" },
@@ -42,12 +46,15 @@ const receptionRadio = [
 ];
 
 export const MemberNormalDetail = () => {
-  const data = useLoaderData() as IMemberDetailResponse;
+  const { data, editable = true } = useLoaderData() as {
+    data: IMemberDetailResponse;
+    editable: boolean;
+  };
 
   const navigate = useNavigate();
 
   /* 수정모드 */
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(editable);
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
   /* 미입력 안내 모달 */
@@ -119,6 +126,13 @@ export const MemberNormalDetail = () => {
     carNumber,
     memo,
   } = inputs;
+
+  useTabs({
+    data: inputs,
+    pageTitle: "회원 관리 상세",
+    pageType: "detail",
+    editable: disabled,
+  });
 
   /** 주소 검색 modal visible */
   const onChangeModalVisible = () => {
@@ -256,7 +270,7 @@ export const MemberNormalDetail = () => {
                 title: "회원 가입일(정회원 인증일)",
                 content:
                   (createdDate
-                    ? standardDateFormat(createdDate, "YYYY.MM.DD")
+                    ? standardDateFormat(createdDate as string, "YYYY.MM.DD")
                     : "") +
                   (memberAuthDate
                     ? `(${standardDateFormat(memberAuthDate, "YYYY.MM.DD")})`
