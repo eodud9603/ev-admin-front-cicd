@@ -430,7 +430,9 @@ const TableRow = forwardRef<
       </td>
       <td>{index + 1}</td>
       <td>{category}</td>
-      <td>{title}</td>
+      <td className={"text-turu"}>
+        <u>{title}</u>
+      </td>
       <td>{uploadTarget}</td>
       <td>{writer}</td>
       <td>{views}</td>
