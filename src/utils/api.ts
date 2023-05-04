@@ -6,6 +6,7 @@ import axios, {
 } from "axios";
 import { API_URL } from "src/constants/url";
 import { IApiResponse, IAxiosErrorResponse } from "src/type/api.interface";
+import { showPermissionErrorModal } from "src/utils/permission";
 
 const { baseUrl } = API_URL;
 
@@ -73,7 +74,7 @@ const rest = (method: Method) => {
       body = {},
       responseType = undefined as "blob" | undefined,
     } = {}
-  ) => {
+  ) => {    
     try {
       const response = await axiosInstance(url, {
         method,
@@ -99,9 +100,14 @@ const rest = (method: Method) => {
 
       const { response } = err as IAxiosErrorResponse;
 
-      /*  403: token이 인증되지 않을경우, refreshToken으로 업데이트 후에도 없으면, 로그인 화면으로 네비게이팅 */
-      if (response.status === 403) {
+      /*  401: token이 인증되지 않을경우, refreshToken으로 업데이트 후에도 없으면, 로그인 화면으로 네비게이팅 */
+      if (response.status === 401) {
         /** @TODO refresh 로직 추가 */
+      }
+
+      /* 403: 계정 권한 오류 발생 (읽기/쓰기/수정 등) */
+      if(response.status === 403) {
+        showPermissionErrorModal();
       }
 
       const { data } = response;
