@@ -58,12 +58,17 @@ const ChargerStationAdd = () => {
     stationKey,
     location,
     operator,
+    isUse,
     directInput /* 직접입력 check "1": 체크, "0": "미체크" */,
     consignmentCompany /* 위탁사업자명 (input text) */,
+    isOpen,
     quickChargerCount,
     standardChargerCount,
     powerSocket,
     powerSocketCount,
+    isHidden,
+    supplyMethod,
+    billDivision,
     kepcoCustomerNum,
     meterNum,
     kepcoFee,
@@ -254,7 +259,10 @@ const ChargerStationAdd = () => {
                               label: "미사용",
                               value: "N",
                             },
-                          ]}
+                          ].map((data) => ({
+                            ...data,
+                            checked: data.value === isUse,
+                          }))}
                           onChange={onChange}
                         />
                       </DetailContentCol>
@@ -313,7 +321,10 @@ const ChargerStationAdd = () => {
                               label: "부분",
                               value: "N",
                             },
-                          ]}
+                          ].map((data) => ({
+                            ...data,
+                            checked: data.value === isOpen,
+                          }))}
                           onChange={onChange}
                         />
                       </DetailContentCol>
@@ -395,7 +406,10 @@ const ChargerStationAdd = () => {
                               label: "미노출",
                               value: "N",
                             },
-                          ]}
+                          ].map((data) => ({
+                            ...data,
+                            checked: data.value === isHidden,
+                          }))}
                           onChange={onChange}
                         />
                       </DetailContentCol>
@@ -406,7 +420,10 @@ const ChargerStationAdd = () => {
                       {
                         title: "수전방식",
                         name: "supplyMethod",
-                        list: objectToArray(SUPPLY_METHOD),
+                        list: objectToArray(SUPPLY_METHOD).map((data) => ({
+                          ...data,
+                          checked: data.value === supplyMethod,
+                        })),
                         onChange,
                       },
                       {
@@ -421,7 +438,10 @@ const ChargerStationAdd = () => {
                             label: "자가",
                             value: "N",
                           },
-                        ],
+                        ].map((data) => ({
+                          ...data,
+                          checked: data.value === billDivision,
+                        })),
                         onChange,
                       },
                     ]}
@@ -685,7 +705,10 @@ const ChargerStationAdd = () => {
                             value: "N",
                             checked: isParkFeeFree === "N",
                           },
-                        ]}
+                        ].map((data) => ({
+                          ...data,
+                          checked: data.value === isParkFeeFree,
+                        }))}
                         onChange={onChange}
                       />
                     </DetailContentCol>
@@ -717,6 +740,9 @@ const ChargerStationAdd = () => {
                   <DetailLabelCol sm={2}>계약번호</DetailLabelCol>
                   <DetailContentCol>
                     <ContractDropdown
+                      initSelectedValue={{
+                        id: contractId ? Number(contractId) : undefined,
+                      }}
                       onChange={(data) => {
                         /** @TODO 계약장소 데이터 state 추가  */
                         onChangeSingle({
