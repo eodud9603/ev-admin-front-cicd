@@ -1,5 +1,6 @@
 import { FieldValidation } from "src/utils/validate";
 import { number, string } from "yup";
+import { REGEX } from "../regex";
 
 type FieldSchemaMap = Record<string, FieldValidation>;
 
@@ -20,23 +21,20 @@ export const YUP_NORMAL_MEMBER: FieldSchemaMap = {
     validation: string()
       .required("휴대전화 번호는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 휴대전화 번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
   email: {
     validation: string()
       .required("이메일은 필수 입력 항목입니다.")
-      .matches(
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        "유효한 이메일 주소를 입력해주세요."
-      ),
+      .matches(REGEX.email, "유효한 이메일 주소를 입력해주세요."),
   },
   phone: {
     validation: string()
       .required("전화번호는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },

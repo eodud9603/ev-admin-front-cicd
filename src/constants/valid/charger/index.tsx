@@ -1,6 +1,7 @@
 import { BROKEN_STATUS } from "src/constants/status";
 import { FieldValidation } from "src/utils/validate";
 import { number, string } from "yup";
+import { REGEX } from "../regex";
 
 type FieldSchemaMap = Record<string, FieldValidation>;
 
@@ -111,59 +112,38 @@ export const YUP_CHARGER_STATION: FieldSchemaMap = {
   etcInfo: {
     validation: string()
       .required("충전불가 차량은 필수 입력 항목입니다.")
-      .matches(
-        /^[\s\S]*?(?:,[\s\S]+)*$/,
-        "충전불가 차량 형식이 맞지 않습니다."
-      ),
+      .matches(REGEX.tel, "충전불가 차량 형식이 맞지 않습니다."),
   },
   /* 운영정보 */
   baseOperationTimeFrom: {
     validation: string()
       .required("운영시작시간(평일)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   baseOperationTimeTo: {
     validation: string()
       .required("운영시작시간(휴일)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   holidayOperationTimeFrom: {
     validation: string()
       .required("운영종료시간(휴일)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   holidayOperationTimeTo: {
     validation: string()
       .required("운영종료시간(토)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   saturdayOperationTimeFrom: {
     validation: string()
       .required("운영시작시간(토)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   saturdayOperationTimeTo: {
     validation: string()
       .required("운영종료시간(토)는 필수 입력 항목입니다.")
-      .matches(
-        /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/,
-        "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."
-      ),
+      .matches(REGEX.time, "00:00 ~ 23:59 범위내 형식을 맞춰 작성해주세요."),
   },
   isParkFeeFree: {
     validation: string()
@@ -384,7 +364,7 @@ export const YUP_CHARGER_MODEM: FieldSchemaMap = {
     validation: string()
       .required("모뎀 제조사 연락처는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 모뎀 제조사 연락처를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
@@ -403,7 +383,7 @@ export const YUP_CHARGER_MODEM: FieldSchemaMap = {
     validation: string()
       .required("개통사 연락처는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 개통사 연락처를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
@@ -445,7 +425,7 @@ export const YUP_CHARGER_CONTRACT: FieldSchemaMap = {
     validation: string()
       .required("담당자 전화번호를 입력해주세요.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 담당자 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
@@ -457,7 +437,7 @@ export const YUP_CHARGER_CONTRACT: FieldSchemaMap = {
     validation: string()
       .required("영업담당자 전화번호를 입력해주세요.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 영업담당자 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
@@ -573,7 +553,7 @@ export const YUP_CHARGER_OPERATOR: FieldSchemaMap = {
     validation: string()
       .required("사업자 전화번호는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 사업자 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
@@ -581,7 +561,7 @@ export const YUP_CHARGER_OPERATOR: FieldSchemaMap = {
     validation: string()
       .required("사업자 대표 번호는 필수 입력 항목입니다.")
       .matches(
-        /^(\d{3})-(\d{3,4})-(\d{4})$/,
+        REGEX.tel,
         "유효한 사업자 대표 전화번호를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
       ),
   },
