@@ -28,8 +28,6 @@ import {
   MEMBER_GRADE_TYPE,
   MEMBER_STATUS_TYPE,
   STATION_OPERATOR,
-  TMemberStatusTypeKey,
-  TStationTypeKey,
 } from "src/constants/status";
 import { getPageList } from "src/utils/pagination";
 import { getParams } from "src/utils/params";
@@ -41,6 +39,7 @@ import {
 import { objectToArray } from "src/utils/convert";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import { blobToExcel } from "src/utils/xlsx";
+import { useTabs } from "src/hooks/useTabs";
 
 const defaultFilterData = {
   label: "전체",
@@ -79,7 +78,10 @@ const tableHeader = [
 ];
 
 export const MemberNormal = () => {
-  const data = useLoaderData() as INormalMemberListResponse | null;
+  const { data, filterData } = useLoaderData() as {
+    data: INormalMemberListResponse | null;
+    filterData: { [key: string]: any };
+  };
   const nav = useNavigate();
   const { pathname } = useLocation();
 
@@ -99,16 +101,7 @@ export const MemberNormal = () => {
       : "등록된 회원 정보가 없습니다.",
   });
 
-  const [inputs, { onChange, onChangeSingle }] = useInputs({
-    startDate: "",
-    endDate: "",
-    statusType: "" as TMemberStatusTypeKey,
-    searchRange: "Name",
-    searchText: "",
-    stationOperator: "" as TStationTypeKey,
-    sort: "CreatedDate" as IRequestNormalMemberList["sort"],
-    count: "10",
-  });
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
   const {
     startDate: searchStartDate,
     endDate: searchEndDate,
@@ -119,6 +112,12 @@ export const MemberNormal = () => {
     sort,
     count,
   } = inputs;
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "회원 관리",
+    filterData: inputs,
+  });
 
   const handleModalState = () => {
     setIsOpen(!isOpen);
@@ -139,11 +138,11 @@ export const MemberNormal = () => {
     };
     if (searchStartDate && searchEndDate) {
       searchParams.searchStartDate = standardDateFormat(
-        searchStartDate,
+        searchStartDate as string,
         "YYYY.MM.DD"
       );
       searchParams.searchEndDate = standardDateFormat(
-        searchEndDate,
+        searchEndDate as string,
         "YYYY.MM.DD"
       );
     }
@@ -179,6 +178,7 @@ export const MemberNormal = () => {
           page: searchParams.page,
           emptyMessage: "검색된 회원 정보가 없습니다.",
         });
+        searchDataStorage(data);
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }
@@ -288,6 +288,9 @@ export const MemberNormal = () => {
                     searchRange: value,
                   });
                 }}
+                initSelectedValue={dropdownGroupSearch.find(
+                  (e) => e.value === searchRange
+                )}
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
@@ -316,6 +319,9 @@ export const MemberNormal = () => {
                 label={"정렬기준"}
                 dropdownItems={dropdownGroupSort.map((data) => ({
                   ...data,
+                  initSelectedValue: data.menuItems.find(
+                    (e) => e.value === sort
+                  ),
                   onClickDropdownItem: (_, value) => {
                     onChangeSingle({ sort: value as typeof sort });
                     void searchHandler({
@@ -349,6 +355,9 @@ export const MemberNormal = () => {
                     });
                     void searchHandler({ page: 1, size: Number(value) })();
                   }}
+                  initSelectedValue={COUNT_FILTER_LIST.find(
+                    (e) => e.value === count
+                  )}
                 />
                 <ButtonBase
                   label={"알림 발송"}
