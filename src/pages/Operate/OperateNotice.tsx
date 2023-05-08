@@ -33,8 +33,7 @@ import { getPageList } from "src/utils/pagination";
 import { deleteNoticeList, getNoticeList } from "src/api/board/noticeApi";
 import { getParams } from "src/utils/params";
 import { standardDateFormat } from "src/utils/day";
-import { YNType } from "src/api/api.interface";
-import { TUploadTypeKeys, UPLOAD_TYPE } from "src/constants/status";
+import { UPLOAD_TYPE } from "src/constants/status";
 import { useTabs } from "src/hooks/useTabs";
 
 /** 검색어 필터 */
@@ -69,7 +68,7 @@ const tableHeader = [
   { label: "작성자" },
   { label: "조회수" },
   { label: "작성일" },
-  { label: "삭제 여부" },
+  { label: "노출 여부" },
 ];
 
 const OperateNotice = () => {
@@ -79,7 +78,7 @@ const OperateNotice = () => {
   };
   /* 체크 리스트 */
   const [checkList, setCheckList] = useState<number[]>([]);
-  /* 선택삭제 모달 */
+  /* 선택비노출 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const [
@@ -166,8 +165,8 @@ const OperateNotice = () => {
 
   const navigate = useNavigate();
 
-  /** 선택항목 삭제 */
-  const deleteHandler = async () => {
+  /** 선택 비노출 삭제 */
+  const exposureHandler = async () => {
     /* 삭제요청 */
     const { code } = await deleteNoticeList({
       noticeIds: checkList,
@@ -216,7 +215,7 @@ const OperateNotice = () => {
             </Col>
             <Col md={3}>
               <RadioGroup
-                title={"삭제 여부"}
+                title={"노출 여부"}
                 name={"isDeleted"}
                 list={YN_FILTER_LIST.map((status) => ({
                   ...status,
@@ -311,7 +310,7 @@ const OperateNotice = () => {
               />
               <ButtonBase
                 disabled={!(checkList.length > 0)}
-                label={"선택 삭제"}
+                label={"선택비노출"}
                 outline={checkList.length > 0}
                 color={checkList.length > 0 ? "turu" : "secondary"}
                 onClick={() => {
@@ -399,9 +398,9 @@ const OperateNotice = () => {
         onClose={() => {
           setDeleteModalOpen((prev) => !prev);
         }}
-        title={"공지사항 삭제"}
+        title={"공지사항 노출 여부"}
         contents={
-          "삭제 후 고객에게 해당 공지사항이 표시되지 않습니다.\n삭제하시겠습니까?"
+          "비노출 시, 웹 및 앱에서 해당 공지사항이 표시되지 않습니다.\n비노출 진행하시겠습니까?"
         }
         buttons={[
           {
@@ -409,9 +408,9 @@ const OperateNotice = () => {
             color: "secondary",
           },
           {
-            label: "삭제",
+            label: "예",
             color: "turu",
-            onClick: deleteHandler,
+            onClick: exposureHandler,
           },
         ]}
       />

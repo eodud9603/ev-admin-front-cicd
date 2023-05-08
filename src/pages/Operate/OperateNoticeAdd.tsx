@@ -15,7 +15,7 @@ import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckM
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { UPLOAD_FILTER_LIST } from "src/constants/list";
-import { BoardIdEnum, TUploadTypeKeys } from "src/constants/status";
+import { BoardIdEnum } from "src/constants/status";
 import { YUP_OPERATE_NOTICE } from "src/constants/valid/operate";
 import useInputs from "src/hooks/useInputs";
 import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
@@ -199,7 +199,7 @@ const OperateNoticeAdd = () => {
             </Row>
             <Row>
               <Col className={"font-size-14 fw-semibold"} sm={2}>
-                삭제여부
+                노출여부
               </Col>
               <Col sm={10}>
                 <RadioGroup

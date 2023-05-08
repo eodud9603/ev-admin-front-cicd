@@ -251,7 +251,7 @@ const OperateNoticeDetail = () => {
             </Row>
             <Row>
               <Col className={"font-size-14 fw-semibold"} sm={2}>
-                삭제여부
+                노출여부
               </Col>
               <Col sm={10}>
                 <RadioGroup
