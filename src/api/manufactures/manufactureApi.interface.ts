@@ -48,6 +48,7 @@ export interface IManufactureDetailResponse {
   addressDetail: string;
   zipCode: string;
   managerExtPhone: string;
+  models: IManufactureModelItem[];
 }
 
 /* 제조사 등록 */
@@ -75,6 +76,34 @@ export interface IRequestManufactureDelete {
   id: string;
 }
 
+/* 제조사 등록(모델포함) */
+/** @see http://218.38.12.198:45081/docs/index.html#_제조사_수정_모델포함 */
+export interface IRequestManufactureRegisterAll {
+  code: string;
+  name: string;
+  // identifier: string /* 고유값, 미사용 */;
+  companyId: string;
+  managerName: string;
+  managerPhone: string;
+  phone: string /* 업체 번호 */;
+  address: string;
+  zipCode: string;
+  managerExtPhone: string /* 내선 번호 */;
+  models: {
+    id?: number;
+    modelName: string;
+    size?: number;
+    version: string;
+    firmwareId?: number;
+    imageId?: number;
+  }[]
+}
+/* 제조사 수정(모델포함) */
+/** @see http://218.38.12.198:45081/docs/index.html#_제조사_수정_모델포함 */
+export interface IRequestManufactureModifyAll extends IRequestManufactureRegisterAll {
+  id: number;
+};
+
 /* 제조사 모델 목록 조회 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EC%A0%9C%EC%A1%B0%EC%82%AC_%EB%AA%A8%EB%8D%B8_%EC%A1%B0%ED%9A%8C */
 export interface IRequestManufactureModelList {
@@ -84,15 +113,14 @@ export interface IRequestManufactureModelList {
 export interface IManufactureModelItem {
   id?: number;
   modelName: string;
-  manufactureId?: number;
-  size?: string;
+  size?: number;
   version: string;
   firmwareId?: number;
-  firmwareFileName: string;
-  firmwareFileUrl: string;
+  firmwareFileName?: string;
+  firmwareFileUrl?: string;
   imageId?: number;
-  imageFileName: string;
-  imageUrl: string;
+  imageFileName?: string;
+  imageUrl?: string;
 }
 export interface IManufactureModelListResponse {
   elements: IManufactureModelItem[];

@@ -14,13 +14,36 @@ import {
 import useInputs from "src/hooks/useInputs";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 import { IManufactureModelItem } from "src/api/manufactures/manufactureApi.interface";
+import { postManufactureRegisterAll } from "src/api/manufactures/manufactureApi";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
+import { useNavigate } from "react-router";
+import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
+import { YUP_CHARGER_MANUFACTURE } from "src/constants/valid/charger";
+import createValidation from "src/utils/validate";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerRegistration = () => {
+  const navigate = useNavigate();
+
   const [tab, setTab] = useState<tabType>("BASIC");
 
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
+  /* 수정취소 모달 */
+  const [isRegisterCancel, setIsRegisterCancel] = useState(false);
+  /* 텍스트 모달 */
+  const [textModal, setTextModal] = useState({
+    isOpen: false,
+    title: "",
+    contents: "",
+    confirmHandler: () => {},
+  });
 
   /* 기본정보 */
   const [
@@ -48,7 +71,6 @@ export const ChargerManufacturerRegistration = () => {
     {
       id: undefined,
       modelName: "",
-      manufactureId: undefined,
       size: undefined,
       version: "",
       firmwareId: undefined,
@@ -60,9 +82,61 @@ export const ChargerManufacturerRegistration = () => {
     },
   ]);
 
+  /** 목록 페이지 이동 */
+  const navigateList = () => {
+    navigate("/charger/manufacturer");
+  };
+
   /** 주소검색 open handler */
   const onChangeAddrModalVisible = () => {
     setAddrSearchModalOpen((prev) => !prev);
+  };
+
+  /** 취소안내 모달 handler */
+  const onChangeCancelModal = () => {
+    setIsRegisterCancel((prev) => !prev);
+  };
+
+  /** 텍스트 모달 handler */
+  const onChangeTextModal = (data: Partial<typeof textModal>) => () => {
+    setTextModal((prev) => ({
+      ...prev,
+      ...data,
+      isOpen: data.isOpen ?? !prev.isOpen,
+    }));
+  };
+
+  const params = {
+    ...basicInputs,
+    models: firmwareList,
+  };
+
+  /** 등록 */
+  const register = async () => {
+    /** 유효성 체크 */
+    const scheme = createValidation(YUP_CHARGER_MANUFACTURE);
+    const [invalid] = scheme(params);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
+
+    /** 등록 요청 */
+    const { code } = await postManufactureRegisterAll(params);
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      onChangeTextModal({
+        title: "신규 충전기 제조사 등록 완료",
+        contents: "충전기 제조사 정보가 등록되었습니다.",
+        confirmHandler: navigateList,
+      })();
+      return;
+    }
   };
 
   return (
@@ -120,19 +194,25 @@ export const ChargerManufacturerRegistration = () => {
           </TabSection>
         </InfoSection>
         <div className={"d-flex justify-content-center mt-5"}>
-          <ButtonBase label={"목록"} outline={true} className={"w-xs"} />
           <ButtonBase
+            label={"목록"}
+            outline={true}
+            className={"w-xs"}
+            onClick={onChangeCancelModal}
+          />
+          <ButtonBase
+            disabled={true}
             label={"저장"}
             color={"turu"}
             outline={true}
             className={"mx-3 w-xs"}
-            disabled={true}
           />
           <ButtonBase
+            disabled={true}
             label={"등록"}
             color={"turu"}
             className={"w-xs"}
-            disabled={true}
+            onClick={register}
           />
         </div>
       </BodyBase>
@@ -147,6 +227,22 @@ export const ChargerManufacturerRegistration = () => {
           });
         }}
       />
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
+      <DetailCancelModal
+        isOpen={isRegisterCancel}
+        onClose={onChangeCancelModal}
+        cancelHandler={navigateList}
+        title={"충전기 제조사 신규 등록 취소 안내"}
+        contents={
+          "입력된 충전기 제조사 정보가 저장되지 않습니다.\n신규 등록을 취소하시겠습니까?"
+        }
+      />
+      <DetailCompleteModal {...textModal} onClose={onChangeTextModal({})} />
     </ContainerBase>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   DetailContentCol,
   DetailLabelCol,
@@ -11,12 +11,15 @@ import {
   IManufactureDetailResponse,
   IManufactureModelItem,
 } from "src/api/manufactures/manufactureApi.interface";
+import { Input } from "reactstrap";
+import { postFileUpload } from "src/api/common/commonApi";
 
 interface IManufacturerInfoTemplates {
   type: "ADD" | "DETAIL" | "UPDATE";
 }
 
-interface IManufactureInputs extends Omit<IManufactureDetailResponse, "id"> {
+interface IManufactureInputs
+  extends Omit<IManufactureDetailResponse, "id" | "models"> {
   id?: string;
 }
 
@@ -181,9 +184,13 @@ export const ManufacturerFirmwareInfoTab = ({
 }: IFirmwareInfoTabProps) => {
   const disabled = type === "DETAIL";
 
-  const addFirmware = () => {
-    setList((prev) => [
-      ...prev,
+  const addFirmware = useCallback(() => {
+    if (disabled) {
+      return;
+    }
+
+    setList((prevList) => [
+      ...prevList,
       {
         id: undefined,
         modelName: "",
@@ -198,13 +205,83 @@ export const ManufacturerFirmwareInfoTab = ({
         imageUrl: "",
       },
     ]);
-  };
+  }, [disabled, setList]);
 
-  const removeFirmware = (index: number) => () => {
-    const tempList = [...list];
-    tempList.splice(index, 1);
-    setList(tempList);
-  };
+  const removeFirmware = useCallback(
+    (index: number) => () => {
+      if (disabled) {
+        return;
+      }
+
+      setList((prevList) => {
+        const newList = [...prevList];
+        newList.splice(index, 1);
+
+        return newList;
+      });
+    },
+    [disabled, setList]
+  );
+
+  /** file upload */
+  const fileUpload = useCallback(
+    (type: "IMAGE" | "FIRMWARE", index: number) =>
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) {
+          return;
+        }
+
+        void postFileUpload(e.target.files).then(({ code, data }) => {
+          const success = code === "SUCCESS" && !!data;
+
+          if (success) {
+            const [file] = data.elements;
+
+            setList((prevList) => {
+              const newList = [...prevList];
+
+              let update = {};
+              if (type === "IMAGE") {
+                update = {
+                  imageId: file.id,
+                  imageFileName: file.fileName,
+                  imageUrl: file.url,
+                };
+              } else if (type === "FIRMWARE") {
+                update = {
+                  size: (e.target.files?.item(0)?.size ?? "").toString(),
+                  firmwareId: file.id,
+                  firmwareFileName: file.fileName,
+                  firmwareFileUrl: file.url,
+                };
+              }
+
+              newList[index] = {
+                ...newList[index],
+                ...update,
+              };
+
+              return newList;
+            });
+          }
+        });
+      },
+    [setList]
+  );
+
+  /** input change */
+  const onChangeInputs = useCallback(
+    (key: keyof IManufactureModelItem, index: number) =>
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        setList((prevList) => {
+          const newList = [...prevList];
+          newList[index] = { ...newList[index], [key]: e.target.value };
+
+          return newList;
+        });
+      },
+    [setList]
+  );
 
   return (
     <>
@@ -217,18 +294,14 @@ export const ManufacturerFirmwareInfoTab = ({
                 disabled={disabled}
                 name={`modelName_${index}`}
                 value={data.modelName ?? ""}
-                onChange={(e) => {
-                  const tempList = [...list];
-                  tempList[index].modelName = e.target.value;
-                  setList(tempList);
-                }}
+                onChange={onChangeInputs("modelName", index)}
               />
             </DetailContentCol>
             <DetailLabelCol sm={2}>모델 이미지</DetailLabelCol>
             <DetailContentCol className={"py-0"}>
               {type === "DETAIL" ? (
                 <u role={"button"} className={"text-turu"}>
-                  등록된 펌웨어 파일명
+                  {data.imageFileName}
                 </u>
               ) : (
                 <div
@@ -236,10 +309,36 @@ export const ManufacturerFirmwareInfoTab = ({
                     "d-flex justify-content-between align-items-center"
                   }
                 >
-                  <span className={"text-secondary text-opacity-25"}>
-                    충전기 모델 이미지를 등록해주세요.
+                  <span
+                    className={
+                      data.imageFileName
+                        ? "text-turu "
+                        : "text-secondary text-opacity-25"
+                    }
+                    onClick={() => {
+                      if (data.imageUrl) {
+                        window?.open(data.imageUrl);
+                      }
+                    }}
+                  >
+                    {data.imageFileName || "충전기 모델 이미지를 등록해주세요."}
                   </span>
-                  <ButtonBase label={"업로드"} outline={true} color={"turu"} />
+                  <ButtonBase
+                    label={"업로드"}
+                    outline={true}
+                    color={"turu"}
+                    onClick={() => {
+                      document.getElementById(`imageFile_${index}`)?.click();
+                    }}
+                  />
+                  <Input
+                    className={"visually-hidden"}
+                    type={"file"}
+                    id={`imageFile_${index}`}
+                    name={"imageFile_"}
+                    accept={"*"}
+                    onChange={fileUpload("IMAGE", index)}
+                  />
                 </div>
               )}
             </DetailContentCol>
@@ -252,24 +351,17 @@ export const ManufacturerFirmwareInfoTab = ({
                 title: "펌웨어 버전",
                 name: `version_${index}`,
                 content: data.version ?? "",
-                onChange: (e) => {
-                  const tempList = [...list];
-                  tempList[index].version = e.target.value;
-                  setList(tempList);
-                },
+                onChange: onChangeInputs("version", index),
               },
               {
                 disabled,
                 titleWidthRatio: 4,
                 type: "number",
+                min: 0,
                 title: "펌웨어 크기(Byte)",
                 name: `size_${index}`,
                 content: (data.size ?? "").toString(),
-                onChange: (e) => {
-                  const tempList = [...list];
-                  tempList[index].size = e.target.value;
-                  setList(tempList);
-                },
+                onChange: onChangeInputs("size", index),
               },
             ]}
           />
@@ -278,7 +370,7 @@ export const ManufacturerFirmwareInfoTab = ({
             <DetailContentCol>
               {type === "DETAIL" ? (
                 <u role={"button"} className={"text-turu"}>
-                  등록된 펌웨어 파일명
+                  {data.firmwareFileName}
                 </u>
               ) : (
                 <div
@@ -286,10 +378,37 @@ export const ManufacturerFirmwareInfoTab = ({
                     "d-flex justify-content-between align-items-center"
                   }
                 >
-                  <span className={"text-secondary text-opacity-25"}>
-                    펌웨어 파일을 등록해주세요.
+                  <span
+                    className={
+                      data.firmwareFileName
+                        ? "text-turu "
+                        : "text-secondary text-opacity-25"
+                    }
+                    onClick={() => {
+                      if (data.firmwareFileUrl) {
+                        window?.open(data.firmwareFileUrl);
+                      }
+                    }}
+                  >
+                    {data.firmwareFileName || "펌웨어 파일을 등록해주세요."}
                   </span>
-                  <ButtonBase label={"업로드"} outline={true} color={"turu"} />
+                  <ButtonBase
+                    disabled={disabled}
+                    label={"업로드"}
+                    outline={true}
+                    color={"turu"}
+                    onClick={() => {
+                      document.getElementById(`firmwareFile_${index}`)?.click();
+                    }}
+                  />
+                  <Input
+                    className={"visually-hidden"}
+                    type={"file"}
+                    id={`firmwareFile_${index}`}
+                    name={"firmwareFile"}
+                    accept={"*"}
+                    onChange={fileUpload("FIRMWARE", index)}
+                  />
                 </div>
               )}
             </DetailContentCol>
@@ -306,7 +425,7 @@ export const ManufacturerFirmwareInfoTab = ({
             <div
               role={"button"}
               className={"text-secondary px-3 my-3"}
-              onClick={removeFirmware(index)}
+              onClick={removeFirmware(index + 1)}
             >
               - 등록 정보 삭제
             </div>
