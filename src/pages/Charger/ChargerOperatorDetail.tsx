@@ -109,7 +109,6 @@ export const ChargerOperatorDetail = () => {
     contractFileUrl,
   } = inputs;
 
-  console.log("data ::", data);
   /* 계약서 파일 */
   const [contractFile, setContractFile] = useState<
     Partial<{

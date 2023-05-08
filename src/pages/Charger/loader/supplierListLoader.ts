@@ -23,7 +23,6 @@ export const INIT_SUPPLIER = {
 export const supplierListLoader = async () => {
   const loadData = loadTabData("/charger/operator");
   if (loadData?.data || loadData?.filterData) {
-    console.log("load data ::", loadData);
     return loadData;
   }
 
