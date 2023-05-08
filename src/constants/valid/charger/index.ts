@@ -543,6 +543,62 @@ export const YUP_CHARGER_BROKEN_EXTRA: FieldSchemaMap = {
   },
 };
 
+/** 충전기 제조사 yup */
+export const YUP_CHARGER_MANUFACTURE: FieldSchemaMap = {
+  companyId: {
+    validation: string().required("제조사 ID는 필수 입력 항목입니다."),
+  },
+  code: {
+    validation: string().required("제조사 코드는 필수 입력 항목입니다."),
+  },
+  name: {
+    validation: string().required("제조사명은 필수 입력 항목입니다."),
+  },
+  managerName: {
+    validation: string().required("담당자명은 필수 입력 항목입니다."),
+  },
+  managerPhone: {
+    validation: string()
+      .required("담당자 연락처는 필수 입력 항목입니다.")
+      .matches(
+        REGEX.tel,
+        "유효한 담당자 연락처를 입력해주세요.\n(000-0000-0000 또는 000-000-0000)"
+      ),
+  },
+  managerExtPhone: {
+    validation: string()
+      .required("담당자 내선번호는 필수 입력 항목입니다.")
+      .matches(
+        REGEX.extTel,
+        "유효한 담당자 내선번호를 입력해주세요.\n(00-000-0000 또는 000-0000-0000 또는 000-000-0000)"
+      ),
+  },
+  phone: {
+    validation: string()
+      .required("사업자 대표번호는 필수 입력 항목입니다.")
+      .matches(
+        REGEX.extTel,
+        "유효한 사업자 대표번호를 입력해주세요.\n(00-000-0000 또는 000-0000-0000 또는 000-000-0000)"
+      ),
+  },
+  zipCode: {
+    validation: string().required("우편번호는 필수 입력 항목입니다."),
+  },
+  address: {
+    validation: string().required("사업자 주소는 필수 입력 항목입니다."),
+  },
+  addressDetail: {
+    validation: string().required("사업자 상세주소는 필수 입력 항목입니다."),
+  },
+};
+
+/** 충전기 제조사 수정 yup */
+export const YUP_CHARGER_MANUFACTURE_EXTRA: FieldSchemaMap = {
+  id: {
+    validation: string().required("제조사 키를 찾을 수 없습니다."),
+  },
+};
+
 /** 서비스 운영사 yup */
 export const YUP_CHARGER_OPERATOR: FieldSchemaMap = {
   name: {

@@ -9,7 +9,8 @@ import {
   IManufactureModelListResponse,
   IRequestManufactureRegister,
   IRequestManufactureModify,
-  IRequestManufactureDelete,
+  IRequestManufactureRegisterAll,
+  IRequestManufactureModifyAll,
 } from "src/api/manufactures/manufactureApi.interface";
 
 const { manufactureUrl } = API_URL;
@@ -45,9 +46,14 @@ export const postManufactureModify = (body: IRequestManufactureModify) => {
   return api.post<undefined>(`${manufactureUrl}/modify`, { body });
 };
 
-/** 제조사 삭제 api */
-export const getManufactureDelete = (params: IRequestManufactureDelete) => {
-  return api.get<undefined>(`${manufactureUrl}/delete/${params.id}`);
+/** 제조사 등록(모델 포함) api */
+export const postManufactureRegisterAll = (body: IRequestManufactureRegisterAll) => {
+  return api.post<undefined>(`${manufactureUrl}/register/all`, { body });
+};
+
+/** 제조사 수정(모델 포함) api */
+export const postManufactureModifyAll = (body: IRequestManufactureModifyAll) => {
+  return api.post<undefined>(`${manufactureUrl}/modify/all`, { body });
 };
 
 /* 제조사 모델 */

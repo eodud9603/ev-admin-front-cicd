@@ -16,17 +16,29 @@ import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 import {
   IManufactureDetailResponse,
   IManufactureModelItem,
-  IManufactureModelListResponse,
 } from "src/api/manufactures/manufactureApi.interface";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import useInputs from "src/hooks/useInputs";
+import {
+  deleteManufacture,
+  postManufactureModifyAll,
+} from "src/api/manufactures/manufactureApi";
+import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
+import DetailDeleteModal from "./components/DetailDeleteModal";
+import createValidation from "src/utils/validate";
+import {
+  YUP_CHARGER_MANUFACTURE,
+  YUP_CHARGER_MANUFACTURE_EXTRA,
+} from "src/constants/valid/charger";
+import { getParams } from "src/utils/params";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerDetail = () => {
   /** init 제조사 상세 데이터 (basic info) */
-  const { basic, model } = useLoaderData() as {
+  const { basic, models } = useLoaderData() as {
     basic: IManufactureDetailResponse;
-    model: IManufactureModelListResponse;
+    models: IManufactureModelItem[];
   };
   const navigate = useNavigate();
 
@@ -35,11 +47,21 @@ export const ChargerManufacturerDetail = () => {
 
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
+  /* 수정취소 모달 */
+  const [isEditCancel, setIsEditCancel] = useState(false);
+  /* 삭제안내 모달 */
+  const [deleteModal, setDeleteModal] = useState(false);
   /* 텍스트 모달 */
   const [textModal, setTextModal] = useState({
     isOpen: false,
     title: "",
     contents: "",
+    confirmHandler: () => {},
   });
 
   /* 기본정보 */
@@ -66,13 +88,12 @@ export const ChargerManufacturerDetail = () => {
   });
   /* 펌웨어 정보 */
   const [firmwareList, setFirmwareList] = useState<IManufactureModelItem[]>(
-    model.elements.length > 0
-      ? model.elements
+    models.length > 0
+      ? models
       : [
           {
             id: undefined,
             modelName: "",
-            manufactureId: basic.id,
             size: undefined,
             version: "",
             firmwareId: undefined,
@@ -91,15 +112,101 @@ export const ChargerManufacturerDetail = () => {
   };
 
   /** 텍스트 모달 handler */
-  const onChangeTextModal =
-    ({ title = "", contents = "" }) =>
-    () => {
-      setTextModal((prev) => ({
-        isOpen: !prev.isOpen,
-        title: title || prev.title,
-        contents: contents || prev.contents,
-      }));
+  const onChangeTextModal = (data: Partial<typeof textModal>) => () => {
+    setTextModal((prev) => ({
+      ...prev,
+      ...data,
+      isOpen: data.isOpen ?? !prev.isOpen,
+    }));
+  };
+
+  /** 삭제안내 모달 handler */
+  const onChangeDeleteModal = () => {
+    setDeleteModal((prev) => !prev);
+  };
+
+  /** 목록 페이지 이동 */
+  const navigateList = () => {
+    navigate("/charger/manufacturer");
+  };
+
+  /** 삭제 */
+  const deleteHandler = async () => {
+    const params = {
+      id: Number(basic.id),
     };
+
+    /** 유효성 체크 */
+    const scheme = createValidation({
+      ...YUP_CHARGER_MANUFACTURE_EXTRA,
+    });
+    const [invalid] = scheme(params);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
+
+    /** 삭제 요청 */
+    const { code } = await deleteManufacture(params);
+    /** 삭제 */
+    const success = code === "SUCCESS";
+    if (success) {
+      onChangeTextModal({
+        title: "충전기 제조사 정보 삭제 완료",
+        contents: "충전기 제조사 정보가 삭제되었습니다.",
+        confirmHandler: navigateList,
+      })();
+      return;
+    }
+  };
+
+  /** 수정 */
+  const modify = async () => {
+    /* 수정모드로 변경 */
+    if (type === "DETAIL") {
+      setType("UPDATE");
+      return;
+    }
+
+    const params = {
+      ...basicInputs,
+      models: firmwareList,
+      id: Number(basicInputs.id),
+    };
+    getParams(params);
+
+    /** 유효성 체크 */
+    const scheme = createValidation({
+      ...YUP_CHARGER_MANUFACTURE,
+      ...YUP_CHARGER_MANUFACTURE_EXTRA,
+    });
+    const [invalid] = scheme(params);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
+
+    /** 수정 요청 */
+    const { code } = await postManufactureModifyAll(params);
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      onChangeTextModal({
+        title: "충전기 제조사 정보 수정 완료 안내",
+        contents: "수정된 충전기 제조사 정보가 저장되었습니다.",
+        confirmHandler: undefined,
+      })();
+      setType("DETAIL");
+    }
+  };
 
   return (
     <ContainerBase>
@@ -156,31 +263,39 @@ export const ChargerManufacturerDetail = () => {
           </TabSection>
         </InfoSection>
         <div className={"d-flex justify-content-center mt-5"}>
-          <ButtonBase label={"목록"} outline={true} className={"w-xs"} />
+          <ButtonBase
+            label={"목록"}
+            outline={true}
+            className={"w-xs"}
+            onClick={() => {
+              if (type === "DETAIL") {
+                navigateList();
+                return;
+              }
+
+              if (type === "UPDATE") {
+                setIsEditCancel(true);
+                return;
+              }
+            }}
+          />
           <ButtonBase
             label={"삭제"}
             color={"turu"}
             outline={true}
             className={"mx-3 w-xs"}
+            onClick={onChangeDeleteModal}
           />
           <ButtonBase
             label={type === "DETAIL" ? "수정" : "저장"}
             color={"turu"}
             className={"w-xs"}
-            onClick={() => {
-              setType((prev) => (prev === "DETAIL" ? "UPDATE" : "DETAIL"));
-            }}
+            onClick={modify}
           />
         </div>
       </BodyBase>
 
-      <DetailCompleteModal
-        {...textModal}
-        onClose={onChangeTextModal({ title: "", contents: "" })}
-        confirmHandler={() => {
-          navigate("/charger/manufacturer");
-        }}
-      />
+      {/* 모달 모음 */}
       <AddressSearchModal
         isOpen={addrSearchModalOpen}
         onClose={onChangeAddrModalVisible}
@@ -191,6 +306,31 @@ export const ChargerManufacturerDetail = () => {
           });
         }}
       />
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
+      <DetailCancelModal
+        isOpen={isEditCancel}
+        onClose={() => {
+          setIsEditCancel(false);
+        }}
+        cancelHandler={navigateList}
+        title={"충전기 제조사 정보 수정 취소 안내"}
+        contents={
+          "수정된 충전기 제조사 정보가 저장되지 않습니다.\n수정을 취소하시겠습니까?"
+        }
+      />
+      <DetailDeleteModal
+        isOpen={deleteModal}
+        onClose={onChangeDeleteModal}
+        deleteHandler={deleteHandler}
+        title={"충전기 제조사 정보 삭제 안내"}
+        contents={"충전기 제조사 정보를 삭제하시겠습니까?"}
+      />
+      <DetailCompleteModal {...textModal} onClose={onChangeTextModal({})} />
     </ContainerBase>
   );
 };
