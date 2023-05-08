@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
@@ -16,7 +16,6 @@ import {
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { useLoaderData, useNavigate } from "react-router";
-import { ISupplierDetailResponse } from "src/api/supplier/supplierApi.interface";
 import useInputs from "src/hooks/useInputs";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 import DetailDeleteModal from "src/pages/Charger/components/DetailDeleteModal";
@@ -25,13 +24,15 @@ import {
   postSupplierModify,
 } from "src/api/supplier/supplierApi";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
-import { YNType } from "src/api/api.interface";
 import { fileUpload } from "src/utils/upload";
 import { getParams } from "src/utils/params";
 import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_OPERATOR } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
+import { useTabs } from "src/hooks/useTabs";
+import useTransferFile from "src/hooks/useTransferFile";
+import { ISupplierDetailLoaderType } from "src/pages/Charger/loader/supplierDetailLoader";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },
@@ -39,10 +40,14 @@ const YN_LIST = [
 ];
 
 export const ChargerOperatorDetail = () => {
-  const data = useLoaderData() as Partial<ISupplierDetailResponse>;
+  const {
+    data,
+    fileData: loaderFileData,
+    editable = true,
+  } = useLoaderData() as ISupplierDetailLoaderType;
 
   /* 수정모드 */
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(editable);
   /* 수정취소 모달 */
   const [isEditCancel, setIsEditCancel] = useState(false);
   /* 주소검색 모달 */
@@ -78,8 +83,8 @@ export const ChargerOperatorDetail = () => {
     zipCode: data.zipCode ?? "",
     address: data.address ?? "",
     addressDetail: data.addressDetail ?? "",
-    isContracted: (data.isContracted ?? "") as YNType,
-    isActive: (data.isActive ?? "") as YNType,
+    isContracted: data.isContracted ?? "",
+    isActive: data.isActive ?? "",
     contractedDate: data.contractedDate ?? "",
     contractFileId: data.contractFileId ?? undefined,
     contractFileName: data.contractFileName ?? "",
@@ -103,6 +108,8 @@ export const ChargerOperatorDetail = () => {
     contractFileName,
     contractFileUrl,
   } = inputs;
+
+  console.log("data ::", data);
   /* 계약서 파일 */
   const [contractFile, setContractFile] = useState<
     Partial<{
@@ -110,6 +117,37 @@ export const ChargerOperatorDetail = () => {
       file: FileList | null;
     }>
   >({});
+
+  const [fileData, setFileData] = useState({
+    fileInfoData: {
+      type: loaderFileData?.fileInfoData?.type ?? "",
+      name: loaderFileData?.fileInfoData?.name ?? "",
+    },
+    blobStringData: loaderFileData?.blobStringData,
+  });
+  const { onChangeFile, onChangeFileData } = useTransferFile({ fileData });
+
+  useEffect(() => {
+    const file = onChangeFile();
+    if (file) {
+      setContractFile(file);
+    }
+  }, [onChangeFile]);
+
+  useEffect(() => {
+    const createFileData = async () => {
+      if (!contractFile.file) {
+        return;
+      }
+
+      const result = await onChangeFileData(contractFile.file);
+      if (result) {
+        setFileData(result);
+      }
+    };
+
+    void createFileData();
+  }, [contractFile, onChangeFileData]);
 
   const navigate = useNavigate();
 
@@ -217,6 +255,13 @@ export const ChargerOperatorDetail = () => {
       })();
     }
   };
+
+  useTabs({
+    data: { data: inputs, fileData: contractFile },
+    pageTitle: "서비스 운영사 상세",
+    pageType: "detail",
+    editable: disabled,
+  });
 
   return (
     <ContainerBase>
