@@ -11,46 +11,64 @@ import {
   ManufacturerBasicInfoTab,
   ManufacturerFirmwareInfoTab,
 } from "src/pages/Charger/components/ManufacturerInfoTemplates";
+import useInputs from "src/hooks/useInputs";
+import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
+import { IManufactureModelItem } from "src/api/manufactures/manufactureApi.interface";
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerRegistration = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "충전기 제조사 관리" },
-  ]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
-
   const [tab, setTab] = useState<tabType>("BASIC");
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
+  /* 주소검색 모달 */
+  const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
 
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
+  /* 기본정보 */
+  const [
+    basicInputs,
+    {
+      onChange: onChangeBasic,
+      onChangeSingle: onChangeSingleBasic,
+      reset: resetBasic,
+    },
+  ] = useInputs({
+    code: "",
+    name: "",
+    identifier: "",
+    companyId: "",
+    managerName: "",
+    managerPhone: "",
+    managerExtPhone: "",
+    phone: "",
+    zipCode: "",
+    address: "",
+    addressDetail: "" /** @TODO 서버에서 추가해줘야 하는 필드 */,
+  });
+  /* 펌웨어 정보 */
+  const [firmwareList, setFirmwareList] = useState<IManufactureModelItem[]>([
+    {
+      id: undefined,
+      modelName: "",
+      manufactureId: undefined,
+      size: undefined,
+      version: "",
+      firmwareId: undefined,
+      firmwareFileName: "",
+      firmwareFileUrl: "",
+      imageId: undefined,
+      imageFileName: "",
+      imageUrl: "",
+    },
+  ]);
 
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
+  /** 주소검색 open handler */
+  const onChangeAddrModalVisible = () => {
+    setAddrSearchModalOpen((prev) => !prev);
   };
 
   return (
     <ContainerBase>
       <HeaderBase />
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
       <BodyBase className={"pb-5"}>
         <BreadcrumbBase
           list={[
@@ -86,29 +104,49 @@ export const ChargerManufacturerRegistration = () => {
 
           <TabSection>
             {tab === "BASIC" ? (
-              <ManufacturerBasicInfoTab type={"ADD"} />
+              <ManufacturerBasicInfoTab
+                type={"ADD"}
+                onChangeModal={onChangeAddrModalVisible}
+                inputs={basicInputs}
+                onChange={onChangeBasic}
+              />
             ) : (
-              <ManufacturerFirmwareInfoTab type={"ADD"} />
+              <ManufacturerFirmwareInfoTab
+                type={"ADD"}
+                list={firmwareList}
+                setList={setFirmwareList}
+              />
             )}
           </TabSection>
         </InfoSection>
         <div className={"d-flex justify-content-center mt-5"}>
           <ButtonBase label={"목록"} outline={true} className={"w-xs"} />
           <ButtonBase
-            label={"삭제"}
+            label={"저장"}
             color={"turu"}
             outline={true}
             className={"mx-3 w-xs"}
             disabled={true}
           />
           <ButtonBase
-            label={"수정"}
+            label={"등록"}
             color={"turu"}
             className={"w-xs"}
             disabled={true}
           />
         </div>
       </BodyBase>
+
+      <AddressSearchModal
+        isOpen={addrSearchModalOpen}
+        onClose={onChangeAddrModalVisible}
+        onchange={(data) => {
+          onChangeSingleBasic({
+            zipCode: data.zipCode,
+            address: data.address,
+          });
+        }}
+      />
     </ContainerBase>
   );
 };

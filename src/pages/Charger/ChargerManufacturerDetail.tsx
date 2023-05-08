@@ -13,29 +13,28 @@ import {
 } from "src/pages/Charger/components/ManufacturerInfoTemplates";
 import { useLoaderData, useNavigate } from "react-router";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
-import { deleteManufacture } from "src/api/manufactures/manufactureApi";
-import { IManufactureDetailResponse } from "src/api/manufactures/manufactureApi.interface";
-import { number } from "yup";
-import DetailDeleteModal from "src/pages/Charger/components/DetailDeleteModal";
+import {
+  IManufactureDetailResponse,
+  IManufactureModelItem,
+  IManufactureModelListResponse,
+} from "src/api/manufactures/manufactureApi.interface";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
-
-const idValidation = number().required("id값이 없습니다.");
+import useInputs from "src/hooks/useInputs";
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerDetail = () => {
   /** init 제조사 상세 데이터 (basic info) */
-  const data = useLoaderData() as IManufactureDetailResponse | null;
-
-  const [tabList, setTabList] = useState([{ label: "충전기 제조사 관리" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
+  const { basic, model } = useLoaderData() as {
+    basic: IManufactureDetailResponse;
+    model: IManufactureModelListResponse;
+  };
+  const navigate = useNavigate();
 
   const [tab, setTab] = useState<tabType>("BASIC");
   const [type, setType] = useState<"DETAIL" | "UPDATE">("DETAIL");
 
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
-  /* 삭제안내 모달 */
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   /* 텍스트 모달 */
   const [textModal, setTextModal] = useState({
     isOpen: false,
@@ -43,16 +42,52 @@ export const ChargerManufacturerDetail = () => {
     contents: "",
   });
 
-  const navigate = useNavigate();
+  /* 기본정보 */
+  const [
+    basicInputs,
+    {
+      onChange: onChangeBasic,
+      onChangeSingle: onChangeSingleBasic,
+      reset: resetBasic,
+    },
+  ] = useInputs({
+    id: (basic.id ?? "").toString(),
+    code: basic.code ?? "",
+    name: basic.name ?? "",
+    companyId: basic.companyId ?? "",
+    managerName: basic.managerName ?? "",
+    managerPhone: basic.managerPhone ?? "",
+    managerExtPhone: basic.managerExtPhone ?? "",
+    phone: basic.phone ?? "",
+    zipCode: basic.zipCode ?? "",
+    address: basic.address ?? "",
+    addressDetail:
+      basic.addressDetail ?? "" /** @TODO 서버에서 추가해줘야 하는 필드 */,
+  });
+  /* 펌웨어 정보 */
+  const [firmwareList, setFirmwareList] = useState<IManufactureModelItem[]>(
+    model.elements.length > 0
+      ? model.elements
+      : [
+          {
+            id: undefined,
+            modelName: "",
+            manufactureId: basic.id,
+            size: undefined,
+            version: "",
+            firmwareId: undefined,
+            firmwareFileName: "",
+            firmwareFileUrl: "",
+            imageId: undefined,
+            imageFileName: "",
+            imageUrl: "",
+          },
+        ]
+  );
 
   /** 주소검색 open handler */
   const onChangeAddrModalVisible = () => {
     setAddrSearchModalOpen((prev) => !prev);
-  };
-
-  /** 삭제안내 모달 handler */
-  const onChangeDeleteModalVisible = () => {
-    setDeleteModalOpen((prev) => !prev);
   };
 
   /** 텍스트 모달 handler */
@@ -66,34 +101,10 @@ export const ChargerManufacturerDetail = () => {
       }));
     };
 
-  /** 삭제 */
-  const deleteHandler = async () => {
-    /* 유효성 체크 */
-    const valid = await idValidation.isValid(data?.id);
-    if (!valid) {
-      return;
-    }
-    /* 삭제 요청 */
-    const { code } = await deleteManufacture({ id: data!.id });
-    /* 삭제 성공 */
-    const success = code === "SUCCESS";
-    if (success) {
-      onChangeTextModal({
-        title: "충전기 제조사 정보 삭제 완료",
-        contents: "충전기 제조사 정보가 삭제되었습니다.",
-      })();
-    }
-  };
-
   return (
     <ContainerBase>
       <HeaderBase />
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={() => {}}
-        onClose={() => {}}
-      />
+      <TabGroup />
       <BodyBase className={"pb-5"}>
         <BreadcrumbBase
           list={[
@@ -132,9 +143,15 @@ export const ChargerManufacturerDetail = () => {
               <ManufacturerBasicInfoTab
                 type={type}
                 onChangeModal={onChangeAddrModalVisible}
+                inputs={basicInputs}
+                onChange={onChangeBasic}
               />
             ) : (
-              <ManufacturerFirmwareInfoTab type={type} />
+              <ManufacturerFirmwareInfoTab
+                type={type}
+                list={firmwareList}
+                setList={setFirmwareList}
+              />
             )}
           </TabSection>
         </InfoSection>
@@ -145,20 +162,18 @@ export const ChargerManufacturerDetail = () => {
             color={"turu"}
             outline={true}
             className={"mx-3 w-xs"}
-            onClick={onChangeDeleteModalVisible}
           />
-          <ButtonBase label={"수정"} color={"turu"} className={"w-xs"} />
+          <ButtonBase
+            label={type === "DETAIL" ? "수정" : "저장"}
+            color={"turu"}
+            className={"w-xs"}
+            onClick={() => {
+              setType((prev) => (prev === "DETAIL" ? "UPDATE" : "DETAIL"));
+            }}
+          />
         </div>
       </BodyBase>
 
-      <DetailDeleteModal
-        isOpen={deleteModalOpen}
-        onClose={onChangeDeleteModalVisible}
-        deleteHandler={deleteHandler}
-        onClosed={() => {}}
-        title={"충전기 제조사 정보 삭제 안내"}
-        contents={"충전기 제조사 정보를 삭제하시겠습니까?"}
-      />
       <DetailCompleteModal
         {...textModal}
         onClose={onChangeTextModal({ title: "", contents: "" })}
@@ -170,7 +185,10 @@ export const ChargerManufacturerDetail = () => {
         isOpen={addrSearchModalOpen}
         onClose={onChangeAddrModalVisible}
         onchange={(data) => {
-          /** @TODO 검색된 주소 데이터, 추가 데이터 필요시, 모달 response 추가 */
+          onChangeSingleBasic({
+            zipCode: data.zipCode,
+            address: data.address,
+          });
         }}
       />
     </ContainerBase>

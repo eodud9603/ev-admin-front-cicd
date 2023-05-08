@@ -36,15 +36,16 @@ export interface IRequestManufactureDetail {
 }
 
 export interface IManufactureDetailResponse {
-  id: number /** 고유 ID */;
+  id?: number /** 고유 ID */;
   code: string;
   name: string;
-  identifier: string;
+  identifier?: string;
   companyId: string;
   managerName: string;
   managerPhone: string;
   phone: string;
   address: string;
+  addressDetail: string;
   zipCode: string;
   managerExtPhone: string;
 }
@@ -54,7 +55,7 @@ export interface IManufactureDetailResponse {
 export interface IRequestManufactureRegister {
   code: string;
   name: string;
-  identifier: string /* 고유값, 서버 확인 필요 */;
+  identifier: string /* 고유값, 미사용 */;
   companyId: string;
   managerName: string;
   managerPhone: string;
@@ -81,15 +82,15 @@ export interface IRequestManufactureModelList {
 }
 
 export interface IManufactureModelItem {
-  id: number;
+  id?: number;
   modelName: string;
-  manufactureId: number;
-  size: number;
+  manufactureId?: number;
+  size?: string;
   version: string;
-  firmwareId: number;
+  firmwareId?: number;
   firmwareFileName: string;
   firmwareFileUrl: string;
-  imageId: number;
+  imageId?: number;
   imageFileName: string;
   imageUrl: string;
 }
