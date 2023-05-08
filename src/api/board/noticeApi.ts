@@ -5,7 +5,7 @@ import {
   INoticeListResponse,
   IRequestNoticeDetail,
   IRequestNoticeList,
-  IRequestNoticeListDelete,
+  IRequestNoticeListExposure,
   IRequestNoticeModify,
   IRequestNoticeRegister,
 } from "src/api/board/noticeApi.interface";
@@ -35,7 +35,10 @@ export const postNoticeRegister = (body: IRequestNoticeRegister) => {
   return api.post<number>(noticeUrl, { body });
 };
 
-/** 공지사항 선택 삭제 api */
-export const deleteNoticeList = (body: IRequestNoticeListDelete) => {
+/**
+ * 공지사항 선택 비노출 api
+ * @Description 2022.05.08 - 선택 삭제 api에서 비노출 api로 변경 (delete field를 exposure용으로 사용)
+ */
+export const exposureNoticeList = (body: IRequestNoticeListExposure) => {
   return api.delete<undefined>(noticeUrl, { body });
 };

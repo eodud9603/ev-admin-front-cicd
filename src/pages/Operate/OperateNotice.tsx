@@ -30,7 +30,7 @@ import {
 } from "src/api/board/noticeApi.interface";
 import useList from "src/hooks/useList";
 import { getPageList } from "src/utils/pagination";
-import { deleteNoticeList, getNoticeList } from "src/api/board/noticeApi";
+import { exposureNoticeList, getNoticeList } from "src/api/board/noticeApi";
 import { getParams } from "src/utils/params";
 import { standardDateFormat } from "src/utils/day";
 import { UPLOAD_TYPE } from "src/constants/status";
@@ -168,7 +168,7 @@ const OperateNotice = () => {
   /** 선택 비노출 삭제 */
   const exposureHandler = async () => {
     /* 삭제요청 */
-    const { code } = await deleteNoticeList({
+    const { code } = await exposureNoticeList({
       noticeIds: checkList,
     });
     /** 성공 */
