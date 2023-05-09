@@ -61,7 +61,7 @@ const ManufacturerModelDropdown = (props: IManufactureModelDropdownProps) => {
 
   /** 선택한 제조사 모델 데이터 콜백 */
   const onChangeData = (_: string, value: string) => {
-    const data = list.find((model) => model.id.toString() === value);
+    const data = list.find((model) => (model.id ?? "").toString() === value);
 
     if (data) {
       !!onChange && onChange(data);
@@ -88,7 +88,7 @@ const format = (list: IManufactureModelItem[]) => {
   return list.map((data) => ({
     ...data,
     label: data.modelName,
-    value: data.id.toString(),
+    value: (data.id ?? "").toString(),
   }));
 };
 
