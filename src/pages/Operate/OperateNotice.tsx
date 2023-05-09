@@ -72,9 +72,10 @@ const tableHeader = [
 ];
 
 const OperateNotice = () => {
-  const { data, filterData } = useLoaderData() as {
+  const { data, filterData, currentPage } = useLoaderData() as {
     data: INoticeListResponse;
     filterData: { [key: string]: any };
+    currentPage: number;
   };
   /* 체크 리스트 */
   const [checkList, setCheckList] = useState<number[]>([]);
@@ -91,6 +92,7 @@ const OperateNotice = () => {
     emptyMessage: !data?.elements
       ? "오류가 발생하였습니다."
       : "등록된 공지사항이 없습니다.",
+    defaultPage: currentPage,
   });
 
   const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
@@ -109,6 +111,7 @@ const OperateNotice = () => {
     data: data,
     pageTitle: "공지사항",
     filterData: inputs,
+    currentPage: page,
   });
 
   /** 검색 핸들러 */
@@ -155,7 +158,7 @@ const OperateNotice = () => {
           page: searchParams.page,
           emptyMessage: "검색된 공지사항이 없습니다.",
         });
-        searchDataStorage(data);
+        searchDataStorage(data, searchParams.page + 1);
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }

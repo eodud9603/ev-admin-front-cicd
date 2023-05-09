@@ -166,7 +166,7 @@ export const ChargerTrouble = () => {
           page: searchParams.page,
           emptyMessage: "검색된 고장/파손 충전기 정보가 없습니다.",
         });
-        searchDataStorage(data, searchParams.page);
+        searchDataStorage(data, searchParams.page + 1);
       } else {
         reset({
           code,

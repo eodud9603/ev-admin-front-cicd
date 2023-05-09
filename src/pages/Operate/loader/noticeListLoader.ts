@@ -25,7 +25,7 @@ export const INIT_OPERATE_NOTICE_LIST = {
 
 export const noticeListLoader = async () => {
   const loadData = loadTabData("/operate/notice");
-  if (loadData?.data || loadData?.filterData) {
+  if (Object.keys(loadData?.data ?? {}).length > 0) {
     return loadData;
   }
   /* 검색  */
@@ -33,5 +33,5 @@ export const noticeListLoader = async () => {
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return success ? { data: data, filterData: INIT_OPERATE_NOTICE_LIST } : null;
+  return { data: success ? data : {}, filterData: INIT_OPERATE_NOTICE_LIST };
 };

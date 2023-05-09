@@ -78,9 +78,10 @@ const tableHeader = [
 ];
 
 export const MemberNormal = () => {
-  const { data, filterData } = useLoaderData() as {
+  const { data, filterData, currentPage } = useLoaderData() as {
     data: INormalMemberListResponse | null;
     filterData: { [key: string]: any };
+    currentPage: number;
   };
   const nav = useNavigate();
   const { pathname } = useLocation();
@@ -99,6 +100,7 @@ export const MemberNormal = () => {
     emptyMessage: !data?.elements
       ? "오류가 발생하였습니다."
       : "등록된 회원 정보가 없습니다.",
+    defaultPage: currentPage,
   });
 
   const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
@@ -117,6 +119,7 @@ export const MemberNormal = () => {
     data: data,
     pageTitle: "회원 관리",
     filterData: inputs,
+    currentPage: page,
   });
 
   const handleModalState = () => {
@@ -178,7 +181,7 @@ export const MemberNormal = () => {
           page: searchParams.page,
           emptyMessage: "검색된 회원 정보가 없습니다.",
         });
-        searchDataStorage(data);
+        searchDataStorage(data, searchParams.page + 1);
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }
