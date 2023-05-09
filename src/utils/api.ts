@@ -91,10 +91,13 @@ const rest = (method: Method) => {
       /** axios error 여부 */
       const axiosError = isAxiosError(err);
       if (axiosError) {
+        const [error] = err.response?.data?.errors ?? [];
+        const message = error.reason ?? err.message;
+
         return {
           code: err.code,
           data: null,
-          message: err.message,
+          message,
         };
       }
 
@@ -106,7 +109,7 @@ const rest = (method: Method) => {
       }
 
       /* 403: 계정 권한 오류 발생 (읽기/쓰기/수정 등) */
-      if(response.status === 403) {
+      if (response.status === 403) {
         showPermissionErrorModal();
       }
 

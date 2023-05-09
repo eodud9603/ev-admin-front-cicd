@@ -226,7 +226,7 @@ export const ChargerManufacturerDetail = () => {
     }
 
     /** 수정 요청 */
-    const { code } = await postManufactureModifyAll(params);
+    const { code, message } = await postManufactureModifyAll(params);
     /** 성공 */
     const success = code === "SUCCESS";
     if (success) {
@@ -236,6 +236,12 @@ export const ChargerManufacturerDetail = () => {
         confirmHandler: undefined,
       })();
       setType("DETAIL");
+    } else {
+      onChangeTextModal({
+        title: "수정 오류 발생",
+        contents: message ?? "충전기 제조사 정보 수정 오류가 발생했습니다.",
+        confirmHandler: undefined,
+      })();
     }
   };
 

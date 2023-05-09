@@ -27,6 +27,22 @@ import {
 } from "src/constants/valid/charger";
 import createValidation from "src/utils/validate";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
+import DetailSaveModal from "src/pages/Charger/components/DetailSaveModal";
+
+const INIT_FIRMWARE_LIST = [
+  {
+    id: undefined,
+    modelName: "",
+    size: undefined,
+    version: "",
+    firmwareId: undefined,
+    firmwareFileName: "",
+    firmwareFileUrl: "",
+    imageId: undefined,
+    imageFileName: "",
+    imageUrl: "",
+  },
+];
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerRegistration = () => {
@@ -40,6 +56,14 @@ export const ChargerManufacturerRegistration = () => {
   const [invalidModal, setInvalidModal] = useState({
     isOpen: false,
     content: "",
+  });
+  /* 저장 모달 */
+  const [saveModal, setSaveModal] = useState<{
+    type: tabType;
+    isOpen: boolean;
+  }>({
+    type: "BASIC",
+    isOpen: false,
   });
   /* 수정취소 모달 */
   const [isRegisterCancel, setIsRegisterCancel] = useState(false);
@@ -73,20 +97,8 @@ export const ChargerManufacturerRegistration = () => {
     addressDetail: "" /** @TODO 서버에서 추가해줘야 하는 필드 */,
   });
   /* 펌웨어 정보 */
-  const [firmwareList, setFirmwareList] = useState<IManufactureModelItem[]>([
-    {
-      id: undefined,
-      modelName: "",
-      size: undefined,
-      version: "",
-      firmwareId: undefined,
-      firmwareFileName: "",
-      firmwareFileUrl: "",
-      imageId: undefined,
-      imageFileName: "",
-      imageUrl: "",
-    },
-  ]);
+  const [firmwareList, setFirmwareList] =
+    useState<IManufactureModelItem[]>(INIT_FIRMWARE_LIST);
 
   /** 목록 페이지 이동 */
   const navigateList = () => {
@@ -112,37 +124,70 @@ export const ChargerManufacturerRegistration = () => {
     }));
   };
 
+  /** 탭 변경 */
+  const onChangeTab = (changeTab: tabType) => () => {
+    if (tab === changeTab) {
+      return;
+    }
+
+    setSaveModal({
+      type: changeTab,
+      isOpen: true,
+    });
+  };
+
   /** 유효성 체크 */
-  const getValid = (params: IRequestManufactureRegisterAll) => {
+  const getValid = (
+    params: IRequestManufactureRegisterAll,
+    type: tabType | "ALL" = "ALL"
+  ) => {
     const info = {
       valid: true,
       content: "",
     };
 
-    /** 유효성 체크 */
-    const basicScheme = createValidation(YUP_CHARGER_MANUFACTURE);
-    const firmwareScheme = createValidation(YUP_CHARGER_MANUFACTURE_FIRMWARE);
-    const [invalid] = basicScheme(params);
+    /** 기본 정보 */
+    if (["ALL", "BASIC"].indexOf(type) > -1) {
+      const basicScheme = createValidation(YUP_CHARGER_MANUFACTURE);
+      const [invalid] = basicScheme(params);
 
-    if (invalid) {
-      info.valid = false;
-      info.content = invalid.message;
-
-      return info;
-    }
-
-    const firmwareCount = params.models.length;
-    for (let i = 0; i < firmwareCount; i++) {
-      const [invalid] = firmwareScheme(params.models[i]);
       if (invalid) {
         info.valid = false;
-        info.content = `${i + 1}번째 펌웨어 ` + invalid.message;
+        info.content = invalid.message;
 
         return info;
       }
     }
 
+    /** 펌웨어 정보 */
+    if (["ALL", "FIRMWARE"].indexOf(type) > -1) {
+      const firmwareScheme = createValidation(YUP_CHARGER_MANUFACTURE_FIRMWARE);
+      const firmwareCount = params.models.length;
+      for (let i = 0; i < firmwareCount; i++) {
+        const [invalid] = firmwareScheme(params.models[i]);
+        if (invalid) {
+          info.valid = false;
+          info.content = `${i + 1}번째 펌웨어 ` + invalid.message;
+
+          return info;
+        }
+      }
+    }
+
     return info;
+  };
+
+  /** 등록가능한 여부에 따른 등록 버튼 disabled */
+  const disabledRegister = () => {
+    /** 등록 params */
+    const params = {
+      ...basicInputs,
+      models: firmwareList,
+    };
+
+    const { valid } = getValid(params);
+
+    return !valid;
   };
 
   /** 등록 */
@@ -164,7 +209,7 @@ export const ChargerManufacturerRegistration = () => {
     }
 
     /** 등록 요청 */
-    const { code } = await postManufactureRegisterAll(params);
+    const { code, message } = await postManufactureRegisterAll(params);
     /** 성공 */
     const success = code === "SUCCESS";
     if (success) {
@@ -174,6 +219,12 @@ export const ChargerManufacturerRegistration = () => {
         confirmHandler: navigateList,
       })();
       return;
+    } else {
+      onChangeTextModal({
+        title: "등록 오류 발생",
+        contents: message ?? "충전기 제조사 정보 등록 오류가 발생했습니다.",
+        confirmHandler: undefined,
+      })();
     }
   };
 
@@ -202,14 +253,14 @@ export const ChargerManufacturerRegistration = () => {
               <ButtonBase
                 label={"기본정보"}
                 outline={!(tab === "BASIC")}
-                onClick={() => setTab("BASIC")}
                 color={"turu"}
+                onClick={onChangeTab("BASIC")}
               />
               <ButtonBase
                 label={"펌웨어 정보"}
                 outline={!(tab === "FIRMWARE")}
-                onClick={() => setTab("FIRMWARE")}
                 color={"turu"}
+                onClick={onChangeTab("FIRMWARE")}
               />
             </ButtonGroup>
           </div>
@@ -239,14 +290,35 @@ export const ChargerManufacturerRegistration = () => {
             onClick={onChangeCancelModal}
           />
           <ButtonBase
-            disabled={true}
             label={"저장"}
             color={"turu"}
             outline={true}
             className={"mx-3 w-xs"}
+            onClick={() => {
+              const params = {
+                ...basicInputs,
+                models: firmwareList,
+              };
+              const { valid, content } = getValid(params, tab);
+              if (!valid) {
+                setInvalidModal({
+                  isOpen: true,
+                  content,
+                });
+                return;
+              }
+
+              onChangeTextModal({
+                title: "충전기 제조사 정보 저장 완료 안내",
+                contents: `${
+                  tab === "BASIC" ? "기본정보" : "펌웨어 정보"
+                }가 저장되었습니다.`,
+                confirmHandler: undefined,
+              })();
+            }}
           />
           <ButtonBase
-            // disabled={true}
+            disabled={disabledRegister()}
             label={"등록"}
             color={"turu"}
             className={"w-xs"}
@@ -271,6 +343,42 @@ export const ChargerManufacturerRegistration = () => {
           setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
         }
       />
+      <DetailSaveModal
+        isOpen={saveModal.isOpen}
+        title={"충전기 제조사 정보 저장 안내"}
+        contents={getSaveModalContent(saveModal.type)}
+        cancelHandler={() => {
+          if (tab === "BASIC") {
+            resetBasic();
+          }
+          if (tab === "FIRMWARE") {
+            setFirmwareList(INIT_FIRMWARE_LIST);
+          }
+
+          setTab(saveModal.type);
+        }}
+        saveHandler={() => {
+          setSaveModal((prev) => ({ ...prev, isOpen: !prev.isOpen }));
+
+          const params = {
+            ...basicInputs,
+            models: firmwareList,
+          };
+          const { valid, content } = getValid(params, tab);
+          if (!valid) {
+            setInvalidModal({
+              isOpen: true,
+              content,
+            });
+            return;
+          }
+
+          setTab(saveModal.type);
+        }}
+        onClose={() => {
+          setSaveModal((prev) => ({ ...prev, isOpen: !prev.isOpen }));
+        }}
+      />
       <DetailCancelModal
         isOpen={isRegisterCancel}
         onClose={onChangeCancelModal}
@@ -287,3 +395,13 @@ export const ChargerManufacturerRegistration = () => {
 
 const InfoSection = styled.section``;
 const TabSection = styled.section``;
+
+const getSaveModalContent = (type: tabType) => {
+  const keyword = type === "BASIC" ? "펌웨어 정보" : "기본정보";
+  const screen =
+    type === "BASIC"
+      ? "정보 저장 후 기본정보 화면으로 이동합니다."
+      : "정보 저장 후 펌웨어 정보 화면으로 이동합니다.";
+
+  return `입력된 ${keyword}를 저장하시겠습니까?\n${screen}`;
+};
