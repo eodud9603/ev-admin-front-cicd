@@ -16,6 +16,7 @@ import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 import {
   IManufactureDetailResponse,
   IManufactureModelItem,
+  IRequestManufactureModifyAll,
 } from "src/api/manufactures/manufactureApi.interface";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import useInputs from "src/hooks/useInputs";
@@ -29,6 +30,7 @@ import createValidation from "src/utils/validate";
 import {
   YUP_CHARGER_MANUFACTURE,
   YUP_CHARGER_MANUFACTURE_EXTRA,
+  YUP_CHARGER_MANUFACTURE_FIRMWARE,
 } from "src/constants/valid/charger";
 import { getParams } from "src/utils/params";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
@@ -130,6 +132,42 @@ export const ChargerManufacturerDetail = () => {
     navigate("/charger/manufacturer");
   };
 
+  /** 유효성 체크 */
+  const getValid = (params: IRequestManufactureModifyAll) => {
+    const info = {
+      valid: true,
+      content: "",
+    };
+
+    /** 유효성 체크 */
+    const basicScheme = createValidation({
+      ...YUP_CHARGER_MANUFACTURE,
+      ...YUP_CHARGER_MANUFACTURE_EXTRA,
+    });
+    const firmwareScheme = createValidation(YUP_CHARGER_MANUFACTURE_FIRMWARE);
+    const [invalid] = basicScheme(params);
+
+    if (invalid) {
+      info.valid = false;
+      info.content = invalid.message;
+
+      return info;
+    }
+
+    const firmwareCount = params.models.length;
+    for (let i = 0; i < firmwareCount; i++) {
+      const [invalid] = firmwareScheme(params.models[i]);
+      if (invalid) {
+        info.valid = false;
+        info.content = `${i + 1}번째 펌웨어 ` + invalid.message;
+
+        return info;
+      }
+    }
+
+    return info;
+  };
+
   /** 삭제 */
   const deleteHandler = async () => {
     const params = {
@@ -137,9 +175,7 @@ export const ChargerManufacturerDetail = () => {
     };
 
     /** 유효성 체크 */
-    const scheme = createValidation({
-      ...YUP_CHARGER_MANUFACTURE_EXTRA,
-    });
+    const scheme = createValidation(YUP_CHARGER_MANUFACTURE_EXTRA);
     const [invalid] = scheme(params);
 
     if (invalid) {
@@ -179,17 +215,12 @@ export const ChargerManufacturerDetail = () => {
     };
     getParams(params);
 
-    /** 유효성 체크 */
-    const scheme = createValidation({
-      ...YUP_CHARGER_MANUFACTURE,
-      ...YUP_CHARGER_MANUFACTURE_EXTRA,
-    });
-    const [invalid] = scheme(params);
-
-    if (invalid) {
+    /* 유효성 체크 */
+    const { valid, content } = getValid(params);
+    if (!valid) {
       setInvalidModal({
         isOpen: true,
-        content: invalid.message,
+        content,
       });
       return;
     }

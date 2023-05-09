@@ -13,12 +13,18 @@ import {
 } from "src/pages/Charger/components/ManufacturerInfoTemplates";
 import useInputs from "src/hooks/useInputs";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
-import { IManufactureModelItem } from "src/api/manufactures/manufactureApi.interface";
+import {
+  IManufactureModelItem,
+  IRequestManufactureRegisterAll,
+} from "src/api/manufactures/manufactureApi.interface";
 import { postManufactureRegisterAll } from "src/api/manufactures/manufactureApi";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import { useNavigate } from "react-router";
 import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
-import { YUP_CHARGER_MANUFACTURE } from "src/constants/valid/charger";
+import {
+  YUP_CHARGER_MANUFACTURE,
+  YUP_CHARGER_MANUFACTURE_FIRMWARE,
+} from "src/constants/valid/charger";
 import createValidation from "src/utils/validate";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 
@@ -106,21 +112,53 @@ export const ChargerManufacturerRegistration = () => {
     }));
   };
 
-  const params = {
-    ...basicInputs,
-    models: firmwareList,
+  /** 유효성 체크 */
+  const getValid = (params: IRequestManufactureRegisterAll) => {
+    const info = {
+      valid: true,
+      content: "",
+    };
+
+    /** 유효성 체크 */
+    const basicScheme = createValidation(YUP_CHARGER_MANUFACTURE);
+    const firmwareScheme = createValidation(YUP_CHARGER_MANUFACTURE_FIRMWARE);
+    const [invalid] = basicScheme(params);
+
+    if (invalid) {
+      info.valid = false;
+      info.content = invalid.message;
+
+      return info;
+    }
+
+    const firmwareCount = params.models.length;
+    for (let i = 0; i < firmwareCount; i++) {
+      const [invalid] = firmwareScheme(params.models[i]);
+      if (invalid) {
+        info.valid = false;
+        info.content = `${i + 1}번째 펌웨어 ` + invalid.message;
+
+        return info;
+      }
+    }
+
+    return info;
   };
 
   /** 등록 */
   const register = async () => {
-    /** 유효성 체크 */
-    const scheme = createValidation(YUP_CHARGER_MANUFACTURE);
-    const [invalid] = scheme(params);
+    /** 등록 params */
+    const params = {
+      ...basicInputs,
+      models: firmwareList,
+    };
 
-    if (invalid) {
+    /* 유효성 체크 */
+    const { valid, content } = getValid(params);
+    if (!valid) {
       setInvalidModal({
         isOpen: true,
-        content: invalid.message,
+        content,
       });
       return;
     }
@@ -208,7 +246,7 @@ export const ChargerManufacturerRegistration = () => {
             className={"mx-3 w-xs"}
           />
           <ButtonBase
-            disabled={true}
+            // disabled={true}
             label={"등록"}
             color={"turu"}
             className={"w-xs"}

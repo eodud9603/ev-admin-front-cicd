@@ -592,6 +592,25 @@ export const YUP_CHARGER_MANUFACTURE: FieldSchemaMap = {
   },
 };
 
+/** 충전기 펌웨어 yup */
+export const YUP_CHARGER_MANUFACTURE_FIRMWARE: FieldSchemaMap = {
+  modelName: {
+    validation: string().required("모델명은 필수 입력 항목입니다."),
+  },
+  imageId: {
+    validation: number().required("모델 이미지는 필수 입력 항목입니다."),
+  },
+  version: {
+    validation: string().required("펌웨어 버전은 필수 입력 항목입니다."),
+  },
+  firmwareId: {
+    validation: number().required("펌웨어 파일은 필수 입력 항목입니다."),
+  },
+  size: {
+    validation: number().required("펌웨어 크기(Byte)는 필수 입력 항목입니다."),
+  },
+};
+
 /** 충전기 제조사 수정 yup */
 export const YUP_CHARGER_MANUFACTURE_EXTRA: FieldSchemaMap = {
   id: {
