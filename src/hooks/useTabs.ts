@@ -12,6 +12,7 @@ interface IUseTabsProps {
   //등록 페이지 => 수정 state 변환 시 해당 state 저장
   editable?: boolean;
   filterData?: { [key: string]: string };
+  currentPage?: number;
 }
 export const useTabs = ({
   data,
@@ -19,6 +20,7 @@ export const useTabs = ({
   pageType,
   editable = false,
   filterData,
+  currentPage,
 }: IUseTabsProps) => {
   const { pathname } = useLocation();
   const tabStore = useTabStore();
@@ -30,7 +32,8 @@ export const useTabs = ({
     path: pathname,
     rootPath: pageType ? pathname.split(`/${pageType}`)[0] : pathname,
     editable: editable,
-    filterData: filterData,
+    filterData: !pageType ? filterData : undefined,
+    currentPage: !pageType ? currentPage : undefined,
   };
 
   const dataRef = useRef(data);
@@ -76,8 +79,9 @@ export const useTabs = ({
   }, [tabStore.data.length, saveData.editable]);
 
   // 검색 시 데이터 저장
-  const searchDataStorage = useCallback((data: any) => {
+  const searchDataStorage = useCallback((data: any, currentPage: number) => {
     saveData.data = data;
+    saveData.currentPage = currentPage;
     tabStore.changeData(pathname, saveData);
   }, []);
 

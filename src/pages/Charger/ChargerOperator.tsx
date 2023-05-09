@@ -76,9 +76,10 @@ const tableHeader = [
 ];
 
 export const ChargerOperator = () => {
-  const { data, filterData } = useLoaderData() as {
+  const { data, filterData, currentPage } = useLoaderData() as {
     data: IRequestSupplierListResponse | null;
     filterData: { [key: string]: any };
+    currentPage: number;
   };
 
   const [
@@ -91,6 +92,7 @@ export const ChargerOperator = () => {
     emptyMessage: !data?.elements
       ? "오류가 발생하였습니다."
       : "등록된 서비스 운영사 정보가 없습니다.",
+    defaultPage: currentPage,
   });
   /* 체크 리스트 */
   const [checkList, setCheckList] = useState<number[]>([]);
@@ -104,6 +106,7 @@ export const ChargerOperator = () => {
     data: data,
     pageTitle: "서비스 운영사 관리",
     filterData: inputs,
+    currentPage: page,
   });
   const searchKeyword =
     dropdownGroupSearch.find((data) => searchRange === data.value)
@@ -144,7 +147,7 @@ export const ChargerOperator = () => {
           page: searchParams.page,
           emptyMessage: "검색된 서비스 운영사 정보가 없습니다.",
         });
-        searchDataStorage(data);
+        searchDataStorage(data, searchParams.page + 1);
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }

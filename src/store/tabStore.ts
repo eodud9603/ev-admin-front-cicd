@@ -14,6 +14,8 @@ export type tabType = {
   /**  수정 여부 데이터 */
   editable?: boolean;
   filterData?: { [key: string]: string };
+  /** 리스트 페이지에서 사용 -> 현재 몇 페이지 */
+  currentPage?: number;
 };
 export interface ITabState {
   data: Array<tabType>;

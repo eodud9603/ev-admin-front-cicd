@@ -70,9 +70,10 @@ const tableHeader = [
 ];
 
 const ChargingStationManagement = () => {
-  const { data, filterData } = useLoaderData() as {
+  const { data, filterData, currentPage } = useLoaderData() as {
     data: IStationListResponse | null;
     filterData: { [key: string]: any };
+    currentPage: number;
   };
 
   const [
@@ -85,6 +86,7 @@ const ChargingStationManagement = () => {
     emptyMessage: !data?.elements
       ? "오류가 발생하였습니다."
       : "등록된 충전소 정보가 없습니다.",
+    defaultPage: currentPage,
   });
 
   const inputs = useInputs(filterData);
@@ -107,6 +109,7 @@ const ChargingStationManagement = () => {
     data: data,
     pageTitle: "충전소 관리",
     filterData: inputs[0],
+    currentPage: page,
   });
   const searchKeyword =
     searchList.find((data) => searchRange === data.value)?.placeholderKeyword ??
@@ -151,7 +154,7 @@ const ChargingStationManagement = () => {
           page: searchParams.page,
           emptyMessage: "검색된 충전소 정보가 없습니다.",
         });
-        searchDataStorage(data);
+        searchDataStorage(data, searchParams.page + 1);
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }

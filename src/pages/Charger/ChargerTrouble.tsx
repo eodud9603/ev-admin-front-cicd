@@ -74,9 +74,10 @@ const tableHeader = [
 
 export const ChargerTrouble = () => {
   /** init 충전기별 고장/파손 데이터 */
-  const { data, filterData } = useLoaderData() as {
+  const { data, filterData, currentPage } = useLoaderData() as {
     data: IBrokenListResponse | null;
     filterData: { [key: string]: any };
+    currentPage: number;
   };
 
   const nav = useNavigate();
@@ -108,12 +109,14 @@ export const ChargerTrouble = () => {
     emptyMessage: !data?.elements
       ? "오류가 발생하였습니다."
       : "등록된 고장/파손 충전기 정보가 없습니다.",
+    defaultPage: currentPage,
   });
 
   const { searchDataStorage } = useTabs({
     data: data,
     pageTitle: "충전기 고장/파손 관리",
     filterData: inputs,
+    currentPage: page,
   });
 
   /** 검색 핸들러 */
@@ -163,7 +166,7 @@ export const ChargerTrouble = () => {
           page: searchParams.page,
           emptyMessage: "검색된 고장/파손 충전기 정보가 없습니다.",
         });
-        searchDataStorage(data);
+        searchDataStorage(data, searchParams.page);
       } else {
         reset({
           code,

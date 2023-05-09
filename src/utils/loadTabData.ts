@@ -15,6 +15,7 @@ export const loadTabData = <T>(path: string) => {
       data: data,
       editable: tabData[0].editable as boolean,
       filterData: tabData[0].filterData ?? INIT_CHARGER,
+      currentPage: tabData[0].currentPage,
     };
   }
 };

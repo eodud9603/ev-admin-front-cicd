@@ -28,7 +28,7 @@ export const INIT_TROUBLE = {
 
 export const brokenListLoader = async () => {
   const loadData = loadTabData("/charger/trouble");
-  if (loadData?.data || loadData?.filterData) {
+  if (Object.keys(loadData?.data ?? {}).length > 0) {
     return loadData;
   }
   /* 검색  */
@@ -36,5 +36,5 @@ export const brokenListLoader = async () => {
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return success ? { data: data, filterData: INIT_TROUBLE } : null;
+  return { data: success ? data : {}, filterData: INIT_TROUBLE };
 };

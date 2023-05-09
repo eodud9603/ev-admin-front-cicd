@@ -27,7 +27,7 @@ export const INIT_STATION = {
 
 export const stationListLoader = async () => {
   const loadData = loadTabData("/charger/station");
-  if (loadData?.data || loadData?.filterData) {
+  if (Object.keys(loadData?.data ?? {}).length > 0) {
     return loadData;
   }
   /* 검색  */

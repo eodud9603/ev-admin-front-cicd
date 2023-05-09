@@ -19,7 +19,7 @@ export const INIT_MANUFACTURE = {
 
 export const manufactureListLoader = async () => {
   const loadData = loadTabData("/charger/manufacturer");
-  if (loadData?.data || loadData?.filterData) {
+  if (Object.keys(loadData?.data ?? {}).length > 0) {
     return loadData;
   }
   /* 검색  */
@@ -27,5 +27,5 @@ export const manufactureListLoader = async () => {
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return success ? { data: data, filterData: INIT_MANUFACTURE } : null;
+  return { data: success ? data : {}, filterData: INIT_MANUFACTURE };
 };

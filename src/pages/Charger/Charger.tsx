@@ -82,9 +82,10 @@ const tableHeader = [
 ];
 
 const Charger = () => {
-  const { data, filterData } = useLoaderData() as {
+  const { data, filterData, currentPage } = useLoaderData() as {
     data: IChargerListResponse | null;
     filterData: { [key: string]: string };
+    currentPage: number;
   };
 
   const [
@@ -97,6 +98,7 @@ const Charger = () => {
     emptyMessage: !data?.elements
       ? "오류가 발생하였습니다."
       : "등록된 충전기 정보가 없습니다.",
+    defaultPage: currentPage,
   });
 
   /* 일괄 제어 모달 */
@@ -162,13 +164,12 @@ const Charger = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
-        searchDataStorage(data);
+        searchDataStorage(data, searchParams.page + 1);
         onChangeList({
           ...data,
           page: searchParams.page,
           emptyMessage: "검색된 충전기 정보가 없습니다.",
         });
-        // searchDataStorage()
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }

@@ -56,9 +56,10 @@ const tableHeader = [
 ];
 
 export const ChargerManufacturer = () => {
-  const { data, filterData } = useLoaderData() as {
+  const { data, filterData, currentPage } = useLoaderData() as {
     data: IManufactureListResponse | null;
     filterData: { [key: string]: any };
+    currentPage: number;
   };
 
   const nav = useNavigate();
@@ -67,12 +68,6 @@ export const ChargerManufacturer = () => {
   const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
 
   const { count, searchRange, searchText, sort } = inputs;
-
-  const { searchDataStorage } = useTabs({
-    data: data,
-    pageTitle: "충전기 제조사 관리",
-    filterData: inputs,
-  });
 
   const [
     { list, page, lastPage, total, message, time },
@@ -84,6 +79,14 @@ export const ChargerManufacturer = () => {
     emptyMessage: !data?.elements
       ? "오류가 발생하였습니다."
       : "등록된 제조사 정보가 없습니다.",
+    defaultPage: currentPage,
+  });
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "충전기 제조사 관리",
+    filterData: inputs,
+    currentPage: page,
   });
 
   /** 검색 핸들러 */
@@ -118,7 +121,7 @@ export const ChargerManufacturer = () => {
           page: searchParams.page,
           emptyMessage: "검색된 제조사 정보가 없습니다.",
         });
-        searchDataStorage(data);
+        searchDataStorage(data, searchParams.page + 1);
       } else {
         reset({
           code,

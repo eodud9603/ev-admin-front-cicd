@@ -110,9 +110,10 @@ const tableHeader = [
 
 const ChargerContract = () => {
   /** init 충전소 계약 목록 데이터 */
-  const { data, filterData } = useLoaderData() as {
+  const { data, filterData, currentPage } = useLoaderData() as {
     data: IStationContractListResponse | null;
     filterData: { [key: string]: any };
+    currentPage: number;
   };
 
   const [
@@ -125,6 +126,7 @@ const ChargerContract = () => {
     emptyMessage: !data?.elements
       ? "오류가 발생하였습니다."
       : "등록된 충전소 계약 정보가 없습니다.",
+    defaultPage: currentPage,
   });
 
   const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
@@ -145,6 +147,7 @@ const ChargerContract = () => {
     data: data,
     pageTitle: "충전소 계약 관리",
     filterData: inputs,
+    currentPage: page,
   });
 
   const placeholderKeyword =
@@ -193,7 +196,7 @@ const ChargerContract = () => {
           page: searchParams.page,
           emptyMessage: "검색된 충전소 계약 정보가 없습니다.",
         });
-        searchDataStorage(data);
+        searchDataStorage(data, searchParams.page + 1);
       } else {
         reset({
           code,

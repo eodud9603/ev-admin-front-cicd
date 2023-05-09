@@ -22,7 +22,7 @@ export const INIT_SUPPLIER = {
 
 export const supplierListLoader = async () => {
   const loadData = loadTabData("/charger/operator");
-  if (loadData?.data || loadData?.filterData) {
+  if (Object.keys(loadData?.data ?? {}).length > 0) {
     return loadData;
   }
 
@@ -31,5 +31,5 @@ export const supplierListLoader = async () => {
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return success ? { data: data, filterData: INIT_SUPPLIER } : null;
+  return { data: success ? data : {}, filterData: INIT_SUPPLIER };
 };
