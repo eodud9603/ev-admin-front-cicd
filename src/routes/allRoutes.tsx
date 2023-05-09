@@ -130,6 +130,7 @@ import { normalMemberDetailLoader } from "src/pages/Member/laoder/normalMemberDe
 import { stationAddLoader } from "src/pages/Charger/loader/stationAddLoader";
 import { brokenRegistrationLoader } from "src/pages/Charger/loader/brokenRegistrationLoader";
 import { noticeAddLoader } from "src/pages/Operate/loader/noticeAddLoader";
+import { categoryListLoader } from "src/pages/Operate/loader/categoryListLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -272,7 +273,11 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/faq", element: <OperateFAQ /> },
   { path: "/operate/faq/add", element: <OperateFAQAdd /> },
   { path: "/operate/faq/detail/:id", element: <OperateFAQDetail /> },
-  { path: "/operate/category", element: <OperateCategory /> },
+  {
+    path: "/operate/category",
+    element: <OperateCategory />,
+    loader: categoryListLoader,
+  },
   { path: "/operate/corporateNotice", element: <CorporateNotice /> },
   { path: "/operate/corporateNotice/add", element: <CorporateNoticeAdd /> },
   {

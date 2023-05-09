@@ -14,19 +14,25 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST, YN_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
 import useInputs from "src/hooks/useInputs";
-import { DropboxGroup } from "src/components/Common/Filter/component/DropboxGroup";
-import { YNType } from "src/api/api.interface";
 import CategoryModal from "src/pages/Operate/components/CategoryModal";
+import { useLoaderData } from "react-router";
+import {
+  ICategoryItem,
+  ICategoryListResponse,
+  IRequestCategoryList,
+} from "src/api/category/categoryApi.interface";
+import useList from "src/hooks/useList";
+import { standardDateFormat } from "src/utils/day";
+import { getCategoryList } from "src/api/category/categoryApi";
+import { getParams } from "src/utils/params";
+import { YNType } from "src/api/api.interface";
+import CategoryFieldDropdown from "src/pages/Operate/components/CategoryFieldDropdown";
+import { getPageList } from "src/utils/pagination";
 
 /* 검색어 필터 */
-const searchList = [{ label: "전체", value: "" }];
-
-/** 분야 필터 */
-const fieldList = [
-  {
-    label: "전체",
-    value: "",
-  },
+const searchList = [
+  { label: "카테고리명", value: "CategoryName" },
+  { label: "등록자", value: "Writer" },
 ];
 
 /* 목록 헤더 */
@@ -39,28 +45,11 @@ const tableHeader = [
   { label: "등록일" },
 ];
 
-/* 임시 목록 데이터 */
-const codeList: Omit<IListItemProps, "index" | "setCodeModal">[] = [
-  {
-    id: 1,
-    field: "FAQ",
-    name: "카테고리명",
-    isExposed: "N",
-    regName: "김아무개",
-    regDate: "2022.02.07 12:00:00",
-  },
-];
-
-interface IListItemProps {
-  id: number;
-  field: string;
-  name: string;
-  isExposed: YNType;
-  regName: string;
-  regDate: string;
-}
-
 const OperateCategory = () => {
+  /** list init data */
+  const data = useLoaderData() as ICategoryListResponse | null;
+
+  /* 카테고리 등록/상세(수정) 모달 */
   const [categoryModal, setCategoryModal] = useState<{
     isOpen: boolean;
     type: "MODIFY" | "REGISTER";
@@ -68,20 +57,77 @@ const OperateCategory = () => {
     isOpen: false,
     type: "REGISTER",
   });
-  const [page, setPage] = useState(1);
 
-  const [{ isExposed, searchText, count }, { onChange, onChangeSingle }] =
-    useInputs({
-      isExposed: "",
-      searchRange: "",
-      searchText: "",
-      sort: "",
-      count: "10",
-    });
+  const [
+    { isExposed, searchRange, searchText, fieldName, fieldId, count },
+    { onChange, onChangeSingle },
+  ] = useInputs({
+    isExposed: "" as YNType,
+    searchRange: "CategoryName",
+    searchText: "",
+    fieldName: "",
+    fieldId: "",
+    count: "10",
+  });
+
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<ICategoryItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: !data?.elements
+      ? "오류가 발생하였습니다."
+      : "등록된 카테고리 정보가 없습니다.",
+  });
 
   const onChangeCategoryModal =
     (data?: Partial<typeof categoryModal>) => () => {
       setCategoryModal((prev) => ({ ...prev, ...(data ?? {}) }));
+    };
+
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestCategoryList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams: IRequestCategoryList = {
+        size: Number(count),
+        page,
+      };
+      if (searchRange && searchText) {
+        searchParams.searchType =
+          searchRange as IRequestCategoryList["searchType"];
+        searchParams.searchKeyword = searchText;
+      }
+      if (isExposed) {
+        searchParams.isExposed = isExposed;
+      }
+      if (fieldId) {
+        searchParams.fieldId = Number(fieldId);
+      }
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+
+      getParams(searchParams);
+
+      /* 검색  */
+      const { code, data, message } = await getCategoryList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 카테고리 정보가 없습니다.",
+        });
+      } else {
+        reset({ code, message: message || "오류가 발생하였습니다." });
+      }
     };
 
   return (
@@ -113,6 +159,7 @@ const OperateCategory = () => {
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
             <Col md={5}>
@@ -130,16 +177,17 @@ const OperateCategory = () => {
 
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col>
-              <DropboxGroup
-                label={"분야"}
-                dropdownItems={[
-                  {
-                    onClickDropdownItem: (_, value) => {
-                      onChangeSingle({ sort: value });
-                    },
-                    menuItems: fieldList,
-                  },
-                ]}
+              <CategoryFieldDropdown
+                initSelectedValue={{
+                  label: fieldName,
+                  value: fieldId,
+                }}
+                onChange={(data) => {
+                  onChangeSingle({
+                    fieldId: data.value ?? "",
+                    fieldName: data.name ?? "",
+                  });
+                }}
               />
             </Col>
           </Row>
@@ -150,18 +198,17 @@ const OperateCategory = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{codeList.length}개</span>의
-              카테고리가 있습니다.
+              총 <span className={"text-turu"}>{total}개</span>의 카테고리가
+              있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
-              <span className={"font-size-10 text-muted"}>
-                2023-04-01 14:51기준
-              </span>
+              <span className={"font-size-10 text-muted"}>{time}기준</span>
               <DropdownBase
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ count: value });
+                  void searchHandler({ page: 1, size: Number(value) })();
                 }}
               />
               <ButtonBase
@@ -177,8 +224,8 @@ const OperateCategory = () => {
 
           <TableBase tableHeader={tableHeader}>
             <>
-              {codeList.length > 0 ? (
-                codeList.map((data, index) => (
+              {list.length > 0 ? (
+                list.map((data, index) => (
                   <tr key={data.id}>
                     <td>{(page - 1) * Number(count) + index + 1}</td>
                     <td>{data.field}</td>
@@ -192,22 +239,37 @@ const OperateCategory = () => {
                         <u>{data.name}</u>
                       </HoverSpan>
                     </td>
-                    <td>{data.isExposed}</td>
-                    <td>{data.regName}</td>
-                    <td>{data.regDate}</td>
+                    <td>{data.isExpose}</td>
+                    <td>{"-"}</td>
+                    <td>
+                      {data.createAt
+                        ? standardDateFormat(data.createAt, "YYYY.MM.DD")
+                        : "-"}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td colSpan={6} className={"py-5 text-center text"}>
-                    등록된 카테고리가 없습니다.
+                    {message}
                   </td>
                 </tr>
               )}
             </>
           </TableBase>
 
-          <PaginationBase setPage={setPage} data={{}} />
+          <PaginationBase
+            setPage={setPage}
+            data={{
+              hasPreviousPage: page > 1,
+              hasNextPage: page < lastPage,
+              navigatePageNums: getPageList(page, lastPage),
+              pageNum: page,
+              onChangePage: (page) => {
+                void searchHandler({ page })();
+              },
+            }}
+          />
         </ListSection>
       </BodyBase>
 

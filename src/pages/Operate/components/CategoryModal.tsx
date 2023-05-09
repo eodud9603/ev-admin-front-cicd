@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Col, ModalBody, ModalFooter, Row } from "reactstrap";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
-import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import ModalBase from "src/components/Common/Modal/ModalBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import useInputs from "src/hooks/useInputs";
+import CategoryFieldDropdown from "src/pages/Operate/components/CategoryFieldDropdown";
 
 interface ICategoryModalProps {
   type: "MODIFY" | "REGISTER";
@@ -18,16 +18,17 @@ const CategoryModal = (props: ICategoryModalProps) => {
 
   const [disabled, setDisabled] = useState(true);
   const [
-    { category, name, modalIsExposed: isExposed, writer, regDate },
+    { fieldId, fieldName, name, modalIsExposed: isExposed, writer, regDate },
     { onChange, onChangeSingle, reset },
   ] = useInputs({
-    category: "",
+    fieldId: "",
+    fieldName: "",
     name: "",
     modalIsExposed: "Y",
     writer: "",
     regDate: "",
   });
-  const isEmpty = category === "" || name === "" || isExposed === "";
+  const isEmpty = fieldId === "" || name === "" || isExposed === "";
 
   /** 등록 */
   const register = () => {
@@ -82,18 +83,15 @@ const CategoryModal = (props: ICategoryModalProps) => {
               분야
             </Col>
             <Col sm={8}>
-              <DropdownBase
-                disabled={disabled}
-                label={""}
-                menuItems={[
-                  {
-                    label: "선택",
-                    value: "",
-                  },
-                ]}
-                onClickDropdownItem={(_, value) => {
+              <CategoryFieldDropdown
+                initSelectedValue={{
+                  label: fieldName,
+                  value: fieldId,
+                }}
+                onChange={(data) => {
                   onChangeSingle({
-                    category: value,
+                    fieldId: data.value ?? "",
+                    fieldName: data.name ?? "",
                   });
                 }}
               />
