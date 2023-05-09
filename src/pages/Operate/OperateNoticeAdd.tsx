@@ -25,6 +25,7 @@ import styled from "styled-components";
 import { useLoaderData } from "react-router-dom";
 import { INIT_OPERATE_NOTICE_ADD } from "src/pages/Operate/loader/noticeAddLoader";
 import { useTabs } from "src/hooks/useTabs";
+import { jwtDecode } from "src/utils/decode";
 
 const OperateNoticeAdd = () => {
   const data = useLoaderData() as typeof INIT_OPERATE_NOTICE_ADD;
@@ -82,10 +83,12 @@ const OperateNoticeAdd = () => {
   /** 등록 */
   const register = async () => {
     const { content, files, ...registerParams } = inputs;
+
+    const user = jwtDecode();
     /* 등록 params */
     const params: IRequestNoticeRegister = {
       ...registerParams,
-      writer: "임시 기입(서버 수정 후, 제거)",
+      writer: user.name ?? "-",
       boardId: BoardIdEnum.NOTICE,
       content: content,
       deleted: "N",
