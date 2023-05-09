@@ -36,5 +36,5 @@ export const stationListLoader = async () => {
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return success ? { data: data, filterData: INIT_STATION } : null;
+  return { data: success ? data : {}, filterData: INIT_STATION };
 };

@@ -92,7 +92,7 @@ const rest = (method: Method) => {
       const axiosError = isAxiosError(err);
       if (axiosError) {
         const [error] = err.response?.data?.errors ?? [];
-        const message = error.reason ?? err.message;
+        const message = error?.reason ?? err.message;
 
         return {
           code: err.code,
