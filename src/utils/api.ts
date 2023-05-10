@@ -108,10 +108,13 @@ const rest = (method: Method) => {
 
       /*  토큰 미인증 */
       if (response.status === 401) {
+        /** @Description 추가 검증 작업 필요 (검증 완료 전 문제 발생 시, 해당 if block 주석처리) */
         resetAuth();
       }
       /* 토큰 만료 */
       else if (response.status === 403) {
+        /** @Description 추가 검증 작업 필요 (검증 완료 전 문제 발생 시, 해당 else if block 주석처리) */
+
         if (response.data.code === "AUTH02") {
           /* 갱신 */
           const result = await tryAuthReissue<T>({
