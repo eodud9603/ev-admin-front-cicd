@@ -11,7 +11,7 @@ export const showErrorModal = ({
   content,
   confirmHandler,
 }: IErrorModalProps) => {
-  /* 에러 모달이 있는 경우, 재생성X  */
+  /* classNam에 해당하는 에러 모달이 있는 경우(opened), 재생성X  */
   const existModal = document.body.querySelector(`.${className}`);
   if (existModal) {
     return;

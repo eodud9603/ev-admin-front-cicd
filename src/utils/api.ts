@@ -130,7 +130,7 @@ const rest = (method: Method) => {
         } else {
           /* 계정 권한 오류 발생 (읽기/쓰기/수정 등) */
           showErrorModal({
-            className: "permissionModal",
+            className: "permission",
             title: "계정 권한 오류",
             content: "관리자에게 문의하여 기능 권한을 요청하세요.",
           });
@@ -167,7 +167,7 @@ const resetAuth = () => {
   showErrorModal({
     className: "reissue",
     title: "계정 정보 만료 안내",
-    content: "계정 정보가 만료되었습니다.",
+    content: "계정 정보가 만료되었습니다.\n다시 로그인을 해주세요.",
     confirmHandler: () => {
       initAuthStorage();
       window.location.href = "/login";
