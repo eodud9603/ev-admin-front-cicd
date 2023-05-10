@@ -2,8 +2,10 @@ import { API_URL } from "src/constants/url";
 import api from "src/utils/api";
 import {
   IAuthCodeResponse,
+  IAuthReissueResponse,
   IAuthenticateResponse,
   IRequestAuthCode,
+  IRequestAuthReissue,
   IRequestAuthenticate,
 } from "src/api/auth/authApi.interface";
 
@@ -19,6 +21,13 @@ export const postAuthenticate = (body: IRequestAuthenticate) => {
 /** 코드확인 api */
 export const postAuthCode = (body: IRequestAuthCode) => {
   return api.post<IAuthCodeResponse>(`${authUrl}/code`, {
+    body,
+  });
+};
+
+/** 토근 갱신 api */
+export const postAuthReissue = (body: IRequestAuthReissue) => {
+  return api.post<IAuthReissueResponse>(`${authUrl}/reissue`, {
     body,
   });
 };

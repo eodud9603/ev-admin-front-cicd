@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
-interface IAuthProps {
+export interface IAuthProps {
   accessToken: string;
   refreshToken: string;
   expiredTime: string;

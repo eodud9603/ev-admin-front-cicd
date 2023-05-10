@@ -25,7 +25,7 @@ import styled from "styled-components";
 import { useLoaderData } from "react-router-dom";
 import { INIT_OPERATE_NOTICE_ADD } from "src/pages/Operate/loader/noticeAddLoader";
 import { useTabs } from "src/hooks/useTabs";
-import { jwtDecode } from "src/utils/decode";
+import { jwtDecode } from "src/utils/jwt";
 
 const OperateNoticeAdd = () => {
   const data = useLoaderData() as typeof INIT_OPERATE_NOTICE_ADD;

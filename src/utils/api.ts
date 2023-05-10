@@ -1,12 +1,14 @@
 import axios, {
   AxiosRequestConfig,
+  AxiosResponse,
   CancelTokenSource,
-  isAxiosError,
   Method,
+  isAxiosError,
 } from "axios";
 import { API_URL } from "src/constants/url";
 import { IApiResponse, IAxiosErrorResponse } from "src/type/api.interface";
 import { showPermissionErrorModal } from "src/utils/permission";
+import { initAuthStorage, jwtDecode, updateAuthStorage } from "./jwt";
 
 const { baseUrl } = API_URL;
 
@@ -31,7 +33,7 @@ const pendingRequests: {
 
 axiosInstance.interceptors.request.use((config) => {
   /* 토큰관련 로직 */
-  const authInfo = JSON.parse(sessionStorage.getItem("auth-storage") ?? "");
+  const authInfo = JSON.parse(sessionStorage.getItem("auth-storage") ?? "{}");
   const accessToken: string = authInfo?.state?.accessToken ?? "";
   if (accessToken) {
     (config as IAxiosRequestConfig).headers[
@@ -75,23 +77,26 @@ const rest = (method: Method) => {
       responseType = undefined as "blob" | undefined,
     } = {}
   ) => {
+    const requestApi = axiosInstance(url, {
+      method,
+      params,
+      data: body,
+      headers,
+      responseType,
+    });
+
     try {
-      const response = await axiosInstance(url, {
-        method,
-        params,
-        data: body,
-        headers,
-        responseType,
-      });
+      const response = await requestApi;
 
       const { data } = response;
 
       return data as IApiResponse<T>;
     } catch (err) {
+      const { response } = err as IAxiosErrorResponse;
+
       /** axios error 여부 */
-      const axiosError = isAxiosError(err);
-      if (axiosError) {
-        const [error] = err.response?.data?.errors ?? [];
+      if (!response?.status && isAxiosError(err)) {
+        const [error] = response?.data?.errors ?? [];
         const message = error?.reason ?? err.message;
 
         return {
@@ -101,16 +106,29 @@ const rest = (method: Method) => {
         };
       }
 
-      const { response } = err as IAxiosErrorResponse;
-
-      /*  401: token이 인증되지 않을경우, refreshToken으로 업데이트 후에도 없으면, 로그인 화면으로 네비게이팅 */
+      /*  401: token이 미인증/토큰 만료 */
       if (response.status === 401) {
-        /** @TODO refresh 로직 추가 */
+        resetAuth();
       }
-
-      /* 403: 계정 권한 오류 발생 (읽기/쓰기/수정 등) */
+      /* 403 */
       if (response.status === 403) {
-        showPermissionErrorModal();
+        /* 토큰 만료 */
+        if (response.data.code === "AUTH02") {
+          /* 갱신 */
+          const result = await tryAuthReissue<T>({
+            headers,
+            responseType,
+            requestApi,
+          });
+
+          /* 갱신 성공 */
+          if (result) {
+            return result;
+          }
+        } else {
+          /* 계정 권한 오류 발생 (읽기/쓰기/수정 등) */
+          showPermissionErrorModal();
+        }
       }
 
       const { data } = response;
@@ -137,3 +155,57 @@ class Api {
 const api = new Api();
 
 export default api;
+
+/** auth state 초기화 후, login page 이동 */
+const resetAuth = () => {
+  initAuthStorage();
+  window.location.href = "/login";
+  alert("계정 정보가 만료되었습니다.");
+};
+
+/** 토큰 재발급 함수 */
+const tryAuthReissue = async <T,>({
+  headers = {},
+  responseType = undefined,
+  requestApi,
+}: {
+  headers: object;
+  responseType?: "blob";
+  requestApi: Promise<AxiosResponse<any, any>>;
+}) => {
+  try {
+    const { refreshToken } = jwtDecode();
+    /* 토큰 재갱신 요청 */
+    const reissueResponse = await axiosInstance("/authenticate/reissue", {
+      method: "POST",
+      data: {
+        token: refreshToken,
+      },
+      headers,
+      responseType,
+    });
+
+    const reissueData: any = reissueResponse;
+    const success = reissueData?.data.code === "SUCCESS" && !!reissueData?.data;
+    /** 재갱신 성공 */
+    if (success) {
+      const updateToken = reissueData.data.accessToken;
+      updateAuthStorage({ accessToken: updateToken });
+
+      /* 만료로 실패한 기존 api 재요청 */
+      const response = await requestApi;
+      const { data } = response;
+
+      return data as IApiResponse<T>;
+    } else {
+      /** 재갱신 실패 */
+      resetAuth();
+    }
+  } catch (reissueError: any) {
+    /* 재갱신 실패 */
+    const code = reissueError?.response?.data?.code;
+    if (code === "AUTH02") {
+      resetAuth();
+    }
+  }
+};
