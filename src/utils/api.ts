@@ -84,7 +84,7 @@ const rest = (method: Method) => {
       headers,
       responseType,
     });
-
+    
     try {
       const response = await requestApi;
 
@@ -106,13 +106,12 @@ const rest = (method: Method) => {
         };
       }
 
-      /*  401: token이 미인증/토큰 만료 */
+      /*  토큰 미인증 */
       if (response.status === 401) {
         resetAuth();
       }
-      /* 403 */
-      if (response.status === 403) {
-        /* 토큰 만료 */
+      /* 토큰 만료 */
+      else if (response.status === 403) {
         if (response.data.code === "AUTH02") {
           /* 갱신 */
           const result = await tryAuthReissue<T>({
@@ -212,7 +211,7 @@ const tryAuthReissue = async <T,>({
       resetAuth();
     }
   } catch (reissueError: any) {
-    /* 재갱신 실패 */
+    /* 토큰 재갱신 or 기존 요청 api에서 에러 발생 */
     const code = reissueError?.response?.data?.code;
     if (code === "AUTH02") {
       resetAuth();
