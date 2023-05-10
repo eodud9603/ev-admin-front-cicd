@@ -40,6 +40,7 @@ import { getEvModelList } from "src/api/ev/evModelApi";
 import { objectToArray } from "src/utils/convert";
 import { CHARGER_RATION, CHARGER_TYPE } from "src/constants/status";
 import { standardDateFormat } from "src/utils/day";
+import { useTabs } from "src/hooks/useTabs";
 
 const defaultDropItem = {
   label: "전체",
@@ -90,7 +91,11 @@ const tableHeader = [
 ];
 
 const EvModel = () => {
-  const data = useLoaderData() as IEvModelListResponse | null;
+  const { data, filterData, currentPage } = useLoaderData() as {
+    data: IEvModelListResponse | null;
+    filterData: { [key: string]: string };
+    currentPage: number;
+  };
 
   const [
     { list, page, lastPage, total, message, time },
@@ -102,6 +107,7 @@ const EvModel = () => {
     emptyMessage: !data?.elements
       ? "오류가 발생하였습니다."
       : "등록된 모델이 없습니다.",
+    defaultPage: currentPage,
   });
 
   /* 모델 등록/수정 모달 */
@@ -117,30 +123,27 @@ const EvModel = () => {
   /* 선택삭제 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const [
-    {
-      startDate,
-      endDate,
-      chargerClass,
-      searchRange,
-      searchText,
-      chargerType,
-      sort,
-      count,
-    },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    startDate: "",
-    endDate: "",
-    chargerClass: "",
-    searchRange: "ManagerName",
-    searchText: "",
-    chargerType: "",
-    sort: "Year",
-    count: "10",
-  });
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
 
   const itemsRef = useRef<IEvModelItemRef[]>([]);
+
+  const {
+    startDate,
+    endDate,
+    chargerClass,
+    searchRange,
+    searchText,
+    chargerType,
+    sort,
+    count,
+  } = inputs;
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "전기차 모델 관리",
+    filterData: inputs,
+    currentPage: page,
+  });
 
   /** 검색 핸들러 */
   const searchHandler =
@@ -175,6 +178,7 @@ const EvModel = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
+        searchDataStorage(data, searchParams.page + 1);
         onChangeList({
           ...data,
           page: searchParams.page,
@@ -265,6 +269,9 @@ const EvModel = () => {
                 title={"검색어"}
                 placeholder={"검색어를 입력해주세요."}
                 menuItems={searchList}
+                initSelectedValue={searchList.find(
+                  (e) => e.value === searchRange
+                )}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
                 }}
@@ -286,6 +293,9 @@ const EvModel = () => {
                       defaultDropItem,
                       ...objectToArray(CHARGER_TYPE),
                     ],
+                    initSelectedValue: objectToArray(CHARGER_TYPE).find(
+                      (e) => e.value === chargerType
+                    ),
                   },
                 ]}
                 className={"me-2 w-xs"}
@@ -308,6 +318,7 @@ const EvModel = () => {
                       })();
                     },
                     menuItems: sortList,
+                    initSelectedValue: sortList.find((e) => e.value === sort),
                   },
                 ]}
               />

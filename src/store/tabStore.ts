@@ -20,6 +20,7 @@ export type tabType = {
 export interface ITabState {
   data: Array<tabType>;
   active: string;
+  /** tab 활성화 변경 */
   setActive: (path: string) => void;
   /** tab data 추가 */
   setData: (tabType: tabType) => void;

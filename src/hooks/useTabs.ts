@@ -48,7 +48,7 @@ export const useTabs = ({
   }, [filterData]);
 
   useEffect(() => {
-    //데이터 로딩 시 타임아웃에 걸려 데이터를 가져오지 못한 경우 데이터를 가져왔을때 change 처리
+    //데이터 로딩 시 타임아웃에 걸려 데이터를 가져오지 못한 경우 데이터를 가져왔을때 change 처리 (인덱스 페이지일때만)
     if (data && !tabStore?.data[index]?.data && !pageType && index > -1) {
       tabStore.changeData(pathname, saveData);
     } else if (pageType && index > -1) {

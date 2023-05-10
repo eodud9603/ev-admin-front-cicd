@@ -124,6 +124,7 @@ const Charger = () => {
     data: data,
     pageTitle: "충전기 관리",
     filterData: inputs,
+    currentPage: page,
   });
 
   const searchKeyword =
