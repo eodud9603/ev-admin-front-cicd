@@ -25,9 +25,10 @@ import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
 import { getCategoryList } from "src/api/category/categoryApi";
 import { getParams } from "src/utils/params";
-import { YNType } from "src/api/api.interface";
 import CategoryFieldDropdown from "src/pages/Operate/components/CategoryFieldDropdown";
 import { getPageList } from "src/utils/pagination";
+import { YNType } from "src/api/api.interface";
+import { useTabs } from "src/hooks/useTabs";
 
 /* 검색어 필터 */
 const searchList = [
@@ -47,7 +48,11 @@ const tableHeader = [
 
 const OperateCategory = () => {
   /** list init data */
-  const data = useLoaderData() as ICategoryListResponse | null;
+  const { data, filterData, currentPage } = useLoaderData() as {
+    data: ICategoryListResponse | null;
+    filterData: { [key: string]: string };
+    currentPage: number;
+  };
 
   /* 카테고리 등록/상세(수정) 모달 */
   const [categoryModal, setCategoryModal] = useState<{
@@ -58,17 +63,10 @@ const OperateCategory = () => {
     type: "REGISTER",
   });
 
-  const [
-    { isExposed, searchRange, searchText, fieldName, fieldId, count },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    isExposed: "" as YNType,
-    searchRange: "CategoryName",
-    searchText: "",
-    fieldName: "",
-    fieldId: "",
-    count: "10",
-  });
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
+
+  const { isExposed, searchRange, searchText, fieldName, fieldId, count } =
+    inputs;
 
   const [
     { list, page, lastPage, total, message, time },
@@ -80,6 +78,14 @@ const OperateCategory = () => {
     emptyMessage: !data?.elements
       ? "오류가 발생하였습니다."
       : "등록된 카테고리 정보가 없습니다.",
+    defaultPage: currentPage,
+  });
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "카테고리 관리",
+    filterData: inputs,
+    currentPage: page,
   });
 
   const onChangeCategoryModal =
@@ -102,7 +108,7 @@ const OperateCategory = () => {
         searchParams.searchKeyword = searchText;
       }
       if (isExposed) {
-        searchParams.isExposed = isExposed;
+        searchParams.isExposed = isExposed as YNType;
       }
       if (fieldId) {
         searchParams.fieldId = Number(fieldId);
@@ -120,6 +126,7 @@ const OperateCategory = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
+        searchDataStorage(data, searchParams.page + 1);
         onChangeList({
           ...data,
           page: searchParams.page,
@@ -152,6 +159,9 @@ const OperateCategory = () => {
               <SearchTextInput
                 title={"검색어"}
                 placeholder={"검색어를 입력해주세요."}
+                initSelectedValue={searchList.find(
+                  (e) => e.value === searchRange
+                )}
                 menuItems={searchList}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ searchRange: value });
@@ -206,6 +216,9 @@ const OperateCategory = () => {
               <span className={"font-size-10 text-muted"}>{time}기준</span>
               <DropdownBase
                 menuItems={COUNT_FILTER_LIST}
+                initSelectedValue={COUNT_FILTER_LIST.find(
+                  (e) => e.value === count
+                )}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({ count: value });
                   void searchHandler({ page: 1, size: Number(value) })();
@@ -240,7 +253,7 @@ const OperateCategory = () => {
                       </HoverSpan>
                     </td>
                     <td>{data.isExpose}</td>
-                    <td>{"-"}</td>
+                    <td>{data.writer}</td>
                     <td>
                       {data.createAt
                         ? standardDateFormat(data.createAt, "YYYY.MM.DD")
