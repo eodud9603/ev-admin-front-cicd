@@ -52,9 +52,11 @@ const OperateCategory = () => {
   /* 카테고리 등록/상세(수정) 모달 */
   const [categoryModal, setCategoryModal] = useState<{
     isOpen: boolean;
+    id?: number;
     type: "MODIFY" | "REGISTER";
   }>({
     isOpen: false,
+    id: undefined,
     type: "REGISTER",
   });
 
@@ -178,7 +180,7 @@ const OperateCategory = () => {
           <Row className={"mt-3 d-flex align-items-center"}>
             <Col>
               <CategoryFieldDropdown
-                initSelectedValue={{
+                displayValue={{
                   label: fieldName,
                   value: fieldId,
                 }}
@@ -216,6 +218,7 @@ const OperateCategory = () => {
                 color={"turu"}
                 onClick={onChangeCategoryModal({
                   type: "REGISTER",
+                  id: undefined,
                   isOpen: true,
                 })}
               />
@@ -232,6 +235,7 @@ const OperateCategory = () => {
                     <td
                       onClick={onChangeCategoryModal({
                         type: "MODIFY",
+                        id: data.id,
                         isOpen: true,
                       })}
                     >
