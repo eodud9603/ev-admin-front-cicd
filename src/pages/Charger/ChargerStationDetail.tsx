@@ -1083,7 +1083,7 @@ const ChargerStationDetail = () => {
                     </tr>
                   </TableBase>
                   {/* 충전기 상세 테이블 */}
-                  <TableBase tableHeader={chargerTableHeader}>
+                  <TableBase tableHeader={chargerTableHeader} maxHeight={1130}>
                     <>
                       {(chargers ?? []).map(
                         ({

@@ -52,7 +52,7 @@ export const TableBase = (props: ITableBase) => {
 
   return (
     <Container fluid={true} style={{ overflowX: "auto", maxHeight }}>
-      <TableWrapper className={`table ${tableClassName ?? ""}`}>
+      <TableWrapper className={`tableFixHead table ${tableClassName ?? ""}`}>
         <thead className={theadClassName ?? "table-light"}>
           <tr>
             {tableHeader.map((headerOption, index) => (
