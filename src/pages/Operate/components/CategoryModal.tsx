@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Col, ModalBody, ModalFooter, Row } from "reactstrap";
+import { getCategoryDetail } from "src/api/category/categoryApi";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import ModalBase from "src/components/Common/Modal/ModalBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import useInputs from "src/hooks/useInputs";
 import CategoryFieldDropdown from "src/pages/Operate/components/CategoryFieldDropdown";
+import { standardDateFormat } from "src/utils/day";
 
 interface ICategoryModalProps {
   type: "MODIFY" | "REGISTER";
+  id?: number;
   isOpen: boolean;
   onClose: () => void;
 }
 
 const CategoryModal = (props: ICategoryModalProps) => {
-  const { type, isOpen, onClose } = props;
+  const { type, id, isOpen, onClose } = props;
 
   const [disabled, setDisabled] = useState(true);
   const [
-    { fieldId, fieldName, name, modalIsExposed: isExposed, writer, regDate },
+    { fieldId, fieldName, name, modalIsExposed: isExposed, writer, createAt },
     { onChange, onChangeSingle, reset },
   ] = useInputs({
     fieldId: "",
@@ -26,7 +29,7 @@ const CategoryModal = (props: ICategoryModalProps) => {
     name: "",
     modalIsExposed: "Y",
     writer: "",
-    regDate: "",
+    createAt: "",
   });
   const isEmpty = fieldId === "" || name === "" || isExposed === "";
 
@@ -57,9 +60,30 @@ const CategoryModal = (props: ICategoryModalProps) => {
 
     if (type === "MODIFY") {
       setDisabled(true);
+
+      if (id) {
+        /* 상세 조회 */
+        void getCategoryDetail({ id }).then(({ code, data }) => {
+          /** 성공 */
+          const success = code === "SUCCESS" && !!data;
+
+          if (success) {
+            onChangeSingle({
+              fieldId: (data.fieldId ?? "").toString(),
+              fieldName: data.field,
+              name: data.name ?? "",
+              modalIsExposed: data.isExpose ?? "",
+              writer: data.writer ?? "",
+              createAt: data.createAt
+                ? standardDateFormat(data.createAt, "YYYY-MM-DD")
+                : "",
+            });
+          }
+        });
+      }
       return;
     }
-  }, [type, isOpen]);
+  }, [type, isOpen, id, onChangeSingle]);
 
   return (
     <ModalBase
@@ -84,7 +108,9 @@ const CategoryModal = (props: ICategoryModalProps) => {
             </Col>
             <Col sm={8}>
               <CategoryFieldDropdown
-                initSelectedValue={{
+                disabled={disabled}
+                label={""}
+                displayValue={{
                   label: fieldName,
                   value: fieldId,
                 }}
@@ -159,8 +185,8 @@ const CategoryModal = (props: ICategoryModalProps) => {
                     disabled={true}
                     className={"form-control w-xs"}
                     type={"date"}
-                    name={"regDate"}
-                    value={regDate}
+                    name={"createAt"}
+                    value={createAt}
                     onChange={onChange}
                   />
                 </Col>
