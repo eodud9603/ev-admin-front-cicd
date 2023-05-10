@@ -35,5 +35,5 @@ export const stationContractListLoader = async () => {
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return success ? { data: data, filterData: INIT_CONTRACT } : null;
+  return { data: success ? data : {}, filterData: INIT_CONTRACT };
 };
