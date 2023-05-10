@@ -18,7 +18,7 @@ const Sidebar = (props: any) => {
         {/*  }`}*/}
         {/*>*/}
         <div data-simplebar className="h-100">
-          {props.type !== "condensed" ? <SidebarContent /> : <SidebarContent />}
+          <SidebarContent />
         </div>
       </div>
     </React.Fragment>

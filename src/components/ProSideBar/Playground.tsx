@@ -25,6 +25,8 @@ import { useTabStore } from "src/store/tabStore";
 
 type Theme = "light" | "dark";
 
+const WINDOW_HEIGHT = window.innerHeight;
+
 const themes = {
   light: {
     sidebar: {
@@ -155,7 +157,7 @@ export const Playground = (props: any) => {
     <div
       style={{
         display: "flex",
-        height: "100%",
+        height: WINDOW_HEIGHT,
         direction: isRTL ? "rtl" : "ltr",
       }}
     >
