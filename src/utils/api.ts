@@ -7,8 +7,8 @@ import axios, {
 } from "axios";
 import { API_URL } from "src/constants/url";
 import { IApiResponse, IAxiosErrorResponse } from "src/type/api.interface";
-import { showPermissionErrorModal } from "src/utils/permission";
-import { initAuthStorage, jwtDecode, updateAuthStorage } from "./jwt";
+import { showErrorModal } from "src/utils/modal";
+import { initAuthStorage, jwtDecode, updateAuthStorage } from "src/utils/jwt";
 
 const { baseUrl } = API_URL;
 
@@ -127,7 +127,11 @@ const rest = (method: Method) => {
           }
         } else {
           /* 계정 권한 오류 발생 (읽기/쓰기/수정 등) */
-          showPermissionErrorModal();
+          showErrorModal({
+            className: "permissionModal",
+            title: "계정 권한 오류",
+            content: "관리자에게 문의하여 기능 권한을 요청하세요.",
+          });
         }
       }
 
@@ -158,9 +162,15 @@ export default api;
 
 /** auth state 초기화 후, login page 이동 */
 const resetAuth = () => {
-  initAuthStorage();
-  window.location.href = "/login";
-  alert("계정 정보가 만료되었습니다.");
+  showErrorModal({
+    className: "reissue",
+    title: "계정 정보 만료 안내",
+    content: "계정 정보가 만료되었습니다.",
+    confirmHandler: () => {
+      initAuthStorage();
+      window.location.href = "/login";
+    },
+  });
 };
 
 /** 토큰 재발급 함수 */
