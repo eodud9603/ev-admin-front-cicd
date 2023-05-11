@@ -60,6 +60,7 @@ const CategoryFieldDropdown = (props: IManufactureDropdownProps) => {
 
   return (
     <CategoryDropdownFieldBase
+      className={disabled ? "" : "bg-white"}
       label={label ?? "분야"}
       disabled={disabled}
       menuItems={list}

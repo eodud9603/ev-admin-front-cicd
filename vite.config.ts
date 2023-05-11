@@ -18,17 +18,4 @@ export default defineConfig({
       "@assets": path.resolve(__dirname, "./src/assets"),
     },
   },
-  // build: {
-  //   manifest: true,
-  // },
-  // server: {
-  //   proxy: {
-  //     "/api": {
-  //       // target: "http://localhost:8080/v1",
-  //       target: "http://test.wondersky.co.kr/v1",
-  //       // target: "http://api.wondersky.co.kr/v1",
-  //       rewrite: (path) => path.replace(/^\/api/, ""),
-  //     },
-  //   },
-  // },
 });
