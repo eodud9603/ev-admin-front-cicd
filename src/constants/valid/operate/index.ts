@@ -51,14 +51,23 @@ export const YUP_OPERATE_NOTICE: FieldSchemaMap = {
   uploadType: {
     validation: string()
       .required("업로드 대상은 필수 입력 항목입니다.")
-      .oneOf(
-        Object.keys(UPLOAD_TYPE),
-        "잘못된 업로드 대상입니다."
-      ),
+      .oneOf(Object.keys(UPLOAD_TYPE), "잘못된 업로드 대상입니다."),
   },
 };
 
 /** 공지사항 수정 yup */
 export const YUP_OPERATE_NOTICE_EXTRA: FieldSchemaMap = {
   id: { validation: number().required("ID는 필수 입력 항목입니다.") },
+};
+
+/** 카테고리 수정 yup */
+export const YUP_OPERATE_CATEGORY: FieldSchemaMap = {
+  fieldId: {
+    validation: number()
+      .required("ID는 필수 입력 항목입니다.")
+      .moreThan(0, "분야를 선택해주세요."),
+  },
+  name: {
+    validation: string().required("카테고리명은 필수 입력 항목입니다."),
+  },
 };

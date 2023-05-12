@@ -45,3 +45,20 @@ export interface ICategoryDetailResponse {
   createAt: string;
   isExpose: YNType;
 }
+
+/* 카테고리 수정 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC_%EC%88%98%EC%A0%95 */
+export interface IRequestCategoryModify {
+  id: number;
+  fieldId: number;
+  name: string;
+  isExpose: YNType;
+}
+
+/* 카테고리 수정 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC_%EB%93%B1%EB%A1%9D */
+export interface IRequestCategoryRegister {
+  fieldId: number;
+  name: string;
+  isExpose: YNType;
+}

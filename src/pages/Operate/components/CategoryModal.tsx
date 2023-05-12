@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Col, ModalBody, ModalFooter, Row } from "reactstrap";
-import { getCategoryDetail } from "src/api/category/categoryApi";
+import {
+  getCategoryDetail,
+  postCategoryRegister,
+  putCategoryModify,
+} from "src/api/category/categoryApi";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import TextInputBase from "src/components/Common/Input/TextInputBase";
 import ModalBase from "src/components/Common/Modal/ModalBase";
@@ -8,6 +12,15 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import useInputs from "src/hooks/useInputs";
 import CategoryFieldDropdown from "src/pages/Operate/components/CategoryFieldDropdown";
 import { standardDateFormat } from "src/utils/day";
+import { getParams } from "src/utils/params";
+import createValidation from "src/utils/validate";
+import { YUP_OPERATE_CATEGORY } from "src/constants/valid/operate";
+import {
+  IRequestCategoryModify,
+  IRequestCategoryRegister,
+} from "src/api/category/categoryApi.interface";
+import { YNType } from "src/api/api.interface";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 
 interface ICategoryModalProps {
   type: "MODIFY" | "REGISTER";
@@ -20,10 +33,12 @@ const CategoryModal = (props: ICategoryModalProps) => {
   const { type, id, isOpen, onClose } = props;
 
   const [disabled, setDisabled] = useState(true);
-  const [
-    { fieldId, fieldName, name, modalIsExposed: isExposed, writer, createAt },
-    { onChange, onChangeSingle, reset },
-  ] = useInputs({
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
+  const [inputs, { onChange, onChangeSingle, reset }] = useInputs({
     fieldId: "",
     fieldName: "",
     name: "",
@@ -31,21 +46,86 @@ const CategoryModal = (props: ICategoryModalProps) => {
     writer: "",
     createAt: "",
   });
+  const {
+    fieldId,
+    fieldName,
+    name,
+    modalIsExposed: isExposed,
+    writer,
+    createAt,
+  } = inputs;
   const isEmpty = fieldId === "" || name === "" || isExposed === "";
 
   /** 등록 */
-  const register = () => {
-    /** @TODO 등록 로직 추가 */
+  const register = async () => {
+    const params: IRequestCategoryRegister = {
+      ...inputs,
+      fieldId: Number(fieldId),
+      isExpose: isExposed as YNType,
+    };
+
+    getParams(params);
+    console.log(params);
+
+    /* 유효성 체크 */
+    const scheme = createValidation(YUP_OPERATE_CATEGORY);
+    const [invalid] = scheme(params);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
+
+    /* 등록 요청 */
+    const { code } = await postCategoryRegister(params);
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      onClose();
+      return;
+    }
   };
 
   /** 수정 */
-  const modify = () => {
+  const modify = async () => {
     if (disabled) {
       setDisabled(false);
       return;
     }
 
-    /** @TODO 수정 로직 추가 */
+    /* 수정 params */
+    const modifyParams: IRequestCategoryModify = {
+      ...inputs,
+      id: Number(id),
+      fieldId: Number(fieldId),
+      isExpose: isExposed as YNType,
+    };
+    getParams(modifyParams);
+
+    /* 유효성 체크 */
+    const scheme = createValidation({
+      ...YUP_OPERATE_CATEGORY,
+    });
+    const [invalid] = scheme(modifyParams);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
+
+    /* 수정요청 */
+    const { code } = await putCategoryModify(modifyParams);
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      onClose();
+    }
   };
 
   useEffect(() => {
@@ -214,6 +294,12 @@ const CategoryModal = (props: ICategoryModalProps) => {
           onClick={type === "REGISTER" ? register : modify}
         />
       </ModalFooter>
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
     </ModalBase>
   );
 };
