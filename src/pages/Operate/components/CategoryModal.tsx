@@ -27,10 +27,11 @@ interface ICategoryModalProps {
   id?: number;
   isOpen: boolean;
   onClose: () => void;
+  refreshTabData: any;
 }
 
 const CategoryModal = (props: ICategoryModalProps) => {
-  const { type, id, isOpen, onClose } = props;
+  const { type, id, isOpen, onClose, refreshTabData } = props;
 
   const [disabled, setDisabled] = useState(true);
   /* 미입력 안내 모달 */
@@ -84,6 +85,7 @@ const CategoryModal = (props: ICategoryModalProps) => {
     /** 성공 */
     const success = code === "SUCCESS";
     if (success) {
+      refreshTabData();
       onClose();
       return;
     }
@@ -124,6 +126,7 @@ const CategoryModal = (props: ICategoryModalProps) => {
     /** 성공 */
     const success = code === "SUCCESS";
     if (success) {
+      refreshTabData();
       onClose();
     }
   };

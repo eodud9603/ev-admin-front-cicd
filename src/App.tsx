@@ -30,7 +30,7 @@ export const router = createBrowserRouter(
         />
       ))}
 
-      {userRoutes.map((route, idx) => (
+      {userRoutes.map((route) => (
         <Route
           path={route.path}
           element={
@@ -39,8 +39,7 @@ export const router = createBrowserRouter(
             </Authmiddleware>
           }
           loader={route.loader}
-          key={idx}
-          // errorElement={}
+          key={location.pathname}
         />
       ))}
     </Route>

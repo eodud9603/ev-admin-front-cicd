@@ -15,7 +15,7 @@ import { COUNT_FILTER_LIST, YN_FILTER_LIST } from "src/constants/list";
 import styled from "styled-components";
 import useInputs from "src/hooks/useInputs";
 import CategoryModal from "src/pages/Operate/components/CategoryModal";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useRevalidator } from "react-router";
 import {
   ICategoryItem,
   ICategoryListResponse,
@@ -83,11 +83,18 @@ const OperateCategory = () => {
     defaultPage: currentPage,
   });
 
-  const { searchDataStorage } = useTabs({
+  const { searchDataStorage, refreshTabData } = useTabs({
     data: data,
     pageTitle: "카테고리 관리",
     filterData: inputs,
     currentPage: page,
+    onChangeList: () =>
+      data &&
+      onChangeList({
+        ...data,
+        emptyMessage: "카테고리 정보가 없습니다",
+        page: 0,
+      }),
   });
 
   const onChangeCategoryModal =
@@ -292,6 +299,7 @@ const OperateCategory = () => {
 
       <CategoryModal
         {...categoryModal}
+        refreshTabData={refreshTabData}
         onClose={onChangeCategoryModal({ isOpen: false })}
       />
     </ContainerBase>

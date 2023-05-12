@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef } from "react";
 import { ICommonListResProps, useTabStore } from "src/store/tabStore";
 import { useLocation } from "react-router-dom";
+import { useRevalidator } from "react-router";
 
-interface IUseTabsProps {
+interface IUseTabsProps<T> {
   //페이지 데이터
   data: ICommonListResProps | { [key: string]: any } | null | undefined;
   //탭 명칭
@@ -13,17 +14,21 @@ interface IUseTabsProps {
   editable?: boolean;
   filterData?: { [key: string]: string };
   currentPage?: number;
+  onChangeList?: () => void;
 }
-export const useTabs = ({
+export const useTabs = <T>({
   data,
   pageTitle,
   pageType,
   editable = false,
   filterData,
   currentPage,
-}: IUseTabsProps) => {
+  onChangeList,
+}: IUseTabsProps<T>) => {
   const { pathname } = useLocation();
   const tabStore = useTabStore();
+
+  const revalidator = useRevalidator();
 
   const index = tabStore.data.findIndex((e) => pathname.includes(e.path));
   const saveData = {
@@ -41,6 +46,7 @@ export const useTabs = ({
 
   useEffect(() => {
     dataRef.current = data;
+    onChangeList && onChangeList();
   }, [data]);
 
   useEffect(() => {
@@ -85,7 +91,16 @@ export const useTabs = ({
     tabStore.changeData(pathname, saveData);
   }, []);
 
+  const refreshTabData = () => {
+    tabStore.refreshData(tabStore.data[index]);
+
+    if (revalidator.state === "idle") {
+      revalidator.revalidate();
+    }
+  };
+
   return {
     searchDataStorage,
+    refreshTabData,
   };
 };

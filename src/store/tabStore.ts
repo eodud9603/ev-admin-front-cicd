@@ -28,6 +28,7 @@ export interface ITabState {
   removeData: (path: string) => void;
   /** tab data 변경 */
   changeData: (path: string, tabData: tabType) => void;
+  refreshData: (tabData: tabType) => void;
 }
 export interface ICommonListResProps {
   elements: Array<any>;
@@ -49,6 +50,15 @@ export const useTabStore = create<ITabState>()(
             const arr = JSON.parse(JSON.stringify(state.data));
 
             return { data: arr.filter((e: tabType) => !e.path.includes(path)) };
+          });
+        },
+        refreshData: (tabData) => {
+          set((state) => {
+            const arr = JSON.parse(JSON.stringify(state.data));
+            arr.find((e: tabType) => tabData.path.includes(e.rootPath)).data =
+              {};
+            console.log("arr ::", arr);
+            return { data: arr };
           });
         },
         changeData: (path: string, tabData) => {
