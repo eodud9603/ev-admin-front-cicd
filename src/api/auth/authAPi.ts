@@ -31,3 +31,8 @@ export const postAuthReissue = (body: IRequestAuthReissue) => {
     body,
   });
 };
+
+/** 403 error api (403 test api) */
+export const postAuthInvalid = () => {
+  return api.post<IAuthReissueResponse>(`${authUrl}/invalid`);
+};
