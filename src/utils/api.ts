@@ -1,6 +1,5 @@
 import axios, {
   AxiosRequestConfig,
-  AxiosResponse,
   CancelTokenSource,
   Method,
   isAxiosError,
@@ -77,16 +76,25 @@ const rest = (method: Method) => {
       responseType = undefined as "blob" | undefined,
     } = {}
   ) => {
-    const requestApi = axiosInstance(url, {
-      method,
-      params,
-      data: body,
-      headers,
-      responseType,
-    });
-    
+    const requestInfo = {
+      url,
+      info: {
+        method,
+        params,
+        data: body,
+        headers,
+        responseType,
+      },
+    };
+
     try {
-      const response = await requestApi;
+      const response = await axiosInstance(url, {
+        method,
+        params,
+        data: body,
+        headers,
+        responseType,
+      });
 
       const { data } = response;
 
@@ -110,17 +118,15 @@ const rest = (method: Method) => {
       if (response.status === 401) {
         /** @Description 추가 검증 작업 필요 (검증 완료 전 문제 발생 시, 해당 if block 주석처리) */
         resetAuth();
-      }
-      /* 토큰 만료 */
-      else if (response.status === 403) {
+      } else if (response.status === 403) {
+        /* 토큰 만료 */
         /** @Description 추가 검증 작업 필요 (검증 완료 전 문제 발생 시, 해당 else if block 주석처리) */
 
         if (response.data.code === "AUTH02") {
           /* 갱신 */
           const result = await tryAuthReissue<T>({
             headers,
-            responseType,
-            requestApi,
+            requestInfo,
           });
 
           /* 갱신 성공 */
@@ -178,12 +184,19 @@ const resetAuth = () => {
 /** 토큰 재발급 함수 */
 const tryAuthReissue = async <T,>({
   headers = {},
-  responseType = undefined,
-  requestApi,
+  requestInfo,
 }: {
   headers: object;
-  responseType?: "blob";
-  requestApi: Promise<AxiosResponse<any, any>>;
+  requestInfo: {
+    url: string;
+    info: {
+      method: Method;
+      params: object;
+      data: object;
+      headers: object;
+      responseType?: "blob";
+    };
+  };
 }) => {
   try {
     const { refreshToken } = jwtDecode();
@@ -194,18 +207,24 @@ const tryAuthReissue = async <T,>({
         token: refreshToken,
       },
       headers,
-      responseType,
     });
 
     const reissueData: any = reissueResponse;
     const success = reissueData?.data.code === "SUCCESS" && !!reissueData?.data;
+
     /** 재갱신 성공 */
     if (success) {
-      const updateToken = reissueData.data.accessToken;
+      const updateToken: string = reissueData.data.data.accessToken ?? "";
       updateAuthStorage({ accessToken: updateToken });
 
       /* 만료로 실패한 기존 api 재요청 */
-      const response = await requestApi;
+      const response = await axiosInstance(requestInfo.url, {
+        ...requestInfo.info,
+        headers: {
+          ...(requestInfo.info.headers ?? {}),
+          Authorization: `Bearer ${updateToken}`,
+        },
+      });
       const { data } = response;
 
       return data as IApiResponse<T>;
@@ -215,8 +234,8 @@ const tryAuthReissue = async <T,>({
     }
   } catch (reissueError: any) {
     /* 토큰 재갱신 or 기존 요청 api에서 에러 발생 */
-    const code = reissueError?.response?.data?.code;
-    if (code === "AUTH02") {
+    const code: string = reissueError?.response?.data?.code;
+    if (["AUTH01", "AUTH02"].indexOf(code) > -1) {
       resetAuth();
     }
   }
