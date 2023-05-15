@@ -8,6 +8,7 @@ import { API_URL } from "src/constants/url";
 import { IApiResponse, IAxiosErrorResponse } from "src/type/api.interface";
 import { showErrorModal } from "src/utils/modal";
 import { initAuthStorage, jwtDecode, updateAuthStorage } from "src/utils/jwt";
+import { Mutex } from "async-mutex";
 
 const { baseUrl } = API_URL;
 
@@ -66,6 +67,7 @@ axiosInstance.interceptors.response.use((response) => {
   return response;
 });
 
+const mutex = new Mutex();
 const rest = (method: Method) => {
   return async <T,>(
     url: string,
@@ -76,6 +78,8 @@ const rest = (method: Method) => {
       responseType = undefined as "blob" | undefined,
     } = {}
   ) => {
+    await mutex.waitForUnlock();
+
     const requestInfo = {
       url,
       info: {
@@ -122,24 +126,39 @@ const rest = (method: Method) => {
         /* 토큰 만료 */
         /** @Description 추가 검증 작업 필요 (검증 완료 전 문제 발생 시, 해당 else if block 주석처리) */
 
-        if (response.data.code === "AUTH02") {
-          /* 갱신 */
-          const result = await tryAuthReissue<T>({
-            headers,
-            requestInfo,
-          });
+        if (!mutex.isLocked()) {
+          if (response.data.code === "AUTH02") {
+            /* 갱신 */
+            const result = await tryAuthReissue<T>({
+              headers,
+              requestInfo,
+            });
 
-          /* 갱신 성공 */
-          if (result) {
-            return result;
+            /* 갱신 성공 */
+            if (result) {
+              return result;
+            }
+          } else {
+            /* 계정 권한 오류 발생 (읽기/쓰기/수정 등) */
+            showErrorModal({
+              className: "permission",
+              title: "계정 권한 오류",
+              content: "관리자에게 문의하여 기능 권한을 요청하세요.",
+            });
           }
         } else {
-          /* 계정 권한 오류 발생 (읽기/쓰기/수정 등) */
-          showErrorModal({
-            className: "permission",
-            title: "계정 권한 오류",
-            content: "관리자에게 문의하여 기능 권한을 요청하세요.",
+          await mutex.waitForUnlock();
+          const response = await axiosInstance(url, {
+            method,
+            params,
+            data: body,
+            headers,
+            responseType,
           });
+
+          const { data } = response;
+
+          return data as IApiResponse<T>;
         }
       }
 
@@ -198,6 +217,8 @@ const tryAuthReissue = async <T,>({
     };
   };
 }) => {
+  const release = await mutex.acquire();
+
   try {
     const { refreshToken } = jwtDecode();
     /* 토큰 재갱신 요청 */
@@ -238,5 +259,7 @@ const tryAuthReissue = async <T,>({
     if (["AUTH01", "AUTH02"].indexOf(code) > -1) {
       resetAuth();
     }
+  } finally {
+    release();
   }
 };
