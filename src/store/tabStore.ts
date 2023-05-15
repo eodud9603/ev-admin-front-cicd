@@ -1,3 +1,4 @@
+import { StoreNameEnum } from "src/constants/store";
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
@@ -77,7 +78,7 @@ export const useTabStore = create<ITabState>()(
         setActive: (path) => set(() => ({ active: path })),
       }),
       {
-        name: "tab-storage",
+        name: StoreNameEnum.TAB,
         storage: createJSONStorage(() => sessionStorage),
       }
     )
