@@ -24,6 +24,29 @@ const PaginationBase = (props: IPaginationBase) => {
     window?.scrollTo(0, 0);
   };
 
+  const onChangeNumber = (pageNumber: number) => {
+    props.setPage(pageNumber);
+    scrollTop();
+    !!onChangePage && void onChangePage(pageNumber);
+  };
+
+  const previousHandler = () => {
+    onChangeNumber(pageNum - 1);
+  };
+
+  const pageHandler = (number: number) => () => {
+    const isActive = pageNum === number;
+    if (isActive) {
+      return;
+    }
+
+    onChangeNumber(number);
+  };
+
+  const nextHandler = () => {
+    onChangeNumber(pageNum + 1);
+  };
+
   return (
     <Row
       className="justify-content-md-end justify-content-center
@@ -34,13 +57,7 @@ const PaginationBase = (props: IPaginationBase) => {
         className="d-flex justify-content-center"
       >
         <PaginationItem className={`${!hasPreviousPage ? "disabled" : ""}`}>
-          <PaginationLink
-            onClick={() => {
-              props.setPage(pageNum - 1);
-              scrollTop();
-              !!onChangePage && void onChangePage(pageNum - 1);
-            }}
-          >
+          <PaginationLink onClick={previousHandler}>
             <i className="mdi mdi-chevron-left" />
           </PaginationLink>
         </PaginationItem>
@@ -50,25 +67,13 @@ const PaginationBase = (props: IPaginationBase) => {
               key={idx}
               className={`${pageNum === value ? "active" : ""}`}
             >
-              <PaginationLink
-                onClick={() => {
-                  props.setPage(value);
-                  scrollTop();
-                  !!onChangePage && void onChangePage(value);
-                }}
-              >
+              <PaginationLink onClick={pageHandler(value)}>
                 {value}
               </PaginationLink>
             </PaginationItem>
           ))}
         <PaginationItem className={`${!hasNextPage ? "disabled" : ""}`}>
-          <PaginationLink
-            onClick={() => {
-              props.setPage(pageNum + 1);
-              scrollTop();
-              !!onChangePage && void onChangePage(pageNum + 1);
-            }}
-          >
+          <PaginationLink onClick={nextHandler}>
             <i className="mdi mdi-chevron-right" />
           </PaginationLink>
         </PaginationItem>
