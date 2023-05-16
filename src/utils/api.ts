@@ -9,6 +9,8 @@ import { IApiResponse, IAxiosErrorResponse } from "src/type/api.interface";
 import { showErrorModal } from "src/utils/modal";
 import { initAuthStorage, jwtDecode, updateAuthStorage } from "src/utils/jwt";
 import { Mutex } from "async-mutex";
+import { ErrorCodeEnum } from "src/constants/error";
+import { StoreNameEnum } from "src/constants/store";
 
 const { baseUrl } = API_URL;
 
@@ -33,7 +35,9 @@ const pendingRequests: {
 
 axiosInstance.interceptors.request.use((config) => {
   /* 토큰관련 로직 */
-  const authInfo = JSON.parse(sessionStorage.getItem("auth-storage") ?? "{}");
+  const authInfo = JSON.parse(
+    sessionStorage.getItem(StoreNameEnum.AUTH) ?? "{}"
+  );
   const accessToken: string = authInfo?.state?.accessToken ?? "";
   if (accessToken) {
     (config as IAxiosRequestConfig).headers[
@@ -127,7 +131,7 @@ const rest = (method: Method) => {
         /** @Description 추가 검증 작업 필요 (검증 완료 전 문제 발생 시, 해당 else if block 주석처리) */
 
         if (!mutex.isLocked()) {
-          if (response.data.code === "AUTH02") {
+          if (response.data.code === ErrorCodeEnum.AUTH02) {
             /* 갱신 */
             const result = await tryAuthReissue<T>({
               headers,
@@ -255,8 +259,8 @@ const tryAuthReissue = async <T,>({
     }
   } catch (reissueError: any) {
     /* 토큰 재갱신 or 기존 요청 api에서 에러 발생 */
-    const code: string = reissueError?.response?.data?.code;
-    if (["AUTH01", "AUTH02"].indexOf(code) > -1) {
+    const code: ErrorCodeEnum = reissueError?.response?.data?.code;
+    if ([ErrorCodeEnum.AUTH01, ErrorCodeEnum.AUTH02].indexOf(code) > -1) {
       resetAuth();
     }
   } finally {

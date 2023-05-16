@@ -1,3 +1,4 @@
+import { StoreNameEnum } from "src/constants/store";
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
@@ -31,7 +32,7 @@ const useAuthStore = create<IAuthStoreState>()(
         },
       }),
       {
-        name: "auth-storage",
+        name: StoreNameEnum.AUTH,
         storage: createJSONStorage(() => sessionStorage),
       }
     )

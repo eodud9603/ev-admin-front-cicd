@@ -1,8 +1,9 @@
 import { tabType } from "src/store/tabStore";
 import { INIT_CHARGER } from "src/pages/Charger/loader/chargerListLoader";
+import { StoreNameEnum } from "src/constants/store";
 
 export const loadTabData = <T>(path: string) => {
-  const tabStorage: string | null = sessionStorage.getItem("tab-storage");
+  const tabStorage: string | null = sessionStorage.getItem(StoreNameEnum.TAB);
 
   const tabData: Array<tabType> =
     JSON.parse(tabStorage ?? "")?.state?.data?.filter(

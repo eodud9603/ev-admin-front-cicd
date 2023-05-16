@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import jwt_decode from "jwt-decode";
+import { StoreNameEnum } from "src/constants/store";
 import { IAuthProps } from "src/store/authStore";
 
 interface IAuthReturnType {
@@ -11,19 +12,21 @@ interface IAuthReturnType {
 
 /** auth storage 초기화 */
 export const initAuthStorage = () => {
-  sessionStorage.setItem("auth-storage", JSON.stringify({ state: {} }));
+  sessionStorage.setItem(StoreNameEnum.AUTH, JSON.stringify({ state: {} }));
 };
 
 /** auth storage 업데이트 */
 export const updateAuthStorage = (updateState: Partial<IAuthProps> = {}) => {
-  const authStore = JSON.parse(sessionStorage.getItem("auth-storage") ?? "{}");
+  const authStore = JSON.parse(
+    sessionStorage.getItem(StoreNameEnum.AUTH) ?? "{}"
+  );
 
   const updateStore = {
     ...(authStore?.state ?? {}),
     ...updateState,
   };
   sessionStorage.setItem(
-    "auth-storage",
+    StoreNameEnum.AUTH,
     JSON.stringify({ state: updateStore })
   );
 };
@@ -32,7 +35,8 @@ export const updateAuthStorage = (updateState: Partial<IAuthProps> = {}) => {
 export const jwtDecode = (): Partial<IAuthReturnType> => {
   try {
     const auth =
-      JSON.parse(sessionStorage.getItem("auth-storage") ?? "{}")?.state ?? {};
+      JSON.parse(sessionStorage.getItem(StoreNameEnum.AUTH) ?? "{}")?.state ??
+      {};
     const token: string = auth?.accessToken ?? "";
     const refreshToken: string = auth?.refreshToken ?? "";
     const user: Partial<Pick<IAuthReturnType, "adminSeq" | "name">> = token

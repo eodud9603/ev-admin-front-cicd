@@ -1,3 +1,4 @@
+import { StoreNameEnum } from "src/constants/store";
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
@@ -30,7 +31,7 @@ const useMapStore = create<IMapState>()(
         },
       }),
       {
-        name: "map-storage",
+        name: StoreNameEnum.MAP,
         storage: createJSONStorage(() => sessionStorage),
       }
     )
