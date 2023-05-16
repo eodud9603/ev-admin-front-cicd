@@ -1,10 +1,4 @@
-import React, {
-  forwardRef,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -29,26 +23,27 @@ import {
 import styled from "styled-components";
 import useInputs from "src/hooks/useInputs";
 import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
+import { useLoaderData } from "react-router-dom";
+import { INIT_FAQ_LIST } from "src/pages/Operate/loader/faqListLoader";
+import { useTabs } from "src/hooks/useTabs";
+import {
+  IFaqItem,
+  IFaqListResponse,
+  IRequestFaqList,
+} from "src/api/board/faqApi.interface";
+import { standardDateFormat } from "src/utils/day";
+import { getParams } from "src/utils/params";
+import { getFaqList } from "src/api/board/faqApi";
+import useList from "src/hooks/useList";
+import { UPLOAD_TYPE } from "src/constants/status";
+import { exposureNoticeList } from "src/api/board/noticeApi";
+import { getPageList } from "src/utils/pagination";
 
 /* 검색어 필터 */
 const searchList = [
   { label: "전체", value: "" },
   { label: "제목", value: "1" },
   { label: "작성자", value: "2" },
-];
-
-/* 카테고리 필터 */
-const categoryList = [
-  {
-    menuItems: [
-      { label: "전체", value: "1" },
-      { label: "가입 승인", value: "2" },
-      { label: "결제 카드", value: "3" },
-      { label: "충전기 예약", value: "4" },
-      { label: "충전기 사용", value: "5" },
-      { label: "기타", value: "6" },
-    ],
-  },
 ];
 
 /** 정렬 필터 */
@@ -61,7 +56,7 @@ const sortList = [
 
 /* 목록 헤더 */
 const tableHeader = [
-  { label: "선택" },
+  { label: "checkbox" },
   { label: "번호" },
   { label: "카테고리" },
   { label: "제목" },
@@ -69,133 +64,133 @@ const tableHeader = [
   { label: "작성자" },
   { label: "조회 수" },
   { label: "작성일" },
-  { label: "삭제여부" },
+  { label: "노출여부" },
 ];
-
-/* 임시 목록 데이터 */
-const faqList = [
-  {
-    id: "1",
-    category: "가입 승인",
-    title: "개인정보 처리방침 변경 안내",
-    uploadTarget: "전체",
-    writer: "홍길동",
-    views: 15,
-    date: "2022.01.07",
-    deleteStatus: "N",
-  },
-];
-
-interface IListRefProps {
-  data: IListItemProps;
-  checked: boolean;
-  onChange: (bool: boolean) => void;
-}
-interface IListItemProps {
-  index: number;
-  id: string;
-  category: string;
-  title: string;
-  uploadTarget: string;
-  writer: string;
-  views: number;
-  date: string;
-  deleteStatus: string;
-}
 
 const OperateFAQ = () => {
-  const [tabList, setTabList] = useState([{ label: "FAQ" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
-  /* 선택삭제 버튼 활성화 여부 */
-  const [isActive, setIsActive] = useState(false);
-  const [page, setPage] = useState(1);
+  const { data, filterData, currentPage, categoryList } = useLoaderData() as {
+    data: IFaqListResponse | null;
+    categoryList: { label: string; value: string }[];
+    filterData: typeof INIT_FAQ_LIST;
+    currentPage: number;
+  };
+
+  /* 체크 리스트 */
+  const [checkList, setCheckList] = useState<number[]>([]);
   /* 선택삭제 모달 */
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const listRef = useRef<IListRefProps[]>([]);
-
   const [
-    { deleteStatus, uploadTarget, searchText },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    deleteStatus: "",
-    uploadTarget: "",
-    searchRange: "",
-    searchText: "",
-    category: "",
-    sort: "",
-    count: "1",
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<IFaqItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: !data?.elements
+      ? "오류가 발생하였습니다."
+      : "등록된 faq가 없습니다.",
+    defaultPage: currentPage,
+  });
+
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
+
+  const {
+    isExpose,
+    uploadType,
+    searchText,
+    sort,
+    searchRange,
+    categoryId,
+    startDate,
+    endDate,
+    count,
+  } = inputs;
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "FAQ",
+    filterData: inputs,
+    currentPage: page,
+    categoryList: categoryList,
   });
 
   const navigate = useNavigate();
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
-
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
-
-  /** 선택항목 삭제 */
-  const deleteHandler = () => {
-    setIsActive(false);
-
-    const checkedList = [];
-    for (const item of listRef.current) {
-      const { checked, data } = item;
-
-      if (checked) {
-        checkedList.push(data);
-        item.onChange(false);
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestFaqList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams: IRequestFaqList = {
+        size: Number(count),
+        page,
+        isExpose,
+        uploadType,
+        sort,
+        categoryId: Number(categoryId),
+      };
+      if (startDate && endDate) {
+        searchParams.startDate = standardDateFormat(startDate, "YYYY-MM-DD");
+        searchParams.endDate = standardDateFormat(endDate, "YYYY-MM-DD");
       }
+      if (searchRange && searchText) {
+        searchParams.searchType = searchRange as IRequestFaqList["searchType"];
+        searchParams.searchKeyword = searchText;
+      }
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
+
+      /* 검색  */
+      const { code, data, message } = await getFaqList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 공지사항이 없습니다.",
+        });
+        searchDataStorage(data, searchParams.page + 1);
+      } else {
+        reset({ code, message: message || "오류가 발생하였습니다." });
+      }
+
+      setCheckList([]);
+    };
+
+  /** 선택 비노출 삭제 */
+  const exposureHandler = async () => {
+    /* 삭제요청 */
+    const { code } = await exposureNoticeList({
+      noticeIds: checkList,
+    });
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      void searchHandler({ page })();
+      setDeleteModalOpen((prev) => !prev);
     }
   };
 
-  /** 선택삭제 버튼 활성화 여부 업데이트 */
-  const onChangeActive = useCallback((currentItemChecked: boolean) => {
-    let isActive = currentItemChecked;
-    if (!isActive) {
-      const checkCount = listRef.current.reduce((acc, cur) => {
-        if (cur.checked) {
-          acc += 1;
-        }
-
-        return acc;
-      }, 0);
-
-      /* 체크된 목록이 있으면, 선택삭제 버튼 활성화 (ref을 사용하여 1개 보다 커야 체크된 것이 있음) */
-      if (checkCount > 1) {
-        isActive = true;
-      }
+  /** 전체 체크 변경 콜백 */
+  const onChangeCheck = (check: boolean) => {
+    if (check) {
+      setCheckList(list.map((data) => data.id));
+    } else {
+      setCheckList([]);
     }
-
-    setIsActive(isActive);
-  }, []);
+  };
 
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -214,11 +209,11 @@ const OperateFAQ = () => {
             </Col>
             <Col md={3}>
               <RadioGroup
-                title={"삭제 여부"}
-                name={"deleteStatus"}
+                title={"노출 여부"}
+                name={"isExpose"}
                 list={YN_FILTER_LIST.map((data) => ({
                   ...data,
-                  checked: deleteStatus === data.value,
+                  checked: isExpose === data.value,
                 }))}
                 onChange={onChange}
               />
@@ -226,10 +221,10 @@ const OperateFAQ = () => {
             <Col md={5}>
               <RadioGroup
                 title={"업로드 대상"}
-                name={"uploadTarget"}
+                name={"uploadType"}
                 list={UPLOAD_FILTER_LIST.map((data) => ({
                   ...data,
-                  checked: uploadTarget === data.value,
+                  checked: uploadType === data.value,
                 }))}
                 onChange={onChange}
               />
@@ -247,12 +242,25 @@ const OperateFAQ = () => {
                 name={"searchText"}
                 value={searchText}
                 onChange={onChange}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
             <Col className={"d-flex"} md={5}>
               <DropboxGroup
                 label={"카테고리"}
-                dropdownItems={categoryList}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({
+                        categoryId: value,
+                      });
+                    },
+                    menuItems: categoryList,
+                    initSelectedValue: categoryList.find(
+                      (e) => e.value === categoryId
+                    ),
+                  },
+                ]}
                 className={"me-2 w-xs"}
               />
             </Col>
@@ -264,9 +272,10 @@ const OperateFAQ = () => {
                 dropdownItems={[
                   {
                     onClickDropdownItem: (_, value) => {
-                      onChangeSingle({ sort: value });
+                      onChangeSingle({ sort: value as typeof sort });
                     },
                     menuItems: sortList,
+                    initSelectedValue: sortList.find((e) => e.value === sort),
                   },
                 ]}
               />
@@ -279,14 +288,12 @@ const OperateFAQ = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{faqList.length}개</span>의 FAQ가
+              총 <span className={"text-turu"}>{total}개</span>의 FAQ가
               있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
-              <span className={"font-size-10 text-muted"}>
-                2023-04-01 14:51기준
-              </span>
+              <span className={"font-size-10 text-muted"}>{time}기준</span>
               <DropdownBase
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {
@@ -301,10 +308,10 @@ const OperateFAQ = () => {
                 }}
               />
               <ButtonBase
-                disabled={!isActive}
-                label={"선택 삭제"}
-                outline={isActive}
-                color={isActive ? "turu" : "secondary"}
+                disabled={!(checkList.length > 0)}
+                label={"선택 비노출"}
+                outline={checkList.length > 0}
+                color={checkList.length > 0 ? "turu" : "secondary"}
                 onClick={() => {
                   setDeleteModalOpen(true);
                 }}
@@ -312,29 +319,77 @@ const OperateFAQ = () => {
             </div>
           </div>
 
-          <TableBase tableHeader={tableHeader}>
+          <TableBase
+            tableHeader={tableHeader}
+            allCheck={list.length > 0 && checkList.length === list.length}
+            onClickAllCheck={onChangeCheck}
+          >
             <>
-              {faqList.length > 0 ? (
-                faqList.map((props, index) => (
-                  <TableRow
-                    ref={(ref: IListRefProps) => (listRef.current[index] = ref)}
-                    key={props.id}
-                    index={index}
-                    onChangeActive={onChangeActive}
-                    {...props}
-                  />
+              {list.length > 0 ? (
+                list.map((data, index) => (
+                  <HoverTr
+                    key={data.id}
+                    onClick={() => {
+                      navigate(`/operate/board/faq/detail/${data.id}`);
+                    }}
+                  >
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <CheckBoxBase
+                        name={"check"}
+                        label={""}
+                        checked={checkList.indexOf(data.id) > -1}
+                        onChange={() => {
+                          const list = [...checkList];
+                          const findIndex = checkList.indexOf(data.id);
+
+                          if (findIndex > -1) {
+                            list.splice(findIndex, 1);
+                          } else {
+                            list.push(data.id);
+                          }
+
+                          setCheckList(list);
+                        }}
+                      />
+                    </td>
+                    <td>{(page - 1) * Number(count) + index + 1}</td>
+                    <td>{data.categoryNm}</td>
+                    <td className={"text-turu"}>
+                      <u>{data.title}</u>
+                    </td>
+                    <td>{UPLOAD_TYPE[data.uploadType] ?? "-"}</td>
+                    <td>{data.writer ?? "-"}</td>
+                    <td>{data.readCount}</td>
+                    <td>
+                      {data.createAt
+                        ? standardDateFormat(data.createAt, "YYYY.MM.DD")
+                        : "-"}
+                    </td>
+                    <td>{data.isExpose}</td>
+                  </HoverTr>
                 ))
               ) : (
                 <tr>
                   <td colSpan={9} className={"py-5 text-center text"}>
-                    등록된 FAQ가 없습니다.
+                    {message}
                   </td>
                 </tr>
               )}
             </>
           </TableBase>
 
-          <PaginationBase setPage={setPage} data={{}} />
+          <PaginationBase
+            setPage={setPage}
+            data={{
+              hasPreviousPage: page > 1,
+              hasNextPage: page < lastPage,
+              navigatePageNums: getPageList(page, lastPage),
+              pageNum: page,
+              onChangePage: (page) => {
+                void searchHandler({ page })();
+              },
+            }}
+          />
         </ListSection>
       </BodyBase>
 
@@ -355,12 +410,7 @@ const OperateFAQ = () => {
           {
             label: "삭제",
             color: "turu",
-            onClick: () => {
-              /** @TODO 저장 로직 추가 */
-
-              deleteHandler();
-              setDeleteModalOpen((prev) => !prev);
-            },
+            onClick: exposureHandler,
           },
         ]}
       />
@@ -377,67 +427,3 @@ const HoverTr = styled.tr`
     cursor: pointer;
   }
 `;
-
-const TableRow = forwardRef<
-  IListRefProps,
-  IListItemProps & { onChangeActive: (currentItemChecked: boolean) => void }
->((props, ref) => {
-  const {
-    id,
-    index,
-    category,
-    title,
-    uploadTarget,
-    writer,
-    views,
-    date,
-    deleteStatus,
-    onChangeActive,
-  } = props;
-  const [checked, setChecked] = useState(false);
-
-  const navigate = useNavigate();
-
-  const onChangeCheck: React.ChangeEventHandler<HTMLInputElement> = () => {
-    onChangeActive(!checked);
-
-    setChecked((prev) => !prev);
-  };
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      data: props,
-      checked,
-      onChange: (bool: boolean) => setChecked(bool),
-    }),
-    [props, checked]
-  );
-
-  return (
-    <HoverTr
-      onClick={() => {
-        navigate(`/operate/faq/detail/${id}`);
-      }}
-    >
-      <td onClick={(e) => e.stopPropagation()}>
-        <CheckBoxBase
-          name={`announcement-${index}`}
-          label={""}
-          checked={checked}
-          onChange={onChangeCheck}
-        />
-      </td>
-      <td>{index + 1}</td>
-      <td>{category}</td>
-      <td className={"text-turu"}>
-        <u>{title}</u>
-      </td>
-      <td>{uploadTarget}</td>
-      <td>{writer}</td>
-      <td>{views}</td>
-      <td>{date}</td>
-      <td>{deleteStatus}</td>
-    </HoverTr>
-  );
-});

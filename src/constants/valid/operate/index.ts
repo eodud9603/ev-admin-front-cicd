@@ -45,7 +45,7 @@ export const YUP_OPERATE_NOTICE: FieldSchemaMap = {
   content: {
     validation: string().required("내용은 필수 입력 항목입니다."),
   },
-  deleted: {
+  isExpose: {
     validation: string().required("삭제여부는 필수 입력 항목입니다."),
   },
   uploadType: {

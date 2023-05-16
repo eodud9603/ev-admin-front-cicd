@@ -131,6 +131,7 @@ import { stationAddLoader } from "src/pages/Charger/loader/stationAddLoader";
 import { brokenRegistrationLoader } from "src/pages/Charger/loader/brokenRegistrationLoader";
 import { noticeAddLoader } from "src/pages/Operate/loader/noticeAddLoader";
 import { categoryListLoader } from "src/pages/Operate/loader/categoryListLoader";
+import { faqListLoader } from "src/pages/Operate/loader/faqListLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -270,7 +271,7 @@ const userRoutes: Array<RouteProps> = [
   },
   { path: "/operate/qna", element: <OperateQnA /> },
   { path: "/operate/qna/detail/:id", element: <OperateQnADetail /> },
-  { path: "/operate/faq", element: <OperateFAQ /> },
+  { path: "/operate/faq", element: <OperateFAQ />, loader: faqListLoader },
   { path: "/operate/faq/add", element: <OperateFAQAdd /> },
   { path: "/operate/faq/detail/:id", element: <OperateFAQDetail /> },
   {

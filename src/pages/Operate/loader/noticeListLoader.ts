@@ -15,7 +15,7 @@ const defaultParams: IRequestNoticeList = {
 export const INIT_OPERATE_NOTICE_LIST = {
   startDate: "",
   endDate: "",
-  isDeleted: "" as YNType,
+  isExpose: "" as YNType,
   uploadType: "" as TUploadTypeKeys,
   searchRange: "Title",
   searchText: "",

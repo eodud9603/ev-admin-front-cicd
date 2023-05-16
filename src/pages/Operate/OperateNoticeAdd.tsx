@@ -91,7 +91,7 @@ const OperateNoticeAdd = () => {
       writer: user.name ?? "-",
       boardId: BoardIdEnum.NOTICE,
       content: content,
-      deleted: "N",
+      isExpose: "N",
       files: files.map((data) => data.id),
     };
 
@@ -206,7 +206,7 @@ const OperateNoticeAdd = () => {
               </Col>
               <Col sm={10}>
                 <RadioGroup
-                  name={"delete"}
+                  name={"isExpose"}
                   list={[
                     {
                       disabled: true,

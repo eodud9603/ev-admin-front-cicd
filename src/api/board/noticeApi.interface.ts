@@ -10,7 +10,7 @@ export interface IRequestNoticeList {
 
   startDate?: string;
   endDate?: string;
-  isDeleted?: YNType;
+  isExpose?: YNType;
   uploadType?: TUploadTypeKeys;
   searchType?: "Title" | "Content" | "Writer";
   searchKeyword?: string;
@@ -24,7 +24,7 @@ export interface INoticeItem {
   writer: string;
   readCount: number;
   createAt: string;
-  delete: YNType;
+  isExpose: YNType;
 }
 
 export interface INoticeListResponse {
@@ -54,7 +54,7 @@ export interface INoticeDetailResponse {
   content: string;
   readCount: number;
   createAt: string;
-  delete: YNType;
+  isExpose: YNType;
   files: INoticeDetailFileItem[];
 }
 
@@ -64,7 +64,7 @@ export interface IRequestNoticeModify {
   id: number;
   title: string;
   content: string;
-  deleted: YNType;
+  isExpose: YNType;
   files: number[];
   uploadType: TUploadTypeKeys;
 }
@@ -76,7 +76,7 @@ export interface IRequestNoticeRegister {
   title: string;
   content: string;
   writer: string;
-  deleted: YNType;
+  isExpose: YNType;
   files: number[];
   uploadType: TUploadTypeKeys;
 }

@@ -7,6 +7,7 @@ import {
   ICategoryDetailResponse,
   IRequestCategoryModify,
   IRequestCategoryRegister,
+  IRequestCategory,
 } from "src/api/category/categoryApi.interface";
 
 const { categoryUrl } = API_URL;
@@ -36,4 +37,9 @@ export const putCategoryModify = (body: IRequestCategoryModify) => {
 /** 카테고리 등록 api */
 export const postCategoryRegister = (body: IRequestCategoryRegister) => {
   return api.post<undefined>(`${categoryUrl}/register`, { body });
+};
+
+/** 분야별 카테고리 조회 api */
+export const getCategory = (params: IRequestCategory) => {
+  return api.get<ICategoryFieldsResponse>(categoryUrl, { params });
 };

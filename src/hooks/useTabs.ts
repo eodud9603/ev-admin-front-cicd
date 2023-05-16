@@ -3,7 +3,7 @@ import { ICommonListResProps, useTabStore } from "src/store/tabStore";
 import { useLocation } from "react-router-dom";
 import { useRevalidator } from "react-router";
 
-interface IUseTabsProps<T> {
+interface IUseTabsProps {
   //페이지 데이터
   data: ICommonListResProps | { [key: string]: any } | null | undefined;
   //탭 명칭
@@ -15,8 +15,9 @@ interface IUseTabsProps<T> {
   filterData?: { [key: string]: string };
   currentPage?: number;
   onChangeList?: () => void;
+  categoryList?: { label: string; value: string }[];
 }
-export const useTabs = <T>({
+export const useTabs = ({
   data,
   pageTitle,
   pageType,
@@ -24,7 +25,8 @@ export const useTabs = <T>({
   filterData,
   currentPage,
   onChangeList,
-}: IUseTabsProps<T>) => {
+  categoryList,
+}: IUseTabsProps) => {
   const { pathname } = useLocation();
   const tabStore = useTabStore();
 
@@ -39,6 +41,7 @@ export const useTabs = <T>({
     editable: editable,
     filterData: !pageType ? filterData : undefined,
     currentPage: !pageType ? currentPage : undefined,
+    categoryList: categoryList ?? undefined,
   };
 
   const dataRef = useRef(data);

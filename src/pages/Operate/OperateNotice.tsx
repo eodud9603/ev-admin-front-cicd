@@ -99,7 +99,7 @@ const OperateNotice = () => {
   const {
     startDate,
     endDate,
-    isDeleted,
+    isExpose,
     uploadType,
     searchRange,
     searchText,
@@ -122,7 +122,7 @@ const OperateNotice = () => {
       let searchParams: IRequestNoticeList = {
         size: Number(count),
         page,
-        isDeleted,
+        isExpose,
         uploadType,
         sort,
       };
@@ -222,7 +222,7 @@ const OperateNotice = () => {
                 name={"isDeleted"}
                 list={YN_FILTER_LIST.map((status) => ({
                   ...status,
-                  checked: isDeleted === status.value,
+                  checked: isExpose === status.value,
                 }))}
                 onChange={onChange}
               />
@@ -313,7 +313,7 @@ const OperateNotice = () => {
               />
               <ButtonBase
                 disabled={!(checkList.length > 0)}
-                label={"선택비노출"}
+                label={"선택 비노출"}
                 outline={checkList.length > 0}
                 color={checkList.length > 0 ? "turu" : "secondary"}
                 onClick={() => {
@@ -368,7 +368,7 @@ const OperateNotice = () => {
                         ? standardDateFormat(data.createAt, "YYYY.MM.DD")
                         : "-"}
                     </td>
-                    <td>{data.delete}</td>
+                    <td>{data.isExpose}</td>
                   </HoverTr>
                 ))
               ) : (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Col, Input, Row } from "reactstrap";
 import { INoticeDetailFileItem } from "src/api/board/noticeApi.interface";
@@ -16,22 +16,36 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import { UPLOAD_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
+import { jwtDecode } from "src/utils/jwt";
+import { BoardIdEnum, TUploadTypeKeys } from "src/constants/status";
+import { getParams } from "src/utils/params";
+import createValidation from "src/utils/validate";
+import { YUP_OPERATE_NOTICE } from "src/constants/valid/operate";
+import { IRequestFaqRegister } from "src/api/board/faqApi.interface";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
+import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
+import { postFaqRegister } from "src/api/board/faqApi";
 
 const OperateFAQAdd = () => {
   const navigate = useNavigate();
 
-  const [
-    { date, writer, uploadTarget, title, files },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    date: "",
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
+
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
     writer: "",
-    category: "",
-    uploadTarget: "",
+    categoryId: "24",
+    uploadType: "",
     title: "",
-    contents: "",
+    content: "",
     files: [] as INoticeDetailFileItem[],
   });
+
+  const { writer, uploadType, title, files, categoryId } = inputs;
 
   /** 첨부파일 업로드 */
   const upload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -63,6 +77,48 @@ const OperateFAQAdd = () => {
 
       e.target.value = "";
     });
+  };
+
+  /** 등록 */
+  const register = async () => {
+    const { content, files, ...registerParams } = inputs;
+
+    const user = jwtDecode();
+    /* 등록 params */
+    const params: IRequestFaqRegister = {
+      ...registerParams,
+      writer: user.name ?? "-",
+      boardId: BoardIdEnum.NOTICE,
+      content: content,
+      categoryId: Number(categoryId),
+      isExpose: "N",
+      uploadType: uploadType as TUploadTypeKeys,
+      files: files.map((data) => data.id),
+    };
+
+    getParams(params);
+
+    /* 유효성 체크 */
+    const scheme = createValidation(YUP_OPERATE_NOTICE);
+    const [invalid] = scheme(params);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
+
+    /* 등록 요청 */
+    const { code } = await postFaqRegister(params);
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      setAddModalOpen((prev) => !prev);
+      navigate("/operate/faq");
+      return;
+    }
   };
 
   return (
@@ -108,7 +164,7 @@ const OperateFAQAdd = () => {
             <TextInputBase
               name={"date"}
               disabled={true}
-              value={date}
+              value={""}
               onChange={onChange}
               placeholder={"자동 기입"}
             />
@@ -130,7 +186,7 @@ const OperateFAQAdd = () => {
               dropdownItems={[
                 {
                   onClickDropdownItem: (_, value) => {
-                    onChangeSingle({ category: value });
+                    onChangeSingle({ categoryId: value });
                   },
                   menuItems: [
                     {
@@ -181,10 +237,10 @@ const OperateFAQAdd = () => {
           </Col>
           <Col sm={5}>
             <RadioGroup
-              name={"uploadTarget"}
+              name={"uploadType"}
               list={UPLOAD_FILTER_LIST.map((radio) => ({
                 ...radio,
-                checked: uploadTarget === radio.value,
+                checked: uploadType === radio.value,
               }))}
               onChange={onChange}
             />
@@ -192,7 +248,7 @@ const OperateFAQAdd = () => {
         </Row>
         <EditorBody
           onChange={(e) => {
-            onChangeSingle({ contents: e.editor.getData() });
+            onChangeSingle({ content: e.editor.getData() });
           }}
           onFileUploadResponse={(args: unknown) => {
             /** @TODO 파일 업로드 시, attachmentList state 파일명 추가 필요 */
@@ -275,11 +331,36 @@ const OperateFAQAdd = () => {
             label={"등록"}
             color={"turu"}
             onClick={() => {
-              /** @TODO 저장(수정) 로직 추가 */
+              setAddModalOpen(true);
             }}
           />
         </div>
       </BodyBase>
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
+      <OperateTextModal
+        isOpen={addModalOpen}
+        onClose={() => {
+          setAddModalOpen((prev) => !prev);
+        }}
+        title={"faq 등록"}
+        contents={"저장 후 사용자에게 즉시 노출됩니다.\n저장하시겠습니까?"}
+        buttons={[
+          {
+            label: "아니요",
+            color: "secondary",
+          },
+          {
+            label: "저장",
+            color: "turu",
+            onClick: register,
+          },
+        ]}
+      />
     </ContainerBase>
   );
 };

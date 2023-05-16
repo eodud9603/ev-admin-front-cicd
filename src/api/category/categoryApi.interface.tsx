@@ -62,3 +62,8 @@ export interface IRequestCategoryRegister {
   name: string;
   isExpose: YNType;
 }
+/* 분야별 카테고리 조회 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EB%B6%84%EC%95%BC%EB%B3%84_%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC_%EC%A1%B0%ED%9A%8C */
+export interface IRequestCategory {
+  fieldType: "POPUP" | "INQUIRY" | "FAQ" | "QNA" | "MESSAGE" | "NOTIFICATION";
+}
