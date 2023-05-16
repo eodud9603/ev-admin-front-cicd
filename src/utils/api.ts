@@ -71,6 +71,7 @@ axiosInstance.interceptors.response.use((response) => {
   return response;
 });
 
+/** mutex 객체 생성 */
 const mutex = new Mutex();
 const rest = (method: Method) => {
   return async <T,>(
@@ -82,6 +83,7 @@ const rest = (method: Method) => {
       responseType = undefined as "blob" | undefined,
     } = {}
   ) => {
+    /** 잠금 해지 대기 */
     await mutex.waitForUnlock();
 
     const requestInfo = {
@@ -122,17 +124,19 @@ const rest = (method: Method) => {
         };
       }
 
-      /*  토큰 미인증 */
+      /**  토큰 미인증
+       * @Description 추가 검증 작업 필요 (검증 완료 전 문제 발생 시, 해당 if block 주석처리)
+       */
       if (response.status === 401) {
-        /** @Description 추가 검증 작업 필요 (검증 완료 전 문제 발생 시, 해당 if block 주석처리) */
         resetAuth();
       } else if (response.status === 403) {
-        /* 토큰 만료 */
-        /** @Description 추가 검증 작업 필요 (검증 완료 전 문제 발생 시, 해당 else if block 주석처리) */
-
+        /** 토큰 만료
+         * @Description 추가 검증 작업 필요 (검증 완료 전 문제 발생 시, 해당 else if block 주석처리)
+         */
+        /** 잠금 여부 */
         if (!mutex.isLocked()) {
           if (response.data.code === ErrorCodeEnum.AUTH02) {
-            /* 갱신 */
+            /* 갱신 시도 */
             const result = await tryAuthReissue<T>({
               headers,
               requestInfo,
@@ -151,6 +155,7 @@ const rest = (method: Method) => {
             });
           }
         } else {
+          /** 잠금 해지 대기 */
           await mutex.waitForUnlock();
           const response = await axiosInstance(url, {
             method,
@@ -221,6 +226,7 @@ const tryAuthReissue = async <T,>({
     };
   };
 }) => {
+  /** 잠금 */
   const release = await mutex.acquire();
 
   try {
@@ -264,6 +270,7 @@ const tryAuthReissue = async <T,>({
       resetAuth();
     }
   } finally {
+    /** 잠금 해지 */
     release();
   }
 };
