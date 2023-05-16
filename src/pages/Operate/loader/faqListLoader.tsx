@@ -5,6 +5,7 @@ import { getFaqList } from "src/api/board/faqApi";
 import { IRequestFaqList } from "src/api/board/faqApi.interface";
 import { YNType } from "src/api/api.interface";
 import { TUploadTypeKeys } from "src/constants/status";
+import { convertDropdownKeys } from "src/utils/convertDropdownKeys";
 
 const categoryDefaultParams: IRequestCategory = {
   fieldType: "FAQ",
@@ -41,11 +42,7 @@ export const faqListLoader = async () => {
   /** 검색 성공 */
   const categorySuccess = categoryCode === "SUCCESS" && !!categoryList;
   const success = code === "SUCCESS" && !!data;
-
-  const category = categoryList?.map((e) => ({
-    label: e?.name,
-    value: e?.id,
-  }));
+  const category = convertDropdownKeys(categoryList);
 
   return {
     data: success ? data : {},

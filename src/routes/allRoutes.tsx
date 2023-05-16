@@ -132,6 +132,8 @@ import { brokenRegistrationLoader } from "src/pages/Charger/loader/brokenRegistr
 import { noticeAddLoader } from "src/pages/Operate/loader/noticeAddLoader";
 import { categoryListLoader } from "src/pages/Operate/loader/categoryListLoader";
 import { faqListLoader } from "src/pages/Operate/loader/faqListLoader";
+import { faqAddLoader } from "src/pages/Operate/loader/faqAddLoader";
+import { memberWithdrawListLoader } from "src/pages/Member/laoder/memberWithdrawListLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -239,7 +241,11 @@ const userRoutes: Array<RouteProps> = [
     element: <MemberNormalDetail />,
     loader: normalMemberDetailLoader,
   },
-  { path: "/member/withdraw", element: <MemberWithdraw /> },
+  {
+    path: "/member/withdraw",
+    element: <MemberWithdraw />,
+    loader: memberWithdrawListLoader,
+  },
   { path: "/member/card/normal", element: <MemberNormalCard /> },
   {
     path: "/member/card/normal/detail/:id",
@@ -272,7 +278,11 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/qna", element: <OperateQnA /> },
   { path: "/operate/qna/detail/:id", element: <OperateQnADetail /> },
   { path: "/operate/faq", element: <OperateFAQ />, loader: faqListLoader },
-  { path: "/operate/faq/add", element: <OperateFAQAdd /> },
+  {
+    path: "/operate/faq/add",
+    element: <OperateFAQAdd />,
+    loader: faqAddLoader,
+  },
   { path: "/operate/faq/detail/:id", element: <OperateFAQDetail /> },
   {
     path: "/operate/category",

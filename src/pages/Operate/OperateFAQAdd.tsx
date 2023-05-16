@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Col, Input, Row } from "reactstrap";
-import { INoticeDetailFileItem } from "src/api/board/noticeApi.interface";
 import { postFileUpload } from "src/api/common/commonApi";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -25,8 +24,15 @@ import { IRequestFaqRegister } from "src/api/board/faqApi.interface";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 import { postFaqRegister } from "src/api/board/faqApi";
+import { useLoaderData } from "react-router-dom";
+import { INIT_OPERATE_FAQ_ADD } from "src/pages/Operate/loader/faqAddLoader";
 
 const OperateFAQAdd = () => {
+  const { data, categoryList } = useLoaderData() as {
+    data: typeof INIT_OPERATE_FAQ_ADD;
+    categoryList: [];
+  };
+
   const navigate = useNavigate();
 
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -36,14 +42,7 @@ const OperateFAQAdd = () => {
     content: "",
   });
 
-  const [inputs, { onChange, onChangeSingle }] = useInputs({
-    writer: "",
-    categoryId: "24",
-    uploadType: "",
-    title: "",
-    content: "",
-    files: [] as INoticeDetailFileItem[],
-  });
+  const [inputs, { onChange, onChangeSingle }] = useInputs(data);
 
   const { writer, uploadType, title, files, categoryId } = inputs;
 
@@ -88,7 +87,7 @@ const OperateFAQAdd = () => {
     const params: IRequestFaqRegister = {
       ...registerParams,
       writer: user.name ?? "-",
-      boardId: BoardIdEnum.NOTICE,
+      boardId: BoardIdEnum.FAQ,
       content: content,
       categoryId: Number(categoryId),
       isExpose: "N",
@@ -188,16 +187,7 @@ const OperateFAQAdd = () => {
                   onClickDropdownItem: (_, value) => {
                     onChangeSingle({ categoryId: value });
                   },
-                  menuItems: [
-                    {
-                      label: "가입 승인",
-                      value: "1",
-                    },
-                    {
-                      label: "기타",
-                      value: "2",
-                    },
-                  ],
+                  menuItems: categoryList,
                 },
               ]}
             />
