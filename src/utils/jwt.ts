@@ -4,7 +4,7 @@ import { StoreNameEnum } from "src/constants/store";
 import { IAuthProps } from "src/store/authStore";
 
 interface IAuthReturnType {
-  token: string;
+  accessToken: string;
   refreshToken: string;
   adminSeq: number;
   name: string;
@@ -37,13 +37,13 @@ export const jwtDecode = (): Partial<IAuthReturnType> => {
     const auth =
       JSON.parse(sessionStorage.getItem(StoreNameEnum.AUTH) ?? "{}")?.state ??
       {};
-    const token: string = auth?.accessToken ?? "";
+    const accessToken: string = auth?.accessToken ?? "";
     const refreshToken: string = auth?.refreshToken ?? "";
-    const user: Partial<Pick<IAuthReturnType, "adminSeq" | "name">> = token
-      ? jwt_decode(token)
+    const user: Partial<Pick<IAuthReturnType, "adminSeq" | "name">> = accessToken
+      ? jwt_decode(accessToken)
       : {};
 
-    return { token, refreshToken, ...user } as IAuthReturnType;
+    return { accessToken, refreshToken, ...user } as IAuthReturnType;
   } catch (e) {
     return {};
   }

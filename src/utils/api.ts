@@ -1,6 +1,7 @@
 import axios, {
   AxiosRequestConfig,
   CancelTokenSource,
+  InternalAxiosRequestConfig,
   Method,
   isAxiosError,
 } from "axios";
@@ -10,7 +11,6 @@ import { showErrorModal } from "src/utils/modal";
 import { initAuthStorage, jwtDecode, updateAuthStorage } from "src/utils/jwt";
 import { Mutex } from "async-mutex";
 import { ErrorCodeEnum } from "src/constants/error";
-import { StoreNameEnum } from "src/constants/store";
 
 const { baseUrl } = API_URL;
 
@@ -29,16 +29,18 @@ interface IAxiosRequestConfig extends Omit<AxiosRequestConfig, "headers"> {
   };
 }
 
+/** api 요청가능 여부 */
+const validApi = {
+  status: true,
+};
+/** 요청 대기 api 목록 */
 const pendingRequests: {
   [key in string]?: CancelTokenSource;
 } = {};
 
 axiosInstance.interceptors.request.use((config) => {
   /* 토큰관련 로직 */
-  const authInfo = JSON.parse(
-    sessionStorage.getItem(StoreNameEnum.AUTH) ?? "{}"
-  );
-  const accessToken: string = authInfo?.state?.accessToken ?? "";
+  const { accessToken } = jwtDecode();
   if (accessToken) {
     (config as IAxiosRequestConfig).headers[
       "Authorization"
@@ -46,8 +48,7 @@ axiosInstance.interceptors.request.use((config) => {
   }
 
   /* pending api 관련 로직 */
-  const { method = "", baseURL = "", url = "" } = config;
-  const cancelKey = method + baseURL + url;
+  const cancelKey = createCancelKey(config)
 
   const cancelHandler = pendingRequests[cancelKey]?.cancel;
   !!cancelHandler && cancelHandler("가장 최근 정보를 다시 불러오는 중입니다.");
@@ -56,13 +57,24 @@ axiosInstance.interceptors.request.use((config) => {
   config.cancelToken = source.token;
   pendingRequests[cancelKey] = source;
 
+  /* 토큰 [미인증, 만료]에 따른 요청 api 처리 로직 */
+  if (window.location.pathname.includes("/login")) {
+    validApi.status = true;
+  }
+  if (!validApi.status) {
+    /* 실제 요청 전에 api 요청이 취소되어 api 요청/응답이 없음 (무시됨) */
+    pendingRequests[cancelKey]?.cancel(
+      "인증 만료로 인해 데이터 요청이 취소되었습니다."
+    );
+    delete pendingRequests[cancelKey];
+  }
+
   return config;
 });
 
 axiosInstance.interceptors.response.use((response) => {
   /* pending api 관련 로직 */
-  const { method = "", baseURL = "", url = "" } = response.config;
-  const cancelKey = method + baseURL + url;
+  const cancelKey = createCancelKey(response.config)
 
   if (pendingRequests[cancelKey]) {
     delete pendingRequests[cancelKey];
@@ -196,8 +208,19 @@ const api = new Api();
 
 export default api;
 
+/** api 취소 키 생성 */
+const createCancelKey = (config: InternalAxiosRequestConfig<any>) => {
+  const { method = "", baseURL = "", url = "" } = config;
+  const cancelKey = method + baseURL + url;
+
+  return cancelKey
+}
+
 /** auth state 초기화 후, login page 이동 */
 const resetAuth = () => {
+  /* 토큰 [미인증, 만료]에 따른 api 요청 비활성화 */
+  validApi.status = false;
+
   initAuthStorage();
 
   showErrorModal({
@@ -272,6 +295,6 @@ const tryAuthReissue = async <T,>({
     }
   } finally {
     /** 잠금 해지 */
-    release();
+    release()
   }
 };
