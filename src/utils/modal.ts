@@ -5,6 +5,7 @@ interface IErrorModalProps {
   confirmHandler?: () => void;
 }
 
+/** api util 함수단 에러 모달 생성 */
 export const showErrorModal = ({
   className,
   title,
@@ -103,7 +104,7 @@ const createPermissionModal = ({
 
       <div>
         <p 
-          style='white-space: pre-wrap;' class='font-size-14 fw-semibold'
+          style="white-space: pre-wrap;" class="font-size-14 fw-semibold"
         >${content}</p>
       </div>
 
