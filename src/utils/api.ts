@@ -198,12 +198,13 @@ export default api;
 
 /** auth state 초기화 후, login page 이동 */
 const resetAuth = () => {
+  initAuthStorage();
+
   showErrorModal({
     className: "reissue",
     title: "계정 정보 만료 안내",
     content: "계정 정보가 만료되었습니다.\n다시 로그인을 해주세요.",
     confirmHandler: () => {
-      initAuthStorage();
       window.location.href = "/login";
     },
   });
