@@ -295,6 +295,6 @@ const tryAuthReissue = async <T,>({
     }
   } finally {
     /** 잠금 해지 */
-    release()
+    release();
   }
 };
