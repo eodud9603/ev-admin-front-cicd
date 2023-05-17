@@ -172,7 +172,7 @@ const OperateNotice = () => {
   const exposureHandler = async () => {
     /* 삭제요청 */
     const { code } = await exposureNoticeList({
-      noticeIds: checkList,
+      ids: checkList,
     });
     /** 성공 */
     const success = code === "SUCCESS";

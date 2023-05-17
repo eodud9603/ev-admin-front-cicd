@@ -84,5 +84,5 @@ export interface IRequestNoticeRegister {
 /* 공지사항 선택 비노출 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EC%84%A0%ED%83%9D_%EC%82%AD%EC%A0%9C */
 export interface IRequestNoticeListExposure {
-  noticeIds: number[];
+  ids: number[];
 }

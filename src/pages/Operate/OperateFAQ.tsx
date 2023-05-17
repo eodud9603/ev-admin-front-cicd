@@ -33,11 +33,11 @@ import {
 } from "src/api/board/faqApi.interface";
 import { standardDateFormat } from "src/utils/day";
 import { getParams } from "src/utils/params";
-import { getFaqList } from "src/api/board/faqApi";
+import { exposureFaqList, getFaqList } from "src/api/board/faqApi";
 import useList from "src/hooks/useList";
 import { UPLOAD_TYPE } from "src/constants/status";
-import { exposureNoticeList } from "src/api/board/noticeApi";
 import { getPageList } from "src/utils/pagination";
+import { IRequestNoticeList } from "src/api/board/noticeApi.interface";
 
 /* 검색어 필터 */
 const searchList = [
@@ -128,7 +128,7 @@ const OperateFAQ = () => {
         isExpose,
         uploadType,
         sort,
-        categoryId: Number(categoryId),
+        categoryId: categoryId ? Number(categoryId) : undefined,
       };
       if (startDate && endDate) {
         searchParams.startDate = standardDateFormat(startDate, "YYYY-MM-DD");
@@ -138,6 +138,7 @@ const OperateFAQ = () => {
         searchParams.searchType = searchRange as IRequestFaqList["searchType"];
         searchParams.searchKeyword = searchText;
       }
+
       searchParams = {
         ...searchParams,
         ...params,
@@ -153,7 +154,7 @@ const OperateFAQ = () => {
         onChangeList({
           ...data,
           page: searchParams.page,
-          emptyMessage: "검색된 공지사항이 없습니다.",
+          emptyMessage: "검색된 faq가 없습니다.",
         });
         searchDataStorage(data, searchParams.page + 1);
       } else {
@@ -166,9 +167,11 @@ const OperateFAQ = () => {
   /** 선택 비노출 삭제 */
   const exposureHandler = async () => {
     /* 삭제요청 */
-    const { code } = await exposureNoticeList({
-      noticeIds: checkList,
+    const { code } = await exposureFaqList({
+      ids: checkList,
     });
+
+    console.log("ids ::", checkList);
     /** 성공 */
     const success = code === "SUCCESS";
     if (success) {
@@ -273,9 +276,13 @@ const OperateFAQ = () => {
                   {
                     onClickDropdownItem: (_, value) => {
                       onChangeSingle({ sort: value as typeof sort });
+                      void searchHandler({
+                        page: 1,
+                        sort: value as IRequestFaqList["sort"],
+                      })();
                     },
-                    menuItems: sortList,
                     initSelectedValue: sortList.find((e) => e.value === sort),
+                    menuItems: sortList,
                   },
                 ]}
               />
@@ -297,8 +304,14 @@ const OperateFAQ = () => {
               <DropdownBase
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {
-                  onChangeSingle({ count: value });
+                  onChangeSingle({
+                    count: value,
+                  });
+                  void searchHandler({ page: 1, size: Number(value) })();
                 }}
+                initSelectedValue={COUNT_FILTER_LIST.find(
+                  (e) => e.value === count
+                )}
               />
               <ButtonBase
                 label={"신규 등록"}

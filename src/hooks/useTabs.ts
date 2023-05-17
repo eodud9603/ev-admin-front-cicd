@@ -102,8 +102,13 @@ export const useTabs = ({
     }
   };
 
+  const removeTabData = useCallback(() => {
+    tabStore.removeData(saveData.path);
+  }, []);
+
   return {
     searchDataStorage,
     refreshTabData,
+    removeTabData,
   };
 };
