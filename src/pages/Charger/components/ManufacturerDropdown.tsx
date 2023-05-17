@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { getManufactureList } from "src/api/manufactures/manufactureApi";
 import { IManufactureListItem } from "src/api/manufactures/manufactureApi.interface";
 import { SearchDropdownBase } from "src/components/Common/Dropdown/SearchDropdownBase";
+import { lock } from "src/utils/lock";
 
 interface IItemProps extends IManufactureListItem {
   label: string;
@@ -31,7 +32,7 @@ const ManufacturerDropdown = (props: IManufactureDropdownProps) => {
   };
 
   /** 제조사 목록 조회 검색 핸들러 */
-  const searchHandler = async (text: string) => {
+  const searchHandler = lock(async (text?: string) => {
     const { code, data } = await getManufactureList({
       size: 30,
       page: 0,
@@ -44,7 +45,7 @@ const ManufacturerDropdown = (props: IManufactureDropdownProps) => {
     if (success) {
       setList(format(data?.elements ?? []));
     }
-  };
+  });
 
   return (
     <SearchDropdownBase

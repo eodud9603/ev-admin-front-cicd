@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { getStationContractList } from "src/api/station/stationApi";
 import { IStationContractItem } from "src/api/station/stationApi.interface";
 import { SearchDropdownBase } from "src/components/Common/Dropdown/SearchDropdownBase";
+import { lock } from "src/utils/lock";
 
 interface IItemProps extends IStationContractItem {
   label: string;
@@ -30,7 +31,7 @@ const ContractDropdown = (props: IContractDropdownProps) => {
   };
 
   /** 계약 목록 조회 검색 핸들러 */
-  const searchHandler = async (text: string) => {
+  const searchHandler = lock(async (text?: string) => {
     const { code, data } = await getStationContractList({
       size: 30,
       page: 0,
@@ -43,7 +44,7 @@ const ContractDropdown = (props: IContractDropdownProps) => {
     if (success) {
       setList(format(data?.elements ?? []));
     }
-  };
+  });
 
   return (
     <SearchDropdownBase

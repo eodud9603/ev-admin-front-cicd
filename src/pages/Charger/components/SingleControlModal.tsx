@@ -18,6 +18,7 @@ import { getParams } from "src/utils/params";
 import { getChargerList } from "src/api/charger/chargerApi";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
+import { lock } from "src/utils/lock";
 
 interface IAlarmAddMemberModal {
   isOpen: boolean;
@@ -63,9 +64,8 @@ const SingleControlModal = (props: IAlarmAddMemberModal) => {
     });
 
   /** 검색 핸들러 */
-  const searchHandler =
-    (params: Partial<IRequestChargerList> = {}) =>
-    async () => {
+  const searchHandler = (params: Partial<IRequestChargerList> = {}) =>
+    lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestChargerList = {
         size: 10,
@@ -99,7 +99,7 @@ const SingleControlModal = (props: IAlarmAddMemberModal) => {
       }
 
       setCheckList([]);
-    };
+    });
 
   /** 전체 체크 변경 콜백 */
   const onChangeCheck = (check: boolean) => {
