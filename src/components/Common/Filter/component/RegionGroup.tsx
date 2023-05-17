@@ -53,6 +53,16 @@ export const RegionGroup = (props: IRegionGroupProps) => {
     dongmyun: init?.dongmyun ?? "",
   });
 
+  /** 시/도 목록 요청 */
+  const getSido = useCallback(async () => {
+    const { code, data } = await getRegionSido();
+
+    const success = code === "SUCCESS" && !!data;
+    if (success) {
+      setSidoList([DEFAULT_REGION_ITEM, ...regionListFormat(data.elements)]);
+    }
+  }, []);
+
   /** 구/군 목록 요청 */
   const getSigugun = useCallback(async (regionName: string) => {
     const { code, data } = await getRegionSigugun({ sido: regionName });
@@ -105,19 +115,12 @@ export const RegionGroup = (props: IRegionGroupProps) => {
       onChangeSingle({ [type]: value });
     };
 
-  /* sido 목록 init */
-  useEffect(() => {
-    const init = async () => {
-      const { code, data } = await getRegionSido();
-
-      const success = code === "SUCCESS" && !!data;
-      if (success) {
-        setSidoList([DEFAULT_REGION_ITEM, ...regionListFormat(data.elements)]);
-      }
-    };
-
-    void init();
-  }, []);
+  /** 시/도 dropdown open시 조회 */
+  const onChangeOpen = (open: boolean) => {
+    if (open) {
+      getSido();
+    }
+  };
 
   /* 선택(변경)된 지역정보 콜백 */
   useEffect(() => {
@@ -158,6 +161,7 @@ export const RegionGroup = (props: IRegionGroupProps) => {
         selectedLabel={sido || "시,도"}
         menuItems={sidoList}
         onClickDropdownItem={onChange("sido")}
+        onChangeOpen={onChangeOpen}
       />
       <RegionDropdown
         disabled={disabled}
@@ -186,6 +190,7 @@ interface IDropdownBaseProps {
   label?: string;
   selectedLabel?: string;
   onClickDropdownItem?: (label: string, value: string) => void;
+  onChangeOpen?: (isOpen: boolean) => void;
   menuItems: Array<{
     label: string;
     value: string;
@@ -197,6 +202,7 @@ export const RegionDropdown = (props: IDropdownBaseProps) => {
     disabled,
     selectedLabel,
     onClickDropdownItem,
+    onChangeOpen,
     menuItems,
     className,
     ...extraProps
@@ -204,6 +210,7 @@ export const RegionDropdown = (props: IDropdownBaseProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const onToggleDropdown = () => {
+    !!onChangeOpen && onChangeOpen(!isOpen);
     setIsOpen((prev) => !prev);
   };
 
