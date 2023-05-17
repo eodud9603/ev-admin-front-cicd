@@ -35,6 +35,8 @@ export interface IFaqListResponse {
   totalPages: number;
 }
 
+/* faq 등록 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_8 */
 export interface IRequestFaqRegister {
   boardId: number;
   title: string;
@@ -44,4 +46,10 @@ export interface IRequestFaqRegister {
   files: Array<number>;
   uploadType: TUploadTypeKeys;
   categoryId: number;
+}
+
+/* faq 선택 비노출 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%84%A0%ED%83%9D_%EB%B9%84%EB%85%B8%EC%B6%9C_2 */
+export interface IRequestFaqListExposure {
+  ids: number[];
 }

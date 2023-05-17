@@ -31,7 +31,7 @@ import { useTabs } from "src/hooks/useTabs";
 const OperateFAQAdd = () => {
   const { data, categoryList } = useLoaderData() as {
     data: typeof INIT_OPERATE_FAQ_ADD;
-    categoryList: [];
+    categoryList: { label: string; value: string }[];
   };
 
   const navigate = useNavigate();
@@ -44,6 +44,13 @@ const OperateFAQAdd = () => {
   });
 
   const [inputs, { onChange, onChangeSingle }] = useInputs(data);
+
+  const { removeTabData } = useTabs({
+    data: inputs,
+    categoryList: categoryList,
+    pageTitle: "FAQ 등록",
+    pageType: "add",
+  });
 
   const { writer, uploadType, title, files, categoryId, isExpose } = inputs;
 
@@ -90,7 +97,9 @@ const OperateFAQAdd = () => {
       writer: user.name ?? "-",
       boardId: BoardIdEnum.FAQ,
       content: content,
-      categoryId: Number(categoryId),
+      categoryId: categoryId
+        ? Number(categoryId)
+        : Number(categoryList[0].value),
       isExpose,
       uploadType: uploadType as TUploadTypeKeys,
       files: files.map((data) => data.id),
@@ -116,17 +125,11 @@ const OperateFAQAdd = () => {
     const success = code === "SUCCESS";
     if (success) {
       setAddModalOpen((prev) => !prev);
+      removeTabData();
       navigate("/operate/faq");
       return;
     }
   };
-
-  useTabs({
-    data: inputs,
-    categoryList: categoryList,
-    pageTitle: "FAQ 등록",
-    pageType: "add",
-  });
 
   return (
     <ContainerBase>
@@ -193,8 +196,6 @@ const OperateFAQAdd = () => {
               dropdownItems={[
                 {
                   onClickDropdownItem: (_, value) => {
-                    console.log("value :", value);
-                    console.log(categoryId);
                     onChangeSingle({ categoryId: value });
                   },
                   menuItems: categoryList,

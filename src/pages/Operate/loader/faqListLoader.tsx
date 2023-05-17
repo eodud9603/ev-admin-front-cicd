@@ -14,7 +14,6 @@ const defaultParams: IRequestFaqList = {
   size: 10,
   page: 0,
   sort: "CreateAt",
-  isExpose: "N",
 };
 
 export const INIT_FAQ_LIST = {
@@ -25,7 +24,7 @@ export const INIT_FAQ_LIST = {
   searchRange: "Title",
   searchText: "",
   categoryId: "",
-  sort: "" as IRequestFaqList["sort"],
+  sort: "CreateAt" as IRequestFaqList["sort"],
   count: "10",
 };
 
