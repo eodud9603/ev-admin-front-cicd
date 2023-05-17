@@ -31,7 +31,6 @@ const ContractDropdown = (props: IContractDropdownProps) => {
 
   /** 계약 목록 조회 검색 핸들러 */
   const searchHandler = async (text: string) => {
-    /** @TODO api 변경 */
     const { code, data } = await getStationContractList({
       size: 30,
       page: 0,

@@ -28,6 +28,7 @@ import {
 import createValidation from "src/utils/validate";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import DetailSaveModal from "src/pages/Charger/components/DetailSaveModal";
+import { lock } from "src/utils/lock";
 
 const INIT_FIRMWARE_LIST = [
   {
@@ -191,7 +192,7 @@ export const ChargerManufacturerRegistration = () => {
   };
 
   /** 등록 */
-  const register = async () => {
+  const register = lock(async () => {
     /** 등록 params */
     const params = {
       ...basicInputs,
@@ -226,7 +227,7 @@ export const ChargerManufacturerRegistration = () => {
         confirmHandler: undefined,
       })();
     }
-  };
+  });
 
   return (
     <ContainerBase>

@@ -69,6 +69,7 @@ import {
 } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { IRequestChargerModify } from "src/api/charger/chargerApi.interface";
+import { lock } from "src/utils/lock";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -251,7 +252,7 @@ const ChargerDetail = () => {
   });
 
   /** 수정 */
-  const modify = async () => {
+  const modify = lock(async () => {
     if (disabled) {
       setDisabled((prev) => !prev);
       return;
@@ -324,7 +325,7 @@ const ChargerDetail = () => {
       /* 저장 성공 */
       setIsEditComplete(true);
     }
-  };
+  });
 
   return (
     <ContainerBase>

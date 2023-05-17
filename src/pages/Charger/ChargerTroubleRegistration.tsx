@@ -30,6 +30,7 @@ import { YUP_CHARGER_BROKEN } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { useTabs } from "src/hooks/useTabs";
 import { INIT_BROKEN_ADD } from "src/pages/Charger/loader/brokenRegistrationLoader";
+import { lock } from "src/utils/lock";
 
 export const ChargerTroubleRegistration = () => {
   const data = useLoaderData() as typeof INIT_BROKEN_ADD;
@@ -93,7 +94,7 @@ export const ChargerTroubleRegistration = () => {
   /** 등록
    * @TODO 운영자ID 검색(데이터), 처리자ID(dropdown data)
    */
-  const registerHandler = async () => {
+  const registerHandler = lock(async () => {
     /* 유효성 체크 */
     const scheme = createValidation(YUP_CHARGER_BROKEN);
     const [invalid] = scheme(inputs);
@@ -136,7 +137,7 @@ export const ChargerTroubleRegistration = () => {
     if (success) {
       setIsAddComplete(true);
     }
-  };
+  });
 
   return (
     <ContainerBase>

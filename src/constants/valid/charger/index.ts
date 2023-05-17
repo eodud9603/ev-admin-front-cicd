@@ -122,7 +122,7 @@ export const YUP_CHARGER_STATION: FieldSchemaMap = {
   etcInfo: {
     validation: string()
       .required("충전불가 차량은 필수 입력 항목입니다.")
-      .matches(REGEX.tel, "충전불가 차량 형식이 맞지 않습니다."),
+      .matches(REGEX.car, "충전불가 차량 형식이 맞지 않습니다."),
   },
   /* 운영정보 */
   baseOperationTimeFrom: {

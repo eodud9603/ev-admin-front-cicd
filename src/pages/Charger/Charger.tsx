@@ -41,6 +41,7 @@ import useList from "src/hooks/useList";
 import { useTabs } from "src/hooks/useTabs";
 import { getParams } from "src/utils/params";
 import { standardDateFormat } from "src/utils/day";
+import { lock } from "src/utils/lock";
 
 /* 검색어 필터 */
 const searchList = [
@@ -134,9 +135,8 @@ const Charger = () => {
   const navigate = useNavigate();
 
   /** 검색 핸들러 */
-  const searchHandler =
-    (params: Partial<IRequestChargerList> = {}) =>
-    async () => {
+  const searchHandler = (params: Partial<IRequestChargerList> = {}) =>
+    lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestChargerList = {
         size: Number(count),
@@ -174,7 +174,7 @@ const Charger = () => {
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }
-    };
+    });
 
   return (
     <ContainerBase>
@@ -257,10 +257,6 @@ const Charger = () => {
                   {
                     onClickDropdownItem: (_, value) => {
                       onChangeSingle({ sort: value });
-                      void searchHandler({
-                        page: 1,
-                        sort: value as IRequestChargerList["sort"],
-                      })();
                     },
                     menuItems: sortList,
                     initSelectedValue: sortList.find((e) => e.value === sort),

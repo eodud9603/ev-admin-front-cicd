@@ -31,6 +31,7 @@ import { useTabs } from "src/hooks/useTabs";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_CONTRACT } from "src/constants/valid/charger";
 import useTransferFile from "src/hooks/useTransferFile";
+import { lock } from "src/utils/lock";
 
 const ChargerContractAdd = () => {
   const data = useLoaderData() as chargerContractAddLoaderType;
@@ -113,11 +114,11 @@ const ChargerContractAdd = () => {
   const navigate = useNavigate();
 
   /** 계약 등록 */
-  const postRegister = async () => {
+  const postRegister = lock(async () => {
     /** upload file params */
     const fileParams = await fileUpload(file);
 
-    const registerParamas = {
+    const registerParams = {
       ...inputs,
       subsidyAmount: Number(subsidyAmount),
       costSales: Number(costSales),
@@ -128,7 +129,7 @@ const ChargerContractAdd = () => {
 
     /** 유효성 체크 */
     const scheme = createValidation(YUP_CHARGER_CONTRACT);
-    const [invalid] = scheme(registerParamas);
+    const [invalid] = scheme(registerParams);
 
     if (invalid) {
       setInvalidModal({
@@ -139,14 +140,14 @@ const ChargerContractAdd = () => {
     }
 
     /* 등록 요청 */
-    const { code } = await postStationContractRegister(registerParamas);
+    const { code } = await postStationContractRegister(registerParams);
     /** 성공 */
     const success = code === "SUCCESS";
     if (success) {
       /* 등록 완료 모달 오픈 */
       setIsAddComplete(true);
     }
-  };
+  });
 
   useTabs({
     data: {

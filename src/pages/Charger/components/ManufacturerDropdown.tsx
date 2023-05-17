@@ -32,7 +32,6 @@ const ManufacturerDropdown = (props: IManufactureDropdownProps) => {
 
   /** 제조사 목록 조회 검색 핸들러 */
   const searchHandler = async (text: string) => {
-    /** @TODO api 변경 */
     const { code, data } = await getManufactureList({
       size: 30,
       page: 0,

@@ -41,6 +41,7 @@ import { SUPPLY_METHOD } from "src/constants/status";
 import { useTabs } from "src/hooks/useTabs";
 import { useLoaderData } from "react-router-dom";
 import { INIT_CHARGER_STATION_ADD } from "src/pages/Charger/loader/stationAddLoader";
+import { lock } from "src/utils/lock";
 
 const ChargerStationAdd = () => {
   const data = useLoaderData() as typeof INIT_CHARGER_STATION_ADD;
@@ -117,7 +118,7 @@ const ChargerStationAdd = () => {
   };
 
   /** 등록 */
-  const save = async () => {
+  const save = lock(async () => {
     /* 등록 params */
     const registrationParams: IRequestStationRegister = {
       ...inputs,
@@ -149,7 +150,7 @@ const ChargerStationAdd = () => {
     if (success) {
       setIsRegistrationComplete(true);
     }
-  };
+  });
 
   useTabs({
     data: inputs,

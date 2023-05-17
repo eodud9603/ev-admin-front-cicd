@@ -20,7 +20,7 @@ const useTransferFile = (props: IUseTransferFileProps) => {
     const data = fileDataRef.current;
     const { fileInfoData, blobStringData } = data;
 
-    if (data) {
+    if (fileInfoData.type && fileInfoData.name && blobStringData) {
       const result = blobStringToFile(fileInfoData, blobStringData ?? "");
 
       return result;

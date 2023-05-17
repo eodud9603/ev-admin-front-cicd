@@ -26,6 +26,7 @@ import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
 import { useTabs } from "src/hooks/useTabs";
 import { getParams } from "src/utils/params";
+import { lock } from "src/utils/lock";
 
 const dropdownGroupSort = [
   {
@@ -90,9 +91,8 @@ export const ChargerManufacturer = () => {
   });
 
   /** 검색 핸들러 */
-  const searchHandler =
-    (params: Partial<IRequestManufactureList> = {}) =>
-    async () => {
+  const searchHandler = (params: Partial<IRequestManufactureList> = {}) =>
+    lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestManufactureList = {
         size: Number(count),
@@ -128,7 +128,7 @@ export const ChargerManufacturer = () => {
           message: message || "오류가 발생하였습니다.",
         });
       }
-    };
+    });
 
   const moveToRegister = () => {
     nav(`${pathname}/registration`);
@@ -186,10 +186,6 @@ export const ChargerManufacturer = () => {
                     onChangeSingle({
                       sort: value,
                     });
-                    void searchHandler({
-                      page: 1,
-                      sort: value as IRequestManufactureList["sort"],
-                    })();
                   },
                 }))}
                 className={"me-2"}
