@@ -20,13 +20,8 @@ const PaginationBase = (props: IPaginationBase) => {
     onChangePage,
   } = props.data;
 
-  const scrollTop = () => {
-    window?.scrollTo(0, 0);
-  };
-
   const onChangeNumber = (pageNumber: number) => {
     props.setPage(pageNumber);
-    scrollTop();
     !!onChangePage && void onChangePage(pageNumber);
   };
 
