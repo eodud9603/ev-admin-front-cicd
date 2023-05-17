@@ -22,7 +22,6 @@ import Footer from "src/components/Common/Footer/Footer";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useTabStore } from "src/store/tabStore";
-import path from "path";
 
 const WINDOW_HEIGHT = window.innerHeight;
 
@@ -100,7 +99,7 @@ export const Playground = (props: any) => {
   };
 
   const activeItemTextColor = (path: string) => {
-    return active === path ? "text-turu" : "";
+    return tabStore.active === path ? "text-turu" : "";
   };
 
   const moveToPath = (rootPath: string) => {
@@ -214,42 +213,36 @@ export const Playground = (props: any) => {
                 <MenuItem
                   component={<Link to={moveToPath("/charger/station")} />}
                   className={activeItemTextColor("/charger/station")}
-                  onClick={() => setActive("/charger/station")}
                 >
                   충전소 관리
                 </MenuItem>
                 <MenuItem
                   component={<Link to={moveToPath("/charger/charger")} />}
                   className={activeItemTextColor("/charger/charger")}
-                  onClick={() => setActive("/charger/charger")}
                 >
                   충전기 관리
                 </MenuItem>
                 <MenuItem
                   component={<Link to={moveToPath("/charger/contract")} />}
                   className={activeItemTextColor("/charger/contract")}
-                  onClick={() => setActive("/charger/contract")}
                 >
                   충전소 계약 관리
                 </MenuItem>
                 <MenuItem
                   component={<Link to={moveToPath("/charger/trouble")} />}
                   className={activeItemTextColor("/charger/trouble")}
-                  onClick={() => setActive("/charger/trouble")}
                 >
                   충전기 고장/파손 관리
                 </MenuItem>
                 <MenuItem
                   component={<Link to={moveToPath("/charger/manufacturer")} />}
                   className={activeItemTextColor("/charger/manufacturer")}
-                  onClick={() => setActive("/charger/manufacturer")}
                 >
                   충전기 제조사 관리
                 </MenuItem>
                 <MenuItem
                   component={<Link to={moveToPath("/charger/operator")} />}
                   className={activeItemTextColor("/charger/operator")}
-                  onClick={() => setActive("/charger/operator")}
                 >
                   서비스 운영사 관리
                 </MenuItem>

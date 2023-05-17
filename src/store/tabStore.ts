@@ -52,7 +52,10 @@ export const useTabStore = create<ITabState>()(
           set((state) => {
             const arr = JSON.parse(JSON.stringify(state.data));
 
-            return { data: arr.filter((e: tabType) => !e.path.includes(path)) };
+            return {
+              data: arr.filter((e: tabType) => !e.path.includes(path)),
+              active: "",
+            };
           });
         },
         refreshData: (tabData) => {
