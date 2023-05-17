@@ -12,6 +12,7 @@ import {
   getRegionSigugun,
 } from "src/api/region/regionApi";
 import useInputs from "src/hooks/useInputs";
+import { lock } from "src/utils/lock";
 import styled from "styled-components";
 
 interface IRegionGroupProps {
@@ -54,14 +55,17 @@ export const RegionGroup = (props: IRegionGroupProps) => {
   });
 
   /** 시/도 목록 요청 */
-  const getSido = useCallback(async () => {
-    const { code, data } = await getRegionSido();
+  const getSido = useCallback(
+    lock(async () => {
+      const { code, data } = await getRegionSido();
 
-    const success = code === "SUCCESS" && !!data;
-    if (success) {
-      setSidoList([DEFAULT_REGION_ITEM, ...regionListFormat(data.elements)]);
-    }
-  }, []);
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        setSidoList([DEFAULT_REGION_ITEM, ...regionListFormat(data.elements)]);
+      }
+    }),
+    []
+  );
 
   /** 구/군 목록 요청 */
   const getSigugun = useCallback(async (regionName: string) => {
