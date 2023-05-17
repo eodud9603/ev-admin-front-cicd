@@ -3,15 +3,16 @@ import { INoticeDetailFileItem } from "src/api/board/noticeApi.interface";
 import { getCategory } from "src/api/category/categoryApi";
 import { IRequestCategory } from "src/api/category/categoryApi.interface";
 import { convertDropdownKeys } from "src/utils/convertDropdownKeys";
-import { Simulate } from "react-dom/test-utils";
+import { YNType } from "src/api/api.interface";
 
 const defaultParams: IRequestCategory = {
   fieldType: "FAQ",
 };
 export const INIT_OPERATE_FAQ_ADD = {
   writer: "",
-  categoryId: "24",
-  uploadType: "",
+  categoryId: "",
+  isExpose: "N" as YNType,
+  uploadType: "ALL",
   title: "",
   content: "",
   files: [] as INoticeDetailFileItem[],

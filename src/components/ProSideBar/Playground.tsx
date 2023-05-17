@@ -19,7 +19,7 @@ import { ShoppingCart } from "./icons/ShoppingCart";
 import { Service } from "./icons/Service";
 import { SidebarFooter } from "./components/SidebarFooter";
 import Footer from "src/components/Common/Footer/Footer";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useTabStore } from "src/store/tabStore";
 
@@ -99,7 +99,7 @@ export const Playground = (props: any) => {
   };
 
   const activeItemTextColor = (path: string) => {
-    return tabStore.active === path ? "text-turu" : "";
+    return tabStore.active.includes(path) ? "text-turu" : "";
   };
 
   const moveToPath = (rootPath: string) => {
@@ -257,91 +257,95 @@ export const Playground = (props: any) => {
                 }
               >
                 <MenuItem
-                  component={<Link to={"/operate/notice"} />}
+                  component={<Link to={moveToPath("/operate/notice")} />}
                   className={activeItemTextColor("/operate/notice")}
                   onClick={() => setActive("/operate/notice")}
                 >
                   공지사항
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operate/qna"} />}
+                  component={<Link to={moveToPath("/operate/qna")} />}
                   className={activeItemTextColor("/operate/qna")}
                   onClick={() => setActive("/operate/qna")}
                 >
                   Q&A
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operate/faq"} />}
+                  component={<Link to={moveToPath("/operate/faq")} />}
                   className={activeItemTextColor("/operate/faq")}
                   onClick={() => setActive("/operate/faq")}
                 >
                   FAQ
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operate/category"} />}
+                  component={<Link to={moveToPath("/operate/category")} />}
                   className={activeItemTextColor("/operate/category")}
                   onClick={() => setActive("/operate/category")}
                 >
                   카테고리 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operate/corporateNotice"} />}
+                  component={
+                    <Link to={moveToPath("/operate/corporateNotice")} />
+                  }
                   className={activeItemTextColor("/operate/corporateNotice")}
                   onClick={() => setActive("/operate/corporateNotice")}
                 >
                   법인 공지사항
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operate/corporateQnA"} />}
+                  component={<Link to={moveToPath("/operate/corporateQnA")} />}
                   className={activeItemTextColor("/operate/corporateQnA")}
                   onClick={() => setActive("/operate/corporateQnA")}
                 >
                   법인 문의사항
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operate/event"} />}
+                  component={<Link to={moveToPath("/operate/event")} />}
                   className={activeItemTextColor("/operate/event")}
                   onClick={() => setActive("/operate/event")}
                 >
                   이벤트
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operate/evNews"} />}
+                  component={<Link to={moveToPath("/operate/evNews")} />}
                   className={activeItemTextColor("/operate/evNews")}
                   onClick={() => setActive("/operate/evNews")}
                 >
                   EV 뉴스
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operate/popup"} />}
+                  component={<Link to={moveToPath("/operate/popup")} />}
                   className={activeItemTextColor("/operate/popup")}
                   onClick={() => setActive("/operate/popup")}
                 >
                   팝업 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operate/installCharger"} />}
+                  component={
+                    <Link to={moveToPath("/operate/installCharger")} />
+                  }
                   className={activeItemTextColor("/operate/installCharger")}
                   onClick={() => setActive("/operate/installCharger")}
                 >
                   충전기 설치 신청 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operate/evModel"} />}
+                  component={<Link to={moveToPath("/operate/evModel")} />}
                   className={activeItemTextColor("/operate/evModel")}
                   onClick={() => setActive("/operate/evModel")}
                 >
                   전기차 모델 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operate/policy"} />}
+                  component={<Link to={moveToPath("/operate/policy")} />}
                   className={activeItemTextColor("/operate/policy")}
                   onClick={() => setActive("/operate/policy")}
                 >
                   정책 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to="/operate/talk" />}
+                  component={<Link to={moveToPath("/operate/talk")} />}
                   className={activeItemTextColor("/operate/talk")}
                   onClick={() => setActive("/operate/talk")}
                 >
@@ -349,7 +353,7 @@ export const Playground = (props: any) => {
                 </MenuItem>
 
                 <MenuItem
-                  component={<Link to="/operate/sms" />}
+                  component={<Link to={moveToPath("/operate/sms")} />}
                   className={activeItemTextColor("/operate/sms")}
                   onClick={() => setActive("/operate/sms")}
                 >
@@ -357,7 +361,7 @@ export const Playground = (props: any) => {
                 </MenuItem>
 
                 <MenuItem
-                  component={<Link to="/operate/variable" />}
+                  component={<Link to={moveToPath("/operate/variable")} />}
                   className={activeItemTextColor("/operate/variable")}
                   onClick={() => setActive("/operate/variable")}
                 >
@@ -365,7 +369,7 @@ export const Playground = (props: any) => {
                 </MenuItem>
 
                 <MenuItem
-                  component={<Link to="/operate/code" />}
+                  component={<Link to={moveToPath("/operate/code")} />}
                   className={activeItemTextColor("/operate/code")}
                   onClick={() => setActive("/operate/code")}
                 >
@@ -382,56 +386,56 @@ export const Playground = (props: any) => {
                 }
               >
                 <MenuItem
-                  component={<Link to={"/member/normal"} />}
+                  component={<Link to={moveToPath("/member/normal")} />}
                   className={activeItemTextColor("/member/normal")}
                   onClick={() => setActive("/member/normal")}
                 >
                   회원 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/member/withdraw"} />}
+                  component={<Link to={moveToPath("/member/withdraw")} />}
                   className={activeItemTextColor("/member/withdraw")}
                   onClick={() => setActive("/member/withdraw")}
                 >
                   탈퇴회원 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/member/card/normal"} />}
+                  component={<Link to={moveToPath("/member/card/normal")} />}
                   className={activeItemTextColor("/member/card/normal")}
                   onClick={() => setActive("/member/card/normal")}
                 >
                   회원카드 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/member/card/roaming"} />}
+                  component={<Link to={moveToPath("/member/card/roaming")} />}
                   className={activeItemTextColor("/member/card/roaming")}
                   onClick={() => setActive("/member/card/roaming")}
                 >
                   로밍카드 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/member/reject"} />}
+                  component={<Link to={moveToPath("/member/reject")} />}
                   className={activeItemTextColor("/member/reject")}
                   onClick={() => setActive("/member/reject")}
                 >
                   인증거절 내역
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/member/group"} />}
+                  component={<Link to={moveToPath("/member/group")} />}
                   className={activeItemTextColor("/member/group")}
                   onClick={() => setActive("/member/group")}
                 >
                   그룹 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/member/corporation"} />}
+                  component={<Link to={moveToPath("/member/corporation")} />}
                   className={activeItemTextColor("/member/corporation")}
                   onClick={() => setActive("/member/corporation")}
                 >
                   법인 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/member/contract"} />}
+                  component={<Link to={moveToPath("/member/contract")} />}
                   className={activeItemTextColor("/member/contract")}
                   onClick={() => setActive("/member/contract")}
                 >
@@ -448,21 +452,21 @@ export const Playground = (props: any) => {
                 }
               >
                 <MenuItem
-                  component={<Link to={"/counseling/customer"} />}
+                  component={<Link to={moveToPath("/counseling/customer")} />}
                   className={activeItemTextColor("/counseling/customer")}
                   onClick={() => setActive("/counseling/customer")}
                 >
                   고객 상담
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/counseling/history"} />}
+                  component={<Link to={moveToPath("/counseling/history")} />}
                   className={activeItemTextColor("/counseling/history")}
                   onClick={() => setActive("/counseling/history")}
                 >
                   상담 내역
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/counseling/management"} />}
+                  component={<Link to={moveToPath("/counseling/management")} />}
                   className={activeItemTextColor("/counseling/management")}
                   onClick={() => setActive("/counseling/management")}
                 >
@@ -479,21 +483,21 @@ export const Playground = (props: any) => {
                 }
               >
                 <MenuItem
-                  component={<Link to={"/operator/account"} />}
+                  component={<Link to={moveToPath("/operator/account")} />}
                   className={activeItemTextColor("/operator/account")}
                   onClick={() => setActive("/operator/account")}
                 >
                   계정 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operator/counselor"} />}
+                  component={<Link to={moveToPath("/operator/counselor")} />}
                   className={activeItemTextColor("/operator/counselor")}
                   onClick={() => setActive("/operator/counselor")}
                 >
                   상담사 계정 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/operator/role"} />}
+                  component={<Link to={moveToPath("/operator/role")} />}
                   className={activeItemTextColor("/operator/role")}
                   onClick={() => setActive("/operator/role")}
                 >
@@ -510,49 +514,51 @@ export const Playground = (props: any) => {
                 }
               >
                 <MenuItem
-                  component={<Link to={"/sales/individualSettlement"} />}
+                  component={
+                    <Link to={moveToPath("/sales/individualSettlement")} />
+                  }
                   className={activeItemTextColor("/sales/individualSettlement")}
                   onClick={() => setActive("/sales/individualSettlement")}
                 >
                   개별 정산 내역
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/sales/totalSettlement"} />}
+                  component={<Link to={moveToPath("/sales/totalSettlement")} />}
                   className={activeItemTextColor("/sales/totalSettlement")}
                   onClick={() => setActive("/sales/totalSettlement")}
                 >
                   합산 정산 내역
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/sales/billingHistory"} />}
+                  component={<Link to={moveToPath("/sales/billingHistory")} />}
                   className={activeItemTextColor("/sales/billingHistory")}
                   onClick={() => setActive("/sales/billingHistory")}
                 >
                   요금 청구 내역
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/sales/total"} />}
+                  component={<Link to={moveToPath("/sales/total")} />}
                   className={activeItemTextColor("/sales/total")}
                   onClick={() => setActive("/sales/total")}
                 >
                   총 매출
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/sales/region"} />}
+                  component={<Link to={moveToPath("/sales/region")} />}
                   className={activeItemTextColor("/sales/region")}
                   onClick={() => setActive("/sales/region")}
                 >
                   지역 매출
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/sales/station"} />}
+                  component={<Link to={moveToPath("/sales/station")} />}
                   className={activeItemTextColor("/sales/station")}
                   onClick={() => setActive("/sales/station")}
                 >
                   충전소 매출
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/sales/charger"} />}
+                  component={<Link to={moveToPath("/sales/charger")} />}
                   className={activeItemTextColor("/sales/charger")}
                   onClick={() => setActive("/sales/charger")}
                 >
@@ -569,35 +575,35 @@ export const Playground = (props: any) => {
                 }
               >
                 <MenuItem
-                  component={<Link to={"/settlement/regular"} />}
+                  component={<Link to={moveToPath("/settlement/regular")} />}
                   className={activeItemTextColor("/settlement/regular")}
                   onClick={() => setActive("/settlement/regular")}
                 >
                   정회원 결제 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/settlement/non"} />}
+                  component={<Link to={moveToPath("/settlement/non")} />}
                   className={activeItemTextColor("/settlement/non")}
                   onClick={() => setActive("/settlement/non")}
                 >
                   비회원 결제 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/settlement/roaming"} />}
+                  component={<Link to={moveToPath("/settlement/roaming")} />}
                   className={activeItemTextColor("/settlement/roaming")}
                   onClick={() => setActive("/settlement/roaming")}
                 >
                   로밍회원 결제 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/settlement/group"} />}
+                  component={<Link to={moveToPath("/settlement/group")} />}
                   className={activeItemTextColor("/settlement/group")}
                   onClick={() => setActive("/settlement/group")}
                 >
                   그룹 정산 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/settlement/membership"} />}
+                  component={<Link to={moveToPath("/settlement/membership")} />}
                   className={activeItemTextColor("/settlement/membership")}
                   onClick={() => setActive("/settlement/membership")}
                 >
@@ -614,21 +620,21 @@ export const Playground = (props: any) => {
                 }
               >
                 <MenuItem
-                  component={<Link to={"/payment/charging"} />}
+                  component={<Link to={moveToPath("/payment/charging")} />}
                   className={activeItemTextColor("/payment/charging")}
                   onClick={() => setActive("/payment/charging")}
                 >
                   충전 요금제 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/payment/kepco"} />}
+                  component={<Link to={moveToPath("/payment/kepco")} />}
                   className={activeItemTextColor("/payment/kepco")}
                   onClick={() => setActive("/payment/kepco")}
                 >
                   한전 요금제 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/payment/roaming"} />}
+                  component={<Link to={moveToPath("/payment/roaming")} />}
                   className={activeItemTextColor("/payment/roaming")}
                   onClick={() => setActive("/payment/roaming")}
                 >
@@ -645,14 +651,14 @@ export const Playground = (props: any) => {
                 }
               >
                 <MenuItem
-                  component={<Link to={"/usageHistory/claim"} />}
+                  component={<Link to={moveToPath("/usageHistory/claim")} />}
                   className={activeItemTextColor("/usageHistory/claim")}
                   onClick={() => setActive("/usageHistory/claim")}
                 >
                   청구 현황
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={"/usageHistory/roaming"} />}
+                  component={<Link to={moveToPath("/usageHistory/roaming")} />}
                   className={activeItemTextColor("/usageHistory/roaming")}
                   onClick={() => setActive("/usageHistory/roaming")}
                 >

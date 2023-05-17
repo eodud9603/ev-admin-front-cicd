@@ -12,7 +12,7 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
-import { UPLOAD_FILTER_LIST } from "src/constants/list";
+import { UPLOAD_FILTER_LIST, YN_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 import { jwtDecode } from "src/utils/jwt";
@@ -26,6 +26,7 @@ import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 import { postFaqRegister } from "src/api/board/faqApi";
 import { useLoaderData } from "react-router-dom";
 import { INIT_OPERATE_FAQ_ADD } from "src/pages/Operate/loader/faqAddLoader";
+import { useTabs } from "src/hooks/useTabs";
 
 const OperateFAQAdd = () => {
   const { data, categoryList } = useLoaderData() as {
@@ -44,7 +45,7 @@ const OperateFAQAdd = () => {
 
   const [inputs, { onChange, onChangeSingle }] = useInputs(data);
 
-  const { writer, uploadType, title, files, categoryId } = inputs;
+  const { writer, uploadType, title, files, categoryId, isExpose } = inputs;
 
   /** 첨부파일 업로드 */
   const upload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -90,7 +91,7 @@ const OperateFAQAdd = () => {
       boardId: BoardIdEnum.FAQ,
       content: content,
       categoryId: Number(categoryId),
-      isExpose: "N",
+      isExpose,
       uploadType: uploadType as TUploadTypeKeys,
       files: files.map((data) => data.id),
     };
@@ -119,6 +120,13 @@ const OperateFAQAdd = () => {
       return;
     }
   };
+
+  useTabs({
+    data: inputs,
+    categoryList: categoryList,
+    pageTitle: "FAQ 등록",
+    pageType: "add",
+  });
 
   return (
     <ContainerBase>
@@ -185,32 +193,29 @@ const OperateFAQAdd = () => {
               dropdownItems={[
                 {
                   onClickDropdownItem: (_, value) => {
+                    console.log("value :", value);
+                    console.log(categoryId);
                     onChangeSingle({ categoryId: value });
                   },
                   menuItems: categoryList,
+                  initSelectedValue: categoryList.find(
+                    (e: { label: string; value: string }) =>
+                      e.value === categoryId
+                  ),
                 },
               ]}
             />
           </Col>
           <Col className={"font-size-14 fw-semibold"} sm={1}>
-            삭제여부
+            노출여부
           </Col>
           <Col sm={5}>
             <RadioGroup
-              name={"deleteStatus"}
-              list={[
-                {
-                  disabled: true,
-                  label: "Y",
-                  value: "Y",
-                },
-                {
-                  disabled: true,
-                  label: "N",
-                  value: "N",
-                  checked: true,
-                },
-              ]}
+              name={"isExpose"}
+              list={YN_FILTER_LIST.map((data) => ({
+                ...data,
+                checked: isExpose === data.value,
+              }))}
               onChange={onChange}
             />
           </Col>
