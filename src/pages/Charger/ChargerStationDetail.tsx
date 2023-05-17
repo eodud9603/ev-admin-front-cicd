@@ -50,6 +50,7 @@ import createValidation from "src/utils/validate";
 import { YUP_CHARGER_STATION } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { objectToArray } from "src/utils/convert";
+import { lock } from "src/utils/lock";
 
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
@@ -245,7 +246,7 @@ const ChargerStationDetail = () => {
   });
 
   /** 수정 */
-  const modify = async () => {
+  const modify = lock(async () => {
     if (disabled) {
       setDisabled(false);
       return;
@@ -290,7 +291,7 @@ const ChargerStationDetail = () => {
     }
 
     setDisabled((prev) => !prev);
-  };
+  });
 
   return (
     <ContainerBase>

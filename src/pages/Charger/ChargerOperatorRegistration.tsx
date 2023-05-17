@@ -26,6 +26,7 @@ import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_OPERATOR } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
+import { lock } from "src/utils/lock";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },
@@ -90,7 +91,7 @@ export const ChargerOperatorRegistration = () => {
     setAddrSearchModalOpen((prev) => !prev);
   };
 
-  const confirm = async () => {
+  const confirm = lock(async () => {
     /** 파일 params */
     const fileParams = await fileUpload(contractFile);
     /** 등록 params */
@@ -120,7 +121,7 @@ export const ChargerOperatorRegistration = () => {
     if (success) {
       setIsAddComplete(true);
     }
-  };
+  });
 
   return (
     <ContainerBase>

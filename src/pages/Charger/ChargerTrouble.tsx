@@ -29,6 +29,7 @@ import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
 import { useTabs } from "src/hooks/useTabs";
 import { getParams } from "src/utils/params";
+import { lock } from "src/utils/lock";
 
 const dropdownGroupSearch = [
   { label: "충전소명", value: "StationName" },
@@ -120,9 +121,8 @@ export const ChargerTrouble = () => {
   });
 
   /** 검색 핸들러 */
-  const searchHandler =
-    (params: Partial<IRequestBrokenList> = {}) =>
-    async () => {
+  const searchHandler = (params: Partial<IRequestBrokenList> = {}) =>
+    lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestBrokenList = {
         size: Number(count),
@@ -173,7 +173,7 @@ export const ChargerTrouble = () => {
           message: message || "오류가 발생하였습니다.",
         });
       }
-    };
+    });
 
   const moveToDetail = (id: number) => {
     nav(`${pathname}/detail/${id}`);
@@ -260,10 +260,6 @@ export const ChargerTrouble = () => {
                   ),
                   onClickDropdownItem: (label, value) => {
                     onChangeSingle({ sort: value });
-                    void searchHandler({
-                      page: 1,
-                      sort: value as IRequestBrokenList["sort"],
-                    })();
                   },
                 }))}
                 className={"me-2"}

@@ -29,6 +29,7 @@ import { CONTRACT_STATUS } from "src/constants/status";
 import { standardDateFormat } from "src/utils/day";
 import { useTabs } from "src/hooks/useTabs";
 import { getParams } from "src/utils/params";
+import { lock } from "src/utils/lock";
 
 /* 계약여부 필터 */
 const contractFilterList = [
@@ -157,9 +158,8 @@ const ChargerContract = () => {
   const navigate = useNavigate();
 
   /** 검색 핸들러 */
-  const searchHandler =
-    (params: Partial<IRequestStationContractList> = {}) =>
-    async () => {
+  const searchHandler = (params: Partial<IRequestStationContractList> = {}) =>
+    lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestStationContractList = {
         size: Number(count),
@@ -203,7 +203,7 @@ const ChargerContract = () => {
           message: message || "오류가 발생하였습니다.",
         });
       }
-    };
+    });
 
   return (
     <ContainerBase>
@@ -286,10 +286,6 @@ const ChargerContract = () => {
                   {
                     onClickDropdownItem: (_, value) => {
                       onChangeSingle({ sort: value });
-                      void searchHandler({
-                        page: 1,
-                        sort: value as IRequestStationContractList["sort"],
-                      })();
                     },
                     menuItems: sortList,
                     initSelectedValue: sortList.find((e) => e.value === sort),

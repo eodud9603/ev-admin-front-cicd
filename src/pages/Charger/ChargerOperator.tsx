@@ -32,6 +32,7 @@ import {
   postSupplierModifyActive,
 } from "src/api/supplier/supplierApi";
 import { getParams } from "src/utils/params";
+import { lock } from "src/utils/lock";
 
 const dropdownGroupSearch = [
   {
@@ -113,9 +114,8 @@ export const ChargerOperator = () => {
       ?.placeholderKeyword ?? "검색어를";
 
   /** 검색 핸들러 */
-  const searchHandler =
-    (params: Partial<IRequestSupplierList> = {}) =>
-    async () => {
+  const searchHandler = (params: Partial<IRequestSupplierList> = {}) =>
+    lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestSupplierList = {
         size: Number(count),
@@ -153,7 +153,7 @@ export const ChargerOperator = () => {
       }
 
       setCheckList([]);
-    };
+    });
 
   /** 전체 체크 변경 콜백 */
   const onChangeCheck = (check: boolean) => {
@@ -165,7 +165,7 @@ export const ChargerOperator = () => {
   };
 
   /** 활성화 상태로 전환 */
-  const onChangeActive = async () => {
+  const onChangeActive = lock(async () => {
     /** 활용상태 전환 요청 */
     const { code } = await postSupplierModifyActive({
       isActive: "Y",
@@ -177,7 +177,7 @@ export const ChargerOperator = () => {
     if (success) {
       void searchHandler({ page })();
     }
-  };
+  });
 
   const nav = useNavigate();
   const { pathname } = useLocation();
@@ -252,10 +252,6 @@ export const ChargerOperator = () => {
                     onChangeSingle({
                       sort: value,
                     });
-                    void searchHandler({
-                      page: 1,
-                      sort: value as IRequestSupplierList["sort"],
-                    })();
                   },
                 }))}
                 className={"me-2"}

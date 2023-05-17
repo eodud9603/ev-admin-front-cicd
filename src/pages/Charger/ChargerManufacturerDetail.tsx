@@ -34,6 +34,7 @@ import {
 } from "src/constants/valid/charger";
 import { getParams } from "src/utils/params";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
+import { lock } from "src/utils/lock";
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerDetail = () => {
@@ -169,7 +170,7 @@ export const ChargerManufacturerDetail = () => {
   };
 
   /** 삭제 */
-  const deleteHandler = async () => {
+  const deleteHandler = lock(async () => {
     const params = {
       id: Number(basic.id),
     };
@@ -198,10 +199,10 @@ export const ChargerManufacturerDetail = () => {
       })();
       return;
     }
-  };
+  });
 
   /** 수정 */
-  const modify = async () => {
+  const modify = lock(async () => {
     /* 수정모드로 변경 */
     if (type === "DETAIL") {
       setType("UPDATE");
@@ -243,7 +244,7 @@ export const ChargerManufacturerDetail = () => {
         confirmHandler: undefined,
       })();
     }
-  };
+  });
 
   return (
     <ContainerBase>
@@ -362,7 +363,9 @@ export const ChargerManufacturerDetail = () => {
       />
       <DetailDeleteModal
         isOpen={deleteModal}
-        onClose={onChangeDeleteModal}
+        onClose={() => {
+          setDeleteModal(false);
+        }}
         deleteHandler={deleteHandler}
         title={"충전기 제조사 정보 삭제 안내"}
         contents={"충전기 제조사 정보를 삭제하시겠습니까?"}

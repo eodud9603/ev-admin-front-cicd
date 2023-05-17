@@ -28,6 +28,7 @@ import useList from "src/hooks/useList";
 import { standardDateFormat } from "src/utils/day";
 import { useTabs } from "src/hooks/useTabs";
 import { getParams } from "src/utils/params";
+import { lock } from "src/utils/lock";
 
 /* 사용여부 필터 */
 const useStatusList = [
@@ -118,9 +119,8 @@ const ChargingStationManagement = () => {
   const navigate = useNavigate();
 
   /** 검색 핸들러 */
-  const searchHandler =
-    (params: Partial<IRequestStationList> = {}) =>
-    async () => {
+  const searchHandler = (params: Partial<IRequestStationList> = {}) =>
+    lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestStationList = {
         size: Number(count),
@@ -158,7 +158,7 @@ const ChargingStationManagement = () => {
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }
-    };
+    });
 
   return (
     <ContainerBase>
@@ -242,10 +242,6 @@ const ChargingStationManagement = () => {
                   {
                     onClickDropdownItem: (_, value) => {
                       onChangeSingle({ sort: value });
-                      void searchHandler({
-                        page: 1,
-                        sort: value as IRequestStationList["sort"],
-                      })();
                     },
                     menuItems: sortList,
                     initSelectedValue: sortList.find((e) => e.value === sort),

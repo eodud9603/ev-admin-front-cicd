@@ -35,6 +35,7 @@ import {
   YUP_CHARGER_CONTRACT_EXTRA,
 } from "src/constants/valid/charger";
 import { useTabs } from "src/hooks/useTabs";
+import { lock } from "src/utils/lock";
 
 const ChargerContractDetail = () => {
   /** init 충전소 계약 상세 데이터 */
@@ -129,7 +130,7 @@ const ChargerContractDetail = () => {
   const navigate = useNavigate();
 
   /** 계약 수정 */
-  const postModify = async () => {
+  const postModify = lock(async () => {
     if (disabled) {
       setDisabled(false);
       return;
@@ -180,7 +181,7 @@ const ChargerContractDetail = () => {
         contractFileUrl: fileParams.url,
       });
     }
-  };
+  });
 
   return (
     <ContainerBase>

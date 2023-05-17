@@ -56,6 +56,7 @@ import {
   YUP_CHARGER_MODEM,
 } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
+import { lock } from "src/utils/lock";
 
 const DefaultDropdownData = {
   label: "선택",
@@ -68,6 +69,7 @@ const ChargerAdd = () => {
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
   /* 설치정보 drop */
   const [isInstallDrop, setIsInstallDrop] = useState(true);
+
   /* 미입력 안내 모달 */
   const [invalidModal, setInvalidModal] = useState({
     isOpen: false,
@@ -160,7 +162,7 @@ const ChargerAdd = () => {
   const navigate = useNavigate();
 
   /** 등록 */
-  const register = async () => {
+  const register = lock(async () => {
     /** 설치 정보 */
     const installParams = { ...installInputs };
     /** 모뎀 정보 */
@@ -226,7 +228,7 @@ const ChargerAdd = () => {
       /* 저장 성공 */
       setIsCompleteComplete(true);
     }
-  };
+  });
 
   useTabs({
     data: {

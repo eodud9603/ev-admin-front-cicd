@@ -33,6 +33,7 @@ import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckM
 import { useTabs } from "src/hooks/useTabs";
 import useTransferFile from "src/hooks/useTransferFile";
 import { ISupplierDetailLoaderType } from "src/pages/Charger/loader/supplierDetailLoader";
+import { lock } from "src/utils/lock";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },
@@ -156,7 +157,7 @@ export const ChargerOperatorDetail = () => {
   };
 
   /** disabled 상태 변경 */
-  const onChangeDisabled = async () => {
+  const onChangeDisabled = lock(async () => {
     if (!disabled) {
       /** 파일 업로드 params */
       const fileParams = await fileUpload(contractFile);
@@ -208,7 +209,7 @@ export const ChargerOperatorDetail = () => {
     }
 
     setDisabled(!disabled);
-  };
+  });
 
   /** 주소 검색 modal visible */
   const onChangeModalVisible = () => {
@@ -237,7 +238,7 @@ export const ChargerOperatorDetail = () => {
     };
 
   /** 삭제 */
-  const deleteHandler = async () => {
+  const deleteHandler = lock(async () => {
     if (!data.id) {
       return;
     }
@@ -253,7 +254,7 @@ export const ChargerOperatorDetail = () => {
         onClosed: goBack,
       })();
     }
-  };
+  });
 
   useTabs({
     data: { data: inputs, fileData: contractFile },
@@ -590,7 +591,9 @@ export const ChargerOperatorDetail = () => {
       />
       <DetailDeleteModal
         isOpen={deleteModalOpen}
-        onClose={onChangeDeleteModalVisible}
+        onClose={() => {
+          setDeleteModalOpen(false);
+        }}
         deleteHandler={deleteHandler}
         title={"서비스 운영사 정보 삭제 안내"}
         contents={"서비스 운영사 정보를 삭제하시겠습니까?"}

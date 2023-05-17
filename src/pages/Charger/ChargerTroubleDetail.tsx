@@ -35,6 +35,7 @@ import {
   YUP_CHARGER_BROKEN_EXTRA,
 } from "src/constants/valid/charger";
 import { useTabs } from "src/hooks/useTabs";
+import { lock } from "src/utils/lock";
 
 export const ChargerTroubleDetail = () => {
   const { data, editable = true } = useLoaderData() as {
@@ -171,7 +172,7 @@ export const ChargerTroubleDetail = () => {
   };
 
   /** 삭제 */
-  const deleteHandler = async () => {
+  const deleteHandler = lock(async () => {
     if (!id) {
       return;
     }
@@ -189,10 +190,10 @@ export const ChargerTroubleDetail = () => {
         onClosed: goBack,
       })();
     }
-  };
+  });
 
   /** disabled 상태 변경 */
-  const onChangeDisabled = async () => {
+  const onChangeDisabled = lock(async () => {
     if (!disabled) {
       /* 유효성 체크 */
       const scheme = createValidation({
@@ -263,7 +264,7 @@ export const ChargerTroubleDetail = () => {
     }
 
     setDisabled(!disabled);
-  };
+  });
 
   return (
     <ContainerBase>
@@ -561,7 +562,9 @@ export const ChargerTroubleDetail = () => {
 
       <DetailDeleteModal
         isOpen={deleteModalOpen}
-        onClose={onChangeDeleteModalVisible}
+        onClose={() => {
+          setDeleteModalOpen(false);
+        }}
         deleteHandler={deleteHandler}
         title={"충전기 고장/파손 정보 삭제 안내"}
         contents={"충전기 고장/파손 정보를 삭제하시겠습니까?"}
