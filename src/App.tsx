@@ -19,6 +19,8 @@ import "./assets/scss/theme.scss";
 import "./assets/scss/preloader.scss";
 import { mainLoader } from "src/pages/Main/loader/mainLoader";
 import { Playground } from "src/components/ProSideBar/Playground";
+import NotFound from "src/pages/NotFound";
+
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route loader={mainLoader}>
@@ -42,6 +44,8 @@ export const router = createBrowserRouter(
           key={location.pathname}
         />
       ))}
+
+      <Route path={"*"} element={<NotFound />} />
     </Route>
   )
 );

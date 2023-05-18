@@ -18,11 +18,12 @@ export const lock = <T,>(
     if (locked) {
       return;
     }
-
+    /* 잠금 */
     locked = true;
 
     const promise = callback(params);
     void Promise.all([promise]).finally(() => {
+      /* 실행완료(잠금 해지) */
       locked = false;
     });
   }, time);
