@@ -51,6 +51,18 @@ const OperatorRole = () => {
   /* 수정완료 모달 */
   const [isEditComplete, setIsEditComplete] = useState(false);
 
+  /** 권한 목록 가져오기 */
+  const getRoleList = async (role: TRoleTypeKey) => {
+    const { code, data: searchData } = await getAdminRoleList({ role });
+
+    /** 성공 */
+    const success = code === "SUCCESS" && !!searchData;
+    if (success) {
+      setList(searchData.elements ?? []);
+      setSelectedRole(role);
+    }
+  };
+
   const onChangeRole = (role: TRoleTypeKey) =>
     lock(async () => {
       /* 수정모드 상태에서 탭 변경시, 취소안내모달 */
@@ -59,14 +71,7 @@ const OperatorRole = () => {
         return;
       }
 
-      const { code, data: searchData } = await getAdminRoleList({ role });
-
-      /** 성공 */
-      const success = code === "SUCCESS" && !!searchData;
-      if (success) {
-        setList(searchData.elements ?? []);
-        setSelectedRole(role);
-      }
+      await getRoleList(role);
     }, 100);
 
   /** 권한등급별 권한 수정 */
@@ -181,7 +186,7 @@ const OperatorRole = () => {
         }}
         cancelHandler={() => {
           setDisabled(true);
-          setSelectedRole(editCancelModal.role);
+          void getRoleList(editCancelModal.role);
         }}
         title={"권한 수정 취소 안내"}
         contents={

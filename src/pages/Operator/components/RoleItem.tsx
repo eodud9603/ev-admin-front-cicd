@@ -33,7 +33,7 @@ interface IRoleMainItemProps extends IAdminMainRoleItem {
 interface IRoleSubItemProps extends IAdminSubRoleItem {
   disabled: boolean;
   isLast: boolean;
-  onChangeRole: (
+  onChangePermission: (
     id: number,
     name: PermissionType,
     isActive: boolean
@@ -178,27 +178,28 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
   };
 
   /** 소분류 권한 전체 일괄 변경 */
-  const onChangeRole = (name: PermissionType, isActive: boolean) => () => {
-    setList((prevList) => {
-      const updateList = [...prevList];
+  const onChangePermission =
+    (name: PermissionType, isActive: boolean) => () => {
+      setList((prevList) => {
+        const updateList = [...prevList];
 
-      const roleIndex = updateList.findIndex((item) => item.id === id);
-      if (roleIndex > -1) {
-        updateList[roleIndex] = {
-          ...updateList[roleIndex],
-          children: updateList[roleIndex].children.map((subItem) => ({
-            ...subItem,
-            [name]: isActive ? "N" : "Y",
-          })),
-        };
-      }
+        const roleIndex = updateList.findIndex((item) => item.id === id);
+        if (roleIndex > -1) {
+          updateList[roleIndex] = {
+            ...updateList[roleIndex],
+            children: updateList[roleIndex].children.map((subItem) => ({
+              ...subItem,
+              [name]: isActive ? "N" : "Y",
+            })),
+          };
+        }
 
-      return updateList;
-    });
-  };
+        return updateList;
+      });
+    };
 
   /** 소분류 권한 변경 */
-  const onChangeSingleRole = useCallback(
+  const onChangeSinglePermission = useCallback(
     (subItemId: number, name: PermissionType, isActive: boolean) => () => {
       setList((prevList) => {
         const updateList = [...prevList];
@@ -220,7 +221,7 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
         return updateList;
       });
     },
-    []
+    [id, setList]
   );
 
   useEffect(() => {
@@ -254,7 +255,7 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
             name={`main-view-${name}-${id}`}
             checked={isView}
             disabled={disabled}
-            onChange={onChangeRole("isView", isView)}
+            onChange={onChangePermission("isView", isView)}
           />
         </CheckBoxCol>
         <CheckBoxCol>
@@ -263,7 +264,7 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
             name={`main-create-${name}-${id}`}
             checked={isCreate}
             disabled={disabled}
-            onChange={onChangeRole("isCreate", isCreate)}
+            onChange={onChangePermission("isCreate", isCreate)}
           />
         </CheckBoxCol>
         <CheckBoxCol>
@@ -272,7 +273,7 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
             name={`main-modify-${name}-${id}`}
             checked={isModify}
             disabled={disabled}
-            onChange={onChangeRole("isModify", isModify)}
+            onChange={onChangePermission("isModify", isModify)}
           />
         </CheckBoxCol>
         <CheckBoxCol>
@@ -281,7 +282,7 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
             name={`main-delete-${name}-${id}`}
             checked={isDelete}
             disabled={disabled}
-            onChange={onChangeRole("isDelete", isDelete)}
+            onChange={onChangePermission("isDelete", isDelete)}
           />
         </CheckBoxCol>
         <CheckBoxCol>
@@ -290,7 +291,7 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
             name={`main-exel-${name}-${id}`}
             checked={isExel}
             disabled={disabled}
-            onChange={onChangeRole("isExel", isExel)}
+            onChange={onChangePermission("isExel", isExel)}
           />
         </CheckBoxCol>
         <CheckBoxCol>
@@ -299,7 +300,7 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
             name={`main-execute-${name}-${id}`}
             checked={isExecute}
             disabled={disabled}
-            onChange={onChangeRole("isExecute", isExecute)}
+            onChange={onChangePermission("isExecute", isExecute)}
           />
         </CheckBoxCol>
       </Row>
@@ -309,7 +310,7 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
             key={detail.id}
             isLast={children.length - 1 === index}
             disabled={disabled}
-            onChangeRole={onChangeSingleRole}
+            onChangePermission={onChangeSinglePermission}
             {...detail}
           />
         ))}
@@ -330,7 +331,7 @@ const RoleSubItem = memo((props: IRoleSubItemProps) => {
     isDelete,
     isExel,
     isExecute,
-    onChangeRole,
+    onChangePermission,
   } = props;
 
   return (
@@ -343,7 +344,7 @@ const RoleSubItem = memo((props: IRoleSubItemProps) => {
           name={`sub-view-${name}-${id}`}
           checked={isView === "Y"}
           disabled={disabled}
-          onChange={onChangeRole(id, "isView", isView === "Y")}
+          onChange={onChangePermission(id, "isView", isView === "Y")}
         />
       </CheckBoxCol>
       <CheckBoxCol>
@@ -352,7 +353,7 @@ const RoleSubItem = memo((props: IRoleSubItemProps) => {
           name={`sub-create-${name}-${id}`}
           checked={isCreate === "Y"}
           disabled={disabled}
-          onChange={onChangeRole(id, "isCreate", isCreate === "Y")}
+          onChange={onChangePermission(id, "isCreate", isCreate === "Y")}
         />
       </CheckBoxCol>
       <CheckBoxCol>
@@ -361,7 +362,7 @@ const RoleSubItem = memo((props: IRoleSubItemProps) => {
           name={`sub-modify-${name}-${id}`}
           checked={isModify === "Y"}
           disabled={disabled}
-          onChange={onChangeRole(id, "isModify", isModify === "Y")}
+          onChange={onChangePermission(id, "isModify", isModify === "Y")}
         />
       </CheckBoxCol>
       <CheckBoxCol>
@@ -370,7 +371,7 @@ const RoleSubItem = memo((props: IRoleSubItemProps) => {
           name={`sub-delete-${name}-${id}`}
           checked={isDelete === "Y"}
           disabled={disabled}
-          onChange={onChangeRole(id, "isDelete", isDelete === "Y")}
+          onChange={onChangePermission(id, "isDelete", isDelete === "Y")}
         />
       </CheckBoxCol>
       <CheckBoxCol>
@@ -379,7 +380,7 @@ const RoleSubItem = memo((props: IRoleSubItemProps) => {
           name={`sub-exel-${name}-${id}`}
           checked={isExel === "Y"}
           disabled={disabled}
-          onChange={onChangeRole(id, "isExel", isExel === "Y")}
+          onChange={onChangePermission(id, "isExel", isExel === "Y")}
         />
       </CheckBoxCol>
       <CheckBoxCol>
@@ -388,7 +389,7 @@ const RoleSubItem = memo((props: IRoleSubItemProps) => {
           name={`sub-execute-${name}-${id}`}
           checked={isExecute === "Y"}
           disabled={disabled}
-          onChange={onChangeRole(id, "isExecute", isExecute === "Y")}
+          onChange={onChangePermission(id, "isExecute", isExecute === "Y")}
         />
       </CheckBoxCol>
     </RoleSubItemRow>
