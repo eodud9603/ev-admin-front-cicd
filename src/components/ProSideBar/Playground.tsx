@@ -74,6 +74,7 @@ const initMenus = {
   settlement: false,
   usageHistory: false,
   usageStatus: false,
+  log: false,
 };
 
 // hex to rgba converter
@@ -688,6 +689,37 @@ export const Playground = (props: any) => {
                   onClick={() => setActive("/usageStatus/history")}
                 >
                   충전기 이용 내역
+                </MenuItem>
+              </SubMenu>
+              <SubMenu
+                label="로그 관리"
+                style={{ fontSize: 14 }}
+                icon={<Global />}
+                open={allOpen.log}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("log", isOpen)
+                }
+              >
+                <MenuItem
+                  component={<Link to={moveToPath("/log/charger")} />}
+                  className={activeItemTextColor("/log/charger")}
+                  onClick={() => setActive("/log/charger")}
+                >
+                  충전기 로그
+                </MenuItem>
+                <MenuItem
+                  component={<Link to={moveToPath("/log/chargerControl")} />}
+                  className={activeItemTextColor("/log/chargerControl")}
+                  onClick={() => setActive("/log/chargerControl")}
+                >
+                  충전기 제어 로그
+                </MenuItem>
+                <MenuItem
+                  component={<Link to={moveToPath("/log/adminAccess")} />}
+                  className={activeItemTextColor("/log/adminAccess")}
+                  onClick={() => setActive("/log/adminAccess")}
+                >
+                  관리자 접근 로그
                 </MenuItem>
               </SubMenu>
             </Menu>
