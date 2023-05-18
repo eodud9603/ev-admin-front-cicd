@@ -19,6 +19,7 @@ import {
 } from "src/api/charger/chargerApi.interface";
 import { CHARGER_RATION, CHARGER_TYPE } from "src/constants/status";
 import { getParams } from "src/utils/params";
+import { lock } from "src/utils/lock";
 
 const dropdownGroupSearch = [{ label: "충전소명", value: "StationName" }];
 
@@ -77,9 +78,8 @@ export const StationSearchModal = (props: IStationSearchModalProps) => {
   });
 
   /** 검색 핸들러 */
-  const searchHandler =
-    (params: Partial<IRequestChargerList> = {}) =>
-    async () => {
+  const searchHandler = (params: Partial<IRequestChargerList> = {}) =>
+    lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestChargerList = {
         size: Number(count),
@@ -117,7 +117,7 @@ export const StationSearchModal = (props: IStationSearchModalProps) => {
           message: message || "오류가 발생하였습니다.",
         });
       }
-    };
+    });
 
   const onChangeData = (data: IChargerListItem) => () => {
     !!onChangeSelected && void onChangeSelected(data);

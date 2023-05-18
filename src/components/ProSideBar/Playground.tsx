@@ -73,6 +73,8 @@ const initMenus = {
   sales: false,
   settlement: false,
   usageHistory: false,
+  usageStatus: false,
+  log: false,
 };
 
 // hex to rgba converter
@@ -665,32 +667,61 @@ export const Playground = (props: any) => {
                   로밍 청구 현황
                 </MenuItem>
               </SubMenu>
-
-              <SubMenu label="Components" icon={<Diamond />}>
-                <MenuItem> Grid</MenuItem>
-                <MenuItem> Layout</MenuItem>
-                <SubMenu label="Forms">
-                  <MenuItem> Input</MenuItem>
-                  <MenuItem> Select</MenuItem>
-                  <SubMenu label="More">
-                    <MenuItem> CheckBox</MenuItem>
-                    <MenuItem> Radio</MenuItem>
-                  </SubMenu>
-                </SubMenu>
+              <SubMenu
+                label="충전 이용 현황"
+                style={{ fontSize: 14 }}
+                icon={<Global />}
+                open={allOpen.usageStatus}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("usageStatus", isOpen)
+                }
+              >
+                <MenuItem
+                  component={<Link to={moveToPath("/usageStatus/charger")} />}
+                  className={activeItemTextColor("/usageStatus/charger")}
+                  onClick={() => setActive("/usageStatus/charger")}
+                >
+                  충전기 이용 현황
+                </MenuItem>
+                <MenuItem
+                  component={<Link to={moveToPath("/usageStatus/history")} />}
+                  className={activeItemTextColor("/usageStatus/history")}
+                  onClick={() => setActive("/usageStatus/history")}
+                >
+                  충전기 이용 내역
+                </MenuItem>
               </SubMenu>
-              <SubMenu label="E-commerce" icon={<ShoppingCart />}>
-                <MenuItem> Product</MenuItem>
-                <MenuItem> Orders</MenuItem>
-                <MenuItem> Credit card</MenuItem>
+              <SubMenu
+                label="로그 관리"
+                style={{ fontSize: 14 }}
+                icon={<Global />}
+                open={allOpen.log}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("log", isOpen)
+                }
+              >
+                <MenuItem
+                  component={<Link to={moveToPath("/log/charger")} />}
+                  className={activeItemTextColor("/log/charger")}
+                  onClick={() => setActive("/log/charger")}
+                >
+                  충전기 로그
+                </MenuItem>
+                <MenuItem
+                  component={<Link to={moveToPath("/log/chargerControl")} />}
+                  className={activeItemTextColor("/log/chargerControl")}
+                  onClick={() => setActive("/log/chargerControl")}
+                >
+                  충전기 제어 로그
+                </MenuItem>
+                <MenuItem
+                  component={<Link to={moveToPath("/log/adminAccess")} />}
+                  className={activeItemTextColor("/log/adminAccess")}
+                  onClick={() => setActive("/log/adminAccess")}
+                >
+                  관리자 접근 로그
+                </MenuItem>
               </SubMenu>
-            </Menu>
-
-            <Menu menuItemStyles={menuItemStyles}>
-              <MenuItem icon={<Calendar />}>Calendar</MenuItem>
-              <MenuItem icon={<Book />}>Documentation</MenuItem>
-              <MenuItem disabled icon={<Service />}>
-                Examples
-              </MenuItem>
             </Menu>
           </div>
           <SidebarFooter collapsed={collapsed} />

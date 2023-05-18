@@ -134,6 +134,11 @@ import { categoryListLoader } from "src/pages/Operate/loader/categoryListLoader"
 import { faqListLoader } from "src/pages/Operate/loader/faqListLoader";
 import { faqAddLoader } from "src/pages/Operate/loader/faqAddLoader";
 import { memberWithdrawListLoader } from "src/pages/Member/laoder/memberWithdrawListLoader";
+import UsageStatusCharger from "src/pages/UsageStatus/UsageStatusCharger";
+import UsageStatusHistory from "src/pages/UsageStatus/UsageStatusHistory";
+import AdminAccessLog from "src/pages/Log/AdminAccessLog";
+import ChargerControlLog from "src/pages/Log/ChargerControlLog";
+import ChargerLog from "src/pages/Log/ChargerLog";
 import { faqDetailLoader } from "src/pages/Operate/loader/faqDetailLoader";
 
 const userRoutes: Array<RouteProps> = [
@@ -406,6 +411,15 @@ const userRoutes: Array<RouteProps> = [
     element: <OperatorCounselorDetail />,
   },
   { path: "/operator/role", element: <OperatorRole /> },
+
+  /* 충전 이용 현황 */
+  { path: "/usageStatus/charger", element: <UsageStatusCharger /> },
+  { path: "/usageStatus/history", element: <UsageStatusHistory /> },
+
+  /* 로그 관리 */
+  { path: "/log/charger", element: <ChargerLog /> },
+  { path: "/log/chargerControl", element: <ChargerControlLog /> },
+  { path: "/log/adminAccess", element: <AdminAccessLog /> },
 ];
 
 const authRoutes: Array<RouteProps> = [

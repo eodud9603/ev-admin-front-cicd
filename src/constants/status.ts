@@ -59,9 +59,9 @@ export type TChargerTypeKeys = keyof typeof CHARGER_TYPE;
  * @see http://218.38.12.198:45081/docs/index.html#_%EC%B6%A9%EC%A0%84%EA%B8%B0_%EB%93%B1%EA%B8%89
  */
 export const CHARGER_RATION = {
-  UNKNOWN: "알수없음",
   QUICK: "급속",
   STANDARD: "완속",
+  UNKNOWN: "알수없음",
 } as const;
 /** 충전기 등급 키 타입 */
 export type TChargerRationKeys = keyof typeof CHARGER_RATION;

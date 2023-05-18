@@ -19,6 +19,7 @@ import useList from "src/hooks/useList";
 import { getPageList } from "src/utils/pagination";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import { RegionGroup } from "src/components/Common/Filter/component/RegionGroup";
+import { lock } from "src/utils/lock";
 
 interface IAlarmAddMemberModal {
   isOpen: boolean;
@@ -66,9 +67,8 @@ const BatchControlModal = (props: IAlarmAddMemberModal) => {
   const { sido, gugun, dong, searchRange, searchText, sort } = inputs;
 
   /** 검색 핸들러 */
-  const searchHandler =
-    (params: Partial<IRequestStationList> = {}) =>
-    async () => {
+  const searchHandler = (params: Partial<IRequestStationList> = {}) =>
+    lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestStationList = {
         size: 10,
@@ -105,7 +105,7 @@ const BatchControlModal = (props: IAlarmAddMemberModal) => {
       }
 
       setCheckList([]);
-    };
+    });
 
   /** 전체 체크 변경 콜백 */
   const onChangeCheck = (check: boolean) => {
