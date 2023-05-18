@@ -20,6 +20,8 @@ import TabGroup from "src/components/Common/Tab/TabGroup";
 import AuthLevelModal from "src/pages/Operator/components/AuthLevelModal";
 import AddButton from "src/pages/Operator/components/AddButton";
 import useInputs from "src/hooks/useInputs";
+import { objectToArray } from "src/utils/convert";
+import { ROLE_TYPE, TRoleTypeKey } from "src/constants/status";
 
 /** 소속그룹 목록 */
 const groupItems = [
@@ -40,12 +42,9 @@ const radioList = [
 ];
 
 /** 계정등급 라디오 목록 */
-const roleList = [
-  { label: "최고 관리자", value: "1" },
-  { label: "일반 관리자", value: "2" },
-  { label: "관계사", value: "3" },
-  { label: "제조사", value: "4" },
-];
+const roleList = objectToArray(ROLE_TYPE).map((data) => ({
+  ...data,
+}));
 
 /** 계정상태 라디오 목록 */
 const accountStatusList = [
@@ -83,7 +82,7 @@ const OperatorAccountAdd = () => {
     id: "",
     agencyGroup: "",
     password: "",
-    roleLevel: "",
+    roleLevel: "" as TRoleTypeKey,
     tel: "",
     mobileTel: "",
     department: "",
@@ -300,7 +299,7 @@ const OperatorAccountAdd = () => {
         onClose={() => {
           setAuthModalOpen(false);
         }}
-        role={roleList.find((role) => role.value === roleLevel)}
+        role={roleLevel}
       />
     </ContainerBase>
   );

@@ -17,9 +17,11 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
+import { ROLE_TYPE, TRoleTypeKey } from "src/constants/status";
 import useInputs from "src/hooks/useInputs";
 import DetailBottomButton from "src/pages/Charger/components/DetailBottomButton";
 import AuthLevelModal from "src/pages/Operator/components/AuthLevelModal";
+import { objectToArray } from "src/utils/convert";
 
 const groupItems = [{ label: "휴맥스EV", value: "1" }];
 
@@ -55,7 +57,7 @@ const OperatorAccountDetail = () => {
     id: "K05@humaxev.com",
     agencyGroup: "1",
     password: "1234",
-    roleLevel: "1",
+    roleLevel: Object.keys(ROLE_TYPE)[0] as TRoleTypeKey,
     tel: "0000-0000",
     mobileTel: "000-0000-0000",
     department: "서비스 운영팀",
@@ -82,12 +84,11 @@ const OperatorAccountDetail = () => {
   ];
 
   /** 계정등급 라디오 목록 */
-  const roleList = [
-    { label: "최고 관리자", value: "1", checked: roleLevel === "1", disabled },
-    { label: "일반 관리자", value: "2", checked: roleLevel === "2", disabled },
-    { label: "관계사", value: "3", checked: roleLevel === "3", disabled },
-    { label: "제조사", value: "4", checked: roleLevel === "4", disabled },
-  ];
+  const roleList = objectToArray(ROLE_TYPE).map((data) => ({
+    ...data,
+    checked: roleLevel === data.value,
+    disabled,
+  }));
 
   /** 계정상태 라디오 목록 */
   const accountStatusList = [
@@ -309,7 +310,7 @@ const OperatorAccountDetail = () => {
         onClose={() => {
           setAuthModalOpen(false);
         }}
-        role={roleList.find((role) => role.checked === true)}
+        role={roleLevel}
       />
     </ContainerBase>
   );
