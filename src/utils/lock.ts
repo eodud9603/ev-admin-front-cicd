@@ -9,8 +9,8 @@ import { debounce } from "lodash";
  *
  */
 export const lock = <T,>(
-  callback: (params?: T) => Promise<void>,
-  time: number = 300
+  callback: (params?: T) => void | Promise<void>,
+  time = 300
 ) => {
   let locked = false;
 
@@ -21,7 +21,8 @@ export const lock = <T,>(
 
     locked = true;
 
-    callback(params)
+    const promise = callback(params);
+    void Promise.all([promise])
       .then(() => {
         locked = false;
       })
@@ -29,8 +30,4 @@ export const lock = <T,>(
         locked = false;
       });
   }, time);
-};
-
-const test = async (text: string) => {
-  const zz = await 1;
 };
