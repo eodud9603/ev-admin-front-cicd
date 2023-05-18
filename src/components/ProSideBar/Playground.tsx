@@ -73,6 +73,7 @@ const initMenus = {
   sales: false,
   settlement: false,
   usageHistory: false,
+  usageStatus: false,
 };
 
 // hex to rgba converter
@@ -665,32 +666,30 @@ export const Playground = (props: any) => {
                   로밍 청구 현황
                 </MenuItem>
               </SubMenu>
-
-              <SubMenu label="Components" icon={<Diamond />}>
-                <MenuItem> Grid</MenuItem>
-                <MenuItem> Layout</MenuItem>
-                <SubMenu label="Forms">
-                  <MenuItem> Input</MenuItem>
-                  <MenuItem> Select</MenuItem>
-                  <SubMenu label="More">
-                    <MenuItem> CheckBox</MenuItem>
-                    <MenuItem> Radio</MenuItem>
-                  </SubMenu>
-                </SubMenu>
+              <SubMenu
+                label="충전 이용 현황"
+                style={{ fontSize: 14 }}
+                icon={<Global />}
+                open={allOpen.usageStatus}
+                onOpenChange={(isOpen: boolean) =>
+                  eachOpenMenuItem("usageStatus", isOpen)
+                }
+              >
+                <MenuItem
+                  component={<Link to={moveToPath("/usageStatus/charger")} />}
+                  className={activeItemTextColor("/usageStatus/charger")}
+                  onClick={() => setActive("/usageStatus/charger")}
+                >
+                  충전기 이용 현황
+                </MenuItem>
+                <MenuItem
+                  component={<Link to={moveToPath("/usageStatus/history")} />}
+                  className={activeItemTextColor("/usageStatus/history")}
+                  onClick={() => setActive("/usageStatus/history")}
+                >
+                  충전기 이용 내역
+                </MenuItem>
               </SubMenu>
-              <SubMenu label="E-commerce" icon={<ShoppingCart />}>
-                <MenuItem> Product</MenuItem>
-                <MenuItem> Orders</MenuItem>
-                <MenuItem> Credit card</MenuItem>
-              </SubMenu>
-            </Menu>
-
-            <Menu menuItemStyles={menuItemStyles}>
-              <MenuItem icon={<Calendar />}>Calendar</MenuItem>
-              <MenuItem icon={<Book />}>Documentation</MenuItem>
-              <MenuItem disabled icon={<Service />}>
-                Examples
-              </MenuItem>
             </Menu>
           </div>
           <SidebarFooter collapsed={collapsed} />

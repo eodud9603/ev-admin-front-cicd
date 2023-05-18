@@ -134,6 +134,8 @@ import { categoryListLoader } from "src/pages/Operate/loader/categoryListLoader"
 import { faqListLoader } from "src/pages/Operate/loader/faqListLoader";
 import { faqAddLoader } from "src/pages/Operate/loader/faqAddLoader";
 import { memberWithdrawListLoader } from "src/pages/Member/laoder/memberWithdrawListLoader";
+import UsageStatusCharger from "src/pages/UsageStatus/UsageStatusCharger";
+import UsageStatusHistory from "src/pages/UsageStatus/UsageStatusHistory";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -401,6 +403,10 @@ const userRoutes: Array<RouteProps> = [
     element: <OperatorCounselorDetail />,
   },
   { path: "/operator/role", element: <OperatorRole /> },
+
+  /* 충전 이용 현황 */
+  { path: "/usageStatus/charger", element: <UsageStatusCharger /> },
+  { path: "/usageStatus/history", element: <UsageStatusHistory /> },
 ];
 
 const authRoutes: Array<RouteProps> = [
