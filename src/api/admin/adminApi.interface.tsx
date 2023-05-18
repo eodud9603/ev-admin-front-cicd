@@ -30,6 +30,15 @@ export interface IAdminMainRoleItem {
 
 export interface IAdminRoleListResponse {
   name: string;
-  code: string;
+  code: TRoleTypeKey;
+  elements: IAdminMainRoleItem[];
+}
+
+/** 기본 권한 수정 [단건]
+ * @see http://218.38.12.198:45081/docs/index.html#_%EA%B8%B0%EB%B3%B8_%EA%B6%8C%ED%95%9C_%EC%88%98%EC%A0%95_%EB%8B%A4%EA%B1%B4_2
+ */
+export interface IRequestAdminRoleModify {
+  name: string;
+  code: TRoleTypeKey;
   elements: IAdminMainRoleItem[];
 }

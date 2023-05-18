@@ -18,7 +18,9 @@ import {
 } from "src/api/admin/adminApi.interface";
 import { useLoaderData } from "react-router";
 import { lock } from "src/utils/lock";
-import { getAdminRoleList } from "src/api/admin/adminAPi";
+import { getAdminRoleList, postAdminRoleModify } from "src/api/admin/adminAPi";
+import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
+import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 
 /** 권한 목록(탭) */
 const roleList = objectToArray(ROLE_TYPE);
@@ -29,13 +31,34 @@ const OperatorRole = () => {
     filterData: object;
   };
 
-  const [selectedRole, setSelectedRole] = useState(roleList[0].value);
+  const [selectedRole, setSelectedRole] = useState<TRoleTypeKey>(
+    roleList[0].value as TRoleTypeKey
+  );
   /* 전체보기 */
   const [allOpen, setAllOpen] = useState(false);
   const [list, setList] = useState<IAdminMainRoleItem[]>(data.elements ?? []);
+  /** disabled */
+  const [disabled, setDisabled] = useState(true);
+
+  /* 수정취소 모달 */
+  const [editCancelModal, setEditCancelModal] = useState<{
+    isOpen: boolean;
+    role: TRoleTypeKey;
+  }>({
+    isOpen: false,
+    role: roleList[0].value as TRoleTypeKey,
+  });
+  /* 수정완료 모달 */
+  const [isEditComplete, setIsEditComplete] = useState(false);
 
   const onChangeRole = (role: TRoleTypeKey) =>
     lock(async () => {
+      /* 수정모드 상태에서 탭 변경시, 취소안내모달 */
+      if (!disabled) {
+        setEditCancelModal({ isOpen: true, role });
+        return;
+      }
+
       const { code, data: searchData } = await getAdminRoleList({ role });
 
       /** 성공 */
@@ -44,7 +67,32 @@ const OperatorRole = () => {
         setList(searchData.elements ?? []);
         setSelectedRole(role);
       }
+    }, 100);
+
+  /** 권한등급별 권한 수정 */
+  const modify = lock(async () => {
+    /* 수정모드가 아니면 리턴 */
+    if (disabled) {
+      setDisabled(false);
+      return;
+    }
+    if (!data.code || !data.name) {
+      return;
+    }
+
+    /* 수정 요청 */
+    const { code } = await postAdminRoleModify({
+      code: data.code,
+      name: data.name,
+      elements: list,
     });
+    /** 수정 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      setIsEditComplete(true);
+      setDisabled(true);
+    }
+  }, 100);
 
   return (
     <ContainerBase>
@@ -103,12 +151,13 @@ const OperatorRole = () => {
 
         <ListSection>
           <RoleHeaderItem />
-          {list.map((props, index) => (
+          {list.map((props) => (
             <RoleMainItem
               key={props.id}
-              index={index}
+              disabled={disabled}
               initialOpen={allOpen}
               {...props}
+              setList={setList}
             />
           ))}
         </ListSection>
@@ -116,9 +165,37 @@ const OperatorRole = () => {
         <div className={"my-5 d-flex flex-row justify-content-center gap-4"}>
           {/** @TODO 권한관리의 별도 페이지가 없으므로 주석 처리 (추후 추가시, 적용) */}
           {/* <ButtonBase className={"width-110"} outline label={"목록"} /> */}
-          <ButtonBase className={"width-110"} color={"turu"} label={"수정"} />
+          <ButtonBase
+            className={"width-110"}
+            color={"turu"}
+            label={disabled ? "수정" : "저장"}
+            onClick={modify}
+          />
         </div>
       </BodyBase>
+
+      <DetailCancelModal
+        isOpen={editCancelModal.isOpen}
+        onClose={() => {
+          setEditCancelModal((prev) => ({ ...prev, isOpen: false }));
+        }}
+        cancelHandler={() => {
+          setDisabled(true);
+          setSelectedRole(editCancelModal.role);
+        }}
+        title={"권한 수정 취소 안내"}
+        contents={
+          "변경된 권한 정보가 저장되지 않습니다.\n권한 수정을 취소하시겠습니까?"
+        }
+      />
+      <DetailCompleteModal
+        isOpen={isEditComplete}
+        onClose={() => {
+          setIsEditComplete(false);
+        }}
+        title={"권한 정보 수정 완료 안내"}
+        contents={`수정한 [${ROLE_TYPE[selectedRole]}] 권한 정보가 저장되었습니다.`}
+      />
     </ContainerBase>
   );
 };

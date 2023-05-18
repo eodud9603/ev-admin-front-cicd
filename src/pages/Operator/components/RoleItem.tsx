@@ -1,14 +1,20 @@
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import { useState } from "react";
 import { Col, Row } from "reactstrap";
-import { IAdminSubRoleItem } from "src/api/admin/adminApi.interface";
+import {
+  IAdminMainRoleItem,
+  IAdminSubRoleItem,
+} from "src/api/admin/adminApi.interface";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import styled, { keyframes } from "styled-components";
+
+type PermissionType =
+  | "isView"
+  | "isCreate"
+  | "isModify"
+  | "isDelete"
+  | "isExel"
+  | "isExecute";
 
 interface IColProps {
   ratio: number;
@@ -17,36 +23,21 @@ interface IColProps {
   isBorder?: boolean;
 }
 
-interface IRoleMainItemProps {
-  name: string;
-  index: number;
-
+interface IRoleMainItemProps extends IAdminMainRoleItem {
   disabled?: boolean;
   initialOpen?: boolean;
   children: IAdminSubRoleItem[];
+  setList: React.Dispatch<React.SetStateAction<IAdminMainRoleItem[]>>;
 }
 
 interface IRoleSubItemProps extends IAdminSubRoleItem {
-  name: string;
-  index: number;
   disabled: boolean;
-
-  lastIndex: number;
-  mainView: boolean;
-  mainCreate: boolean;
-
-  getSubRoleList: () => {
-    list: IRoleSubItemRef[];
-    setView: React.Dispatch<React.SetStateAction<boolean>>;
-    setCreate: React.Dispatch<React.SetStateAction<boolean>>;
-  };
-}
-
-interface IRoleSubItemRef {
-  view: boolean;
-  create: boolean;
-  onChangeSubView: (bool: boolean) => void;
-  onChangeSubCreate: (bool: boolean) => void;
+  isLast: boolean;
+  onChangeRole: (
+    id: number,
+    name: PermissionType,
+    isActive: boolean
+  ) => () => void;
 }
 
 /** 권한 테이블형식 공통 border css */
@@ -73,7 +64,7 @@ const RoleCol = ({ ratio, children, className = "", ...rest }: IColProps) => {
 };
 
 const TextCol = (props: Omit<IColProps, "ratio">) => {
-  return <RoleCol ratio={5} {...props} />;
+  return <RoleCol ratio={3} {...props} />;
 };
 
 const CheckBoxCol = ({
@@ -101,8 +92,12 @@ export const RoleHeaderItem = () => {
     >
       <TextCol>1차</TextCol>
       <TextCol>2차</TextCol>
-      <CheckBoxCol isBorder={false}>등록</CheckBoxCol>
       <CheckBoxCol isBorder={false}>조회</CheckBoxCol>
+      <CheckBoxCol isBorder={false}>등록</CheckBoxCol>
+      <CheckBoxCol isBorder={false}>수정</CheckBoxCol>
+      <CheckBoxCol isBorder={false}>삭제</CheckBoxCol>
+      <CheckBoxCol isBorder={false}>엑셀</CheckBoxCol>
+      <CheckBoxCol isBorder={false}>실행</CheckBoxCol>
     </Row>
   );
 };
@@ -112,9 +107,10 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
   const {
     initialOpen = false,
     disabled = false,
+    id,
     name,
-    index,
     children,
+    setList,
   } = props;
 
   /** 하위 항목 전체 체크 여부 */
@@ -173,18 +169,7 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
     initCheck();
 
   const [isOpen, setIsOpen] = useState(initialOpen);
-
-  /** 편집/조회 */
-  const [view, setView] = useState(isView);
-  const [create, setCreate] = useState(isCreate);
-
-  const subRef = useRef<IRoleSubItemRef[]>([]);
-
   const isSubListOpened = isOpen && children.length > 0;
-
-  useEffect(() => {
-    setIsOpen(initialOpen);
-  }, [initialOpen]);
 
   const onChangeOpenHandler = () => {
     if (children.length > 0) {
@@ -192,15 +177,55 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
     }
   };
 
-  const getSubRoleList = () => {
-    const list = [...subRef.current];
+  /** 소분류 권한 전체 일괄 변경 */
+  const onChangeRole = (name: PermissionType, isActive: boolean) => () => {
+    setList((prevList) => {
+      const updateList = [...prevList];
 
-    return {
-      list,
-      setView,
-      setCreate,
-    };
+      const roleIndex = updateList.findIndex((item) => item.id === id);
+      if (roleIndex > -1) {
+        updateList[roleIndex] = {
+          ...updateList[roleIndex],
+          children: updateList[roleIndex].children.map((subItem) => ({
+            ...subItem,
+            [name]: isActive ? "N" : "Y",
+          })),
+        };
+      }
+
+      return updateList;
+    });
   };
+
+  /** 소분류 권한 변경 */
+  const onChangeSingleRole = useCallback(
+    (subItemId: number, name: PermissionType, isActive: boolean) => () => {
+      setList((prevList) => {
+        const updateList = [...prevList];
+
+        const roleIndex = updateList.findIndex((item) => item.id === id);
+        if (roleIndex > -1) {
+          updateList[roleIndex] = {
+            ...updateList[roleIndex],
+            children: updateList[roleIndex].children.map((subItem) => {
+              if (subItem.id === subItemId) {
+                return { ...subItem, [name]: isActive ? "N" : "Y" };
+              }
+
+              return subItem;
+            }),
+          };
+        }
+
+        return updateList;
+      });
+    },
+    []
+  );
+
+  useEffect(() => {
+    setIsOpen(initialOpen);
+  }, [initialOpen]);
 
   return (
     <div>
@@ -226,43 +251,65 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
         <CheckBoxCol>
           <CheckBoxBase
             label={""}
-            name={`main-create-${name}-${index}`}
-            checked={create}
+            name={`main-view-${name}-${id}`}
+            checked={isView}
             disabled={disabled}
-            onChange={() => {
-              for (const sub of subRef.current) {
-                sub?.onChangeSubCreate(!create);
-              }
-              setCreate((prev) => !prev);
-            }}
+            onChange={onChangeRole("isView", isView)}
           />
         </CheckBoxCol>
         <CheckBoxCol>
           <CheckBoxBase
             label={""}
-            name={`main-view-${name}-${index}`}
-            checked={view}
+            name={`main-create-${name}-${id}`}
+            checked={isCreate}
             disabled={disabled}
-            onChange={() => {
-              for (const sub of subRef.current) {
-                sub?.onChangeSubView(!view);
-              }
-              setView((prev) => !prev);
-            }}
+            onChange={onChangeRole("isCreate", isCreate)}
+          />
+        </CheckBoxCol>
+        <CheckBoxCol>
+          <CheckBoxBase
+            label={""}
+            name={`main-modify-${name}-${id}`}
+            checked={isModify}
+            disabled={disabled}
+            onChange={onChangeRole("isModify", isModify)}
+          />
+        </CheckBoxCol>
+        <CheckBoxCol>
+          <CheckBoxBase
+            label={""}
+            name={`main-delete-${name}-${id}`}
+            checked={isDelete}
+            disabled={disabled}
+            onChange={onChangeRole("isDelete", isDelete)}
+          />
+        </CheckBoxCol>
+        <CheckBoxCol>
+          <CheckBoxBase
+            label={""}
+            name={`main-exel-${name}-${id}`}
+            checked={isExel}
+            disabled={disabled}
+            onChange={onChangeRole("isExel", isExel)}
+          />
+        </CheckBoxCol>
+        <CheckBoxCol>
+          <CheckBoxBase
+            label={""}
+            name={`main-execute-${name}-${id}`}
+            checked={isExecute}
+            disabled={disabled}
+            onChange={onChangeRole("isExecute", isExecute)}
           />
         </CheckBoxCol>
       </Row>
       {isOpen &&
-        children.map((detail, detailIndex) => (
+        children.map((detail, index) => (
           <RoleSubItem
-            ref={(ref: IRoleSubItemRef) => (subRef.current[detailIndex] = ref)}
-            key={detailIndex}
-            index={detailIndex}
-            lastIndex={children.length - 1}
-            getSubRoleList={getSubRoleList}
+            key={detail.id}
+            isLast={children.length - 1 === index}
             disabled={disabled}
-            mainView={view || detail.isView === "Y"}
-            mainCreate={create || detail.isCreate === "Y"}
+            onChangeRole={onChangeSingleRole}
             {...detail}
           />
         ))}
@@ -271,88 +318,82 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
 };
 
 /** 2차 권한 목록뷰 */
-const RoleSubItem = forwardRef<IRoleSubItemRef, IRoleSubItemProps>(
-  (props, ref) => {
-    const {
-      index,
-      lastIndex,
-      name,
-      disabled,
-      mainView,
-      mainCreate,
-      getSubRoleList,
-    } = props;
-    /** 조회/쓰기 */
-    const [view, setView] = useState(mainView);
-    const [create, setCreate] = useState(mainCreate);
+const RoleSubItem = memo((props: IRoleSubItemProps) => {
+  const {
+    isLast,
+    id,
+    name,
+    disabled,
+    isView,
+    isCreate,
+    isModify,
+    isDelete,
+    isExel,
+    isExecute,
+    onChangeRole,
+  } = props;
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        view,
-        create,
-        onChangeSubView: (bool: boolean) => setView(bool),
-        onChangeSubCreate: (bool: boolean) => setCreate(bool),
-      }),
-      [view, create]
-    );
-
-    return (
-      <RoleSubItemRow>
-        <TextCol className={`${index === lastIndex ? borderCSS : ""}`} />
-        <TextCol className={borderCSS}>{name}</TextCol>
-        <CheckBoxCol>
-          <CheckBoxBase
-            label={""}
-            name={`sub-create-${name}-${index}`}
-            checked={create}
-            disabled={disabled}
-            /** @TODO 코드 정리 필요 */
-            onChange={() => {
-              const { list, setCreate: setMainCreate } = getSubRoleList();
-              const listCount = lastIndex + 1;
-              const checkCount =
-                list.filter((item) => item.create).length + (!create ? 1 : -1);
-
-              if (listCount === checkCount && !mainCreate) {
-                setMainCreate(true);
-              }
-              if (listCount !== checkCount && mainCreate) {
-                setMainCreate(false);
-              }
-
-              setCreate((prev) => !prev);
-            }}
-          />
-        </CheckBoxCol>
-        <CheckBoxCol>
-          <CheckBoxBase
-            label={""}
-            name={`sub-read-${name}-${index}`}
-            checked={view}
-            disabled={disabled}
-            /** @TODO 코드 정리 필요 */
-            onChange={() => {
-              const { list, setView: setMainView } = getSubRoleList();
-              const listCount = lastIndex + 1;
-              const checkCount =
-                list.filter((item) => item.view).length + (!view ? 1 : -1);
-
-              if (listCount === checkCount && !mainView) {
-                setMainView(true);
-              }
-              if (listCount !== checkCount && mainView) {
-                setMainView(false);
-              }
-
-              setView((prev) => !prev);
-            }}
-          />
-        </CheckBoxCol>
-      </RoleSubItemRow>
-    );
-  }
-);
+  return (
+    <RoleSubItemRow>
+      <TextCol className={`${isLast ? borderCSS : ""}`} />
+      <TextCol className={borderCSS}>{name}</TextCol>
+      <CheckBoxCol>
+        <CheckBoxBase
+          label={""}
+          name={`sub-view-${name}-${id}`}
+          checked={isView === "Y"}
+          disabled={disabled}
+          onChange={onChangeRole(id, "isView", isView === "Y")}
+        />
+      </CheckBoxCol>
+      <CheckBoxCol>
+        <CheckBoxBase
+          label={""}
+          name={`sub-create-${name}-${id}`}
+          checked={isCreate === "Y"}
+          disabled={disabled}
+          onChange={onChangeRole(id, "isCreate", isCreate === "Y")}
+        />
+      </CheckBoxCol>
+      <CheckBoxCol>
+        <CheckBoxBase
+          label={""}
+          name={`sub-modify-${name}-${id}`}
+          checked={isModify === "Y"}
+          disabled={disabled}
+          onChange={onChangeRole(id, "isModify", isModify === "Y")}
+        />
+      </CheckBoxCol>
+      <CheckBoxCol>
+        <CheckBoxBase
+          label={""}
+          name={`sub-delete-${name}-${id}`}
+          checked={isDelete === "Y"}
+          disabled={disabled}
+          onChange={onChangeRole(id, "isDelete", isDelete === "Y")}
+        />
+      </CheckBoxCol>
+      <CheckBoxCol>
+        <CheckBoxBase
+          label={""}
+          name={`sub-exel-${name}-${id}`}
+          checked={isExel === "Y"}
+          disabled={disabled}
+          onChange={onChangeRole(id, "isExel", isExel === "Y")}
+        />
+      </CheckBoxCol>
+      <CheckBoxCol>
+        <CheckBoxBase
+          label={""}
+          name={`sub-execute-${name}-${id}`}
+          checked={isExecute === "Y"}
+          disabled={disabled}
+          onChange={onChangeRole(id, "isExecute", isExecute === "Y")}
+        />
+      </CheckBoxCol>
+    </RoleSubItemRow>
+  );
+});
 
 const DropArea = styled.div`
   :hover {
