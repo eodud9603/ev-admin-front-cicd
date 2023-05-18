@@ -12,4 +12,5 @@ export const API_URL = {
   boardUrl: "/board",
   memberUrl: "/member",
   categoryUrl: "/category",
+  adminUrl: "/admin",
 } as const;

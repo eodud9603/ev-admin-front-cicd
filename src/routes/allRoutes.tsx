@@ -140,6 +140,7 @@ import AdminAccessLog from "src/pages/Log/AdminAccessLog";
 import ChargerControlLog from "src/pages/Log/ChargerControlLog";
 import ChargerLog from "src/pages/Log/ChargerLog";
 import { faqDetailLoader } from "src/pages/Operate/loader/faqDetailLoader";
+import { operatorRoleListLoader } from "src/pages/Operator/loader/operatorRoleListLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -410,7 +411,11 @@ const userRoutes: Array<RouteProps> = [
     path: "/operator/counselor/detail/:id",
     element: <OperatorCounselorDetail />,
   },
-  { path: "/operator/role", element: <OperatorRole /> },
+  {
+    path: "/operator/role",
+    element: <OperatorRole />,
+    loader: operatorRoleListLoader,
+  },
 
   /* 충전 이용 현황 */
   { path: "/usageStatus/charger", element: <UsageStatusCharger /> },

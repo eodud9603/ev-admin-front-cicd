@@ -6,6 +6,7 @@ import React, {
 } from "react";
 import { useState } from "react";
 import { Col, Row } from "reactstrap";
+import { IAdminSubRoleItem } from "src/api/admin/adminApi.interface";
 import CheckBoxBase from "src/components/Common/Checkbox/CheckBoxBase";
 import styled, { keyframes } from "styled-components";
 
@@ -22,30 +23,30 @@ interface IRoleMainItemProps {
 
   disabled?: boolean;
   initialOpen?: boolean;
-  detailList: { name: string; read: boolean; write: boolean }[];
+  children: IAdminSubRoleItem[];
 }
 
-interface IRoleSubItemProps {
+interface IRoleSubItemProps extends IAdminSubRoleItem {
   name: string;
   index: number;
   disabled: boolean;
 
   lastIndex: number;
-  mainWrite: boolean;
-  mainRead: boolean;
+  mainView: boolean;
+  mainCreate: boolean;
 
   getSubRoleList: () => {
     list: IRoleSubItemRef[];
-    setRead: React.Dispatch<React.SetStateAction<boolean>>;
-    setWrite: React.Dispatch<React.SetStateAction<boolean>>;
+    setView: React.Dispatch<React.SetStateAction<boolean>>;
+    setCreate: React.Dispatch<React.SetStateAction<boolean>>;
   };
 }
 
 interface IRoleSubItemRef {
-  write: boolean;
-  read: boolean;
-  onChangeSubWrite: (bool: boolean) => void;
-  onChangeSubRead: (bool: boolean) => void;
+  view: boolean;
+  create: boolean;
+  onChangeSubView: (bool: boolean) => void;
+  onChangeSubCreate: (bool: boolean) => void;
 }
 
 /** 권한 테이블형식 공통 border css */
@@ -100,7 +101,7 @@ export const RoleHeaderItem = () => {
     >
       <TextCol>1차</TextCol>
       <TextCol>2차</TextCol>
-      <CheckBoxCol isBorder={false}>편집</CheckBoxCol>
+      <CheckBoxCol isBorder={false}>등록</CheckBoxCol>
       <CheckBoxCol isBorder={false}>조회</CheckBoxCol>
     </Row>
   );
@@ -113,25 +114,80 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
     disabled = false,
     name,
     index,
-    detailList,
+    children,
   } = props;
+
+  /** 하위 항목 전체 체크 여부 */
+  const initCheck = () => {
+    const subsCount = children.length;
+    const {
+      viewCount,
+      createCount,
+      modifyCount,
+      deleteCount,
+      executeCount,
+      exelCount,
+    } = children.reduce(
+      (acc, cur) => {
+        if (cur.isView === "Y") {
+          acc.viewCount += 1;
+        }
+        if (cur.isCreate === "Y") {
+          acc.createCount += 1;
+        }
+        if (cur.isModify === "Y") {
+          acc.modifyCount += 1;
+        }
+        if (cur.isDelete === "Y") {
+          acc.deleteCount += 1;
+        }
+        if (cur.isExel === "Y") {
+          acc.exelCount += 1;
+        }
+        if (cur.isExecute === "Y") {
+          acc.executeCount += 1;
+        }
+
+        return acc;
+      },
+      {
+        viewCount: 0,
+        createCount: 0,
+        modifyCount: 0,
+        deleteCount: 0,
+        exelCount: 0,
+        executeCount: 0,
+      }
+    );
+
+    return {
+      isView: subsCount === viewCount,
+      isCreate: subsCount === createCount,
+      isModify: subsCount === modifyCount,
+      isDelete: subsCount === deleteCount,
+      isExel: subsCount === exelCount,
+      isExecute: subsCount === executeCount,
+    };
+  };
+  const { isView, isCreate, isModify, isDelete, isExel, isExecute } =
+    initCheck();
 
   const [isOpen, setIsOpen] = useState(initialOpen);
 
   /** 편집/조회 */
-  const [write, setWrite] = useState(true);
-  const [read, setRead] = useState(true);
+  const [view, setView] = useState(isView);
+  const [create, setCreate] = useState(isCreate);
 
   const subRef = useRef<IRoleSubItemRef[]>([]);
 
-  const isSubListOpened = isOpen && detailList.length > 0;
+  const isSubListOpened = isOpen && children.length > 0;
 
   useEffect(() => {
     setIsOpen(initialOpen);
   }, [initialOpen]);
 
   const onChangeOpenHandler = () => {
-    if (detailList.length > 0) {
+    if (children.length > 0) {
       setIsOpen((prev) => !prev);
     }
   };
@@ -141,8 +197,8 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
 
     return {
       list,
-      setWrite,
-      setRead,
+      setView,
+      setCreate,
     };
   };
 
@@ -158,7 +214,7 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
           >
             <span>{name}</span>
             {/* 2차 항목이 있는 경우 */}
-            {detailList.length > 0 && (
+            {children.length > 0 && (
               <Icon
                 isOpen={isOpen}
                 className={"mdi mdi-chevron-up font-size-14"}
@@ -170,43 +226,43 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
         <CheckBoxCol>
           <CheckBoxBase
             label={""}
-            name={`main-write-${name}-${index}`}
-            checked={write}
+            name={`main-create-${name}-${index}`}
+            checked={create}
             disabled={disabled}
             onChange={() => {
               for (const sub of subRef.current) {
-                sub?.onChangeSubWrite(!write);
+                sub?.onChangeSubCreate(!create);
               }
-              setWrite((prev) => !prev);
+              setCreate((prev) => !prev);
             }}
           />
         </CheckBoxCol>
         <CheckBoxCol>
           <CheckBoxBase
             label={""}
-            name={`main-read-${name}-${index}`}
-            checked={read}
+            name={`main-view-${name}-${index}`}
+            checked={view}
             disabled={disabled}
             onChange={() => {
               for (const sub of subRef.current) {
-                sub?.onChangeSubRead(!read);
+                sub?.onChangeSubView(!view);
               }
-              setRead((prev) => !prev);
+              setView((prev) => !prev);
             }}
           />
         </CheckBoxCol>
       </Row>
       {isOpen &&
-        detailList.map((detail, detailIndex) => (
+        children.map((detail, detailIndex) => (
           <RoleSubItem
             ref={(ref: IRoleSubItemRef) => (subRef.current[detailIndex] = ref)}
             key={detailIndex}
             index={detailIndex}
-            lastIndex={detailList.length - 1}
+            lastIndex={children.length - 1}
             getSubRoleList={getSubRoleList}
             disabled={disabled}
-            mainWrite={write}
-            mainRead={read}
+            mainView={view || detail.isView === "Y"}
+            mainCreate={create || detail.isCreate === "Y"}
             {...detail}
           />
         ))}
@@ -222,23 +278,23 @@ const RoleSubItem = forwardRef<IRoleSubItemRef, IRoleSubItemProps>(
       lastIndex,
       name,
       disabled,
-      mainWrite,
-      mainRead,
+      mainView,
+      mainCreate,
       getSubRoleList,
     } = props;
-    /** 편집/조회 */
-    const [write, setWrite] = useState(mainWrite);
-    const [read, setRead] = useState(mainRead);
+    /** 조회/쓰기 */
+    const [view, setView] = useState(mainView);
+    const [create, setCreate] = useState(mainCreate);
 
     useImperativeHandle(
       ref,
       () => ({
-        write,
-        read,
-        onChangeSubWrite: (bool: boolean) => setWrite(bool),
-        onChangeSubRead: (bool: boolean) => setRead(bool),
+        view,
+        create,
+        onChangeSubView: (bool: boolean) => setView(bool),
+        onChangeSubCreate: (bool: boolean) => setCreate(bool),
       }),
-      [write, read]
+      [view, create]
     );
 
     return (
@@ -248,24 +304,24 @@ const RoleSubItem = forwardRef<IRoleSubItemRef, IRoleSubItemProps>(
         <CheckBoxCol>
           <CheckBoxBase
             label={""}
-            name={`sub-write-${name}-${index}`}
-            checked={write}
+            name={`sub-create-${name}-${index}`}
+            checked={create}
             disabled={disabled}
             /** @TODO 코드 정리 필요 */
             onChange={() => {
-              const { list, setWrite: setMainWrite } = getSubRoleList();
+              const { list, setCreate: setMainCreate } = getSubRoleList();
               const listCount = lastIndex + 1;
               const checkCount =
-                list.filter((item) => item.write).length + (!write ? 1 : -1);
+                list.filter((item) => item.create).length + (!create ? 1 : -1);
 
-              if (listCount === checkCount && !mainWrite) {
-                setMainWrite(true);
+              if (listCount === checkCount && !mainCreate) {
+                setMainCreate(true);
               }
-              if (listCount !== checkCount && mainWrite) {
-                setMainWrite(false);
+              if (listCount !== checkCount && mainCreate) {
+                setMainCreate(false);
               }
 
-              setWrite((prev) => !prev);
+              setCreate((prev) => !prev);
             }}
           />
         </CheckBoxCol>
@@ -273,23 +329,23 @@ const RoleSubItem = forwardRef<IRoleSubItemRef, IRoleSubItemProps>(
           <CheckBoxBase
             label={""}
             name={`sub-read-${name}-${index}`}
-            checked={read}
+            checked={view}
             disabled={disabled}
             /** @TODO 코드 정리 필요 */
             onChange={() => {
-              const { list, setRead: setMainRead } = getSubRoleList();
+              const { list, setView: setMainView } = getSubRoleList();
               const listCount = lastIndex + 1;
               const checkCount =
-                list.filter((item) => item.read).length + (!read ? 1 : -1);
+                list.filter((item) => item.view).length + (!view ? 1 : -1);
 
-              if (listCount === checkCount && !mainRead) {
-                setMainRead(true);
+              if (listCount === checkCount && !mainView) {
+                setMainView(true);
               }
-              if (listCount !== checkCount && mainRead) {
-                setMainRead(false);
+              if (listCount !== checkCount && mainView) {
+                setMainView(false);
               }
 
-              setRead((prev) => !prev);
+              setView((prev) => !prev);
             }}
           />
         </CheckBoxCol>

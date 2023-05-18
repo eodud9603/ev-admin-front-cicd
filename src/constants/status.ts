@@ -277,4 +277,17 @@ export const GENDER_TYPE = {
 } as const;
 /** 성별(gender) 키 타입 */
 export type TGenderTypeKey = keyof typeof GENDER_TYPE;
-/* 회원 관리 */
+
+/**
+ * @description 관리자 유형 코드(권한코드)
+ * @see http://218.38.12.198:45081/docs/index.html#_%EA%B4%80%EB%A6%AC%EC%9E%90_%EC%9C%A0%ED%98%95_%EC%BD%94%EB%93%9C%EA%B6%8C%ED%95%9C%EC%BD%94%EB%93%9C
+ */
+export const ROLE_TYPE = {
+  ROLE001: "최고관리자",
+  ROLE002: "일반관리자",
+  ROLE011: "상담사",
+  ROLE021: "제조사",
+  ROLE031: "관계사",
+} as const;
+/** 관리자 유형 코드(권한코드) 키 타입 */
+export type TRoleTypeKey = keyof typeof ROLE_TYPE;

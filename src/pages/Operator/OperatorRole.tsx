@@ -5,54 +5,52 @@ import BodyBase from "src/components/Common/Layout/BodyBase";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
-import { ROLE_LIST, ROLE_TABLE_LIST } from "src/constants/list";
 import styled from "styled-components";
 import {
   RoleHeaderItem,
   RoleMainItem,
 } from "src/pages/Operator/components/RoleItem";
+import { objectToArray } from "src/utils/convert";
+import { ROLE_TYPE, TRoleTypeKey } from "src/constants/status";
+import {
+  IAdminMainRoleItem,
+  IAdminRoleListResponse,
+} from "src/api/admin/adminApi.interface";
+import { useLoaderData } from "react-router";
+import { lock } from "src/utils/lock";
+import { getAdminRoleList } from "src/api/admin/adminAPi";
+
+/** 권한 목록(탭) */
+const roleList = objectToArray(ROLE_TYPE);
 
 const OperatorRole = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "권한 관리" },
-  ]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
-  const [selectedRole, setSelectedRole] = useState("1");
+  const { data, filterData } = useLoaderData() as {
+    data: Partial<IAdminRoleListResponse>;
+    filterData: object;
+  };
+
+  const [selectedRole, setSelectedRole] = useState(roleList[0].value);
   /* 전체보기 */
   const [allOpen, setAllOpen] = useState(false);
+  const [list, setList] = useState<IAdminMainRoleItem[]>(data.elements ?? []);
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
+  const onChangeRole = (role: TRoleTypeKey) =>
+    lock(async () => {
+      const { code, data: searchData } = await getAdminRoleList({ role });
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
-
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
+      /** 성공 */
+      const success = code === "SUCCESS" && !!searchData;
+      if (success) {
+        setList(searchData.elements ?? []);
+        setSelectedRole(role);
+      }
+    });
 
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -65,18 +63,16 @@ const OperatorRole = () => {
         />
 
         <RoleSection>
-          {ROLE_LIST.map(({ label, value }, index) => (
+          {roleList.map(({ label, value }, index) => (
             <ButtonBase
               className={`width-110 rounded-0 fw-bold ${
                 index > 0 ? "border-start-0" : ""
               } ${value === selectedRole ? "bg-turu text-white" : ""}`}
-              key={index}
+              key={value}
               outline={true}
               color={"turu"}
               label={label}
-              onClick={() => {
-                setSelectedRole(value);
-              }}
+              onClick={onChangeRole(value as TRoleTypeKey)}
             />
           ))}
 
@@ -107,9 +103,9 @@ const OperatorRole = () => {
 
         <ListSection>
           <RoleHeaderItem />
-          {ROLE_TABLE_LIST.map((props, index) => (
+          {list.map((props, index) => (
             <RoleMainItem
-              key={index}
+              key={props.id}
               index={index}
               initialOpen={allOpen}
               {...props}
