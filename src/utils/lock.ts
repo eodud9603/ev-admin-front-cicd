@@ -22,12 +22,8 @@ export const lock = <T,>(
     locked = true;
 
     const promise = callback(params);
-    void Promise.all([promise])
-      .then(() => {
-        locked = false;
-      })
-      .catch(() => {
-        locked = false;
-      });
+    void Promise.all([promise]).finally(() => {
+      locked = false;
+    });
   }, time);
 };
