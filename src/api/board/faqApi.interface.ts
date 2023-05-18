@@ -1,5 +1,6 @@
 import { YNType } from "src/api/api.interface";
 import { TUploadTypeKeys } from "src/constants/status";
+import { INoticeDetailFileItem } from "src/api/board/noticeApi.interface";
 
 /* faq 목록 조회 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EC%A1%B0%ED%9A%8C_7 */
@@ -35,6 +36,23 @@ export interface IFaqListResponse {
   totalPages: number;
 }
 
+/* faq 상세 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%83%81%EC%84%B8_8 */
+export interface IRequestFaqDetail {
+  id: number;
+}
+export interface IFaqDetailResponse {
+  id: number;
+  title: string;
+  uploadType?: TUploadTypeKeys;
+  writer: string;
+  content: string;
+  readCount: number;
+  createAt: string;
+  isExpose: YNType;
+  files: INoticeDetailFileItem[];
+}
+
 /* faq 등록 */
 /** @see http://218.38.12.198:45081/docs/index.html#_%EB%93%B1%EB%A1%9D_8 */
 export interface IRequestFaqRegister {
@@ -42,6 +60,18 @@ export interface IRequestFaqRegister {
   title: string;
   content: string;
   writer: string;
+  isExpose: YNType;
+  files: Array<number>;
+  uploadType: TUploadTypeKeys;
+  categoryId: number;
+}
+
+/* faq 수정 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%88%98%EC%A0%95_9 */
+export interface IRequestFaqModify {
+  id: number;
+  title: string;
+  content: string;
   isExpose: YNType;
   files: Array<number>;
   uploadType: TUploadTypeKeys;

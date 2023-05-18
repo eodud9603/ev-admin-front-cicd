@@ -134,6 +134,7 @@ import { categoryListLoader } from "src/pages/Operate/loader/categoryListLoader"
 import { faqListLoader } from "src/pages/Operate/loader/faqListLoader";
 import { faqAddLoader } from "src/pages/Operate/loader/faqAddLoader";
 import { memberWithdrawListLoader } from "src/pages/Member/laoder/memberWithdrawListLoader";
+import { faqDetailLoader } from "src/pages/Operate/loader/faqDetailLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -283,7 +284,11 @@ const userRoutes: Array<RouteProps> = [
     element: <OperateFAQAdd />,
     loader: faqAddLoader,
   },
-  { path: "/operate/faq/detail/:id", element: <OperateFAQDetail /> },
+  {
+    path: "/operate/faq/detail/:id",
+    element: <OperateFAQDetail />,
+    loader: faqDetailLoader,
+  },
   {
     path: "/operate/category",
     element: <OperateCategory />,

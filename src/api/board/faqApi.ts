@@ -1,9 +1,12 @@
 import { API_URL } from "src/constants/url";
 import api from "src/utils/api";
 import {
+  IFaqDetailResponse,
   IFaqListResponse,
+  IRequestFaqDetail,
   IRequestFaqList,
   IRequestFaqListExposure,
+  IRequestFaqModify,
   IRequestFaqRegister,
 } from "src/api/board/faqApi.interface";
 
@@ -15,6 +18,16 @@ export const getFaqList = (params: IRequestFaqList) => {
   return api.get<IFaqListResponse>(`${faqUrl}/list`, {
     params,
   });
+};
+
+/** faq 상세 조회 api */
+export const getFaqDetail = (params: IRequestFaqDetail) => {
+  return api.get<IFaqDetailResponse>(`${faqUrl}/${params.id}`);
+};
+
+/** faq 수정 api */
+export const putFaqModify = (body: IRequestFaqModify) => {
+  return api.post<number>(`${faqUrl}/modify`, { body });
 };
 
 /** faq 등록 api */

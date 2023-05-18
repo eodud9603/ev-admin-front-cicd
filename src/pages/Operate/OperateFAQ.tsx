@@ -37,7 +37,6 @@ import { exposureFaqList, getFaqList } from "src/api/board/faqApi";
 import useList from "src/hooks/useList";
 import { UPLOAD_TYPE } from "src/constants/status";
 import { getPageList } from "src/utils/pagination";
-import { IRequestNoticeList } from "src/api/board/noticeApi.interface";
 
 /* 검색어 필터 */
 const searchList = [
@@ -171,7 +170,6 @@ const OperateFAQ = () => {
       ids: checkList,
     });
 
-    console.log("ids ::", checkList);
     /** 성공 */
     const success = code === "SUCCESS";
     if (success) {
@@ -343,7 +341,7 @@ const OperateFAQ = () => {
                   <HoverTr
                     key={data.id}
                     onClick={() => {
-                      navigate(`/operate/board/faq/detail/${data.id}`);
+                      navigate(`/operate/faq/detail/${data.id}`);
                     }}
                   >
                     <td onClick={(e) => e.stopPropagation()}>

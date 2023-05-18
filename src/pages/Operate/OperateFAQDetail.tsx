@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import { Col, Input, Row } from "reactstrap";
-import { INoticeDetailFileItem } from "src/api/board/noticeApi.interface";
 import { postFileUpload } from "src/api/common/commonApi";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
@@ -13,32 +12,84 @@ import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import HeaderBase from "src/components/Common/Layout/HeaderBase";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
-import { UPLOAD_FILTER_LIST } from "src/constants/list";
+import { UPLOAD_FILTER_LIST, YN_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
+import { useTabs } from "src/hooks/useTabs";
+import {
+  IFaqDetailResponse,
+  IRequestFaqModify,
+} from "src/api/board/faqApi.interface";
+import { TUploadTypeKeys } from "src/constants/status";
+import { YNType } from "src/api/api.interface";
+import { standardDateFormat } from "src/utils/day";
+import { getParams } from "src/utils/params";
+import createValidation from "src/utils/validate";
+import {
+  YUP_OPERATE_NOTICE,
+  YUP_OPERATE_NOTICE_EXTRA,
+} from "src/constants/valid/operate";
+import { putFaqModify } from "src/api/board/faqApi";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 
 const OperateFAQDetail = () => {
+  const {
+    data,
+    categoryList,
+    editable = true,
+  } = useLoaderData() as {
+    data: IFaqDetailResponse | null;
+    categoryList: { label: string; value: string }[];
+    editable: boolean;
+  };
   const navigate = useNavigate();
 
-  const [disabled, setDisabled] = useState(true);
-
-  const initContents =
-    "<pre>안녕하세요! 모빌리티로 통하는 세상 트루입니다.</pre>";
-  const [
-    { date, deleteStatus, writer, views, uploadTarget, title, files },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    date: "2022-11-31 12:00:00",
-    deleteStatus: "Y",
-    writer: "홍길동",
-    views: "1",
-    category: "1",
-    uploadTarget: "1",
-    title: "개인정보 처리 방침 변경 안내",
-    contents: initContents,
-    files: [] as INoticeDetailFileItem[],
+  const [disabled, setDisabled] = useState(editable);
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
   });
 
+  const initContents = (data?.content ?? "").replace(/\n\n/gi, "<br>");
+
+  const [inputs, { onChange, onChangeSingle }] = useInputs({
+    id: Number(data?.id ?? -1),
+    createAt: data?.createAt
+      ? standardDateFormat(data?.createAt, "YYYY.MM.DD HH:mm:ss")
+      : "",
+    isExpose: (data?.isExpose ?? "") as YNType,
+    writer: data?.writer ?? "",
+    readCount: (data?.readCount ?? "").toString(),
+    uploadType: (data?.uploadType ?? "") as TUploadTypeKeys,
+    title: data?.title ?? "",
+    content: initContents,
+    categoryId: "",
+    files: data?.files ?? [],
+  });
+
+  //TODO:: faq 상세 loader 작업
+  const {
+    id,
+    title,
+    content,
+    isExpose,
+    uploadType,
+    categoryId,
+    createAt,
+    writer,
+    readCount,
+    files,
+  } = inputs;
+
+  const { removeTabData } = useTabs({
+    data: inputs,
+    pageTitle: "FAQ 상세",
+    pageType: "detail",
+    editable: disabled,
+    categoryList: categoryList,
+  });
+
+  console.log("categoryList::", categoryList);
   /** 첨부파일 업로드 */
   const upload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     if (!e.target.files) {
@@ -72,8 +123,50 @@ const OperateFAQDetail = () => {
   };
 
   /** 수정 */
-  const modify = () => {
-    setDisabled((prev) => !prev);
+  const modify = async () => {
+    if (disabled) {
+      setDisabled(false);
+      return;
+    }
+
+    /* 수정 params */
+    const { isExpose, content, files, ...modifyParams } = inputs;
+
+    const params: IRequestFaqModify = {
+      ...modifyParams,
+      isExpose,
+      categoryId: categoryId
+        ? Number(categoryId)
+        : Number(categoryList[0].value),
+      content: content.replace(/\n\n/gi, "<br>"),
+      files: files.map((data) => data.id),
+    };
+    getParams(params);
+
+    /* 유효성 체크 */
+    const scheme = createValidation({
+      ...YUP_OPERATE_NOTICE,
+      ...YUP_OPERATE_NOTICE_EXTRA,
+    });
+    const [invalid] = scheme(params);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
+
+    /* 수정요청 */
+    const { code } = await putFaqModify(params);
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      setDisabled((prev) => !prev);
+      removeTabData();
+      navigate("/operate/faq");
+    }
   };
 
   return (
@@ -118,7 +211,7 @@ const OperateFAQDetail = () => {
             <TextInputBase
               name={"date"}
               disabled={true}
-              value={date}
+              value={createAt}
               onChange={onChange}
             />
           </Col>
@@ -127,9 +220,9 @@ const OperateFAQDetail = () => {
           </Col>
           <Col sm={2}>
             <TextInputBase
-              name={"views"}
+              name={"readCount"}
               disabled={true}
-              value={views}
+              value={readCount}
               onChange={onChange}
             />
           </Col>
@@ -151,42 +244,27 @@ const OperateFAQDetail = () => {
                 {
                   disabled,
                   onClickDropdownItem: (_, value) => {
-                    onChangeSingle({ category: value });
+                    onChangeSingle({ categoryId: value });
                   },
-                  menuItems: [
-                    {
-                      label: "가입 승인",
-                      value: "1",
-                    },
-                    {
-                      label: "기타",
-                      value: "2",
-                    },
-                  ],
+                  menuItems: categoryList,
+                  initSelectedValue: categoryList.find(
+                    (e) => e.value === categoryId
+                  ),
                 },
               ]}
             />
           </Col>
           <Col className={"font-size-14 fw-semibold"} sm={1}>
-            삭제여부
+            노출여부
           </Col>
           <Col sm={5}>
             <RadioGroup
-              name={"deleteStatus"}
-              list={[
-                {
-                  label: "Y",
-                  value: "Y",
-                  checked: deleteStatus === "Y",
-                  disabled,
-                },
-                {
-                  label: "N",
-                  value: "N",
-                  checked: deleteStatus === "N",
-                  disabled,
-                },
-              ]}
+              name={"isExpose"}
+              list={YN_FILTER_LIST.map((data) => ({
+                ...data,
+                disabled,
+                checked: isExpose === data.value,
+              }))}
               onChange={onChange}
             />
           </Col>
@@ -208,11 +286,11 @@ const OperateFAQDetail = () => {
           </Col>
           <Col sm={5}>
             <RadioGroup
-              name={"uploadTarget"}
+              name={"uploadType"}
               list={UPLOAD_FILTER_LIST.map((radio) => ({
                 ...radio,
                 disabled,
-                checked: uploadTarget === radio.value,
+                checked: uploadType === radio.value,
               }))}
               onChange={onChange}
             />
@@ -222,7 +300,7 @@ const OperateFAQDetail = () => {
         <EditorBody
           initData={initContents}
           onChange={(e) => {
-            onChangeSingle({ contents: e.editor.getData() });
+            onChangeSingle({ content: e.editor.getData() });
           }}
           onFileUploadResponse={(args: unknown) => {
             /** @TODO 파일 업로드 시, attachmentList state 파일명 추가 필요 */
@@ -306,6 +384,12 @@ const OperateFAQDetail = () => {
           />
         </div>
       </BodyBase>
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
     </ContainerBase>
   );
 };

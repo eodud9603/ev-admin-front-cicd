@@ -1,7 +1,9 @@
 import { getNoticeDetail } from "src/api/board/noticeApi";
-import { IRequestNoticeDetail } from "src/api/board/noticeApi.interface";
+import {
+  INoticeDetailResponse,
+  IRequestNoticeDetail,
+} from "src/api/board/noticeApi.interface";
 import { loadTabData } from "src/utils/loadTabData";
-import { IChargerDetailResponse } from "src/api/charger/chargerApi.interface";
 
 export const noticeDetailLoader = async ({
   params,
@@ -13,7 +15,7 @@ export const noticeDetailLoader = async ({
     return null;
   }
 
-  const loadData = loadTabData<IChargerDetailResponse | null>(
+  const loadData = loadTabData<INoticeDetailResponse | null>(
     `/operate/notice/detail/${id}`
   );
 
