@@ -189,8 +189,6 @@ export const ChargerOperator = () => {
     nav(`${pathname}/detail/${id}`);
   };
 
-  console.log(COUNT_FILTER_LIST.find((data) => data.value === size));
-
   return (
     <ContainerBase>
       <HeaderBase />

@@ -4,14 +4,6 @@ import { YNType } from "src/api/api.interface";
 import { loadTabData } from "src/utils/loadTabData";
 import { getParams } from "src/utils/params";
 
-const defaultParams: IRequestSupplierList = {
-  /** @TODO 서버 sortDirection 정의 후, 추가 */
-  // sortDirection: "ASC",
-  size: 10,
-  page: 0,
-  sort: "CreatedDate",
-};
-
 export const INIT_SUPPLIER = {
   searchType: "SupplierName",
   searchKeyword: "",
@@ -19,13 +11,13 @@ export const INIT_SUPPLIER = {
   sort: "CreatedDate",
   isContracted: "" as YNType,
   size: "10",
+  page: 0,
 };
 
 export const supplierListLoader = async () => {
   const loadData = loadTabData("/charger/operator");
 
   const params = {
-    ...defaultParams,
     ...INIT_SUPPLIER,
     ...(loadData?.filterData as unknown as IRequestSupplierList),
     page: (loadData?.currentPage ?? 1) - 1,

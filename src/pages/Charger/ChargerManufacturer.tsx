@@ -68,7 +68,7 @@ export const ChargerManufacturer = () => {
 
   const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
 
-  const { count, searchRange, searchText, sort } = inputs;
+  const { size, searchType, searchKeyword, sort } = inputs;
 
   const [
     { list, page, lastPage, total, message, time },
@@ -95,14 +95,14 @@ export const ChargerManufacturer = () => {
     lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestManufactureList = {
-        size: Number(count),
+        size: Number(size),
         page,
         sort: sort as IRequestManufactureList["sort"],
       };
-      if (searchRange && searchText) {
+      if (searchType && searchKeyword) {
         searchParams.searchType =
-          searchRange as IRequestManufactureList["searchType"];
-        searchParams.searchKeyword = searchText;
+          searchType as IRequestManufactureList["searchType"];
+        searchParams.searchKeyword = searchKeyword;
       }
       searchParams = {
         ...searchParams,
@@ -160,14 +160,14 @@ export const ChargerManufacturer = () => {
                 title={"검색어"}
                 menuItems={dropdownGroupSearch}
                 onClickDropdownItem={(_, value) => {
-                  onChangeSingle({ searchRange: value });
+                  onChangeSingle({ searchType: value });
                 }}
                 initSelectedValue={dropdownGroupSearch.find(
-                  (e) => e.value === searchRange
+                  (e) => e.value === searchType
                 )}
                 placeholder={"제조사 ID를 입력해주세요"}
-                name={"searchText"}
-                value={searchText}
+                name={"searchKeyword"}
+                value={searchKeyword}
                 onChange={onChange}
                 onClick={searchHandler({ page: 1 })}
               />
@@ -210,12 +210,12 @@ export const ChargerManufacturer = () => {
                   menuItems={COUNT_FILTER_LIST}
                   onClickDropdownItem={(_, value) => {
                     onChangeSingle({
-                      count: value,
+                      size: value,
                     });
                     void searchHandler({ page: 1, size: Number(value) })();
                   }}
                   initSelectedValue={COUNT_FILTER_LIST.find(
-                    (e) => e.value === count
+                    (e) => e.value === size
                   )}
                 />
                 <ButtonBase
@@ -232,7 +232,7 @@ export const ChargerManufacturer = () => {
               {list.length > 0 ? (
                 list.map((manufacture, index) => (
                   <tr key={manufacture.id}>
-                    <td>{(page - 1) * Number(count) + index + 1}</td>
+                    <td>{(page - 1) * Number(size) + index + 1}</td>
                     <td>
                       <u
                         className={"text-turu"}
