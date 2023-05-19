@@ -269,6 +269,28 @@ export const MEMBER_GRADE_TYPE = {
 export type TMemberGradeTypeKey = keyof typeof MEMBER_GRADE_TYPE;
 
 /**
+ * @description 회원 카드 발급 상태(cardStatusType)
+ */
+export const MEMBER_CARD_STATUS_TYPE = {
+  MCS01: "신청",
+  MCS02: "발급",
+  MCS03: "발송",
+  MCS04: "수령완료",
+} as const;
+/** 회원 회원 카드 발급 상태(statusType) 키 타입 */
+export type TMemberCardStatusTypeKey = keyof typeof MEMBER_CARD_STATUS_TYPE;
+
+/**
+ * @description 회원 카드 발급 상태(cardStatusType)
+ */
+export const MEMBER_CARD_DIVISION_TYPE = {
+  NEW: "신규",
+  REISSUANCE: "재발급",
+} as const;
+/** 회원 회원 카드 발급 상태(statusType) 키 타입 */
+export type TMemberCardDivisionTypeKey = keyof typeof MEMBER_CARD_DIVISION_TYPE;
+
+/**
  * @description 성별(gender)
  */
 export const GENDER_TYPE = {

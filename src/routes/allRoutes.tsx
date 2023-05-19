@@ -141,6 +141,7 @@ import ChargerControlLog from "src/pages/Log/ChargerControlLog";
 import ChargerLog from "src/pages/Log/ChargerLog";
 import { faqDetailLoader } from "src/pages/Operate/loader/faqDetailLoader";
 import { operatorRoleListLoader } from "src/pages/Operator/loader/operatorRoleListLoader";
+import { memberCardListLoader } from "src/pages/Operate/loader/memberCardListLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -253,7 +254,11 @@ const userRoutes: Array<RouteProps> = [
     element: <MemberWithdraw />,
     loader: memberWithdrawListLoader,
   },
-  { path: "/member/card/normal", element: <MemberNormalCard /> },
+  {
+    path: "/member/card/normal",
+    element: <MemberNormalCard />,
+    loader: memberCardListLoader,
+  },
   {
     path: "/member/card/normal/detail/:id",
     element: <MemberNormalCardDetail />,

@@ -14,7 +14,30 @@ import SearchTextInput from "src/components/Common/Filter/component/SearchTextIn
 import { DateGroup } from "src/components/Common/Filter/component/DateGroup";
 import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import { TableBase } from "src/components/Common/Table/TableBase";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import {
+  INormalCardItem,
+  INormalCardListResponse,
+  IRequestNormalCardList,
+} from "src/api/card/cardApi.interface";
+import { INIT_MEMBER_NORMAL_CARD } from "src/pages/Operate/loader/memberCardListLoader";
+import useList from "src/hooks/useList";
+import useInputs from "src/hooks/useInputs";
+import { onChangeStaticDate, standardDateFormat } from "src/utils/day";
+import { getParams } from "src/utils/params";
+import { getNormalCardExcel, getNormalCardList } from "src/api/card/cardApi";
+import { useTabs } from "src/hooks/useTabs";
+import {
+  MEMBER_CARD_DIVISION_TYPE,
+  MEMBER_CARD_STATUS_TYPE,
+  MEMBER_GRADE_TYPE,
+  MEMBER_STATUS_TYPE,
+} from "src/constants/status";
+import { getPageList } from "src/utils/pagination";
+import { toLocaleString } from "src/utils/toLocaleString";
+import { objectToArray } from "src/utils/convert";
+import { getNormalMemberListExcel } from "src/api/member/memberApi";
+import { blobToExcel } from "src/utils/xlsx";
 
 const dropdownData = [
   { label: "10개씩 보기", value: "1" },
@@ -22,32 +45,17 @@ const dropdownData = [
   { label: "50개씩 보기", value: "3" },
 ];
 
-const dropdownGroupSearch = [
-  { label: "이름", value: "1" },
-  { label: "회원 ID", value: "1" },
-  { label: "휴대폰 번호", value: "1" },
-];
+const defaultFilterData = {
+  label: "전체",
+  value: "",
+};
+
+const dropdownGroupSearch = [{ label: "이름", value: "Name" }];
 
 const dropdownGroupSort = [
   {
-    menuItems: [
-      { label: "기본", value: "1" },
-      { label: "탈퇴일시", value: "1" },
-    ],
+    menuItems: [{ label: "기본", value: "Default" }],
   },
-];
-
-const statusRadio = [
-  { label: "전체" },
-  { label: "신청" },
-  { label: "발급" },
-  { label: "발송" },
-  { label: "수령완료" },
-];
-const separatorRadio = [
-  { label: "전체" },
-  { label: "신규" },
-  { label: "재발급" },
 ];
 
 const tableHeader = [
@@ -61,48 +69,6 @@ const tableHeader = [
   { label: "신청일" },
 ];
 
-const data = [
-  {
-    cardSeq: 1,
-    issuanceStatus: "a",
-    issuanceDivision: "신규",
-    memberDivision: "그룹(그룹명)",
-    name: "김회원",
-    userId: "kim",
-    memberCardNumber: "0000-0000-0000-0000",
-    createDt: "YYYY.MM.DD",
-  },
-  {
-    cardSeq: 2,
-    issuanceStatus: "b",
-    issuanceDivision: "신규",
-    memberDivision: "그룹(그룹명)",
-    name: "김회원",
-    userId: "kim",
-    memberCardNumber: "0000-0000-0000-0000",
-    createDt: "YYYY.MM.DD",
-  },
-  {
-    cardSeq: 3,
-    issuanceStatus: "c",
-    issuanceDivision: "신규",
-    memberDivision: "그룹(그룹명)",
-    name: "김회원",
-    userId: "kim",
-    memberCardNumber: "0000-0000-0000-0000",
-    createDt: "YYYY.MM.DD",
-  },
-  {
-    cardSeq: 4,
-    issuanceStatus: "d",
-    issuanceDivision: "신규",
-    memberDivision: "그룹(그룹명)",
-    name: "김회원",
-    userId: "kim",
-    memberCardNumber: "0000-0000-0000-0000",
-    createDt: "YYYY.MM.DD",
-  },
-];
 interface IIssuanceStatusButton {
   issuanceStatus: string;
 }
@@ -110,7 +76,7 @@ export const IssuanceStatusButton = (props: IIssuanceStatusButton) => {
   const { issuanceStatus } = props;
 
   switch (issuanceStatus) {
-    case "a":
+    case "MCS01":
       return (
         <ButtonBase
           color={"info"}
@@ -118,7 +84,7 @@ export const IssuanceStatusButton = (props: IIssuanceStatusButton) => {
           label={"신청"}
         />
       );
-    case "b":
+    case "MCS02":
       return (
         <ButtonBase
           color={"success"}
@@ -126,9 +92,9 @@ export const IssuanceStatusButton = (props: IIssuanceStatusButton) => {
           label={"발급"}
         />
       );
-    case "c":
+    case "MCS03":
       return <ButtonBase label={"발송"} className={"w-xs rounded-5 py-1"} />;
-    case "d":
+    case "MCS04":
       return (
         <ButtonBase
           color={"white"}
@@ -143,11 +109,46 @@ export const IssuanceStatusButton = (props: IIssuanceStatusButton) => {
 };
 
 export const MemberNormalCard = () => {
+  const { data, filterData, currentPage } = useLoaderData() as {
+    data: INormalCardListResponse;
+    filterData: typeof INIT_MEMBER_NORMAL_CARD;
+    currentPage: number;
+  };
+
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const [page, setPage] = useState(1);
-  const [selected, setSelected] = useState("0");
-  const [text, setText] = useState("");
+
+  const [
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<INormalCardItem>({
+    elements: data?.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: !data?.elements
+      ? "오류가 발생하였습니다."
+      : "등록된 회원카드 정보가 없습니다.",
+    defaultPage: currentPage,
+  });
+
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
+  const {
+    startDate: searchStartDate,
+    endDate: searchEndDate,
+    cardStatusType,
+    cardIssuanceType,
+    searchRange,
+    searchText,
+    sort,
+    count,
+  } = inputs;
+
+  const { searchDataStorage } = useTabs({
+    data: data,
+    pageTitle: "회원카드 관리",
+    filterData: inputs,
+    currentPage: page,
+  });
 
   const moveToDetail = (id: number) => {
     nav(`${pathname}/detail/${id}`);
@@ -157,14 +158,92 @@ export const MemberNormalCard = () => {
     nav(`${pathname}/add`);
   };
 
+  const getSearchParams = () => {
+    /* 검색 파라미터 */
+    const searchParams: IRequestNormalCardList = {
+      size: Number(count),
+      page,
+      cardStatusType,
+      cardIssuanceType,
+    };
+    if (searchStartDate && searchEndDate) {
+      searchParams.searchStartDate = standardDateFormat(
+        searchStartDate,
+        "YYYY.MM.DD"
+      );
+      searchParams.searchEndDate = standardDateFormat(
+        searchEndDate,
+        "YYYY.MM.DD"
+      );
+    }
+    if (searchRange && searchText) {
+      searchParams.searchType =
+        searchRange as IRequestNormalCardList["searchType"];
+      searchParams.searchKeyword = searchText;
+    }
+
+    return searchParams;
+  };
+  console.log(page);
+  /** 검색 핸들러 */
+  const searchHandler =
+    (params: Partial<IRequestNormalCardList> = {}) =>
+    async () => {
+      /* 검색 파라미터 */
+      let searchParams = getSearchParams();
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
+
+      /* 검색  */
+      const { code, data, message } = await getNormalCardList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      console.log(page);
+      console.log("search", searchParams.page);
+      if (success) {
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 회원 정보가 없습니다.",
+        });
+        searchDataStorage(data, searchParams.page + 1);
+      } else {
+        reset({ code, message: message || "오류가 발생하였습니다." });
+      }
+    };
+
+  /** 엑셀 다운로드 (*현재 검색어 기준) */
+  const download = async () => {
+    /* 검색 파라미터 */
+    const searchParams = getSearchParams();
+    console.log(searchParams);
+    searchParams.page = (searchParams.page || 1) - 1;
+    console.log(searchParams);
+    getParams(searchParams);
+    /* 엑셀 다운 요청 */
+    const data = await getNormalCardExcel(searchParams);
+    /** 성공 */
+    const success = !!data;
+
+    if (success) {
+      blobToExcel(
+        data,
+        `회원카드관리_${standardDateFormat(
+          undefined,
+          "YYYY_MM_DD_HH_mm_ss"
+        )}.xlsx`
+      );
+    }
+  };
+
   return (
     <ContainerBase>
-      <HeaderBase></HeaderBase>
-      <TabGroup
-      // list={[{ label: "공지사항" }, { label: "충전소 관리" }]}
-      // selectedIndex={selected}
-      // onClick={(e) => setSelected(e.currentTarget.value)}
-      />
+      <HeaderBase />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -183,17 +262,46 @@ export const MemberNormalCard = () => {
               <DateGroup
                 label={"조회기간"}
                 buttonState={[
-                  { label: "7일" },
-                  { label: "1개월" },
-                  { label: "3개월" },
+                  {
+                    label: "7일",
+                    onClick: () =>
+                      onChangeStaticDate({
+                        size: 7,
+                        unit: "day",
+                      }),
+                  },
+                  {
+                    label: "1개월",
+                    onClick: () =>
+                      onChangeStaticDate({
+                        size: 1,
+                        unit: "month",
+                      }),
+                  },
+                  {
+                    label: "3개월",
+                    onClick: () =>
+                      onChangeStaticDate({
+                        size: 3,
+                        unit: "month",
+                      }),
+                  },
                 ]}
+                onChangeDate={onChangeSingle}
               />
             </Col>
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
                 title={"발급상태"}
-                name={"radioGroup1"}
-                list={statusRadio}
+                name={"cardStatusType"}
+                list={[
+                  defaultFilterData,
+                  ...objectToArray(MEMBER_CARD_STATUS_TYPE),
+                ].map((data) => ({
+                  ...data,
+                  checked: data.value === cardStatusType,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -202,18 +310,32 @@ export const MemberNormalCard = () => {
               <SearchTextInput
                 title={"검색어"}
                 menuItems={dropdownGroupSearch}
-                placeholder={`${text}를 입력해주세요`}
+                onClickDropdownItem={(_, value) => {
+                  onChangeSingle({
+                    searchRange: value,
+                  });
+                }}
+                initSelectedValue={dropdownGroupSearch.find(
+                  (e) => e.value === searchRange
+                )}
                 name={"searchText"}
-                className={""}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                value={searchText}
+                onChange={onChange}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
             <Col className={"d-flex align-items-center"}>
               <RadioGroup
                 title={"발급구분"}
-                name={"radioGroup2"}
-                list={separatorRadio}
+                name={"cardIssuanceType"}
+                list={[
+                  defaultFilterData,
+                  ...objectToArray(MEMBER_CARD_DIVISION_TYPE),
+                ].map((data) => ({
+                  ...data,
+                  checked: data.value === cardIssuanceType,
+                }))}
+                onChange={onChange}
               />
             </Col>
           </Row>
@@ -233,8 +355,11 @@ export const MemberNormalCard = () => {
           <Row className={"mb-4"}>
             <Col>
               <AmountInfo className={"text-size-13 fw-bold"}>
-                총 <AmountInfo className={"text-turu"}>0건</AmountInfo>의
-                회원카드 정보가 있습니다.
+                총{" "}
+                <AmountInfo className={"text-turu"}>
+                  {toLocaleString(total)}건
+                </AmountInfo>
+                의 회원카드 정보가 있습니다.
               </AmountInfo>
             </Col>
             <Col className={"d-flex justify-content-end"}>
@@ -248,38 +373,58 @@ export const MemberNormalCard = () => {
                   color={"turu"}
                   onClick={moveToIssuance}
                 />
-                <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
+                <ButtonBase
+                  label={"엑셀 저장"}
+                  outline={true}
+                  color={"turu"}
+                  onClick={download}
+                />
               </div>
             </Col>
           </Row>
           <TableBase tableHeader={tableHeader}>
             <>
-              {data.length > 0 &&
-                data.map((e, i) => (
-                  <tr key={i}>
-                    <td></td>
+              {list.length > 0 &&
+                list.map((e, index) => (
+                  <tr key={e.id}>
+                    <td>{(page - 1) * Number(count) + index + 1}</td>
                     <td>
-                      <IssuanceStatusButton issuanceStatus={e.issuanceStatus} />
+                      <IssuanceStatusButton issuanceStatus={e.cardStatusType} />
                     </td>
-                    <td>{e.issuanceDivision}</td>
-                    <td>{e.memberDivision}</td>
+                    <td>{MEMBER_CARD_DIVISION_TYPE[e.cardIssuanceType]}</td>
+                    <td>{MEMBER_GRADE_TYPE[e.grade]}</td>
+                    <td>{e.name}</td>
                     <td>
                       <HoverSpan
                         className={"text-turu"}
-                        onClick={() => moveToDetail(e.cardSeq)}
+                        onClick={() => moveToDetail(e.id)}
                       >
-                        <u>{e.name}</u>
+                        <u>{e.userId}</u>
                       </HoverSpan>
                     </td>
-                    <td>{e.userId}</td>
-                    <td>{e.memberCardNumber}</td>
-                    <td>{e.createDt}</td>
+                    <td>{e.no}</td>
+                    <td>
+                      {e.regDtm
+                        ? standardDateFormat(e.regDtm, "YYYY.MM.DD")
+                        : "-"}
+                    </td>
                   </tr>
                 ))}
             </>
           </TableBase>
         </ListSection>
-        <PaginationBase setPage={setPage} data={{}} />
+        <PaginationBase
+          setPage={setPage}
+          data={{
+            hasPreviousPage: page > 1,
+            hasNextPage: page < lastPage,
+            navigatePageNums: getPageList(page, lastPage),
+            pageNum: page,
+            onChangePage: (page) => {
+              void searchHandler({ page })();
+            },
+          }}
+        />
       </BodyBase>
     </ContainerBase>
   );
