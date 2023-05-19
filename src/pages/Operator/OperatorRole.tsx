@@ -21,24 +21,28 @@ import { lock } from "src/utils/lock";
 import { getAdminRoleList, postAdminRoleModify } from "src/api/admin/adminAPi";
 import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
+import { useTabs } from "src/hooks/useTabs";
+
+const PAGE = "권한 관리";
 
 /** 권한 목록(탭) */
 const roleList = objectToArray(ROLE_TYPE);
 
 const OperatorRole = () => {
-  const { data, filterData } = useLoaderData() as {
+  const { data, filterData, editable } = useLoaderData() as {
     data: Partial<IAdminRoleListResponse>;
-    filterData: object;
+    filterData: Partial<{ selectedRole?: TRoleTypeKey }>;
+    editable: boolean;
   };
 
   const [selectedRole, setSelectedRole] = useState<TRoleTypeKey>(
-    roleList[0].value as TRoleTypeKey
+    (filterData?.selectedRole ?? roleList[0].value) as TRoleTypeKey
   );
   /* 전체보기 */
   const [allOpen, setAllOpen] = useState(false);
   const [list, setList] = useState<IAdminMainRoleItem[]>(data.elements ?? []);
   /** disabled */
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(editable);
 
   /* 수정취소 모달 */
   const [editCancelModal, setEditCancelModal] = useState<{
@@ -81,14 +85,11 @@ const OperatorRole = () => {
       setDisabled(false);
       return;
     }
-    if (!data.code || !data.name) {
-      return;
-    }
 
     /* 수정 요청 */
     const { code } = await postAdminRoleModify({
-      code: data.code,
-      name: data.name,
+      code: selectedRole,
+      name: ROLE_TYPE[selectedRole],
       elements: list,
     });
     /** 수정 성공 */
@@ -98,6 +99,15 @@ const OperatorRole = () => {
       setDisabled(true);
     }
   }, 100);
+
+  useTabs({
+    filterData: {
+      selectedRole,
+    },
+    data: undefined,
+    pageTitle: PAGE,
+    editable: disabled,
+  });
 
   return (
     <ContainerBase>
@@ -110,9 +120,9 @@ const OperatorRole = () => {
           list={[
             { label: "홈", href: "" },
             { label: "운영자 관리", href: "" },
-            { label: "권한 관리", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"권한 관리"}
+          title={PAGE}
         />
 
         <RoleSection>
