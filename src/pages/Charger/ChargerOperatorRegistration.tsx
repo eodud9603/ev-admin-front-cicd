@@ -117,7 +117,7 @@ export const ChargerOperatorRegistration = () => {
   });
 
   useTabs({
-    data: { inputs, fileData: contractFile },
+    data: { inputs },
     pageTitle: PAGE,
     pageType: "add",
   });
