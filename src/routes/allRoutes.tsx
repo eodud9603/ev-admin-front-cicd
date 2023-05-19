@@ -142,6 +142,7 @@ import ChargerLog from "src/pages/Log/ChargerLog";
 import { faqDetailLoader } from "src/pages/Operate/loader/faqDetailLoader";
 import { operatorRoleListLoader } from "src/pages/Operator/loader/operatorRoleListLoader";
 import { memberCardListLoader } from "src/pages/Operate/loader/memberCardListLoader";
+import { supplierAddLoader } from "src/pages/Charger/loader/supplierAddLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -237,6 +238,7 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/operator/registration",
     element: <ChargerOperatorRegistration />,
+    loader: supplierAddLoader,
   },
   /* 회원 및 카드관리 */
   {
