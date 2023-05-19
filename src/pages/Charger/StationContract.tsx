@@ -137,11 +137,11 @@ const StationContract = () => {
     gugun,
     dong,
     contractCode,
-    searchRange,
-    searchText,
+    searchType,
+    searchKeyword,
     isUse,
     sort,
-    count,
+    size,
   } = inputs;
 
   const { searchDataStorage } = useTabs({
@@ -152,7 +152,7 @@ const StationContract = () => {
   });
 
   const placeholderKeyword =
-    searchList.find((search) => searchRange === search.value)
+    searchList.find((search) => searchType === search.value)
       ?.placeholderKeyword ?? "";
 
   const navigate = useNavigate();
@@ -162,7 +162,7 @@ const StationContract = () => {
     lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestStationContractList = {
-        size: Number(count),
+        size: Number(size),
         page,
         sido,
         gugun,
@@ -172,10 +172,10 @@ const StationContract = () => {
         sort: sort as IRequestStationContractList["sort"],
       };
       /** @TODO 검색어 필터 추가 후, 추가예정 */
-      if (searchRange && searchText) {
+      if (searchType && searchKeyword) {
         searchParams.searchType =
-          searchRange as IRequestStationContractList["searchType"];
-        searchParams.searchKeyword = searchText;
+          searchType as IRequestStationContractList["searchType"];
+        searchParams.searchKeyword = searchKeyword;
       }
       searchParams = {
         ...searchParams,
@@ -226,6 +226,11 @@ const StationContract = () => {
             <Col md={7}>
               <RegionGroup
                 label={"지역"}
+                init={{
+                  sido,
+                  sigugun: gugun,
+                  dongmyun: dong,
+                }}
                 onChangeRegion={(region) => {
                   onChangeSingle({
                     sido: region.sido,
@@ -254,13 +259,13 @@ const StationContract = () => {
                 placeholder={`${placeholderKeyword} 입력해주세요.`}
                 menuItems={searchList}
                 onClickDropdownItem={(_, value) => {
-                  onChangeSingle({ searchRange: value });
+                  onChangeSingle({ searchType: value });
                 }}
                 initSelectedValue={searchList.find(
-                  (e) => e.value === searchRange
+                  (e) => e.value === searchType
                 )}
-                name={"searchText"}
-                value={searchText}
+                name={"searchKeyword"}
+                value={searchKeyword}
                 onChange={onChange}
                 onClick={searchHandler({ page: 1 })}
               />
@@ -310,11 +315,11 @@ const StationContract = () => {
               <DropdownBase
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {
-                  onChangeSingle({ count: value });
+                  onChangeSingle({ size: value });
                   void searchHandler({ page: 1, size: Number(value) })();
                 }}
                 initSelectedValue={COUNT_FILTER_LIST.find(
-                  (e) => e.value === count
+                  (e) => e.value === size
                 )}
               />
               <ButtonBase
@@ -333,7 +338,7 @@ const StationContract = () => {
               {list.length > 0 ? (
                 list.map((contract, index) => (
                   <tr key={contract.id}>
-                    <td>{(page - 1) * Number(count) + index + 1}</td>
+                    <td>{(page - 1) * Number(size) + index + 1}</td>
                     <td>{contract.id}</td>
                     <td>{contract.isUse === "Y" ? "사용" : "미사용"}</td>
                     {/** @TODO 서버 code 픽스 후, 매칭작업 필요 */}
