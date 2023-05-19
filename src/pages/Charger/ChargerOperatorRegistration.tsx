@@ -18,15 +18,18 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import useInputs from "src/hooks/useInputs";
 import AddressSearchModal from "src/components/Common/Modal/AddressSearchModal";
 import { postSupplierRegister } from "src/api/supplier/supplierApi";
-import { useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import { IRequestSupplierRegister } from "src/api/supplier/supplierApi.interface";
-import { YNType } from "src/api/api.interface";
 import { fileUpload } from "src/utils/upload";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_OPERATOR } from "src/constants/valid/charger";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { lock } from "src/utils/lock";
+import { useTabs } from "src/hooks/useTabs";
+import { INIT_SUPPLIER_ADD } from "src/pages/Charger/loader/supplierAddLoader";
+
+const PAGE = "서비스 운영사 등록";
 
 const YN_LIST = [
   { label: "Y", value: "Y" },
@@ -34,6 +37,8 @@ const YN_LIST = [
 ];
 
 export const ChargerOperatorRegistration = () => {
+  const data = useLoaderData() as typeof INIT_SUPPLIER_ADD;
+
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
   /* 미입력 안내 모달 */
@@ -44,21 +49,7 @@ export const ChargerOperatorRegistration = () => {
   /* 등록완료 모달 */
   const [isAddComplete, setIsAddComplete] = useState(false);
 
-  const [inputs, { onChange, onChangeSingle }] = useInputs({
-    name: "",
-    supplierId: "",
-    code: "",
-    meAuthKey: "",
-    phoneNumber: "",
-    mainPhoneNumber: "",
-    zipCode: "",
-    address: "",
-    addressDetail: "",
-    isContracted: "" as YNType,
-    isActive: "" as YNType,
-    contractedDate: "",
-    /** @TODO 로밍담가 데이터 추가 필요 (서버 우선 작업 필요) */
-  });
+  const [inputs, { onChange, onChangeSingle }] = useInputs(data.inputs);
   const {
     name,
     supplierId,
@@ -69,6 +60,8 @@ export const ChargerOperatorRegistration = () => {
     zipCode,
     address,
     addressDetail,
+    isContracted,
+    isActive,
     contractedDate,
   } = inputs;
   /* 계약서 파일 */
@@ -123,6 +116,12 @@ export const ChargerOperatorRegistration = () => {
     }
   });
 
+  useTabs({
+    data: { inputs },
+    pageTitle: PAGE,
+    pageType: "add",
+  });
+
   return (
     <ContainerBase>
       <HeaderBase />
@@ -133,9 +132,9 @@ export const ChargerOperatorRegistration = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "서비스 운영사 관리", href: "" },
-            { label: "서비스 운영사 등록", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"서비스 운영사 등록"}
+          title={PAGE}
         />
         <BasicInfoSection className={"mt-3"}>
           <Label className={"fw-semibold font-size-16 m-0 mb-2"}>
@@ -239,7 +238,10 @@ export const ChargerOperatorRegistration = () => {
             <DetailContentCol>
               <RadioGroup
                 name={"isContracted"}
-                list={YN_LIST}
+                list={YN_LIST.map((data) => ({
+                  ...data,
+                  checked: data.value === isContracted,
+                }))}
                 onChange={onChange}
               />
             </DetailContentCol>
@@ -247,7 +249,10 @@ export const ChargerOperatorRegistration = () => {
             <DetailContentCol>
               <RadioGroup
                 name={"isActive"}
-                list={YN_LIST}
+                list={YN_LIST.map((data) => ({
+                  ...data,
+                  checked: data.value === isActive,
+                }))}
                 onChange={onChange}
               />
             </DetailContentCol>
