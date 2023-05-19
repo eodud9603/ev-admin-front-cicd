@@ -51,10 +51,11 @@ export const useTabStore = create<ITabState>()(
         removeData: (path: string) => {
           set((state) => {
             const arr = JSON.parse(JSON.stringify(state.data));
+            const tabObj = arr.filter((e: tabType) => !e.path.includes(path));
 
             return {
-              data: arr.filter((e: tabType) => !e.path.includes(path)),
-              active: "",
+              data: tabObj,
+              active: state.active === tabObj.path ? "" : state.active,
             };
           });
         },
@@ -63,7 +64,6 @@ export const useTabStore = create<ITabState>()(
             const arr = JSON.parse(JSON.stringify(state.data));
             arr.find((e: tabType) => tabData.path.includes(e.rootPath)).data =
               {};
-            console.log("arr ::", arr);
             return { data: arr };
           });
         },

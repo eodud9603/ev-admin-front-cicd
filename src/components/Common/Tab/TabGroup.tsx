@@ -29,6 +29,7 @@ const TabGroup = (props: any) => {
       nav("/");
     } else {
       nav(tabState.data[index > 0 ? index - 1 : index + 1].path);
+      console.log(tabState.data[index > 0 ? index - 1 : index + 1].path);
     }
   };
 

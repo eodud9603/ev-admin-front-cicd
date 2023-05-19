@@ -53,7 +53,7 @@ const OperateNoticeDetail = () => {
     createAt: data?.createAt
       ? standardDateFormat(data?.createAt, "YYYY.MM.DD HH:mm:ss")
       : "",
-    delete: (data?.delete ?? "") as YNType,
+    isExpose: (data?.isExpose ?? "") as YNType,
     writer: data?.writer ?? "",
     readCount: (data?.readCount ?? "").toString(),
     uploadType: (data?.uploadType ?? "") as TUploadTypeKeys,
@@ -62,15 +62,8 @@ const OperateNoticeDetail = () => {
     files: data?.files ?? [],
   });
 
-  const {
-    createAt,
-    delete: isDelete,
-    writer,
-    readCount,
-    uploadType,
-    title,
-    files,
-  } = inputs;
+  const { createAt, isExpose, writer, readCount, uploadType, title, files } =
+    inputs;
 
   useTabs({
     data: inputs,
@@ -119,11 +112,11 @@ const OperateNoticeDetail = () => {
     }
 
     /* 수정 params */
-    const { delete: isDelete, content, files, ...modifyParams } = inputs;
+    const { isExpose, content, files, ...modifyParams } = inputs;
 
     const params: IRequestNoticeModify = {
       ...modifyParams,
-      deleted: isDelete,
+      isExpose,
       /** @description initContent에서 replace해주므로 insert시, replace제거하여도 문제없을 것으로 판단하나 미확인, 추후 불필요시 제거 */
       content: content.replace(/\n\n/gi, "<br>"),
       files: files.map((data) => data.id),
@@ -255,7 +248,7 @@ const OperateNoticeDetail = () => {
               </Col>
               <Col sm={10}>
                 <RadioGroup
-                  name={"delete"}
+                  name={"isExpose"}
                   list={[
                     {
                       label: "Y",
@@ -268,7 +261,7 @@ const OperateNoticeDetail = () => {
                   ].map((data) => ({
                     ...data,
                     disabled,
-                    checked: data.value === isDelete,
+                    checked: data.value === isExpose,
                   }))}
                   onChange={onChange}
                 />
