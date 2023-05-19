@@ -30,6 +30,7 @@ import {
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
 import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
+import { useTabs } from "src/hooks/useTabs";
 
 /* 검색어 필터 */
 const searchList = [
@@ -117,6 +118,11 @@ const EvNews = () => {
     searchText: "",
     sort: "",
     count: "1",
+  });
+
+  const { removeTabData } = useTabs({
+    data: {},
+    pageTitle: "EV 뉴스",
   });
 
   const navigate = useNavigate();

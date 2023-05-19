@@ -5,7 +5,8 @@ import {
   TMemberGradeTypeKey,
 } from "src/constants/status";
 
-/** @see http://218.38.12.198:45081/docs/index.html#_%EC%A1%B0%ED%9A%8C_4 */
+/* 회원카드 목록 */
+/** @see http://218.38.12.198:45081/docs/index.html#_%EC%A1%B0%ED%9A%8C_5 */
 export interface IRequestNormalCardList {
   page: number;
   size: number;

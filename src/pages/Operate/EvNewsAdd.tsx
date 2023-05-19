@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col, Row } from "reactstrap";
+import { Col, Input, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import EditorBase from "src/components/Common/Editor/EditorBase";
@@ -11,51 +11,122 @@ import RadioGroup from "src/components/Common/Radio/RadioGroup";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import { UPLOAD_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { INIT_EV_NEWS_ADD } from "src/pages/Operate/loader/evNewsAddLoader";
+import { useTabs } from "src/hooks/useTabs";
+import { postFileUpload } from "src/api/common/commonApi";
+import { jwtDecode } from "src/utils/jwt";
+import { IRequestFaqRegister } from "src/api/board/faqApi.interface";
+import { BoardIdEnum, TUploadTypeKeys } from "src/constants/status";
+import { getParams } from "src/utils/params";
+import createValidation from "src/utils/validate";
+import { YUP_OPERATE_NOTICE } from "src/constants/valid/operate";
+import { postFaqRegister } from "src/api/board/faqApi";
+import { IRequestEvNewsRegister } from "src/api/board/evNewsApi.interface";
+import { postEvNewsRegister } from "src/api/board/evNewsApi";
 
 const EvNewsAdd = () => {
-  const [tabList, setTabList] = useState([{ label: "EV 뉴스" }]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
-
-  const [{ date, writer, uploadTarget, title }, { onChange, onChangeSingle }] =
-    useInputs({
-      date: "",
-      writer: "",
-      uploadTarget: "",
-      title: "",
-      contents: "",
-    });
-
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
+  const { data } = useLoaderData() as {
+    data: typeof INIT_EV_NEWS_ADD;
   };
+  const navigate = useNavigate();
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  /* 미입력 안내 모달 */
+  const [invalidModal, setInvalidModal] = useState({
+    isOpen: false,
+    content: "",
+  });
+
+  const [inputs, { onChange, onChangeSingle }] = useInputs(data);
+  const { writer, uploadType, title, files, isExpose, content } = inputs;
+
+  const { removeTabData } = useTabs({
+    data: inputs,
+    pageTitle: "EV 뉴스 등록",
+    pageType: "add",
+  });
+
+  /** 첨부파일 업로드 */
+  const upload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!e.target.files) {
       return;
     }
 
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
+    const uploadCount = e.target.files.length;
+    const totalCount = files.length + e.target.files.length;
+    if (uploadCount === 0) {
+      return;
+    }
+    if (totalCount > 3) {
+      return alert("최대 3개까지 등록 가능합니다.");
     }
 
-    setTabList(tempList);
+    /* 첨부파일 업로드 요청 */
+    void postFileUpload(e.target.files).then(({ code, data }) => {
+      /** 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        onChangeSingle({
+          files: [
+            ...files,
+            ...data.elements.map((data) => ({ ...data, filePath: data.url })),
+          ],
+        });
+      }
+
+      e.target.value = "";
+    });
+  };
+
+  /** 등록 */
+  const register = async () => {
+    const { content, files, banners, ...registerParams } = inputs;
+
+    const user = jwtDecode();
+    /* 등록 params */
+    const params: IRequestEvNewsRegister = {
+      ...registerParams,
+      writer: user.name ?? "-",
+      boardId: BoardIdEnum.FAQ,
+      content: content,
+      isExpose,
+      uploadType: uploadType as TUploadTypeKeys,
+      files: files.map((data) => data.id),
+      banners: banners.map((data) => data.id),
+    };
+
+    getParams(params);
+
+    /* 유효성 체크 */
+    const scheme = createValidation(YUP_OPERATE_NOTICE);
+    const [invalid] = scheme(params);
+
+    if (invalid) {
+      setInvalidModal({
+        isOpen: true,
+        content: invalid.message,
+      });
+      return;
+    }
+
+    /* 등록 요청 */
+    const { code } = await postEvNewsRegister(params);
+    /** 성공 */
+    const success = code === "SUCCESS";
+    if (success) {
+      setAddModalOpen((prev) => !prev);
+      removeTabData();
+      navigate("/operate/evNews");
+      return;
+    }
   };
 
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
@@ -94,7 +165,7 @@ const EvNewsAdd = () => {
             <TextInputBase
               name={"date"}
               disabled={true}
-              value={date}
+              value={""}
               onChange={onChange}
               placeholder={"자동기입"}
             />
@@ -130,7 +201,7 @@ const EvNewsAdd = () => {
               name={"uploadTarget"}
               list={UPLOAD_FILTER_LIST.map((radio) => ({
                 ...radio,
-                checked: uploadTarget === radio.value,
+                checked: uploadType === radio.value,
               }))}
               onChange={onChange}
             />
@@ -141,15 +212,136 @@ const EvNewsAdd = () => {
           headerProps={{ name: "title", value: title, onChange }}
           bodyProps={{
             onChange: (e) => {
-              onChangeSingle({ contents: e.editor.getData() });
+              onChangeSingle({ content: e.editor.getData() });
             },
             onFileUploadResponse: (args: unknown) => {
               /** @TODO 파일 업로드 시, attachmentList state 파일명 추가 필요 */
               /* 현재 파일 업로드 불가로 해당 로직 대기 */
             },
+            initData: data?.content,
           }}
           isAttachments={false}
         />
+
+        <Row
+          className={
+            "mb-4 pb-3 d-flex align-items-center " +
+            "border-bottom border-2 border-light border-opacity-50"
+          }
+        >
+          <Col className={"font-size-16 fw-semibold"} sm={1}>
+            배너 이미지
+          </Col>
+          <Col sm={11}>
+            <div className={files.length > 0 ? "mb-3" : ""}>
+              {files.map((data, index) => (
+                <p
+                  role={"button"}
+                  key={data.id}
+                  className={"position-relative m-0 p-0 text-turu"}
+                  onClick={() => {
+                    if (data.filePath) {
+                      window.open(data.filePath);
+                    }
+                  }}
+                >
+                  <u>{data.fileName}</u>
+
+                  <i
+                    className={
+                      "position-absolute bx bx-x font-size-24 text-black"
+                    }
+                    onClick={(e) => {
+                      e.stopPropagation();
+
+                      const tempList = [...files];
+                      tempList.splice(index, 1);
+
+                      onChangeSingle({ files: tempList });
+                    }}
+                  />
+                </p>
+              ))}
+            </div>
+            <ButtonBase
+              label={"업로드"}
+              outline={true}
+              color={"turu"}
+              onClick={() => {
+                document.getElementById("banners")?.click();
+              }}
+            />
+            <Input
+              className={"visually-hidden"}
+              type={"file"}
+              id={"banners"}
+              name={"banners"}
+              multiple={true}
+              accept={"*"}
+              onChange={upload}
+            />
+          </Col>
+        </Row>
+
+        <Row
+          className={
+            "mb-4 pb-3 d-flex align-items-center " +
+            "border-bottom border-2 border-light border-opacity-50"
+          }
+        >
+          <Col className={"font-size-16 fw-semibold"} sm={1}>
+            첨부 파일
+          </Col>
+          <Col sm={11}>
+            <div className={files.length > 0 ? "mb-3" : ""}>
+              {files.map((data, index) => (
+                <p
+                  role={"button"}
+                  key={data.id}
+                  className={"position-relative m-0 p-0 text-turu"}
+                  onClick={() => {
+                    if (data.filePath) {
+                      window.open(data.filePath);
+                    }
+                  }}
+                >
+                  <u>{data.fileName}</u>
+
+                  <i
+                    className={
+                      "position-absolute bx bx-x font-size-24 text-black"
+                    }
+                    onClick={(e) => {
+                      e.stopPropagation();
+
+                      const tempList = [...files];
+                      tempList.splice(index, 1);
+
+                      onChangeSingle({ files: tempList });
+                    }}
+                  />
+                </p>
+              ))}
+            </div>
+            <ButtonBase
+              label={"업로드"}
+              outline={true}
+              color={"turu"}
+              onClick={() => {
+                document.getElementById("files")?.click();
+              }}
+            />
+            <Input
+              className={"visually-hidden"}
+              type={"file"}
+              id={"files"}
+              name={"files"}
+              multiple={true}
+              accept={"*"}
+              onChange={upload}
+            />
+          </Col>
+        </Row>
       </BodyBase>
     </ContainerBase>
   );

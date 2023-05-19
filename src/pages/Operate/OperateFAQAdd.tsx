@@ -243,6 +243,7 @@ const OperateFAQAdd = () => {
           </Col>
         </Row>
         <EditorBody
+          initData={data?.content}
           onChange={(e) => {
             onChangeSingle({ content: e.editor.getData() });
           }}

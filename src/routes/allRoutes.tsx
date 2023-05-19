@@ -142,6 +142,7 @@ import ChargerLog from "src/pages/Log/ChargerLog";
 import { faqDetailLoader } from "src/pages/Operate/loader/faqDetailLoader";
 import { operatorRoleListLoader } from "src/pages/Operator/loader/operatorRoleListLoader";
 import { memberCardListLoader } from "src/pages/Operate/loader/memberCardListLoader";
+import { evNewsAddLoader } from "src/pages/Operate/loader/evNewsAddLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -317,7 +318,11 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/event/add", element: <EventAdd /> },
   { path: "/operate/event/detail/:id", element: <EventDetail /> },
   { path: "/operate/evNews", element: <EvNews /> },
-  { path: "/operate/evNews/add", element: <EvNewsAdd /> },
+  {
+    path: "/operate/evNews/add",
+    element: <EvNewsAdd />,
+    loader: evNewsAddLoader,
+  },
   { path: "/operate/evNews/detail/:id", element: <EvNewsDetail /> },
   { path: "/operate/popup", element: <OperatePopup /> },
   { path: "/operate/popup/add", element: <OperatePopupAdd /> },

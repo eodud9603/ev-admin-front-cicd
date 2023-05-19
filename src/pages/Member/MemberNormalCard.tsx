@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ContainerBase from "src/components/Common/Layout/ContainerBase";
 import TabGroup from "src/components/Common/Tab/TabGroup";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -31,12 +31,10 @@ import {
   MEMBER_CARD_DIVISION_TYPE,
   MEMBER_CARD_STATUS_TYPE,
   MEMBER_GRADE_TYPE,
-  MEMBER_STATUS_TYPE,
 } from "src/constants/status";
 import { getPageList } from "src/utils/pagination";
 import { toLocaleString } from "src/utils/toLocaleString";
 import { objectToArray } from "src/utils/convert";
-import { getNormalMemberListExcel } from "src/api/member/memberApi";
 import { blobToExcel } from "src/utils/xlsx";
 
 const dropdownData = [
