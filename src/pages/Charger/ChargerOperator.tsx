@@ -100,17 +100,17 @@ export const ChargerOperator = () => {
 
   const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
 
-  const { searchRange, searchText, isActive, sort, isContracted, count } =
+  const { searchType, searchKeyword, isActive, sort, isContracted, size } =
     inputs;
 
   const { searchDataStorage } = useTabs({
-    data: data,
+    data: undefined,
     pageTitle: "서비스 운영사 관리",
     filterData: inputs,
     currentPage: page,
   });
-  const searchKeyword =
-    dropdownGroupSearch.find((data) => searchRange === data.value)
+  const placeholderKeyword =
+    dropdownGroupSearch.find((data) => searchType === data.value)
       ?.placeholderKeyword ?? "검색어를";
 
   /** 검색 핸들러 */
@@ -118,16 +118,16 @@ export const ChargerOperator = () => {
     lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestSupplierList = {
-        size: Number(count),
+        size: Number(size),
         page,
         isActive,
         isContracted,
         sort: sort as IRequestSupplierList["sort"],
       };
-      if (searchRange && searchText) {
+      if (searchType && searchKeyword) {
         searchParams.searchType =
-          searchRange as IRequestSupplierList["searchType"];
-        searchParams.searchKeyword = searchText;
+          searchType as IRequestSupplierList["searchType"];
+        searchParams.searchKeyword = searchKeyword;
       }
       searchParams = {
         ...searchParams,
@@ -147,7 +147,7 @@ export const ChargerOperator = () => {
           page: searchParams.page,
           emptyMessage: "검색된 서비스 운영사 정보가 없습니다.",
         });
-        searchDataStorage(data, searchParams.page + 1);
+        searchDataStorage(undefined, searchParams.page + 1);
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }
@@ -213,16 +213,16 @@ export const ChargerOperator = () => {
                 menuItems={dropdownGroupSearch}
                 onClickDropdownItem={(_, value) => {
                   onChangeSingle({
-                    searchRange: value,
+                    searchType: value,
                   });
                 }}
                 initSelectedValue={dropdownGroupSearch.find(
-                  (e) => e.value === searchRange
+                  (e) => e.value === searchType
                 )}
-                placeholder={`${searchKeyword} 입력해주세요`}
-                name={"searchText"}
+                placeholder={`${placeholderKeyword} 입력해주세요`}
+                name={"searchKeyword"}
                 className={""}
-                value={searchText}
+                value={searchKeyword}
                 onChange={onChange}
                 onClick={searchHandler({ page: 1 })}
               />
@@ -285,9 +285,12 @@ export const ChargerOperator = () => {
                 <span className={"font-size-10 text-muted"}>{time}기준</span>
                 <DropdownBase
                   menuItems={COUNT_FILTER_LIST}
+                  initSelectedValue={COUNT_FILTER_LIST.find(
+                    (data) => data.value === size
+                  )}
                   onClickDropdownItem={(_, value) => {
                     onChangeSingle({
-                      count: value,
+                      size: value,
                     });
                     void searchHandler({ page: 1, size: Number(value) })();
                   }}
@@ -335,7 +338,7 @@ export const ChargerOperator = () => {
                         }}
                       />
                     </td>
-                    <td>{(page - 1) * Number(count) + index + 1}</td>
+                    <td>{(page - 1) * Number(size) + index + 1}</td>
                     <td>{data.isActive ?? "-"}</td>
                     <td>
                       <u

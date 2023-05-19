@@ -2,34 +2,39 @@ import { getSupplierList } from "src/api/supplier/supplierApi";
 import { IRequestSupplierList } from "src/api/supplier/supplierApi.interface";
 import { YNType } from "src/api/api.interface";
 import { loadTabData } from "src/utils/loadTabData";
-
-const defaultParams: IRequestSupplierList = {
-  /** @TODO 서버 sortDirection 정의 후, 추가 */
-  // sortDirection: "ASC",
-  size: 10,
-  page: 0,
-  sort: "CreatedDate",
-};
+import { getParams } from "src/utils/params";
 
 export const INIT_SUPPLIER = {
-  searchRange: "SupplierName",
-  searchText: "",
+  searchType: "SupplierName",
+  searchKeyword: "",
   isActive: "" as YNType,
   sort: "CreatedDate",
   isContracted: "" as YNType,
-  count: "10",
+  size: "10",
+  page: 0,
 };
 
 export const supplierListLoader = async () => {
   const loadData = loadTabData("/charger/operator");
-  if (Object.keys(loadData?.data ?? {}).length > 0) {
-    return loadData;
+
+  const params = {
+    ...INIT_SUPPLIER,
+    ...(loadData?.filterData as unknown as IRequestSupplierList),
+    page: (loadData?.currentPage ?? 1) - 1,
+  } as IRequestSupplierList;
+  getParams(params);
+  if (!params.searchKeyword) {
+    delete params.searchType;
   }
 
   /* 검색  */
-  const { code, data } = await getSupplierList(defaultParams);
+  const { code, data } = await getSupplierList(params);
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return { data: success ? data : {}, filterData: INIT_SUPPLIER };
+  return {
+    data: success ? data : {},
+    filterData: loadData?.filterData ?? INIT_SUPPLIER,
+    currentPage: loadData?.currentPage,
+  };
 };

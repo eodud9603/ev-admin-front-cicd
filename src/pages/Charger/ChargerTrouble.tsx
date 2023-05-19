@@ -90,11 +90,11 @@ export const ChargerTrouble = () => {
     sido,
     gugun,
     dong,
-    count,
-    startDate,
-    endDate,
-    searchRange,
-    searchText,
+    size,
+    submitStartDate,
+    submitEndDate,
+    searchType,
+    searchKeyword,
     operator,
     sort,
     status,
@@ -114,7 +114,7 @@ export const ChargerTrouble = () => {
   });
 
   const { searchDataStorage } = useTabs({
-    data: data,
+    data: undefined,
     pageTitle: "충전기 고장/파손 관리",
     filterData: inputs,
     currentPage: page,
@@ -125,7 +125,7 @@ export const ChargerTrouble = () => {
     lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestBrokenList = {
-        size: Number(count),
+        size: Number(size),
         page,
         sido,
         gugun,
@@ -134,20 +134,21 @@ export const ChargerTrouble = () => {
         status,
         sort: sort as IRequestBrokenList["sort"],
       };
-      if (startDate && endDate) {
+
+      if (submitStartDate && submitEndDate) {
         searchParams.submitStartDate = standardDateFormat(
-          startDate as string,
+          submitStartDate,
           "YYYY.MM.DD"
         );
         searchParams.submitEndDate = standardDateFormat(
-          endDate as string,
+          submitEndDate,
           "YYYY.MM.DD"
         );
       }
-      if (searchRange && searchText) {
+      if (searchType && searchKeyword) {
         searchParams.searchType =
-          searchRange as IRequestBrokenList["searchType"];
-        searchParams.searchKeyword = searchText;
+          searchType as IRequestBrokenList["searchType"];
+        searchParams.searchKeyword = searchKeyword;
       }
       searchParams = {
         ...searchParams,
@@ -166,7 +167,7 @@ export const ChargerTrouble = () => {
           page: searchParams.page,
           emptyMessage: "검색된 고장/파손 충전기 정보가 없습니다.",
         });
-        searchDataStorage(data, searchParams.page + 1);
+        searchDataStorage(undefined, searchParams.page + 1);
       } else {
         reset({
           code,
@@ -204,6 +205,11 @@ export const ChargerTrouble = () => {
             <Col md={6}>
               <RegionGroup
                 label={"지역"}
+                init={{
+                  sido,
+                  sigugun: gugun,
+                  dongmyun: dong,
+                }}
                 onChangeRegion={(region) => {
                   onChangeSingle({
                     sido: region.sido,
@@ -215,7 +221,23 @@ export const ChargerTrouble = () => {
             </Col>
             <Col>
               {/** @TODO 검색 api 해당 필드 추가 필요 (서버 선 작업 필요) */}
-              <DateGroup label={"접수일"} onChangeDate={onChangeSingle} />
+              <DateGroup
+                label={"접수일"}
+                dateState={{
+                  startDate: submitStartDate
+                    ? standardDateFormat(submitStartDate, "YYYY-MM-DD")
+                    : "",
+                  endDate: submitEndDate
+                    ? standardDateFormat(submitEndDate, "YYYY-MM-DD")
+                    : "",
+                }}
+                onChangeDate={(date) => {
+                  onChangeSingle({
+                    submitStartDate: date.startDate,
+                    submitEndDate: date.endDate,
+                  });
+                }}
+              />
             </Col>
             <Col md={2} />
           </Row>
@@ -225,14 +247,14 @@ export const ChargerTrouble = () => {
                 title={"검색어"}
                 menuItems={dropdownGroupSearch}
                 onClickDropdownItem={(_, value) => {
-                  onChangeSingle({ searchRange: value });
+                  onChangeSingle({ searchType: value });
                 }}
                 initSelectedValue={dropdownGroupSearch.find(
-                  (e) => e.value === searchRange
+                  (e) => e.value === searchType
                 )}
                 placeholder={"충전소를 입력해주세요"}
-                name={"searchText"}
-                value={searchText}
+                name={"searchKeyword"}
+                value={searchKeyword}
                 onChange={onChange}
                 onClick={searchHandler({ page: 1 })}
               />
@@ -295,11 +317,11 @@ export const ChargerTrouble = () => {
                 <DropdownBase
                   menuItems={COUNT_FILTER_LIST}
                   initSelectedValue={COUNT_FILTER_LIST.find(
-                    (e) => e.value === count
+                    (e) => e.value === size
                   )}
                   onClickDropdownItem={(_, value) => {
                     onChangeSingle({
-                      count: value,
+                      size: value,
                     });
                     void searchHandler({ page: 1, size: Number(value) })();
                   }}
@@ -318,7 +340,7 @@ export const ChargerTrouble = () => {
               {list.length > 0 ? (
                 list.map((broken, index) => (
                   <tr key={broken.id}>
-                    <td>{(page - 1) * Number(count) + index + 1}</td>
+                    <td>{(page - 1) * Number(size) + index + 1}</td>
                     <td>{broken.stationRegion}</td>
                     <td>{broken.stationOperator ?? "전체"}</td>
                     <td>

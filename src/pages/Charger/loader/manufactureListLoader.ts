@@ -1,31 +1,37 @@
 import { getManufactureList } from "src/api/manufactures/manufactureApi";
 import { IRequestManufactureList } from "src/api/manufactures/manufactureApi.interface";
 import { loadTabData } from "src/utils/loadTabData";
-
-const defaultParams: IRequestManufactureList = {
-  /** @TODO 서버 sortDirection 정의 후, 추가 */
-  // sortDirection: "ASC",
-  size: 10,
-  page: 0,
-  sort: "CompanyId",
-};
+import { getParams } from "src/utils/params";
 
 export const INIT_MANUFACTURE = {
-  searchRange: "CompanyId",
-  searchText: "",
+  searchType: "CompanyId",
+  searchKeyword: "",
   sort: "CompanyId",
-  count: "10",
+  size: "10",
+  page: 0,
 };
 
 export const manufactureListLoader = async () => {
   const loadData = loadTabData("/charger/manufacturer");
-  if (Object.keys(loadData?.data ?? {}).length > 0) {
-    return loadData;
+
+  const params = {
+    ...INIT_MANUFACTURE,
+    ...(loadData?.filterData as unknown as IRequestManufactureList),
+    page: (loadData?.currentPage ?? 1) - 1,
+  } as IRequestManufactureList;
+  getParams(params);
+  if (!params.searchKeyword) {
+    delete params.searchType;
   }
+
   /* 검색  */
-  const { code, data } = await getManufactureList(defaultParams);
+  const { code, data } = await getManufactureList(params);
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return { data: success ? data : {}, filterData: INIT_MANUFACTURE };
+  return {
+    data: success ? data : {},
+    filterData: loadData?.filterData ?? INIT_MANUFACTURE,
+    currentPage: loadData?.currentPage,
+  };
 };

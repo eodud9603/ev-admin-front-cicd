@@ -13,8 +13,8 @@ export type chargerContractAddLoaderType = {
     blobStringData: string;
   }>;
 };
-export const chargerContractAddLoader = () => {
-  const loadData = loadTabData("/charger/contract/add");
+export const stationContractAddLoader = () => {
+  const loadData = loadTabData("/station/contract/add");
 
   return (
     loadData?.data ?? {

@@ -225,8 +225,8 @@ export const Playground = (props: any) => {
                   충전기 관리
                 </MenuItem>
                 <MenuItem
-                  component={<Link to={moveToPath("/charger/contract")} />}
-                  className={activeItemTextColor("/charger/contract")}
+                  component={<Link to={moveToPath("/station/contract")} />}
+                  className={activeItemTextColor("/station/contract")}
                 >
                   충전소 계약 관리
                 </MenuItem>

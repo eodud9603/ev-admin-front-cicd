@@ -109,7 +109,7 @@ const tableHeader = [
   { label: "등록일" },
 ];
 
-const ChargerContract = () => {
+const StationContract = () => {
   /** init 충전소 계약 목록 데이터 */
   const { data, filterData, currentPage } = useLoaderData() as {
     data: IStationContractListResponse | null;
@@ -137,22 +137,22 @@ const ChargerContract = () => {
     gugun,
     dong,
     contractCode,
-    searchRange,
-    searchText,
+    searchType,
+    searchKeyword,
     isUse,
     sort,
-    count,
+    size,
   } = inputs;
 
   const { searchDataStorage } = useTabs({
-    data: data,
+    data: undefined,
     pageTitle: "충전소 계약 관리",
     filterData: inputs,
     currentPage: page,
   });
 
   const placeholderKeyword =
-    searchList.find((search) => searchRange === search.value)
+    searchList.find((search) => searchType === search.value)
       ?.placeholderKeyword ?? "";
 
   const navigate = useNavigate();
@@ -162,7 +162,7 @@ const ChargerContract = () => {
     lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestStationContractList = {
-        size: Number(count),
+        size: Number(size),
         page,
         sido,
         gugun,
@@ -172,10 +172,10 @@ const ChargerContract = () => {
         sort: sort as IRequestStationContractList["sort"],
       };
       /** @TODO 검색어 필터 추가 후, 추가예정 */
-      if (searchRange && searchText) {
+      if (searchType && searchKeyword) {
         searchParams.searchType =
-          searchRange as IRequestStationContractList["searchType"];
-        searchParams.searchKeyword = searchText;
+          searchType as IRequestStationContractList["searchType"];
+        searchParams.searchKeyword = searchKeyword;
       }
       searchParams = {
         ...searchParams,
@@ -196,7 +196,7 @@ const ChargerContract = () => {
           page: searchParams.page,
           emptyMessage: "검색된 충전소 계약 정보가 없습니다.",
         });
-        searchDataStorage(data, searchParams.page + 1);
+        searchDataStorage(undefined, searchParams.page + 1);
       } else {
         reset({
           code,
@@ -226,6 +226,11 @@ const ChargerContract = () => {
             <Col md={7}>
               <RegionGroup
                 label={"지역"}
+                init={{
+                  sido,
+                  sigugun: gugun,
+                  dongmyun: dong,
+                }}
                 onChangeRegion={(region) => {
                   onChangeSingle({
                     sido: region.sido,
@@ -254,13 +259,13 @@ const ChargerContract = () => {
                 placeholder={`${placeholderKeyword} 입력해주세요.`}
                 menuItems={searchList}
                 onClickDropdownItem={(_, value) => {
-                  onChangeSingle({ searchRange: value });
+                  onChangeSingle({ searchType: value });
                 }}
                 initSelectedValue={searchList.find(
-                  (e) => e.value === searchRange
+                  (e) => e.value === searchType
                 )}
-                name={"searchText"}
-                value={searchText}
+                name={"searchKeyword"}
+                value={searchKeyword}
                 onChange={onChange}
                 onClick={searchHandler({ page: 1 })}
               />
@@ -310,18 +315,18 @@ const ChargerContract = () => {
               <DropdownBase
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {
-                  onChangeSingle({ count: value });
+                  onChangeSingle({ size: value });
                   void searchHandler({ page: 1, size: Number(value) })();
                 }}
                 initSelectedValue={COUNT_FILTER_LIST.find(
-                  (e) => e.value === count
+                  (e) => e.value === size
                 )}
               />
               <ButtonBase
                 label={"신규 등록"}
                 color={"turu"}
                 onClick={() => {
-                  navigate("/charger/contract/add");
+                  navigate("/station/contract/add");
                 }}
               />
               <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
@@ -333,7 +338,7 @@ const ChargerContract = () => {
               {list.length > 0 ? (
                 list.map((contract, index) => (
                   <tr key={contract.id}>
-                    <td>{(page - 1) * Number(count) + index + 1}</td>
+                    <td>{(page - 1) * Number(size) + index + 1}</td>
                     <td>{contract.id}</td>
                     <td>{contract.isUse === "Y" ? "사용" : "미사용"}</td>
                     {/** @TODO 서버 code 픽스 후, 매칭작업 필요 */}
@@ -342,7 +347,7 @@ const ChargerContract = () => {
                       <HoverSpan
                         className={"text-turu"}
                         onClick={() => {
-                          navigate(`/charger/contract/detail/${contract.id}`);
+                          navigate(`/station/contract/detail/${contract.id}`);
                         }}
                       >
                         <u>{contract.place}</u>
@@ -413,7 +418,7 @@ const ChargerContract = () => {
   );
 };
 
-export default ChargerContract;
+export default StationContract;
 
 const HoverSpan = styled.span`
   :hover {

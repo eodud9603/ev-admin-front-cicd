@@ -5,7 +5,7 @@ import useInputs from "src/hooks/useInputs";
 
 interface IDateInputProps {
   label?: string;
-  dateState?: { startDt: string; endDt: string };
+  dateState?: { startDate: string; endDate: string };
   setData?: Dispatch<SetStateAction<{ [key: string]: string }>>;
   buttonState?: {
     label: string;
@@ -26,16 +26,14 @@ interface IDateInputProps {
 export const DateGroup = (props: IDateInputProps) => {
   const {
     label,
-    dateState,
+    dateState = { startDate: "", endDate: "" },
     buttonState,
     setData,
     onChangeDate,
     ...extraProps
   } = props;
-  const [{ startDate, endDate }, { onChange, onChangeSingle }] = useInputs({
-    startDate: "",
-    endDate: "",
-  });
+  const [{ startDate, endDate }, { onChange, onChangeSingle }] =
+    useInputs(dateState);
 
   /** 날짜변경 콜백 */
   const onChangeHandler: React.ChangeEventHandler<HTMLInputElement> = (e) => {

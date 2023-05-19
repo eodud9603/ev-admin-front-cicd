@@ -16,7 +16,7 @@ export const stationContractDetailLoader = async ({
   }
 
   const loadData = loadTabData<IChargerDetailResponse | null>(
-    `/charger/contract/detail/${params.id}`
+    `/station/contract/detail/${params.id}`
   );
 
   if (loadData?.data) {

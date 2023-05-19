@@ -3,37 +3,44 @@ import { IRequestStationContractList } from "src/api/station/stationApi.interfac
 import { loadTabData } from "src/utils/loadTabData";
 import { TContractStatus } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
-
-const defaultParams: IRequestStationContractList = {
-  /** @TODO 서버 sortDirection 정의 후, 추가 */
-  // sortDirection: "ASC",
-  size: 10,
-  page: 0,
-  sort: "ContractedDate",
-};
+import { getParams } from "src/utils/params";
 
 export const INIT_CONTRACT = {
+  size: "10",
+  page: 0,
+
   sido: "",
   gugun: "",
   dong: "",
   contractCode: "" as TContractStatus,
-  searchRange: "ContractPlace",
-  searchText: "",
+  searchType: "ContractPlace",
+  searchKeyword: "",
   isUse: "" as YNType,
   sort: "ContractedDate",
-  count: "10",
 };
 
 export const stationContractListLoader = async () => {
-  const loadData = loadTabData("/charger/contract");
-  if (Object.keys(loadData?.data ?? {}).length > 0) {
-    return loadData;
+  const loadData = loadTabData("/station/contract");
+
+  const params = {
+    ...INIT_CONTRACT,
+    ...(loadData?.filterData as unknown as IRequestStationContractList),
+    page: (loadData?.currentPage ?? 1) - 1,
+  } as IRequestStationContractList;
+
+  getParams(params);
+  if (!params.searchKeyword) {
+    delete params.searchType;
   }
 
   /* 검색  */
-  const { code, data } = await getStationContractList(defaultParams);
+  const { code, data } = await getStationContractList(params);
   /** 검색 성공 */
   const success = code === "SUCCESS" && !!data;
 
-  return { data: success ? data : {}, filterData: INIT_CONTRACT };
+  return {
+    data: success ? data : {},
+    filterData: loadData?.filterData ?? INIT_CONTRACT,
+    currentPage: loadData?.currentPage,
+  };
 };
