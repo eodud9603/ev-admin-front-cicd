@@ -145,7 +145,7 @@ const StationContract = () => {
   } = inputs;
 
   const { searchDataStorage } = useTabs({
-    data: data,
+    data: undefined,
     pageTitle: "충전소 계약 관리",
     filterData: inputs,
     currentPage: page,
@@ -196,7 +196,7 @@ const StationContract = () => {
           page: searchParams.page,
           emptyMessage: "검색된 충전소 계약 정보가 없습니다.",
         });
-        searchDataStorage(data, searchParams.page + 1);
+        searchDataStorage(undefined, searchParams.page + 1);
       } else {
         reset({
           code,

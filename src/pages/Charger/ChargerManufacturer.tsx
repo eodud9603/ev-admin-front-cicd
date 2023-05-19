@@ -84,7 +84,7 @@ export const ChargerManufacturer = () => {
   });
 
   const { searchDataStorage } = useTabs({
-    data: data,
+    data: undefined,
     pageTitle: "충전기 제조사 관리",
     filterData: inputs,
     currentPage: page,
@@ -121,7 +121,7 @@ export const ChargerManufacturer = () => {
           page: searchParams.page,
           emptyMessage: "검색된 제조사 정보가 없습니다.",
         });
-        searchDataStorage(data, searchParams.page + 1);
+        searchDataStorage(undefined, searchParams.page + 1);
       } else {
         reset({
           code,

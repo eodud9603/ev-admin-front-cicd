@@ -147,7 +147,7 @@ export const ChargerOperator = () => {
           page: searchParams.page,
           emptyMessage: "검색된 서비스 운영사 정보가 없습니다.",
         });
-        searchDataStorage(data, searchParams.page + 1);
+        searchDataStorage(undefined, searchParams.page + 1);
       } else {
         reset({ code, message: message || "오류가 발생하였습니다." });
       }

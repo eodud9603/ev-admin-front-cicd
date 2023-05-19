@@ -114,7 +114,7 @@ export const ChargerTrouble = () => {
   });
 
   const { searchDataStorage } = useTabs({
-    data: data,
+    data: undefined,
     pageTitle: "충전기 고장/파손 관리",
     filterData: inputs,
     currentPage: page,
@@ -167,7 +167,7 @@ export const ChargerTrouble = () => {
           page: searchParams.page,
           emptyMessage: "검색된 고장/파손 충전기 정보가 없습니다.",
         });
-        searchDataStorage(data, searchParams.page + 1);
+        searchDataStorage(undefined, searchParams.page + 1);
       } else {
         reset({
           code,

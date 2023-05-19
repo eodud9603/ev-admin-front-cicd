@@ -122,7 +122,7 @@ const Charger = () => {
   } = inputs;
 
   const { searchDataStorage } = useTabs({
-    data: data,
+    data: undefined,
     pageTitle: "충전기 관리",
     filterData: inputs,
     currentPage: page,
@@ -165,7 +165,7 @@ const Charger = () => {
       /** 검색 성공 */
       const success = code === "SUCCESS" && !!data;
       if (success) {
-        searchDataStorage(data, searchParams.page + 1);
+        searchDataStorage(undefined, searchParams.page + 1);
         onChangeList({
           ...data,
           page: searchParams.page,
