@@ -85,7 +85,7 @@ export const useTabs = ({
         });
       }
     };
-  }, [tabStore.data.length, saveData.editable]);
+  }, [saveData.editable]);
 
   // 검색 시 데이터 저장
   const searchDataStorage = useCallback((data: any, currentPage: number) => {
