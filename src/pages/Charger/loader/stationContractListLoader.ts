@@ -25,7 +25,7 @@ export const INIT_CONTRACT = {
 };
 
 export const stationContractListLoader = async () => {
-  const loadData = loadTabData("/charger/contract");
+  const loadData = loadTabData("/station/contract");
   if (Object.keys(loadData?.data ?? {}).length > 0) {
     return loadData;
   }

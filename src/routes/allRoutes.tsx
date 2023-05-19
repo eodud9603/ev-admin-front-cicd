@@ -10,7 +10,7 @@ import { ChargerTrouble } from "src/pages/Charger/ChargerTrouble";
 import { ChargerManufacturer } from "src/pages/Charger/ChargerManufacturer";
 import { ChargerOperator } from "src/pages/Charger/ChargerOperator";
 import Charger from "src/pages/Charger/Charger";
-import ChargerContract from "src/pages/Charger/ChargerContract";
+import StationContract from "src/pages/Charger/StationContract";
 import OperatorAccount from "src/pages/Operator/OperatorAccount";
 import OperatorCounselor from "src/pages/Operator/OperatorCounselor";
 import OperatorRole from "src/pages/Operator/OperatorRole";
@@ -42,7 +42,7 @@ import OperateSms from "src/pages/Operate/OperateSMS";
 import OperateNotificationTalk from "src/pages/Operate/OperateNotificationTalk";
 import ChargerStationDetail from "src/pages/Charger/ChargerStationDetail";
 import ChargerDetail from "src/pages/Charger/ChargerDetail";
-import ChargerContractDetail from "src/pages/Charger/ChargerContractDetail";
+import StationContractDetail from "src/pages/Charger/StationContractDetail";
 import { MemberNormalDetail } from "src/pages/Member/MemberNormalDetail";
 import { MemberUsageHistory } from "src/pages/Member/MemberUsageHistory";
 import { MemberIssuanceNormalCard } from "src/pages/Member/MemberIssuanceNormalCard";
@@ -51,7 +51,7 @@ import OperatorAccountDetail from "src/pages/Operator/OperatorAccountDetail";
 import { MemberNormalCardDetail } from "src/pages/Member/MemberNormalCardDetail";
 import OperatorCounselorAdd from "src/pages/Operator/OperatorCounselorAdd";
 import OperatorAccountAdd from "src/pages/Operator/OperatorAccountAdd";
-import ChargerContractAdd from "src/pages/Charger/ChargerContractAdd";
+import StationContractAdd from "src/pages/Charger/StationContractAdd";
 import InstallChargerDetail from "src/pages/Operate/InstallChargerDetail";
 import { CounselingHistoryDetail } from "src/pages/Counseling/CounselingHistoryDetail";
 import OperateNotificationTalkDetail from "src/pages/Operate/OperateNotificationTalkDetail";
@@ -120,7 +120,7 @@ import { brokenDetailLoader } from "src/pages/Charger/loader/brokenDetailLoader"
 import { supplierListLoader } from "src/pages/Charger/loader/supplierListLoader";
 import { supplierDetailLoader } from "src/pages/Charger/loader/supplierDetailLoader";
 import { chargerAddLoader } from "src/pages/Charger/loader/chargerAddLoader";
-import { chargerContractAddLoader } from "src/pages/Charger/loader/chargerContractAddLoader";
+import { stationContractAddLoader } from "src/pages/Charger/loader/stationContractAddLoader";
 import { evModelListLoader } from "src/pages/Operate/loader/evModelListLoader";
 import { noticeListLoader } from "src/pages/Operate/loader/noticeListLoader";
 import { noticeDetailLoader } from "src/pages/Operate/loader/noticeDetailLoader";
@@ -180,18 +180,18 @@ const userRoutes: Array<RouteProps> = [
     loader: chargerDetailLoader,
   },
   {
-    path: "/charger/contract",
-    element: <ChargerContract />,
+    path: "/station/contract",
+    element: <StationContract />,
     loader: stationContractListLoader,
   },
   {
-    path: "/charger/contract/add",
-    element: <ChargerContractAdd />,
-    loader: chargerContractAddLoader,
+    path: "/station/contract/add",
+    element: <StationContractAdd />,
+    loader: stationContractAddLoader,
   },
   {
-    path: "/charger/contract/detail/:id",
-    element: <ChargerContractDetail />,
+    path: "/station/contract/detail/:id",
+    element: <StationContractDetail />,
     loader: stationContractDetailLoader,
   },
   {

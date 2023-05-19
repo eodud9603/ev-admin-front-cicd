@@ -109,7 +109,7 @@ const tableHeader = [
   { label: "등록일" },
 ];
 
-const ChargerContract = () => {
+const StationContract = () => {
   /** init 충전소 계약 목록 데이터 */
   const { data, filterData, currentPage } = useLoaderData() as {
     data: IStationContractListResponse | null;
@@ -321,7 +321,7 @@ const ChargerContract = () => {
                 label={"신규 등록"}
                 color={"turu"}
                 onClick={() => {
-                  navigate("/charger/contract/add");
+                  navigate("/station/contract/add");
                 }}
               />
               <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
@@ -342,7 +342,7 @@ const ChargerContract = () => {
                       <HoverSpan
                         className={"text-turu"}
                         onClick={() => {
-                          navigate(`/charger/contract/detail/${contract.id}`);
+                          navigate(`/station/contract/detail/${contract.id}`);
                         }}
                       >
                         <u>{contract.place}</u>
@@ -413,7 +413,7 @@ const ChargerContract = () => {
   );
 };
 
-export default ChargerContract;
+export default StationContract;
 
 const HoverSpan = styled.span`
   :hover {
