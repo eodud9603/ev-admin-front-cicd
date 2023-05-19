@@ -93,13 +93,13 @@ const ChargingStationManagement = () => {
   const inputs = useInputs(filterData);
   const [
     {
-      count,
+      size,
       sido,
       gugun,
       dong,
       operation,
-      searchRange,
-      searchText,
+      searchType,
+      searchKeyword,
       isUse,
       sort,
     },
@@ -112,8 +112,8 @@ const ChargingStationManagement = () => {
     filterData: inputs[0],
     currentPage: page,
   });
-  const searchKeyword =
-    searchList.find((data) => searchRange === data.value)?.placeholderKeyword ??
+  const placeholderKeyword =
+    searchList.find((data) => searchType === data.value)?.placeholderKeyword ??
     "검색어를";
 
   const navigate = useNavigate();
@@ -123,7 +123,7 @@ const ChargingStationManagement = () => {
     lock(async () => {
       /* 검색 파라미터 */
       let searchParams: IRequestStationList = {
-        size: Number(count),
+        size: Number(size),
         page,
         sido,
         gugun,
@@ -132,10 +132,10 @@ const ChargingStationManagement = () => {
         isUse,
         sort: sort as IRequestStationList["sort"],
       };
-      if (searchRange && searchText) {
+      if (searchType && searchKeyword) {
         searchParams.searchType =
-          searchRange as IRequestStationList["searchType"];
-        searchParams.searchKeyword = searchText;
+          searchType as IRequestStationList["searchType"];
+        searchParams.searchKeyword = searchKeyword;
       }
       searchParams = {
         ...searchParams,
@@ -181,6 +181,11 @@ const ChargingStationManagement = () => {
             <Col md={7}>
               <RegionGroup
                 label={"지역"}
+                init={{
+                  sido,
+                  sigugun: gugun,
+                  dongmyun: dong,
+                }}
                 onChangeRegion={(region) => {
                   onChangeSingle({
                     sido: region.sido,
@@ -206,17 +211,17 @@ const ChargingStationManagement = () => {
             <Col md={7}>
               <SearchTextInput
                 title={"검색어"}
-                placeholder={`${searchKeyword} 입력해주세요`}
+                placeholder={`${placeholderKeyword} 입력해주세요`}
                 menuItems={searchList}
                 onClickDropdownItem={(_, value) => {
-                  onChangeSingle({ searchRange: value });
+                  onChangeSingle({ searchType: value });
                 }}
                 initSelectedValue={searchList.find(
-                  (e) => e.value === searchRange
+                  (e) => e.value === searchType
                 )}
                 disabled={true} /** @TODO 임시 비활성화 (서버 이슈) */
-                name={"searchText"}
-                value={searchText}
+                name={"searchKeyword"}
+                value={searchKeyword}
                 onChange={onChange}
                 onClick={searchHandler({ page: 1 })}
               />
@@ -266,11 +271,11 @@ const ChargingStationManagement = () => {
               <DropdownBase
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {
-                  onChangeSingle({ count: value });
+                  onChangeSingle({ size: value });
                   void searchHandler({ page: 1, size: Number(value) })();
                 }}
                 initSelectedValue={COUNT_FILTER_LIST.find(
-                  (e) => e.value === count
+                  (e) => e.value === size
                 )}
               />
               <ButtonBase
@@ -305,7 +310,7 @@ const ChargingStationManagement = () => {
                     index
                   ) => (
                     <tr key={id}>
-                      <td>{(page - 1) * Number(count) + index + 1}</td>
+                      <td>{(page - 1) * Number(size) + index + 1}</td>
                       <td>{region}</td>
                       <td>{operation ?? "전체"}</td>
                       <td>
