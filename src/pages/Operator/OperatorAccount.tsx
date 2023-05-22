@@ -25,8 +25,10 @@ import { getPageList } from "src/utils/pagination";
 import { useTabs } from "src/hooks/useTabs";
 import { ROLE_TYPE } from "src/constants/status";
 import { getParams } from "src/utils/params";
-import { getAdminList } from "src/api/admin/adminAPi";
+import { getAdminList, getAdminListExcel } from "src/api/admin/adminAPi";
 import { lock } from "src/utils/lock";
+import { blobToExcel } from "src/utils/xlsx";
+import { standardDateFormat } from "src/utils/day";
 
 const PAGE = "계정 관리";
 
@@ -96,20 +98,27 @@ const OperatorAccount = () => {
     currentPage: page,
   });
 
+  const getSearchParams = () => {
+    /* 검색 파라미터 */
+    const searchParams: IRequestAdminList = {
+      size: Number(size),
+      page,
+      isBlock,
+    };
+    /** @TODO 검색어 필터 추가 후, 추가예정 */
+    if (searchType && searchKeyword) {
+      searchParams.searchType = searchType as IRequestAdminList["searchType"];
+      searchParams.searchKeyword = searchKeyword;
+    }
+
+    return searchParams;
+  };
+
   /** 검색 핸들러 */
   const searchHandler = (params: Partial<IRequestAdminList> = {}) =>
     lock(async () => {
       /* 검색 파라미터 */
-      let searchParams: IRequestAdminList = {
-        size: Number(size),
-        page,
-        isBlock,
-      };
-      /** @TODO 검색어 필터 추가 후, 추가예정 */
-      if (searchType && searchKeyword) {
-        searchParams.searchType = searchType as IRequestAdminList["searchType"];
-        searchParams.searchKeyword = searchKeyword;
-      }
+      let searchParams = getSearchParams();
       searchParams = {
         ...searchParams,
         ...params,
@@ -135,6 +144,28 @@ const OperatorAccount = () => {
         });
       }
     });
+
+  /** 엑셀 다운로드 (*현재 검색어 기준) */
+  const download = lock(async () => {
+    /* 검색 파라미터 */
+    const searchParams = getSearchParams();
+    getParams(searchParams);
+
+    /* 엑셀 다운 요청 */
+    const data = await getAdminListExcel(searchParams);
+    /** 성공 */
+    const success = !!data;
+
+    if (success) {
+      blobToExcel(
+        data,
+        `운영자관리_계정관리_${standardDateFormat(
+          undefined,
+          "YYYY_MM_DD_HH_mm_ss"
+        )}.xlsx`
+      );
+    }
+  });
 
   return (
     <ContainerBase>
@@ -209,7 +240,13 @@ const OperatorAccount = () => {
                   navigate("/operator/account/add");
                 }}
               />
-              <ButtonBase label={"엑셀 저장"} outline={true} color={"turu"} />
+              <ButtonBase
+                disabled={list.length === 0}
+                label={"엑셀 저장"}
+                outline={true}
+                color={"turu"}
+                onClick={download}
+              />
             </div>
           </div>
 
