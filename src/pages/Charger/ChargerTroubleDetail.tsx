@@ -37,6 +37,8 @@ import {
 import { useTabs } from "src/hooks/useTabs";
 import { lock } from "src/utils/lock";
 
+const PAGE = "충전기 고장/파손 상세";
+
 export const ChargerTroubleDetail = () => {
   const { data, editable = true } = useLoaderData() as {
     data: IBrokenDetailResponse | null;
@@ -159,13 +161,6 @@ export const ChargerTroubleDetail = () => {
 
   const navigate = useNavigate();
 
-  useTabs({
-    data: inputs,
-    pageTitle: "충전기 고장/파손 상세",
-    pageType: "detail",
-    editable: disabled,
-  });
-
   /** 뒤로가기 */
   const goBack = () => {
     navigate("/charger/trouble");
@@ -266,6 +261,13 @@ export const ChargerTroubleDetail = () => {
     setDisabled(!disabled);
   });
 
+  useTabs({
+    data: inputs,
+    pageTitle: PAGE,
+    pageType: "detail",
+    editable: disabled,
+  });
+
   return (
     <ContainerBase>
       <HeaderBase />
@@ -276,9 +278,9 @@ export const ChargerTroubleDetail = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 고장/파손 관리", href: "" },
-            { label: "충전기 고장/파손 상세", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전기 고장/파손 상세"}
+          title={PAGE}
         />
         <RepairSection>
           <Label className={"m-0 fw-semibold font-size-16 mb-3"}>

@@ -35,18 +35,30 @@ import {
 import { getParams } from "src/utils/params";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { lock } from "src/utils/lock";
+import { useTabs } from "src/hooks/useTabs";
+
+const PAGE = "충전기 제조사 상세";
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerDetail = () => {
   /** init 제조사 상세 데이터 (basic info) */
-  const { basic, models } = useLoaderData() as {
+  const {
+    tab: loadTab,
+    basic,
+    models,
+    editable,
+  } = useLoaderData() as {
+    tab: tabType;
     basic: IManufactureDetailResponse;
     models: IManufactureModelItem[];
+    editable: boolean;
   };
   const navigate = useNavigate();
 
-  const [tab, setTab] = useState<tabType>("BASIC");
-  const [type, setType] = useState<"DETAIL" | "UPDATE">("DETAIL");
+  const [tab, setTab] = useState<tabType>(loadTab);
+  const [type, setType] = useState<"DETAIL" | "UPDATE">(
+    editable ? "DETAIL" : "UPDATE"
+  );
 
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
@@ -73,7 +85,7 @@ export const ChargerManufacturerDetail = () => {
     {
       onChange: onChangeBasic,
       onChangeSingle: onChangeSingleBasic,
-      reset: resetBasic,
+      // reset: resetBasic,
     },
   ] = useInputs({
     id: (basic.id ?? "").toString(),
@@ -246,6 +258,13 @@ export const ChargerManufacturerDetail = () => {
     }
   });
 
+  useTabs({
+    data: { tab, basic: basicInputs, models: firmwareList },
+    pageTitle: PAGE,
+    pageType: "detail",
+    editable: type === "DETAIL",
+  });
+
   return (
     <ContainerBase>
       <HeaderBase />
@@ -256,9 +275,9 @@ export const ChargerManufacturerDetail = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 제조사 관리", href: "" },
-            { label: "충전기 제조사 상세", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전기 제조사 상세"}
+          title={PAGE}
         />
         <InfoSection className={"mt-3"}>
           <div

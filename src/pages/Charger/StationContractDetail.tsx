@@ -37,6 +37,8 @@ import {
 import { useTabs } from "src/hooks/useTabs";
 import { lock } from "src/utils/lock";
 
+const PAGE = "충전소 계약 상세";
+
 const StationContractDetail = () => {
   /** init 충전소 계약 상세 데이터 */
   const { data, editable = true } = useLoaderData() as {
@@ -120,13 +122,6 @@ const StationContractDetail = () => {
     url: data?.contractFileUrl ?? "",
   });
 
-  useTabs({
-    data: inputs,
-    pageTitle: "충전소 계약 상세",
-    pageType: "detail",
-    editable: disabled,
-  });
-
   const navigate = useNavigate();
 
   const navigateList = () => {
@@ -187,6 +182,13 @@ const StationContractDetail = () => {
     }
   });
 
+  useTabs({
+    data: inputs,
+    pageTitle: PAGE,
+    pageType: "detail",
+    editable: disabled,
+  });
+
   return (
     <ContainerBase>
       <HeaderBase></HeaderBase>
@@ -199,9 +201,9 @@ const StationContractDetail = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 계약 관리", href: "/station/contract" },
-            { label: "충전소 계약 상세", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전소 계약 상세"}
+          title={PAGE}
         />
 
         <p className={"mt-3 mb-2 font-size-20 text-dark fw-bold"}>기본정보</p>

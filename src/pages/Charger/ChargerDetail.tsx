@@ -71,6 +71,8 @@ import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckM
 import { IRequestChargerModify } from "src/api/charger/chargerApi.interface";
 import { lock } from "src/utils/lock";
 
+const PAGE = "충전기 상세";
+
 const DefaultDropdownData = {
   label: "선택",
   value: "",
@@ -248,13 +250,6 @@ const ChargerDetail = () => {
     navigate("/charger/charger");
   };
 
-  useTabs({
-    data: inputs,
-    pageTitle: "충전기 상세",
-    pageType: "detail",
-    editable: disabled,
-  });
-
   /** 수정 */
   const modify = lock(async () => {
     if (disabled) {
@@ -331,6 +326,13 @@ const ChargerDetail = () => {
     }
   });
 
+  useTabs({
+    data: inputs,
+    pageTitle: PAGE,
+    pageType: "detail",
+    editable: disabled,
+  });
+
   return (
     <ContainerBase>
       <HeaderBase />
@@ -343,9 +345,9 @@ const ChargerDetail = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 관리", href: "" },
-            { label: "충전기 상세", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전기 상세"}
+          title={PAGE}
         />
 
         <div>

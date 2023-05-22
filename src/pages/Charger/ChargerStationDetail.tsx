@@ -52,6 +52,8 @@ import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckM
 import { objectToArray } from "src/utils/convert";
 import { lock } from "src/utils/lock";
 
+const PAGE = "충전소 상세";
+
 /* 충전기 요약 테이블 */
 const chargerSummaryTableHeader = [
   {
@@ -239,16 +241,6 @@ const ChargerStationDetail = () => {
     setAddrSearchModalOpen((prev) => !prev);
   };
 
-  useTabs({
-    data: {
-      station: inputs,
-      charger: chargers,
-    },
-    pageTitle: "충전소 상세",
-    pageType: "detail",
-    editable: disabled,
-  });
-
   /** 수정 */
   const modify = lock(async () => {
     if (disabled) {
@@ -297,6 +289,16 @@ const ChargerStationDetail = () => {
     setDisabled((prev) => !prev);
   });
 
+  useTabs({
+    data: {
+      station: inputs,
+      charger: chargers,
+    },
+    pageTitle: PAGE,
+    pageType: "detail",
+    editable: disabled,
+  });
+
   return (
     <ContainerBase>
       <HeaderBase />
@@ -309,9 +311,9 @@ const ChargerStationDetail = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전소 관리", href: "" },
-            { label: "충전소 상세", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전소 상세"}
+          title={PAGE}
         />
 
         <div>
