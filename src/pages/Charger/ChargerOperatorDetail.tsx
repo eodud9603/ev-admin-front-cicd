@@ -46,7 +46,7 @@ export const ChargerOperatorDetail = () => {
   const {
     data,
     fileData: loaderFileData,
-    editable = true,
+    editable,
   } = useLoaderData() as ISupplierDetailLoaderType;
 
   /* 수정모드 */

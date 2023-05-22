@@ -80,8 +80,7 @@ const DefaultDropdownData = {
 
 const ChargerDetail = () => {
   /** init 충전기 상세 데이터 */
-  const { charger, editable = true } =
-    useLoaderData() as chargerDetailLoaderType;
+  const { charger, editable } = useLoaderData() as chargerDetailLoaderType;
 
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);

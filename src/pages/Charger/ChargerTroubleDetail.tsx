@@ -40,7 +40,7 @@ import { lock } from "src/utils/lock";
 const PAGE = "충전기 고장/파손 상세";
 
 export const ChargerTroubleDetail = () => {
-  const { data, editable = true } = useLoaderData() as {
+  const { data, editable } = useLoaderData() as {
     data: IBrokenDetailResponse | null;
     editable: boolean;
   };

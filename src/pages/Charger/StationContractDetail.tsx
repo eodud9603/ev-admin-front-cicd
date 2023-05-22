@@ -41,7 +41,7 @@ const PAGE = "충전소 계약 상세";
 
 const StationContractDetail = () => {
   /** init 충전소 계약 상세 데이터 */
-  const { data, editable = true } = useLoaderData() as {
+  const { data, editable } = useLoaderData() as {
     data: IStationContractDetailResponse | null;
     editable: boolean;
   };

@@ -2,6 +2,11 @@ import { getBrokenDetail } from "src/api/broken/brokenApi";
 import { loadTabData } from "src/utils/loadTabData";
 import { IChargerDetailResponse } from "src/api/charger/chargerApi.interface";
 
+const INIT_DATA = {
+  data: {},
+  editable: true,
+};
+
 interface IBrokenDetailParams {
   params: {
     id?: number;
@@ -10,7 +15,7 @@ interface IBrokenDetailParams {
 
 export const brokenDetailLoader = async ({ params }: IBrokenDetailParams) => {
   if (!params?.id) {
-    return {};
+    return INIT_DATA;
   }
 
   const loadData = loadTabData<IChargerDetailResponse | null>(
@@ -24,5 +29,5 @@ export const brokenDetailLoader = async ({ params }: IBrokenDetailParams) => {
   /* 충전기 상세 정보 조회 */
   const { data } = await getBrokenDetail({ id: params.id });
 
-  return data ? { data: data } : {};
+  return { ...INIT_DATA, data: data };
 };

@@ -1,6 +1,16 @@
 import { getManufactureDetail } from "src/api/manufactures/manufactureApi";
-import { IManufactureDetailResponse, IRequestManufactureDetail } from "src/api/manufactures/manufactureApi.interface";
+import {
+  IManufactureDetailResponse,
+  IRequestManufactureDetail,
+} from "src/api/manufactures/manufactureApi.interface";
 import { loadTabData } from "src/utils/loadTabData";
+
+const INIT_DATA = {
+  tab: "BASIC",
+  basic: {},
+  models: [],
+  editable: true,
+};
 
 export const manufactureDetailLoader = async ({
   params,
@@ -8,14 +18,9 @@ export const manufactureDetailLoader = async ({
   params: Partial<IRequestManufactureDetail>;
 }) => {
   if (!params?.id) {
-    return {
-      tab: "BASIC",
-      basic: {},
-      model: {},
-      editable: true,
-    };
+    return INIT_DATA;
   }
-  
+
   const loadData = loadTabData<IManufactureDetailResponse | null>(
     `/charger/manufacturer/detail/${params.id}`
   );
@@ -23,7 +28,7 @@ export const manufactureDetailLoader = async ({
   if (loadData?.data) {
     return {
       ...loadData.data,
-      editable: loadData.editable
+      editable: loadData.editable,
     };
   }
 
@@ -33,9 +38,8 @@ export const manufactureDetailLoader = async ({
   });
 
   return {
-    tab: "BASIC",
+    ...INIT_DATA,
     basic: manufactureData || {},
     models: manufactureData?.models || [],
-    editable: true,
   };
 };

@@ -2,6 +2,12 @@ import { getSupplierDetail } from "src/api/supplier/supplierApi";
 import { ISupplierDetailResponse } from "src/api/supplier/supplierApi.interface";
 import { loadTabData } from "src/utils/loadTabData";
 
+const INIT_DATA = {
+  data: {},
+  fileData: {},
+  editable: true,
+};
+
 interface ISupplierDetailParams {
   params: {
     id?: number;
@@ -24,7 +30,7 @@ export const supplierDetailLoader = async ({
   params,
 }: ISupplierDetailParams) => {
   if (!params?.id) {
-    return {};
+    return INIT_DATA;
   }
 
   const loadData = loadTabData<ISupplierDetailLoaderType | null>(
@@ -38,5 +44,5 @@ export const supplierDetailLoader = async ({
   /* 충전기 상세 정보 조회 */
   const { data } = await getSupplierDetail({ id: params.id });
 
-  return data ? { data: data } : {};
+  return { ...INIT_DATA, data: data };
 };
