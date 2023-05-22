@@ -283,7 +283,7 @@ const OperatorAccount = () => {
                     <td>{data.department ?? "-"}</td>
                     <td>{data.allowMobile}</td>
                     <td>{data.allowExternal}</td>
-                    <td>{data.isBlock}</td>
+                    <td>{data.isBlock === "Y" ? "N" : "Y"}</td>
                   </tr>
                 ))
               ) : (
