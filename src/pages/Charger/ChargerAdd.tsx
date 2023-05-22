@@ -58,6 +58,8 @@ import {
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { lock } from "src/utils/lock";
 
+const PAGE = "충전기 등록";
+
 const DefaultDropdownData = {
   label: "선택",
   value: "",
@@ -241,7 +243,7 @@ const ChargerAdd = () => {
       installInputs: installInputs,
       modemInputs: modemInputs,
     },
-    pageTitle: "충전기 등록",
+    pageTitle: PAGE,
     pageType: "add",
   });
 
@@ -255,9 +257,9 @@ const ChargerAdd = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 관리", href: "" },
-            { label: "충전기 등록", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전기 등록"}
+          title={PAGE}
         />
 
         <div>

@@ -43,6 +43,8 @@ import { useLoaderData } from "react-router-dom";
 import { INIT_CHARGER_STATION_ADD } from "src/pages/Charger/loader/stationAddLoader";
 import { lock } from "src/utils/lock";
 
+const PAGE = "충전소 등록";
+
 const ChargerStationAdd = () => {
   const data = useLoaderData() as typeof INIT_CHARGER_STATION_ADD;
   /* 기본정보 drop */
@@ -52,7 +54,7 @@ const ChargerStationAdd = () => {
   /* 계약정보 drop */
   const [isContractDrop, setIsContractDrop] = useState(true);
 
-  const [inputs, { onChange, onChangeSingle }] = useInputs(data);
+  const [inputs, { onChange, onChangeSingle }] = useInputs(data.inputs);
   const {
     /* 기본정보 */
     stationName,
@@ -157,8 +159,8 @@ const ChargerStationAdd = () => {
   });
 
   useTabs({
-    data: inputs,
-    pageTitle: "충전소 등록",
+    data: { inputs },
+    pageTitle: PAGE,
     pageType: "add",
   });
 
@@ -174,9 +176,9 @@ const ChargerStationAdd = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전소 관리", href: "/charger/station" },
-            { label: "충전소 신규 등록", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전소 신규 등록"}
+          title={PAGE}
         />
 
         <div>

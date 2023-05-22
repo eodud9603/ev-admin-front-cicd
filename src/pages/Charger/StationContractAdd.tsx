@@ -33,6 +33,8 @@ import useTransferFile from "src/hooks/useTransferFile";
 import { lock } from "src/utils/lock";
 import { INIT_STATION_CONTRACT_ADD } from "./loader/stationContractAddLoader";
 
+const PAGE = "충전소 계약 신규 등록";
+
 const StationContractAdd = () => {
   const data = useLoaderData() as typeof INIT_STATION_CONTRACT_ADD;
   /* 미입력 안내 모달 */
@@ -158,7 +160,7 @@ const StationContractAdd = () => {
       inputs: inputs,
       fileData: fileData,
     },
-    pageTitle: "충전소 계약 신규 등록",
+    pageTitle: PAGE,
     pageType: "add",
   });
 
@@ -174,9 +176,9 @@ const StationContractAdd = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 계약 관리", href: "" },
-            { label: "충전소 계약 신규 등록", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전소 계약 신규 등록"}
+          title={PAGE}
         />
 
         <p className={"mt-3 mb-2 font-size-20 text-dark fw-bold"}>기본정보</p>
