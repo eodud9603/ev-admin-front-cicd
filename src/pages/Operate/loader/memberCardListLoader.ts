@@ -14,6 +14,7 @@ const defaultParams: IRequestNormalCardList = {
 export const INIT_MEMBER_NORMAL_CARD = {
   startDate: "",
   endDate: "",
+  groupName: "",
   cardStatusType: "" as TMemberCardStatusTypeKey,
   cardIssuanceType: "" as TMemberCardDivisionTypeKey,
   searchRange: "Name",

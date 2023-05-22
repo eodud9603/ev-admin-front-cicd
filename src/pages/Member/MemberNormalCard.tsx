@@ -30,7 +30,6 @@ import { useTabs } from "src/hooks/useTabs";
 import {
   MEMBER_CARD_DIVISION_TYPE,
   MEMBER_CARD_STATUS_TYPE,
-  MEMBER_GRADE_TYPE,
 } from "src/constants/status";
 import { getPageList } from "src/utils/pagination";
 import { toLocaleString } from "src/utils/toLocaleString";
@@ -47,6 +46,14 @@ const defaultFilterData = {
   label: "전체",
   value: "",
 };
+
+/** 정렬 필터 */
+const sortList = [
+  {
+    label: "기본",
+    value: "Default",
+  },
+];
 
 const dropdownGroupSearch = [{ label: "이름", value: "Name" }];
 
@@ -103,7 +110,6 @@ export const IssuanceStatusButton = (props: IIssuanceStatusButton) => {
     default:
       return <></>;
   }
-  return <></>;
 };
 
 export const MemberNormalCard = () => {
@@ -182,7 +188,6 @@ export const MemberNormalCard = () => {
 
     return searchParams;
   };
-  console.log(page);
   /** 검색 핸들러 */
   const searchHandler =
     (params: Partial<IRequestNormalCardList> = {}) =>
@@ -341,7 +346,18 @@ export const MemberNormalCard = () => {
             <Col>
               <DropboxGroup
                 label={"정렬기준"}
-                dropdownItems={dropdownGroupSort}
+                dropdownItems={[
+                  {
+                    onClickDropdownItem: (_, value) => {
+                      onChangeSingle({ sort: value });
+                      void searchHandler({
+                        page: 1,
+                      })();
+                    },
+                    initSelectedValue: sortList.find((e) => e.value === sort),
+                    menuItems: sortList,
+                  },
+                ]}
                 className={"me-2"}
               />
             </Col>
@@ -362,9 +378,7 @@ export const MemberNormalCard = () => {
             </Col>
             <Col className={"d-flex justify-content-end"}>
               <div className={"d-flex align-items-center gap-3"}>
-                <span className={"font-size-10 text-muted"}>
-                  2023-04-01 14:51기준
-                </span>
+                <span className={"font-size-10 text-muted"}>{time}기준</span>
                 <DropdownBase menuItems={dropdownData} />
                 <ButtonBase
                   label={"신규 발급"}
@@ -382,7 +396,7 @@ export const MemberNormalCard = () => {
           </Row>
           <TableBase tableHeader={tableHeader}>
             <>
-              {list.length > 0 &&
+              {list.length > 0 ? (
                 list.map((e, index) => (
                   <tr key={e.id}>
                     <td>{(page - 1) * Number(count) + index + 1}</td>
@@ -390,7 +404,7 @@ export const MemberNormalCard = () => {
                       <IssuanceStatusButton issuanceStatus={e.cardStatusType} />
                     </td>
                     <td>{MEMBER_CARD_DIVISION_TYPE[e.cardIssuanceType]}</td>
-                    <td>{MEMBER_GRADE_TYPE[e.grade]}</td>
+                    <td>{e.groupName}</td>
                     <td>{e.name}</td>
                     <td>
                       <HoverSpan
@@ -407,7 +421,14 @@ export const MemberNormalCard = () => {
                         : "-"}
                     </td>
                   </tr>
-                ))}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={9} className={"py-5 text-center text"}>
+                    {message}
+                  </td>
+                </tr>
+              )}
             </>
           </TableBase>
         </ListSection>

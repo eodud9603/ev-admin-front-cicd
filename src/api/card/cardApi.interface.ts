@@ -25,6 +25,7 @@ export interface INormalCardItem {
   cardStatusType: TMemberCardStatusTypeKey;
   cardIssuanceType: TMemberCardDivisionTypeKey;
   grade: TMemberGradeTypeKey;
+  groupName: string;
   userId: string;
   name: string;
   no: string;
