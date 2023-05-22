@@ -1,33 +1,20 @@
 import { loadTabData } from "src/utils/loadTabData";
-import {
-  TBrokenStatus,
-  TCapacityKeys,
-  TChargerModeKeys,
-  TChargerRationKeys,
-  TChargerTypeKeys,
-  TInfprotocolStatusKeys,
-  TInstallGubunKeys,
-  TInstallTypeKeys,
-  TOperationStatusKeys,
-  TPgCodeKeys,
-  TQrTypeKeys,
-  TReservationTypeKeys,
-  TUseCodeKeys,
-} from "src/constants/status";
-import { YNType } from "src/api/api.interface";
+import { TBrokenStatus } from "src/constants/status";
 
 export const INIT_BROKEN_ADD = {
   /* 기본정보 */
-  stationKey: "",
-  stationName: "",
-  chargerKey: "",
-  searchKey: "",
-  reservation: "",
-  damagedPart01: "" as TBrokenStatus,
-  damagedPart02: "" as TBrokenStatus,
-  managerMemo: "",
-  brokenContent: "",
-  managerName: "",
+  inputs: {
+    stationKey: "",
+    stationName: "",
+    chargerKey: "",
+    searchKey: "",
+    reservation: "",
+    damagedPart01: "" as TBrokenStatus,
+    damagedPart02: "" as TBrokenStatus,
+    managerMemo: "",
+    brokenContent: "",
+    managerName: "",
+  },
 };
 
 export const brokenRegistrationLoader = () => {
