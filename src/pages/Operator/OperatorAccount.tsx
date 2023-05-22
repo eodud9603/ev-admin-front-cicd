@@ -149,6 +149,7 @@ const OperatorAccount = () => {
   const download = lock(async () => {
     /* 검색 파라미터 */
     const searchParams = getSearchParams();
+    searchParams.page -= 1;
     getParams(searchParams);
 
     /* 엑셀 다운 요청 */
