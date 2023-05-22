@@ -125,7 +125,7 @@ const OperatorAccount = () => {
         onChangeList({
           ...data,
           page: searchParams.page,
-          emptyMessage: "검색된 충전소 계약 정보가 없습니다.",
+          emptyMessage: "검색된 계정 정보가 없습니다.",
         });
         searchDataStorage(undefined, searchParams.page + 1);
       } else {
