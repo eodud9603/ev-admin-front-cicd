@@ -1,6 +1,40 @@
 import { TRoleTypeKey } from "src/constants/status";
 import { YNType } from "src/api/api.interface";
 
+/** 운영자 관리 관리
+ * @see http://218.38.12.198:45081/docs/index.html#_%EC%9A%B4%EC%98%81%EC%9E%90_%EA%B4%80%EB%A6%AC_%EA%B4%80%EB%A6%AC
+ */
+export interface IRequestAdminList {
+  size: number;
+  page: number;
+  searchType?: "AdminId" | "Name";
+  searchKeyword?: string;
+  isBlock?: YNType;
+  // sortDirection?: "DESC" | "ASC"
+}
+
+export interface IAdminAccountItem {
+  id: number;
+  groupName: string;
+  name: string;
+  adminId: string;
+  manufactureId: number;
+  manufactureName: string;
+  roleCode: TRoleTypeKey;
+  roleName: string;
+  phoneNumber: string;
+  department: string;
+  allowMobile?: YNType;
+  allowExternal?: YNType;
+  isBlock?: YNType;
+}
+
+export interface IAdminListResponse {
+  totalElements: number;
+  totalPages: number;
+  elements: IAdminAccountItem[];
+}
+
 /** 기본 권한 조회 [단건]
  * @see http://218.38.12.198:45081/docs/index.html#_%EA%B8%B0%EB%B3%B8_%EA%B6%8C%ED%95%9C_%EC%A1%B0%ED%9A%8C_%EB%8B%A8%EA%B1%B4
  */

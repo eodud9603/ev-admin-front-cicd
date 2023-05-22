@@ -1,6 +1,10 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import React from "react";
+import { useLoaderData, useNavigate } from "react-router";
 import { Col, Row } from "reactstrap";
+import {
+  IAdminAccountItem,
+  IRequestAdminList,
+} from "src/api/admin/adminApi.interface";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
 import { ButtonBase } from "src/components/Common/Button/ButtonBase";
 import { DropdownBase } from "src/components/Common/Dropdown/DropdownBase";
@@ -15,6 +19,16 @@ import { TableBase } from "src/components/Common/Table/TableBase";
 import { COUNT_FILTER_LIST } from "src/constants/list";
 import useInputs from "src/hooks/useInputs";
 import styled from "styled-components";
+import { IOperatorAccountListType } from "src/pages/Operator/loader/operatorAccountListLoader";
+import useList from "src/hooks/useList";
+import { getPageList } from "src/utils/pagination";
+import { useTabs } from "src/hooks/useTabs";
+import { ROLE_TYPE } from "src/constants/status";
+import { getParams } from "src/utils/params";
+import { getAdminList } from "src/api/admin/adminAPi";
+import { lock } from "src/utils/lock";
+
+const PAGE = "계정 관리";
 
 /* 계정상태 필터 */
 const statusList = [
@@ -24,18 +38,18 @@ const statusList = [
   },
   {
     label: "정상",
-    value: "1",
+    value: "N",
   },
   {
     label: "차단",
-    value: "2",
+    value: "Y",
   },
 ];
 
 /* 검색어 필터 */
 const searchList = [
-  { label: "운영자명", value: "1" },
-  { label: "운영자 ID", value: "2" },
+  { label: "운영자명", value: "Name" },
+  { label: "운영자 ID", value: "AdminId" },
 ];
 
 /* 목록 헤더 */
@@ -53,105 +67,89 @@ const tableHeader = [
   { label: "활성화 여부" },
 ];
 
-/* 임시 목록 데이터 */
-const accountList = [
-  {
-    groupName: "휴맥스EV",
-    operatorName: "이팀장",
-    operatorId: "K05@humaxev.com",
-    manufacturerName: null,
-    role: "최고 관리자",
-    tel: "000-0000-0000",
-    department: "서비스 운영팀",
-    mobileAccess: "Y",
-    externalAccess: "Y",
-    isActivate: "Y",
-  },
-  {
-    groupName: "휴맥스EV",
-    operatorName: "허책임",
-    operatorId: "K04@humaxev.com",
-    manufacturerName: null,
-    role: "일반 관리자",
-    tel: "000-0000-0000",
-    department: "서비스 운영팀",
-    mobileAccess: "Y",
-    externalAccess: "Y",
-    isActivate: "Y",
-  },
-  {
-    groupName: "스필 01",
-    operatorName: "김스필",
-    operatorId: "K03@humaxev.com",
-    manufacturerName: "스필",
-    role: "제조사",
-    tel: "000-0000-0000",
-    department: "SW팀",
-    mobileAccess: "Y",
-    externalAccess: "Y",
-    isActivate: "Y",
-  },
-];
-
 const OperatorAccount = () => {
-  const [tabList, setTabList] = useState([
-    { label: "공지사항" },
-    { label: "계정 관리" },
-  ]);
-  const [selectedIndex, setSelectedIndex] = useState("0");
+  const { filterData, data, currentPage } =
+    useLoaderData() as IOperatorAccountListType;
+
+  const [inputs, { onChange, onChangeSingle }] = useInputs(filterData);
+  const { searchType, searchKeyword, isBlock, size } = inputs;
+
   const [
-    { searchRange, searchText, accountStatus },
-    { onChange, onChangeSingle },
-  ] = useInputs({
-    searchRange: "1",
-    searchText: "",
-    accountStatus: "",
-    count: "1",
+    { list, page, lastPage, total, message, time },
+    { setPage, onChange: onChangeList, reset },
+  ] = useList<IAdminAccountItem>({
+    elements: data.elements,
+    totalPages: data?.totalPages,
+    totalElements: data?.totalElements,
+    emptyMessage: !data?.elements
+      ? "오류가 발생하였습니다."
+      : "등록된 계정 정보가 없습니다.",
+    defaultPage: currentPage,
   });
-  const [page, setPage] = useState(1);
 
   const navigate = useNavigate();
 
-  const tabClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    setSelectedIndex(e.currentTarget.value);
-  };
+  const { searchDataStorage } = useTabs({
+    data: undefined,
+    pageTitle: PAGE,
+    filterData: inputs,
+    currentPage: page,
+  });
 
-  const tabDeleteHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    if (tabList.length === 1) {
-      return;
-    }
+  /** 검색 핸들러 */
+  const searchHandler = (params: Partial<IRequestAdminList> = {}) =>
+    lock(async () => {
+      /* 검색 파라미터 */
+      let searchParams: IRequestAdminList = {
+        size: Number(size),
+        page,
+        isBlock,
+      };
+      /** @TODO 검색어 필터 추가 후, 추가예정 */
+      if (searchType && searchKeyword) {
+        searchParams.searchType = searchType as IRequestAdminList["searchType"];
+        searchParams.searchKeyword = searchKeyword;
+      }
+      searchParams = {
+        ...searchParams,
+        ...params,
+        page: (params.page || 1) - 1,
+      };
+      getParams(searchParams);
 
-    const tempList = [...tabList];
-    const deleteIndex = Number(e.currentTarget.value);
-    tempList.splice(deleteIndex, 1);
-
-    const isExistTab = tempList[Number(selectedIndex)];
-    if (!isExistTab) {
-      setSelectedIndex(`${tempList.length - 1}`);
-    }
-
-    setTabList(tempList);
-  };
+      /* 검색  */
+      const { code, data, message } = await getAdminList(searchParams);
+      /** 검색 성공 */
+      const success = code === "SUCCESS" && !!data;
+      if (success) {
+        onChangeList({
+          ...data,
+          page: searchParams.page,
+          emptyMessage: "검색된 충전소 계약 정보가 없습니다.",
+        });
+        searchDataStorage(undefined, searchParams.page + 1);
+      } else {
+        reset({
+          code,
+          message: message || "오류가 발생하였습니다.",
+        });
+      }
+    });
 
   return (
     <ContainerBase>
       <HeaderBase />
 
-      <TabGroup
-        list={tabList}
-        selectedIndex={selectedIndex}
-        onClick={tabClickHandler}
-        onClose={tabDeleteHandler}
-      />
+      <TabGroup />
 
       <BodyBase>
         <BreadcrumbBase
           list={[
             { label: "홈", href: "" },
             { label: "운영자 관리", href: "" },
-            { label: "계정 관리", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"계정 관리"}
+          title={PAGE}
         />
 
         <SearchSection className={"py-4 border-top border-bottom"}>
@@ -160,24 +158,25 @@ const OperatorAccount = () => {
               <SearchTextInput
                 title={"검색어"}
                 placeholder={`${
-                  searchRange === "1" ? "운영자명을" : "운영자 ID를"
+                  searchType === "1" ? "운영자명을" : "운영자 ID를"
                 } 입력해주세요.`}
                 menuItems={searchList}
                 onClickDropdownItem={(_, value) => {
-                  onChangeSingle({ searchRange: value });
+                  onChangeSingle({ searchType: value });
                 }}
-                name={"searchText"}
-                value={searchText}
+                name={"searchKeyword"}
+                value={searchKeyword}
                 onChange={onChange}
+                onClick={searchHandler({ page: 1 })}
               />
             </Col>
             <Col md={5}>
               <RadioGroup
                 title={"계정상태"}
-                name={"accountStatus"}
+                name={"isBlock"}
                 list={statusList.map((status) => ({
                   ...status,
-                  checked: accountStatus === status.value,
+                  checked: isBlock === status.value,
                 }))}
                 onChange={onChange}
               />
@@ -190,18 +189,17 @@ const OperatorAccount = () => {
             className={"d-flex align-items-center justify-content-between mb-4"}
           >
             <span className={"font-size-13 fw-bold"}>
-              총 <span className={"text-turu"}>{accountList.length}개</span>의
-              계정 정보가 있습니다.
+              총 <span className={"text-turu"}>{total}개</span>의 계정 정보가
+              있습니다.
             </span>
 
             <div className={"d-flex align-items-center gap-3"}>
-              <span className={"font-size-10 text-muted"}>
-                2023-04-01 14:51기준
-              </span>
+              <span className={"font-size-10 text-muted"}>{time}기준</span>
               <DropdownBase
                 menuItems={COUNT_FILTER_LIST}
                 onClickDropdownItem={(_, value) => {
-                  onChangeSingle({ count: value });
+                  onChangeSingle({ size: value });
+                  void searchHandler({ page: 1, size: Number(value) })();
                 }}
               />
               <ButtonBase
@@ -217,67 +215,62 @@ const OperatorAccount = () => {
 
           <TableBase tableHeader={tableHeader}>
             <>
-              {accountList.length > 0 ? (
-                accountList.map(
-                  (
-                    {
-                      groupName,
-                      operatorName,
-                      operatorId,
-                      manufacturerName,
-                      role,
-                      tel,
-                      department,
-                      mobileAccess,
-                      externalAccess,
-                      isActivate,
-                    },
-                    index
-                  ) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>
-                        <HoverSpan
-                          className={"text-turu"}
-                          onClick={() => {
-                            /** @TODO 계정 > 그룹명 */
-                          }}
-                        >
-                          <u>{groupName}</u>
-                        </HoverSpan>
-                      </td>
-                      <td>
-                        <HoverSpan
-                          className={"text-turu"}
-                          onClick={() => {
-                            navigate(`/operator/account/detail/${index}`);
-                          }}
-                        >
-                          <u>{operatorName}</u>
-                        </HoverSpan>
-                      </td>
-                      <td>{operatorId}</td>
-                      <td>{manufacturerName}</td>
-                      <td>{role}</td>
-                      <td>{tel}</td>
-                      <td>{department}</td>
-                      <td>{mobileAccess}</td>
-                      <td>{externalAccess}</td>
-                      <td>{isActivate}</td>
-                    </tr>
-                  )
-                )
+              {list.length > 0 ? (
+                list.map((data, index) => (
+                  <tr key={data.id}>
+                    <td>{(page - 1) * Number(size) + index + 1}</td>
+                    <td>
+                      <HoverSpan
+                        className={"text-turu"}
+                        onClick={() => {
+                          /** @TODO 계정 > 그룹명 */
+                        }}
+                      >
+                        <u>{data.groupName ?? "-"}</u>
+                      </HoverSpan>
+                    </td>
+                    <td>
+                      <HoverSpan
+                        className={"text-turu"}
+                        onClick={() => {
+                          navigate(`/operator/account/detail/${data.id}`);
+                        }}
+                      >
+                        <u>{data.name}</u>
+                      </HoverSpan>
+                    </td>
+                    <td>{data.adminId}</td>
+                    <td>{data.manufactureName ?? "-"}</td>
+                    <td>{ROLE_TYPE[data.roleCode] ?? "-"}</td>
+                    <td>{data.phoneNumber ?? "-"}</td>
+                    <td>{data.department ?? "-"}</td>
+                    <td>{data.allowMobile}</td>
+                    <td>{data.allowExternal}</td>
+                    <td>{data.isBlock}</td>
+                  </tr>
+                ))
               ) : (
                 <tr>
                   <td colSpan={11} className={"py-5 text-center text"}>
-                    등록된 계정 정보가 없습니다.
+                    {message}
                   </td>
                 </tr>
               )}
             </>
           </TableBase>
 
-          <PaginationBase setPage={setPage} data={{}} />
+          <PaginationBase
+            setPage={setPage}
+            data={{
+              hasPreviousPage: page > 1,
+              hasNextPage: page < lastPage,
+              navigatePageNums: getPageList(page, lastPage),
+              pageNum: page,
+              onChangePage: (page) => {
+                void searchHandler({ page })();
+              },
+            }}
+          />
         </ListSection>
       </BodyBase>
     </ContainerBase>
