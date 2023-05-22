@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Input, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -37,9 +37,11 @@ import {
 import { useTabs } from "src/hooks/useTabs";
 import { lock } from "src/utils/lock";
 
+const PAGE = "충전소 계약 상세";
+
 const StationContractDetail = () => {
   /** init 충전소 계약 상세 데이터 */
-  const { data, editable = true } = useLoaderData() as {
+  const { data, editable } = useLoaderData() as {
     data: IStationContractDetailResponse | null;
     editable: boolean;
   };
@@ -120,14 +122,11 @@ const StationContractDetail = () => {
     url: data?.contractFileUrl ?? "",
   });
 
-  useTabs({
-    data: inputs,
-    pageTitle: "충전소 계약 상세",
-    pageType: "detail",
-    editable: disabled,
-  });
-
   const navigate = useNavigate();
+
+  const navigateList = () => {
+    navigate("/station/contract");
+  };
 
   /** 계약 수정 */
   const postModify = lock(async () => {
@@ -183,6 +182,13 @@ const StationContractDetail = () => {
     }
   });
 
+  useTabs({
+    data: inputs,
+    pageTitle: PAGE,
+    pageType: "detail",
+    editable: disabled,
+  });
+
   return (
     <ContainerBase>
       <HeaderBase></HeaderBase>
@@ -195,9 +201,9 @@ const StationContractDetail = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 계약 관리", href: "/station/contract" },
-            { label: "충전소 계약 상세", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전소 계약 상세"}
+          title={PAGE}
         />
 
         <p className={"mt-3 mb-2 font-size-20 text-dark fw-bold"}>기본정보</p>
@@ -565,7 +571,7 @@ const StationContractDetail = () => {
               return;
             }
 
-            navigate("/station/contract");
+            navigateList();
           }}
           rightButtonHandler={postModify}
         />
@@ -590,9 +596,7 @@ const StationContractDetail = () => {
         onClose={() => {
           setIsEditCancel((prev) => !prev);
         }}
-        cancelHandler={() => {
-          navigate("/station/contract");
-        }}
+        cancelHandler={navigateList}
         title={"충전소 계약 정보 수정 취소 안내"}
         contents={
           "수정된 충전소 계약 정보가 저장되지 않습니다.\n수정을 취소하시겠습니까?"

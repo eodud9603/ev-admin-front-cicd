@@ -19,7 +19,7 @@ import {
 } from "src/api/manufactures/manufactureApi.interface";
 import { postManufactureRegisterAll } from "src/api/manufactures/manufactureApi";
 import DetailCompleteModal from "src/components/Common/Modal/DetailCompleteModal";
-import { useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import DetailCancelModal from "src/components/Common/Modal/DetailCancelModal";
 import {
   YUP_CHARGER_MANUFACTURE,
@@ -29,27 +29,20 @@ import createValidation from "src/utils/validate";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import DetailSaveModal from "src/pages/Charger/components/DetailSaveModal";
 import { lock } from "src/utils/lock";
+import { useTabs } from "src/hooks/useTabs";
+import {
+  INIT_FIRMWARE_LIST,
+  INIT_MANUFACTURE_ADD,
+} from "src/pages/Charger/loader/manufactureAddLoader";
 
-const INIT_FIRMWARE_LIST = [
-  {
-    id: undefined,
-    modelName: "",
-    size: undefined,
-    version: "",
-    firmwareId: undefined,
-    firmwareFileName: "",
-    firmwareFileUrl: "",
-    imageId: undefined,
-    imageFileName: "",
-    imageUrl: "",
-  },
-];
+const PAGE = "충전기 제조사 신규 등록";
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerRegistration = () => {
+  const data = useLoaderData() as typeof INIT_MANUFACTURE_ADD;
   const navigate = useNavigate();
 
-  const [tab, setTab] = useState<tabType>("BASIC");
+  const [tab, setTab] = useState<tabType>(data.tab);
 
   /* 주소검색 모달 */
   const [addrSearchModalOpen, setAddrSearchModalOpen] = useState(false);
@@ -84,22 +77,11 @@ export const ChargerManufacturerRegistration = () => {
       onChangeSingle: onChangeSingleBasic,
       reset: resetBasic,
     },
-  ] = useInputs({
-    code: "",
-    name: "",
-    identifier: "",
-    companyId: "",
-    managerName: "",
-    managerPhone: "",
-    managerExtPhone: "",
-    phone: "",
-    zipCode: "",
-    address: "",
-    addressDetail: "" /** @TODO 서버에서 추가해줘야 하는 필드 */,
-  });
+  ] = useInputs(data.inputs);
   /* 펌웨어 정보 */
-  const [firmwareList, setFirmwareList] =
-    useState<IManufactureModelItem[]>(INIT_FIRMWARE_LIST);
+  const [firmwareList, setFirmwareList] = useState<IManufactureModelItem[]>(
+    data.firmwareList
+  );
 
   /** 목록 페이지 이동 */
   const navigateList = () => {
@@ -229,6 +211,12 @@ export const ChargerManufacturerRegistration = () => {
     }
   });
 
+  useTabs({
+    data: { tab, inputs: basicInputs, firmwareList },
+    pageTitle: PAGE,
+    pageType: "add",
+  });
+
   return (
     <ContainerBase>
       <HeaderBase />
@@ -239,9 +227,9 @@ export const ChargerManufacturerRegistration = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 제조사 관리", href: "" },
-            { label: "충전기 제조사 신규 등록", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전기 제조사 신규 등록"}
+          title={PAGE}
         />
         <InfoSection className={"mt-3"}>
           <div

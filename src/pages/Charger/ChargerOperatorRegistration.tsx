@@ -76,7 +76,7 @@ export const ChargerOperatorRegistration = () => {
 
   /** 뒤로가기 */
   const goBack = () => {
-    navigate(-1);
+    navigate("/charger/operator");
   };
 
   /** 주소 검색 modal visible */

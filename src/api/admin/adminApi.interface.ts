@@ -17,7 +17,7 @@ export interface IAdminSubRoleItem {
   isModify: YNType;
   isDelete: YNType;
   isView: YNType;
-  isExel: YNType;
+  isExcel: YNType;
   isExecute: YNType;
 }
 

@@ -35,6 +35,8 @@ import useTransferFile from "src/hooks/useTransferFile";
 import { ISupplierDetailLoaderType } from "src/pages/Charger/loader/supplierDetailLoader";
 import { lock } from "src/utils/lock";
 
+const PAGE = "서비스 운영사 상세";
+
 const YN_LIST = [
   { label: "Y", value: "Y" },
   { label: "N", value: "N" },
@@ -44,7 +46,7 @@ export const ChargerOperatorDetail = () => {
   const {
     data,
     fileData: loaderFileData,
-    editable = true,
+    editable,
   } = useLoaderData() as ISupplierDetailLoaderType;
 
   /* 수정모드 */
@@ -153,7 +155,7 @@ export const ChargerOperatorDetail = () => {
 
   /** 뒤로가기 */
   const goBack = () => {
-    navigate(-1);
+    navigate("/charger/operator");
   };
 
   /** disabled 상태 변경 */
@@ -258,7 +260,7 @@ export const ChargerOperatorDetail = () => {
 
   useTabs({
     data: { data: inputs, fileData: contractFile },
-    pageTitle: "서비스 운영사 상세",
+    pageTitle: PAGE,
     pageType: "detail",
     editable: disabled,
   });
@@ -273,9 +275,9 @@ export const ChargerOperatorDetail = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "서비스 운영사 관리", href: "" },
-            { label: "서비스 운영사 상세", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"서비스 운영사 상세"}
+          title={PAGE}
         />
         <BasicInfoSection className={"mt-3"}>
           <Label className={"fw-semibold font-size-16 m-0 mb-2"}>

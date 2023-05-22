@@ -71,6 +71,8 @@ import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckM
 import { IRequestChargerModify } from "src/api/charger/chargerApi.interface";
 import { lock } from "src/utils/lock";
 
+const PAGE = "충전기 상세";
+
 const DefaultDropdownData = {
   label: "선택",
   value: "",
@@ -78,8 +80,7 @@ const DefaultDropdownData = {
 
 const ChargerDetail = () => {
   /** init 충전기 상세 데이터 */
-  const { charger, editable = true } =
-    useLoaderData() as chargerDetailLoaderType;
+  const { charger, editable } = useLoaderData() as chargerDetailLoaderType;
 
   /* 기본정보 drop */
   const [isDefaultInfoDrop, setIsDefaultInfoDrop] = useState(true);
@@ -244,12 +245,9 @@ const ChargerDetail = () => {
 
   const navigate = useNavigate();
 
-  useTabs({
-    data: inputs,
-    pageTitle: "충전기 상세",
-    pageType: "detail",
-    editable: disabled,
-  });
+  const navigateList = () => {
+    navigate("/charger/charger");
+  };
 
   /** 수정 */
   const modify = lock(async () => {
@@ -327,6 +325,13 @@ const ChargerDetail = () => {
     }
   });
 
+  useTabs({
+    data: inputs,
+    pageTitle: PAGE,
+    pageType: "detail",
+    editable: disabled,
+  });
+
   return (
     <ContainerBase>
       <HeaderBase />
@@ -339,9 +344,9 @@ const ChargerDetail = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 관리", href: "" },
-            { label: "충전기 상세", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전기 상세"}
+          title={PAGE}
         />
 
         <div>
@@ -1225,7 +1230,7 @@ const ChargerDetail = () => {
               return;
             }
 
-            navigate("/charger/charger");
+            navigateList();
           }}
           rightButtonHandler={modify}
         />
@@ -1250,9 +1255,7 @@ const ChargerDetail = () => {
         onClose={() => {
           setIsEditCancel((prev) => !prev);
         }}
-        cancelHandler={() => {
-          navigate("/charger/charger");
-        }}
+        cancelHandler={navigateList}
         title={"충전기 정보 수정 취소 안내"}
         contents={
           "수정된 충전기 정보가 저장되지 않습니다.\n수정을 취소하시겠습니까?"

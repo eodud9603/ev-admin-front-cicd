@@ -43,6 +43,8 @@ import { useLoaderData } from "react-router-dom";
 import { INIT_CHARGER_STATION_ADD } from "src/pages/Charger/loader/stationAddLoader";
 import { lock } from "src/utils/lock";
 
+const PAGE = "충전소 등록";
+
 const ChargerStationAdd = () => {
   const data = useLoaderData() as typeof INIT_CHARGER_STATION_ADD;
   /* 기본정보 drop */
@@ -52,7 +54,7 @@ const ChargerStationAdd = () => {
   /* 계약정보 drop */
   const [isContractDrop, setIsContractDrop] = useState(true);
 
-  const [inputs, { onChange, onChangeSingle }] = useInputs(data);
+  const [inputs, { onChange, onChangeSingle }] = useInputs(data.inputs);
   const {
     /* 기본정보 */
     stationName,
@@ -113,6 +115,10 @@ const ChargerStationAdd = () => {
 
   const navigate = useNavigate();
 
+  const navigateList = () => {
+    navigate("/charger/station");
+  };
+
   const onChangeModalVisible = () => {
     setAddrSearchModalOpen((prev) => !prev);
   };
@@ -153,8 +159,8 @@ const ChargerStationAdd = () => {
   });
 
   useTabs({
-    data: inputs,
-    pageTitle: "충전소 등록",
+    data: { inputs },
+    pageTitle: PAGE,
     pageType: "add",
   });
 
@@ -170,9 +176,9 @@ const ChargerStationAdd = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전소 관리", href: "/charger/station" },
-            { label: "충전소 신규 등록", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전소 신규 등록"}
+          title={PAGE}
         />
 
         <div>
@@ -852,9 +858,7 @@ const ChargerStationAdd = () => {
         <DetailBottomButton
           containerClassName={"my-5"}
           rightButtonTitle={"등록"}
-          listHandler={() => {
-            navigate("/charger/station");
-          }}
+          listHandler={navigateList}
           rightButtonHandler={save}
         />
       </BodyBase>
@@ -864,9 +868,7 @@ const ChargerStationAdd = () => {
         onClose={() => {
           setIsRegistrationComplete((prev) => !prev);
         }}
-        onClosed={() => {
-          navigate("/charger/station");
-        }}
+        onClosed={navigateList}
         title={"신규 충전소 등록 완료"}
         contents={"충전소 정보가 등록되었습니다."}
       />
@@ -875,9 +877,7 @@ const ChargerStationAdd = () => {
         onClose={() => {
           setIsRegistrationCancel((prev) => !prev);
         }}
-        cancelHandler={() => {
-          navigate("/charger/station");
-        }}
+        cancelHandler={navigateList}
         title={"신규 충전소 정보 등록 취소 안내"}
         contents={
           "입력된 충전소 정보가 저장되지 않습니다.\n신규 등록을 취소하시겠습니까?"

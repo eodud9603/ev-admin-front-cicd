@@ -26,15 +26,17 @@ import { postStationContractRegister } from "src/api/station/stationApi";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
 import { useLoaderData } from "react-router-dom";
-import { chargerContractAddLoaderType } from "src/pages/Charger/loader/stationContractAddLoader";
 import { useTabs } from "src/hooks/useTabs";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_CONTRACT } from "src/constants/valid/charger";
 import useTransferFile from "src/hooks/useTransferFile";
 import { lock } from "src/utils/lock";
+import { INIT_STATION_CONTRACT_ADD } from "./loader/stationContractAddLoader";
+
+const PAGE = "충전소 계약 신규 등록";
 
 const StationContractAdd = () => {
-  const data = useLoaderData() as chargerContractAddLoaderType;
+  const data = useLoaderData() as typeof INIT_STATION_CONTRACT_ADD;
   /* 미입력 안내 모달 */
   const [invalidModal, setInvalidModal] = useState({
     isOpen: false,
@@ -113,6 +115,10 @@ const StationContractAdd = () => {
 
   const navigate = useNavigate();
 
+  const navigateList = () => {
+    navigate("/station/contract");
+  };
+
   /** 계약 등록 */
   const postRegister = lock(async () => {
     /** upload file params */
@@ -154,7 +160,7 @@ const StationContractAdd = () => {
       inputs: inputs,
       fileData: fileData,
     },
-    pageTitle: "충전소 계약 신규 등록",
+    pageTitle: PAGE,
     pageType: "add",
   });
 
@@ -170,9 +176,9 @@ const StationContractAdd = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 계약 관리", href: "" },
-            { label: "충전소 계약 신규 등록", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전소 계약 신규 등록"}
+          title={PAGE}
         />
 
         <p className={"mt-3 mb-2 font-size-20 text-dark fw-bold"}>기본정보</p>
@@ -522,9 +528,7 @@ const StationContractAdd = () => {
             className={"width-110 me-2"}
             outline
             label={"목록"}
-            onClick={() => {
-              navigate("/station/contract");
-            }}
+            onClick={navigateList}
           />
           <ButtonBase
             className={"width-110 ms-2"}
@@ -548,9 +552,7 @@ const StationContractAdd = () => {
         onClose={() => {
           setIsAddComplete((prev) => !prev);
         }}
-        onClosed={() => {
-          navigate("/station/contract");
-        }}
+        onClosed={navigateList}
         title={"신규 충전소 계약 정보 등록 완료"}
         contents={"충전소 계약  정보가 등록되었습니다."}
       />
@@ -559,9 +561,7 @@ const StationContractAdd = () => {
         onClose={() => {
           setIsAddCancel((prev) => !prev);
         }}
-        cancelHandler={() => {
-          navigate("/station/contract");
-        }}
+        cancelHandler={navigateList}
         title={"신규 충전소 계약 정보 등록 취소 안내"}
         contents={
           "입력된 충전소 계약 정보가 저장되지 않습니다.\n신규 등록을 취소하시겠습니까?"

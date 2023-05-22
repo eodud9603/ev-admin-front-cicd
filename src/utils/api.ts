@@ -48,7 +48,7 @@ axiosInstance.interceptors.request.use((config) => {
   }
 
   /* pending api 관련 로직 */
-  const cancelKey = createCancelKey(config)
+  const cancelKey = createCancelKey(config);
 
   const cancelHandler = pendingRequests[cancelKey]?.cancel;
   !!cancelHandler && cancelHandler("가장 최근 정보를 다시 불러오는 중입니다.");
@@ -74,7 +74,7 @@ axiosInstance.interceptors.request.use((config) => {
 
 axiosInstance.interceptors.response.use((response) => {
   /* pending api 관련 로직 */
-  const cancelKey = createCancelKey(response.config)
+  const cancelKey = createCancelKey(response.config);
 
   if (pendingRequests[cancelKey]) {
     delete pendingRequests[cancelKey];
@@ -213,11 +213,14 @@ const createCancelKey = (config: InternalAxiosRequestConfig<any>) => {
   const { method = "", baseURL = "", url = "" } = config;
   const cancelKey = method + baseURL + url;
 
-  return cancelKey
-}
+  return cancelKey;
+};
 
 /** auth state 초기화 후, login page 이동 */
-const resetAuth = () => {
+const resetAuth = (
+  title = "계정 정보 만료 안내",
+  content = "계정 정보가 만료되었습니다.\n다시 로그인을 해주세요."
+) => {
   /* 토큰 [미인증, 만료]에 따른 api 요청 비활성화 */
   validApi.status = false;
 
@@ -225,8 +228,8 @@ const resetAuth = () => {
 
   showErrorModal({
     className: "reissue",
-    title: "계정 정보 만료 안내",
-    content: "계정 정보가 만료되었습니다.\n다시 로그인을 해주세요.",
+    title,
+    content,
     confirmHandler: () => {
       window.location.href = "/login";
     },
@@ -292,6 +295,11 @@ const tryAuthReissue = async <T,>({
     const code: ErrorCodeEnum = reissueError?.response?.data?.code;
     if ([ErrorCodeEnum.AUTH01, ErrorCodeEnum.AUTH02].indexOf(code) > -1) {
       resetAuth();
+    } else {
+      resetAuth(
+        "계정 정보 갱신 오류 안내",
+        "계정 정보 갱신 중 오류가 발생했습니다.\n다시 로그인을 해주세요."
+      );
     }
   } finally {
     /** 잠금 해지 */

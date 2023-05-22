@@ -32,6 +32,8 @@ import { useTabs } from "src/hooks/useTabs";
 import { INIT_BROKEN_ADD } from "src/pages/Charger/loader/brokenRegistrationLoader";
 import { lock } from "src/utils/lock";
 
+const PAGE = "충전기 고장/파손 등록";
+
 export const ChargerTroubleRegistration = () => {
   const data = useLoaderData() as typeof INIT_BROKEN_ADD;
   const nav = useNavigate();
@@ -45,7 +47,7 @@ export const ChargerTroubleRegistration = () => {
   /* 등록완료 모달 */
   const [isAddComplete, setIsAddComplete] = useState(false);
 
-  const [inputs, { onChangeSingle, onChange }] = useInputs(data);
+  const [inputs, { onChangeSingle, onChange }] = useInputs(data.inputs);
   const {
     stationKey,
     stationName,
@@ -57,12 +59,6 @@ export const ChargerTroubleRegistration = () => {
     brokenContent,
     managerName,
   } = inputs;
-
-  useTabs({
-    data: inputs,
-    pageTitle: "충전기 고장/파손 등록",
-    pageType: "registration",
-  });
 
   /* 고장1 */
   const [damagedFilePart01, setDamagedFilePart01] = useState<
@@ -80,7 +76,7 @@ export const ChargerTroubleRegistration = () => {
   >({});
 
   const onClickHistoryBack = () => {
-    nav(-1);
+    nav("/charger/trouble");
   };
 
   const handleChangeOperatorModal = () => {
@@ -139,6 +135,12 @@ export const ChargerTroubleRegistration = () => {
     }
   });
 
+  useTabs({
+    data: { inputs },
+    pageTitle: PAGE,
+    pageType: "registration",
+  });
+
   return (
     <ContainerBase>
       <HeaderBase />
@@ -149,9 +151,9 @@ export const ChargerTroubleRegistration = () => {
             { label: "홈", href: "" },
             { label: "충전소 및 충전기 관리", href: "" },
             { label: "충전기 고장/파손 관리", href: "" },
-            { label: "충전기 고장/파손 등록", href: "" },
+            { label: PAGE, href: "" },
           ]}
-          title={"충전기 고장/파손 등록"}
+          title={PAGE}
         />
         <RepairSection>
           <Label className={"m-0 fw-semibold font-size-16 mb-3"}>

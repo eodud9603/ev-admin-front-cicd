@@ -13,7 +13,7 @@ type PermissionType =
   | "isCreate"
   | "isModify"
   | "isDelete"
-  | "isExel"
+  | "isExcel"
   | "isExecute";
 
 interface IColProps {
@@ -137,7 +137,7 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
         if (cur.isDelete === "Y") {
           acc.deleteCount += 1;
         }
-        if (cur.isExel === "Y") {
+        if (cur.isExcel === "Y") {
           acc.exelCount += 1;
         }
         if (cur.isExecute === "Y") {
@@ -161,11 +161,11 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
       isCreate: subsCount === createCount,
       isModify: subsCount === modifyCount,
       isDelete: subsCount === deleteCount,
-      isExel: subsCount === exelCount,
+      isExcel: subsCount === exelCount,
       isExecute: subsCount === executeCount,
     };
   };
-  const { isView, isCreate, isModify, isDelete, isExel, isExecute } =
+  const { isView, isCreate, isModify, isDelete, isExcel, isExecute } =
     initCheck();
 
   const [isOpen, setIsOpen] = useState(initialOpen);
@@ -289,9 +289,9 @@ export const RoleMainItem = (props: IRoleMainItemProps) => {
           <CheckBoxBase
             label={""}
             name={`main-exel-${name}-${id}`}
-            checked={isExel}
+            checked={isExcel}
             disabled={disabled}
-            onChange={onChangePermission("isExel", isExel)}
+            onChange={onChangePermission("isExcel", isExcel)}
           />
         </CheckBoxCol>
         <CheckBoxCol>
@@ -329,7 +329,7 @@ const RoleSubItem = memo((props: IRoleSubItemProps) => {
     isCreate,
     isModify,
     isDelete,
-    isExel,
+    isExcel,
     isExecute,
     onChangePermission,
   } = props;
@@ -378,9 +378,9 @@ const RoleSubItem = memo((props: IRoleSubItemProps) => {
         <CheckBoxBase
           label={""}
           name={`sub-exel-${name}-${id}`}
-          checked={isExel === "Y"}
+          checked={isExcel === "Y"}
           disabled={disabled}
-          onChange={onChangePermission(id, "isExel", isExel === "Y")}
+          onChange={onChangePermission(id, "isExcel", isExcel === "Y")}
         />
       </CheckBoxCol>
       <CheckBoxCol>

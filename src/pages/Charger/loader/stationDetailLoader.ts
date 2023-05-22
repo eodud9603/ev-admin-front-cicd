@@ -2,6 +2,14 @@ import { getChargerListByStation } from "src/api/charger/chargerApi";
 import { getStationDetail } from "src/api/station/stationApi";
 import { loadTabData } from "src/utils/loadTabData";
 
+const INIT_DATA = {
+  data: {
+    station: {},
+    charger: [],
+  },
+  editable: true,
+};
+
 interface IStationDetailParams {
   params: {
     id?: string;
@@ -10,7 +18,7 @@ interface IStationDetailParams {
 
 export const stationDetailLoader = async ({ params }: IStationDetailParams) => {
   if (!params?.id) {
-    return null;
+    return INIT_DATA;
   }
 
   const loadData = loadTabData(`/charger/station/detail/${params.id}`);
@@ -25,7 +33,7 @@ export const stationDetailLoader = async ({ params }: IStationDetailParams) => {
   });
 
   return {
+    ...INIT_DATA,
     data: { station: data ?? {}, charger: chargerData ?? [] },
-    editable: true,
   };
 };

@@ -2,6 +2,11 @@ import { getChargerDetail } from "src/api/charger/chargerApi";
 import { loadTabData } from "src/utils/loadTabData";
 import { IChargerDetailResponse } from "src/api/charger/chargerApi.interface";
 
+const INIT_DATA = {
+  charger: {},
+  editable: true,
+};
+
 interface IChargerDetailParams {
   params: {
     id?: number;
@@ -15,7 +20,7 @@ export type chargerDetailLoaderType = {
 
 export const chargerDetailLoader = async ({ params }: IChargerDetailParams) => {
   if (!params?.id) {
-    return {};
+    return INIT_DATA;
   }
 
   const loadData = loadTabData<IChargerDetailResponse | null>(
@@ -29,5 +34,5 @@ export const chargerDetailLoader = async ({ params }: IChargerDetailParams) => {
   /* 충전기 상세 정보 조회 */
   const { data } = await getChargerDetail({ searchKey: params.id });
 
-  return { charger: data } ?? {};
+  return { ...INIT_DATA, charger: data };
 };
