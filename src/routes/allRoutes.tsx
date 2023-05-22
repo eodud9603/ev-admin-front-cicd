@@ -144,6 +144,7 @@ import { operatorRoleListLoader } from "src/pages/Operator/loader/operatorRoleLi
 import { memberCardListLoader } from "src/pages/Operate/loader/memberCardListLoader";
 import { evNewsAddLoader } from "src/pages/Operate/loader/evNewsAddLoader";
 import { supplierAddLoader } from "src/pages/Charger/loader/supplierAddLoader";
+import { evNewsListLoader } from "src/pages/Operate/loader/evNewsListLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -319,7 +320,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/operate/event", element: <Event /> },
   { path: "/operate/event/add", element: <EventAdd /> },
   { path: "/operate/event/detail/:id", element: <EventDetail /> },
-  { path: "/operate/evNews", element: <EvNews /> },
+  { path: "/operate/evNews", element: <EvNews />, loader: evNewsListLoader },
   {
     path: "/operate/evNews/add",
     element: <EvNewsAdd />,

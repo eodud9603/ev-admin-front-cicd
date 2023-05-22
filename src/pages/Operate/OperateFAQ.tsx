@@ -276,7 +276,6 @@ const OperateFAQ = () => {
                       onChangeSingle({ sort: value as typeof sort });
                       void searchHandler({
                         page: 1,
-                        sort: value as IRequestFaqList["sort"],
                       })();
                     },
                     initSelectedValue: sortList.find((e) => e.value === sort),

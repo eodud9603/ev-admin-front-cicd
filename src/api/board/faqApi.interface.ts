@@ -16,7 +16,7 @@ export interface IRequestFaqList {
   searchType?: "Title" | "Writer";
   searchKeyword?: string;
   categoryId?: number;
-  sort: "CreateAt" | "ReadCount" | "";
+  sort?: "CreateAt" | "ReadCount";
 }
 
 export interface IFaqItem {

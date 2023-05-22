@@ -12,7 +12,7 @@ interface IUseTabsProps {
   pageType?: "detail" | "registration" | "add";
   //등록 페이지 => 수정 state 변환 시 해당 state 저장
   editable?: boolean;
-  filterData?: { [key: string]: string };
+  filterData?: { [key: string]: any };
   currentPage?: number;
   onChangeList?: () => void;
   categoryList?: { label: string; value: string }[];

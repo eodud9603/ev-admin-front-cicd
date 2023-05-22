@@ -16,14 +16,14 @@ import { INIT_EV_NEWS_ADD } from "src/pages/Operate/loader/evNewsAddLoader";
 import { useTabs } from "src/hooks/useTabs";
 import { postFileUpload } from "src/api/common/commonApi";
 import { jwtDecode } from "src/utils/jwt";
-import { IRequestFaqRegister } from "src/api/board/faqApi.interface";
 import { BoardIdEnum, TUploadTypeKeys } from "src/constants/status";
 import { getParams } from "src/utils/params";
 import createValidation from "src/utils/validate";
 import { YUP_OPERATE_NOTICE } from "src/constants/valid/operate";
-import { postFaqRegister } from "src/api/board/faqApi";
 import { IRequestEvNewsRegister } from "src/api/board/evNewsApi.interface";
 import { postEvNewsRegister } from "src/api/board/evNewsApi";
+import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
+import OperateTextModal from "src/pages/Operate/components/OperateTextModal";
 
 const EvNewsAdd = () => {
   const { data } = useLoaderData() as {
@@ -39,7 +39,7 @@ const EvNewsAdd = () => {
   });
 
   const [inputs, { onChange, onChangeSingle }] = useInputs(data);
-  const { writer, uploadType, title, files, isExpose, content } = inputs;
+  const { writer, uploadType, title, files, banners, isExpose } = inputs;
 
   const { removeTabData } = useTabs({
     data: inputs,
@@ -88,7 +88,7 @@ const EvNewsAdd = () => {
     const params: IRequestEvNewsRegister = {
       ...registerParams,
       writer: user.name ?? "-",
-      boardId: BoardIdEnum.FAQ,
+      boardId: BoardIdEnum.EV_NEWS,
       content: content,
       isExpose,
       uploadType: uploadType as TUploadTypeKeys,
@@ -145,9 +145,7 @@ const EvNewsAdd = () => {
             <ButtonBase
               label={"저장하기"}
               color={"turu"}
-              onClick={() => {
-                /** @TODO 저장(수정) 로직 추가 */
-              }}
+              onClick={() => setAddModalOpen(true)}
             />
           </div>
         </div>
@@ -234,7 +232,7 @@ const EvNewsAdd = () => {
           </Col>
           <Col sm={11}>
             <div className={files.length > 0 ? "mb-3" : ""}>
-              {files.map((data, index) => (
+              {banners.map((data, index) => (
                 <p
                   role={"button"}
                   key={data.id}
@@ -257,7 +255,7 @@ const EvNewsAdd = () => {
                       const tempList = [...files];
                       tempList.splice(index, 1);
 
-                      onChangeSingle({ files: tempList });
+                      onChangeSingle({ banners: tempList });
                     }}
                   />
                 </p>
@@ -343,6 +341,31 @@ const EvNewsAdd = () => {
           </Col>
         </Row>
       </BodyBase>
+      <DetailValidCheckModal
+        {...invalidModal}
+        onClose={() =>
+          setInvalidModal((prev) => ({ ...prev, isOpen: !prev.isOpen }))
+        }
+      />
+      <OperateTextModal
+        isOpen={addModalOpen}
+        onClose={() => {
+          setAddModalOpen((prev) => !prev);
+        }}
+        title={"EV뉴스 등록"}
+        contents={"저장 후 사용자에게 즉시 노출됩니다.\n저장하시겠습니까?"}
+        buttons={[
+          {
+            label: "아니요",
+            color: "secondary",
+          },
+          {
+            label: "저장",
+            color: "turu",
+            onClick: register,
+          },
+        ]}
+      />
     </ContainerBase>
   );
 };

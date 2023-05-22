@@ -233,6 +233,7 @@ export type TUploadTypeKeys = keyof typeof UPLOAD_TYPE;
 export const enum BoardIdEnum {
   NOTICE = 1,
   FAQ = 2,
+  EV_NEWS = 3,
 }
 
 /* 회원 관리 */
