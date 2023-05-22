@@ -30,24 +30,12 @@ import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckM
 import DetailSaveModal from "src/pages/Charger/components/DetailSaveModal";
 import { lock } from "src/utils/lock";
 import { useTabs } from "src/hooks/useTabs";
-import { INIT_MANUFACTURE_ADD } from "./loader/manufactureAddLoader";
+import {
+  INIT_FIRMWARE_LIST,
+  INIT_MANUFACTURE_ADD,
+} from "src/pages/Charger/loader/manufactureAddLoader";
 
 const PAGE = "충전기 제조사 신규 등록";
-
-const INIT_FIRMWARE_LIST = [
-  {
-    id: undefined,
-    modelName: "",
-    size: undefined,
-    version: "",
-    firmwareId: undefined,
-    firmwareFileName: "",
-    firmwareFileUrl: "",
-    imageId: undefined,
-    imageFileName: "",
-    imageUrl: "",
-  },
-];
 
 type tabType = "BASIC" | "FIRMWARE";
 export const ChargerManufacturerRegistration = () => {
