@@ -144,6 +144,7 @@ import { operatorRoleListLoader } from "src/pages/Operator/loader/operatorRoleLi
 import { memberCardListLoader } from "src/pages/Operate/loader/memberCardListLoader";
 import { evNewsAddLoader } from "src/pages/Operate/loader/evNewsAddLoader";
 import { supplierAddLoader } from "src/pages/Charger/loader/supplierAddLoader";
+import { manufactureAddLoader } from "src/pages/Charger/loader/manufactureAddLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -220,6 +221,7 @@ const userRoutes: Array<RouteProps> = [
   {
     path: "/charger/manufacturer/registration",
     element: <ChargerManufacturerRegistration />,
+    loader: manufactureAddLoader,
   },
   {
     path: "/charger/manufacturer/detail/:id",
