@@ -217,7 +217,10 @@ const createCancelKey = (config: InternalAxiosRequestConfig<any>) => {
 };
 
 /** auth state 초기화 후, login page 이동 */
-const resetAuth = () => {
+const resetAuth = (
+  title = "계정 정보 만료 안내",
+  content = "계정 정보가 만료되었습니다.\n다시 로그인을 해주세요."
+) => {
   /* 토큰 [미인증, 만료]에 따른 api 요청 비활성화 */
   validApi.status = false;
 
@@ -225,8 +228,8 @@ const resetAuth = () => {
 
   showErrorModal({
     className: "reissue",
-    title: "계정 정보 만료 안내",
-    content: "계정 정보가 만료되었습니다.\n다시 로그인을 해주세요.",
+    title,
+    content,
     confirmHandler: () => {
       window.location.href = "/login";
     },
@@ -292,6 +295,11 @@ const tryAuthReissue = async <T,>({
     const code: ErrorCodeEnum = reissueError?.response?.data?.code;
     if ([ErrorCodeEnum.AUTH01, ErrorCodeEnum.AUTH02].indexOf(code) > -1) {
       resetAuth();
+    } else {
+      resetAuth(
+        "계정 정보 갱신 오류 안내",
+        "계정 정보 갱신 중 오류가 발생했습니다.\n다시 로그인을 해주세요."
+      );
     }
   } finally {
     /** 잠금 해지 */
