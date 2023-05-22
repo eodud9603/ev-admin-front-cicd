@@ -26,15 +26,15 @@ import { postStationContractRegister } from "src/api/station/stationApi";
 import DetailValidCheckModal from "src/components/Common/Modal/DetailValidCheckModal";
 import { fileUpload } from "src/utils/upload";
 import { useLoaderData } from "react-router-dom";
-import { chargerContractAddLoaderType } from "src/pages/Charger/loader/stationContractAddLoader";
 import { useTabs } from "src/hooks/useTabs";
 import createValidation from "src/utils/validate";
 import { YUP_CHARGER_CONTRACT } from "src/constants/valid/charger";
 import useTransferFile from "src/hooks/useTransferFile";
 import { lock } from "src/utils/lock";
+import { INIT_STATION_CONTRACT_ADD } from "./loader/stationContractAddLoader";
 
 const StationContractAdd = () => {
-  const data = useLoaderData() as chargerContractAddLoaderType;
+  const data = useLoaderData() as typeof INIT_STATION_CONTRACT_ADD;
   /* 미입력 안내 모달 */
   const [invalidModal, setInvalidModal] = useState({
     isOpen: false,
