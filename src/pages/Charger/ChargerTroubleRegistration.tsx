@@ -80,7 +80,7 @@ export const ChargerTroubleRegistration = () => {
   >({});
 
   const onClickHistoryBack = () => {
-    nav(-1);
+    nav("/charger/trouble");
   };
 
   const handleChangeOperatorModal = () => {

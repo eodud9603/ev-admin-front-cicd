@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Col, Input, Row } from "reactstrap";
 import BreadcrumbBase from "src/components/Common/Breadcrumb/BreadcrumbBase";
@@ -128,6 +128,10 @@ const StationContractDetail = () => {
   });
 
   const navigate = useNavigate();
+
+  const navigateList = () => {
+    navigate("/station/contract");
+  };
 
   /** 계약 수정 */
   const postModify = lock(async () => {
@@ -565,7 +569,7 @@ const StationContractDetail = () => {
               return;
             }
 
-            navigate("/station/contract");
+            navigateList();
           }}
           rightButtonHandler={postModify}
         />
@@ -590,9 +594,7 @@ const StationContractDetail = () => {
         onClose={() => {
           setIsEditCancel((prev) => !prev);
         }}
-        cancelHandler={() => {
-          navigate("/station/contract");
-        }}
+        cancelHandler={navigateList}
         title={"충전소 계약 정보 수정 취소 안내"}
         contents={
           "수정된 충전소 계약 정보가 저장되지 않습니다.\n수정을 취소하시겠습니까?"

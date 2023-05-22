@@ -137,11 +137,11 @@ export const ChargerTrouble = () => {
 
       if (submitStartDate && submitEndDate) {
         searchParams.submitStartDate = standardDateFormat(
-          submitStartDate,
+          submitStartDate as string,
           "YYYY.MM.DD"
         );
         searchParams.submitEndDate = standardDateFormat(
-          submitEndDate,
+          submitEndDate as string,
           "YYYY.MM.DD"
         );
       }
@@ -225,10 +225,13 @@ export const ChargerTrouble = () => {
                 label={"접수일"}
                 dateState={{
                   startDate: submitStartDate
-                    ? standardDateFormat(submitStartDate, "YYYY-MM-DD")
+                    ? standardDateFormat(
+                        submitStartDate as string,
+                        "YYYY-MM-DD"
+                      )
                     : "",
                   endDate: submitEndDate
-                    ? standardDateFormat(submitEndDate, "YYYY-MM-DD")
+                    ? standardDateFormat(submitEndDate as string, "YYYY-MM-DD")
                     : "",
                 }}
                 onChangeDate={(date) => {

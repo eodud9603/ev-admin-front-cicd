@@ -113,6 +113,10 @@ const StationContractAdd = () => {
 
   const navigate = useNavigate();
 
+  const navigateList = () => {
+    navigate("/station/contract");
+  };
+
   /** 계약 등록 */
   const postRegister = lock(async () => {
     /** upload file params */
@@ -522,9 +526,7 @@ const StationContractAdd = () => {
             className={"width-110 me-2"}
             outline
             label={"목록"}
-            onClick={() => {
-              navigate("/station/contract");
-            }}
+            onClick={navigateList}
           />
           <ButtonBase
             className={"width-110 ms-2"}
@@ -548,9 +550,7 @@ const StationContractAdd = () => {
         onClose={() => {
           setIsAddComplete((prev) => !prev);
         }}
-        onClosed={() => {
-          navigate("/station/contract");
-        }}
+        onClosed={navigateList}
         title={"신규 충전소 계약 정보 등록 완료"}
         contents={"충전소 계약  정보가 등록되었습니다."}
       />
@@ -559,9 +559,7 @@ const StationContractAdd = () => {
         onClose={() => {
           setIsAddCancel((prev) => !prev);
         }}
-        cancelHandler={() => {
-          navigate("/station/contract");
-        }}
+        cancelHandler={navigateList}
         title={"신규 충전소 계약 정보 등록 취소 안내"}
         contents={
           "입력된 충전소 계약 정보가 저장되지 않습니다.\n신규 등록을 취소하시겠습니까?"

@@ -168,7 +168,7 @@ export const ChargerTroubleDetail = () => {
 
   /** 뒤로가기 */
   const goBack = () => {
-    navigate(-1);
+    navigate("/charger/trouble");
   };
 
   /** 삭제 */

@@ -113,6 +113,10 @@ const ChargerStationAdd = () => {
 
   const navigate = useNavigate();
 
+  const navigateList = () => {
+    navigate("/charger/station");
+  };
+
   const onChangeModalVisible = () => {
     setAddrSearchModalOpen((prev) => !prev);
   };
@@ -852,9 +856,7 @@ const ChargerStationAdd = () => {
         <DetailBottomButton
           containerClassName={"my-5"}
           rightButtonTitle={"등록"}
-          listHandler={() => {
-            navigate("/charger/station");
-          }}
+          listHandler={navigateList}
           rightButtonHandler={save}
         />
       </BodyBase>
@@ -864,9 +866,7 @@ const ChargerStationAdd = () => {
         onClose={() => {
           setIsRegistrationComplete((prev) => !prev);
         }}
-        onClosed={() => {
-          navigate("/charger/station");
-        }}
+        onClosed={navigateList}
         title={"신규 충전소 등록 완료"}
         contents={"충전소 정보가 등록되었습니다."}
       />
@@ -875,9 +875,7 @@ const ChargerStationAdd = () => {
         onClose={() => {
           setIsRegistrationCancel((prev) => !prev);
         }}
-        cancelHandler={() => {
-          navigate("/charger/station");
-        }}
+        cancelHandler={navigateList}
         title={"신규 충전소 정보 등록 취소 안내"}
         contents={
           "입력된 충전소 정보가 저장되지 않습니다.\n신규 등록을 취소하시겠습니까?"

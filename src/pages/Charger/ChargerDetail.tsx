@@ -244,6 +244,10 @@ const ChargerDetail = () => {
 
   const navigate = useNavigate();
 
+  const navigateList = () => {
+    navigate("/charger/charger");
+  };
+
   useTabs({
     data: inputs,
     pageTitle: "충전기 상세",
@@ -1225,7 +1229,7 @@ const ChargerDetail = () => {
               return;
             }
 
-            navigate("/charger/charger");
+            navigateList();
           }}
           rightButtonHandler={modify}
         />
@@ -1250,9 +1254,7 @@ const ChargerDetail = () => {
         onClose={() => {
           setIsEditCancel((prev) => !prev);
         }}
-        cancelHandler={() => {
-          navigate("/charger/charger");
-        }}
+        cancelHandler={navigateList}
         title={"충전기 정보 수정 취소 안내"}
         contents={
           "수정된 충전기 정보가 저장되지 않습니다.\n수정을 취소하시겠습니까?"

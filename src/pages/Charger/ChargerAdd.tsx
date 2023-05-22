@@ -161,6 +161,10 @@ const ChargerAdd = () => {
 
   const navigate = useNavigate();
 
+  const navigateList = () => {
+    navigate("/charger/charger");
+  };
+
   /** 등록 */
   const register = lock(async () => {
     /** 설치 정보 */
@@ -1115,9 +1119,7 @@ const ChargerAdd = () => {
         onClose={() => {
           setIsCompleteComplete((prev) => !prev);
         }}
-        onClosed={() => {
-          navigate("/charger/charger");
-        }}
+        onClosed={navigateList}
         title={"신규 충전기 등록 완료"}
         contents={"충전기 정보가 등록되었습니다."}
       />
@@ -1126,9 +1128,7 @@ const ChargerAdd = () => {
         onClose={() => {
           setIsCompleteCancel((prev) => !prev);
         }}
-        cancelHandler={() => {
-          navigate("/charger/charger");
-        }}
+        cancelHandler={navigateList}
         title={"신규 충전기 정보 등록 취소 안내"}
         contents={
           "입력된 충전기 정보가 저장되지 않습니다.\n신규 등록을 취소하시겠습니까?"

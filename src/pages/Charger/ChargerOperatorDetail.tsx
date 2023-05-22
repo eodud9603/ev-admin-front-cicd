@@ -153,7 +153,7 @@ export const ChargerOperatorDetail = () => {
 
   /** 뒤로가기 */
   const goBack = () => {
-    navigate(-1);
+    navigate("/charger/operator");
   };
 
   /** disabled 상태 변경 */
