@@ -146,6 +146,7 @@ import { evNewsAddLoader } from "src/pages/Operate/loader/evNewsAddLoader";
 import { supplierAddLoader } from "src/pages/Charger/loader/supplierAddLoader";
 import { evNewsListLoader } from "src/pages/Operate/loader/evNewsListLoader";
 import { manufactureAddLoader } from "src/pages/Charger/loader/manufactureAddLoader";
+import { operatorAccountListLoader } from "src/pages/Operator/loader/operatorAccountListLoader";
 
 const userRoutes: Array<RouteProps> = [
   { path: "/", index: true, element: <Navigate to="/main/dashboard" /> },
@@ -417,7 +418,11 @@ const userRoutes: Array<RouteProps> = [
   },
 
   /* 운영자 관리 */
-  { path: "/operator/account", element: <OperatorAccount /> },
+  {
+    path: "/operator/account",
+    element: <OperatorAccount />,
+    loader: operatorAccountListLoader,
+  },
   { path: "/operator/account/add", element: <OperatorAccountAdd /> },
   { path: "/operator/account/detail/:id", element: <OperatorAccountDetail /> },
   { path: "/operator/counselor", element: <OperatorCounselor /> },
