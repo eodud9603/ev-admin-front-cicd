@@ -48,7 +48,7 @@ axiosInstance.interceptors.request.use((config) => {
   }
 
   /* pending api 관련 로직 */
-  const cancelKey = createCancelKey(config)
+  const cancelKey = createCancelKey(config);
 
   const cancelHandler = pendingRequests[cancelKey]?.cancel;
   !!cancelHandler && cancelHandler("가장 최근 정보를 다시 불러오는 중입니다.");
@@ -74,7 +74,7 @@ axiosInstance.interceptors.request.use((config) => {
 
 axiosInstance.interceptors.response.use((response) => {
   /* pending api 관련 로직 */
-  const cancelKey = createCancelKey(response.config)
+  const cancelKey = createCancelKey(response.config);
 
   if (pendingRequests[cancelKey]) {
     delete pendingRequests[cancelKey];
@@ -213,8 +213,8 @@ const createCancelKey = (config: InternalAxiosRequestConfig<any>) => {
   const { method = "", baseURL = "", url = "" } = config;
   const cancelKey = method + baseURL + url;
 
-  return cancelKey
-}
+  return cancelKey;
+};
 
 /** auth state 초기화 후, login page 이동 */
 const resetAuth = () => {
